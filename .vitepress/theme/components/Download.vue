@@ -109,7 +109,7 @@ onMounted(async () => {
 }
 .dl-badge {
   background: var(--vp-c-brand-1);
-  color: #fff;
+  color: var(--vp-c-bg);
   border-radius: 10px;
   padding: 1px 9px;
   font-size: 12px;
@@ -154,7 +154,7 @@ onMounted(async () => {
   margin-bottom: 8px;
   border-radius: 8px;
   background: var(--vp-c-brand-1);
-  color: #fff;
+  color: var(--vp-c-bg);
   font-size: 14px;
   font-weight: 600;
   text-decoration: none;
@@ -164,7 +164,7 @@ onMounted(async () => {
   background: var(--vp-c-brand-2);
   /* Override VitePress's higher-specificity `.vp-doc a:hover` colour, which
      would otherwise turn this button's label dark-on-dark on hover. */
-  color: #fff;
+  color: var(--vp-c-bg);
 }
 .dl-btn.alt {
   background: var(--vp-c-default-soft);

@@ -46,11 +46,11 @@ Want to support Codeg's development? [Reach out to us by email.](mailto:itpkcn@g
 Have a question, hit a bug, or just want to follow along? Scan the QR code to join our WeChat group for discussion, feedback, and updates.
 
 <div class="light-only">
-  <img src="/images/weixin-light.jpg" alt="Codeg WeChat group QR code" width="240" />
+  <img src="https://raw.githubusercontent.com/xintaofei/codeg/main/docs/images/weixin-light.jpg" alt="Codeg WeChat group QR code" width="240" />
 </div>
 
 <div class="dark-only">
-  <img src="/images/weixin-dark.jpg" alt="Codeg WeChat group QR code" width="240" />
+  <img src="https://raw.githubusercontent.com/xintaofei/codeg/main/docs/images/weixin-dark.jpg" alt="Codeg WeChat group QR code" width="240" />
 </div>
 
 Thanks, too, to the [LinuxDO](https://linux.do) community for their support.

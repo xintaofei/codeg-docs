@@ -46,11 +46,11 @@ Codeg 的开发由下列赞助商支持。如果他们所提供的服务契合�
 有问题、遇到 bug，或只是想关注进展？扫描二维码加入我们的微信群，参与讨论、反馈和获取更新。
 
 <div class="light-only">
-  <img src="/images/weixin-light.jpg" alt="Codeg 微信群二维码" width="240" />
+  <img src="https://raw.githubusercontent.com/xintaofei/codeg/main/docs/images/weixin-light.jpg" alt="Codeg 微信群二维码" width="240" />
 </div>
 
 <div class="dark-only">
-  <img src="/images/weixin-dark.jpg" alt="Codeg 微信群二维码" width="240" />
+  <img src="https://raw.githubusercontent.com/xintaofei/codeg/main/docs/images/weixin-dark.jpg" alt="Codeg 微信群二维码" width="240" />
 </div>
 
 同样感谢 [LinuxDO](https://linux.do) 社区的支持。
