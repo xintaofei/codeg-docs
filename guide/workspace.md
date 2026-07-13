@@ -1,0 +1,153 @@
+---
+title: The Workspace
+description: A tour of the Codeg workspace — the conversation, files, diffs, git changes, and terminal that make up its integrated engineering loop.
+---
+
+# The Workspace
+
+The workspace is where you actually get work done in Codeg. It puts four things on one screen — the agent's **conversation**, your project's **files**, its **git changes**, and a **terminal** — so the whole loop of prompting, reviewing, and committing happens in one place, with no tab-switching between an editor, a diff tool, and a shell.
+
+<div class="light-only">
+
+![The Codeg workspace](/images/main-light.png)
+
+</div>
+
+<div class="dark-only">
+
+![The Codeg workspace](/images/main-dark.png)
+
+</div>
+
+## The layout
+
+The workspace fills the window with a few resizable regions:
+
+- **Conversations (left).** Every session across every folder you've opened — your history, and where you start new ones. They're grouped by project, each with a live status dot: *In Progress*, *Review*, *Completed*.
+- **Conversation (center).** The agent's transcript, with the composer docked at the bottom.
+- **Files (center, alongside the conversation).** The editor, diffs, and live previews for the files you open — right next to the conversation, so you can watch changes land as the agent makes them.
+- **Terminal (bottom).** A collapsible integrated terminal running in your working folder.
+- **Files · Changes · Commits (right).** A tabbed panel holding the project tree, your working-tree changes, and commit history.
+
+A **title bar** across the top carries the folder and branch menus, panel toggles, and settings; a **status bar** along the bottom shows folder and conversation counts, running background tasks, token usage, and the active session's agent and branch.
+
+Every panel resizes by dragging, and the side panels and terminal collapse away when you want room — **⌘B** (conversations), **⌘E** (right panel), **⌘J** (terminal). On a phone or a narrow browser window, the side panels become slide-in sheets.
+
+## Folders and the sidebar
+
+The left sidebar is your home base: every **folder** you've opened — a project directory — with its conversations grouped beneath it. Add one with the **New** menu in the title bar. Right-click a folder's header (or click its **⋯**) for everything you can do with it:
+
+- **Set default agent.** Choose the agent a folder should use, and every new conversation you start there opens with it preselected. Pick **No default (use global)** to fall back to your global choice. It sets the agent only — model and mode still come from that agent once it connects.
+- **Change color.** Give a folder an accent color so its section stands out when you're juggling several projects. The color tints the folder and its conversations in the sidebar; it doesn't carry into the tabs.
+- **Import local sessions.** Pull this project's past sessions from your installed agents into the workspace in one click — Codeg's conversation aggregation in action. → [Conversation Aggregation](/guide/aggregation) covers what it sweeps and how it matches.
+- **Manage conversations.** Bulk-select the folder's conversations to filter by agent or status, change their status, or delete them.
+- **Open in.** Reveal the folder in Finder / Explorer / your file manager, or drop into a terminal there (desktop only).
+- **Remove from workspace.** Take the folder out of Codeg — its tabs and terminals close, but nothing on disk is touched.
+
+A folder's name is just its directory name, so there's no rename — organize with color and grouping instead.
+
+## Start a session — the composer
+
+Everything begins in the **composer**, the input at the bottom of the conversation. Choose an agent, model, and mode, point it at a working folder, type a prompt, and send.
+
+- **Agent and model.** Pick from your enabled agents and the models that agent offers. (The agent picker appears when you start a new conversation.)
+- **Mode.** The dropdown lists the modes the connected agent provides — a plan-first mode, an accept-edits mode, and so on. These come from the agent itself, so what you see depends on which one you're running.
+- **Working folder & branch.** Chips below the box show where the agent will work; switch folder or branch there, or run folderless (*No-folder mode*) for a quick chat.
+- **The + menu.** Attach files, insert a saved **quick message**, leave **live feedback** while the agent is working, run a **slash command**, or drop in a **skill** from the Experts, Office Work, or Scientific Research packs.
+- **Rich input.** Type **@** to mention a file, agent, past session, or commit; type **/** for slash commands.
+- **Send, fork, stop.** **Enter** sends (**Shift+Enter** makes a newline); **Fork & Send** branches the conversation; while the agent runs, Send turns into a red **Cancel** button. Type ahead and your messages **queue** until it's ready for them.
+
+::: tip Approvals come from the agent
+Codeg has no global "auto-approve everything" switch. How freely an agent acts is governed by the **mode** you pick plus the **permission prompts** it raises mid-task (below) — so control stays with the agent's own safety model.
+:::
+
+## Follow along — the conversation
+
+As the agent works, its **transcript** streams in: replies as formatted Markdown (code, math, and diagrams included), its reasoning, and a live **plan** checklist for multi-step tasks.
+
+- **Tool calls** appear as collapsible cards tagged with status — *Awaiting Approval*, *Running*, *Completed*, *Denied*. Shell commands stream their output live; repeated actions fold into a single summary like "Ran 3 commands."
+- **Changes show up inline** as diffs, with a **Files changed** card for each reply, so you see exactly what the agent touched without leaving the conversation.
+- **Permission prompts.** When the agent needs the go-ahead — to run a command, apply an edit, follow a plan — a card docks just above the composer: *"Agent requests permission to continue this turn."* Its buttons are the agent's own choices (Allow, Reject, and the like). A separate card handles multiple-choice questions the agent asks you.
+- **Delegated work.** When one agent hands off to another, a **Sub-agents** overlay tracks the delegated sessions — the heart of [Multi-Agent Collaboration](/guide/multi-agent).
+- Each turn ends with its **model, token, and duration** stats, and you can **export** a whole conversation to image, Markdown, or HTML.
+
+## Work with files — editor, diffs, and previews
+
+The **Files** tab in the right panel is your project tree, rooted at the workspace; click any file to open it in the center file pane.
+
+- **Editing.** Files open in a full editor. There's **no Save button** — Codeg saves on **⌘/Ctrl+S**, when the editor loses focus, and automatically a few seconds after you stop typing; an unsaved file shows a **`*`** in its tab. Send a file, or just a selection, to the agent with **⌘L**.
+- **Diffs.** The agent's edits open as **read-only diffs** — side by side (**HEAD ↔ Working Tree**) or as an inline unified diff, one file at a time, with change counts and prev/next navigation. Diffs are for *review*; you commit from the git panel (below), not by accepting individual lines.
+- **Live previews** open in the same pane: **Office** documents (`.docx`, `.xlsx`, `.pptx`) render and refresh as the agent edits them; **Markdown** and **HTML** get a **Preview ⇄ Edit Source** toggle (HTML runs scripts only if you opt in); images zoom and pan. → [Office Documents](/guide/office)
+
+::: tip Merge conflicts get their own editor
+Resolving a conflict opens a three-pane merge editor — **Local**, **Result**, **Remote** — where you *can* accept changes hunk by hunk. It's the one place with per-hunk controls; everywhere else, diffs stay read-only.
+:::
+
+## Review and commit
+
+Two right-panel tabs put version control a glance away:
+
+- **Changes** lists your working-tree edits — tracked and untracked, with per-file line counts. From here you can open a file's diff, discard an edit (**Rollback**), or start a commit.
+- **Commits** shows history with push status, and lets you branch, reset, or push.
+
+Committing opens a dedicated **Commit** window: tick the files you want, write a message, and choose **Commit** or **Commit and Push**. The **branch menu** in the title bar covers the rest — pull, fetch, stash, worktrees, remotes, and switching or merging branches.
+
+Parallel development with worktrees, remote accounts, and the full git workflow have their own page. → [Git & Worktrees](/guide/git)
+
+## The terminal
+
+Press **⌘J** for an integrated terminal in your working folder — a real shell, not a sandbox. Open as many as you need in tabs. It's there for the commands you'd rather run yourself: starting a dev server, inspecting output, running a one-off script alongside the agent.
+
+## Tabs and multitasking
+
+The center area is **tabbed**, so several sessions stay open at once:
+
+- **Conversation tabs** reorder by dragging and **pin** with a double-click. **⌘T** opens a new conversation, **⌘W** closes a tab, **⌘Tab** cycles between them.
+- **File tabs** track the files, diffs, and previews you've opened in the file pane.
+
+### Tile several sessions side by side
+
+Right-click any conversation tab and choose **Tile Display** to lay *all* of your open conversations out next to each other in a single view. It isn't a fixed two-up split — it's **one pane per open tab**, side by side, scrolling horizontally when they don't all fit. This is how you run a fleet of agents at once: start a task in one, a different task in another, and watch every transcript stream in parallel without switching tabs.
+
+- **Panes are your tabs.** Open another conversation (⌘T or the sidebar) to add a pane; close a tab to remove one. You need at least two open conversations for tiling to take effect.
+- **Mix projects freely.** Tiled panes aren't tied to one folder — put sessions from different projects side by side.
+- **One pane is active.** The active pane — the one the composer and shortcuts act on — is outlined with a flowing gradient border. Click any other pane to focus it.
+- **Leave anytime.** Right-click → **Exit Tile** returns you to the single-tab view.
+
+Tiling is a great companion to [multi-agent collaboration](/guide/multi-agent): tile the lead session beside the sub-agent sessions it spawns and watch the whole team work.
+
+## The welcome screen
+
+Before a session starts, the conversation pane asks **"What would you like to do today?"** and offers **Quick Actions** in three tabs — **Code Development**, **Office Work**, and **Scientific Research**. Each card drops a ready-made skill (and, for Office and Research, a prompt template) into the composer with one click; anything not yet enabled for your chosen agent shows a lock that links to where you turn it on. Below it sit the agent picker and a rotating tip.
+
+## Desktop and browser
+
+The workspace is the same whether you run the [desktop app](/getting-started/installation) or open [`codeg-server`](/getting-started/deployment) in a browser. A few things differ:
+
+- **Files.** The desktop app uses native file dialogs and can *Open in Finder / Explorer / terminal*; in the browser you **upload** files or **pick a file on the server** instead.
+- **Window & extras.** Custom window controls and the desktop pet are desktop-only; the browser adds a **login** (your access token) and a reconnect prompt if the connection drops.
+- **Remote workspaces.** A desktop app can attach to a remote server, at which point its file operations behave like the browser's.
+
+## Keyboard shortcuts
+
+| Shortcut | Action |
+| -------- | ------ |
+| `⌘/Ctrl B` | Toggle the Conversations panel |
+| `⌘/Ctrl E` | Toggle the right (Files / Changes / Commits) panel |
+| `⌘/Ctrl J` | Toggle the terminal |
+| `⌘/Ctrl T` | New conversation |
+| `⌘/Ctrl K` | Search conversations and files |
+| `⌘/Ctrl W` | Close the current tab |
+| `⌘/Ctrl Tab` | Cycle between tabs |
+| `Enter` / `Shift+Enter` | Send / newline |
+| `⌘/Ctrl L` | Add the current file or selection to the chat |
+| `⌘/Ctrl S` | Save the current file |
+
+These are the defaults; several can be changed.
+
+## Next steps
+
+- [**Working with Agents**](/guide/agents) — enable an agent and run your first session in the workspace.
+- [**Conversation Aggregation**](/guide/aggregation) — how past sessions from every agent land in the Conversations list.
+- [**Git & Worktrees**](/guide/git) — the full version-control workflow, including parallel development.
+- [**Multi-Agent Collaboration**](/guide/multi-agent) — delegate parts of a task to other agents.

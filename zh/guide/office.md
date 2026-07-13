@@ -1,0 +1,78 @@
+---
+title: Office 文档
+description: 将任意智能体变成文档作者——用内置的 OfficeCLI 创建和编辑真正的 .docx、.xlsx 和 .pptx 文件，然后在会随智能体工作而刷新的标签页内实时预览中，观看它们逐步构建。
+---
+
+# Office 文档
+
+Codeg 可以把它的任意智能体变成文档作者——一个能产出**真正的** `.docx`、`.xlsx` 和 `.pptx` 文件的作者，而不是导出成这些格式的 Markdown。你用平实的语言描述你想要什么，智能体在你的文件夹中构建文件，你在工作区标签页中打开它以获得一个**实时预览**，该预览会随着智能体持续编辑而自行刷新。
+
+整套机制依托一个名为 **OfficeCLI** 的文档引擎和一套与之配套的[技能](/zh/guide/skills)。一旦你安装了引擎并启用了若干技能，使用它就只是一场对话而已。
+
+## 设置 OfficeCLI {#set-up-officecli}
+
+office 技能是一个精选[技能包](/zh/guide/skills#enable-a-curated-skill-pack)，因此它们位于**设置 → 技能包 → Office** 下。与其他技能包不同，它们依赖一个外部二进制文件——**OfficeCLI**（开源的 [iOfficeAI/OfficeCLI](https://github.com/iOfficeAI/OfficeCLI)）——由 Codeg 替你安装并驱动。三个步骤，全都在那一个界面上完成：
+
+1. **安装**——一键即可。Codeg 会运行 OfficeCLI 的官方安装程序，并实时输出日志，让你看着它落地（macOS/Linux 上为 `~/.local/bin/officecli`，Windows 上为 `%LOCALAPPDATA%\OfficeCLI`）。之后检测行会显示**已安装**、**未安装**或**已安装但无法运行**。
+2. **同步技能**——把 OfficeCLI 的文档技能拉入 Codeg 的共享技能存储，使它们变得可启用。
+3. **按智能体启用它们**——在其他技能包所用的同一个技能与智能体矩阵中，为你想要的智能体勾选你想要的技能。→ [启用一个技能包](/zh/guide/skills#enable-a-curated-skill-pack)
+
+::: tip 安装完成即可使用
+在全新安装后不久，`officecli` 可能还不在你 shell 的 `PATH` 上——因此 Codeg 会确保它所启动的智能体无论如何都能找到该二进制文件，并在系统 `PATH` 跟上之后停止这样做。你无需重启任何东西。
+:::
+
+## 文档技能 {#the-document-skills}
+
+同步会加载跨三个家族的九个技能。每个技能都有自己的 `/` 调用方式，并了解它所构建的文档类型的惯例：
+
+| 家族 | 技能 | 适用于 |
+| ------ | ----- | -------- |
+| **演示文稿** | **Presentation** | 董事会评审、销售演示、全员大会 |
+| | **Pitch Deck** | 融资演示——种子轮、A–C 轮、SAFE、可转换债 |
+| | **Morph Animation PPT** | 电影级 Morph 过渡演示 |
+| | **3D Morph PPT** | 带 GLB 模型和镜头运动的 3D Morph |
+| **文档** | **Word Document** | 报告、信函、备忘录、提案 |
+| | **Academic Paper** | 期刊/学位论文，含引用、公式、交叉引用 |
+| **电子表格** | **Excel Workbook** | 公式、数据透视、跟踪表 |
+| | **Financial Model** | 三张报表、DCF、LBO、情景分析、预测 |
+| | **Data Dashboard** | CSV/表格数据 → KPI/分析仪表板 |
+
+你只需启用你会用到的那些——一个做电子表格的智能体并不需要 pitch-deck 技能。
+
+## 创建一个文档 {#create-a-document}
+
+在为你的智能体启用某个技能后，有两种进入方式：
+
+- **从欢迎界面进入。** 一个新的对话会提供快捷操作卡片——**Excel**、**Word** 和 **PowerPoint** 被前置推荐，其余的（pitch deck、morph、academic、financial、dashboard）则在 composer 的 **+** 菜单中。点击其中一个会放入相应的技能并填充一段起始提示词。
+- **手动进入。** 键入 `/` 并选取技能——比如 `/officecli-pptx`——然后描述这份演示文稿。*（Codex 使用 `$`。）*
+
+然后就像给同事交代任务那样与智能体交谈即可：
+
+```text
+/officecli-pptx Build a 10-slide Q3 board review from the numbers in
+metrics.csv — revenue, churn, and headcount, one chart per slide, and
+a summary slide at the end.
+```
+
+智能体会调用 OfficeCLI 直接在你的工作文件夹中撰写该文件。在后续消息中提出修改——“把第 4 张幻灯片改成表格”“精简一下摘要”——它就会就地编辑同一个文件。
+
+## 观看它构建——实时预览 {#watch-it-build-—-live-preview}
+
+在工作区文件标签页中打开所产出的 `.docx`、`.xlsx` 或 `.pptx`，Codeg 就会就地渲染它——无需导出步骤、无需外部 Office 应用、无需离开 Codeg。这三种格式都在标签页内预览。
+
+预览是**实时的**：随着智能体持续编辑文件，它会自行刷新。在底层，Codeg 为该文件运行一个轻量的 `officecli watch` 服务器，并让标签页的预览指向它，这样渲染出的文档与智能体的编辑就绝不会在磁盘上争抢同一个文件——你只需看着这份演示文稿一张接一张地填充完成。
+
+## 须知 {#good-to-know}
+
+- **这些文件是真实的，且归你所有。** 它们是你文件夹中的标准 Office 文档——用 Word、Excel 或 PowerPoint 打开它们、把它们通过邮件发送、把它们提交。它们身上没有任何 Codeg 专有的东西。
+- **在服务器上，请把 OfficeCLI 安装在服务器主机上。** Office 标签页同样在那里安装它，预览则通过服务器流式传回你的浏览器。如果某个预览报告缺少 OfficeCLI，界面会显示需要在该主机上运行的确切一行安装命令。
+- **绑定到远程服务器的桌面窗口无法内联显示预览**——对于这种配置，请改为在服务器自己的 Web 界面中打开该文件（预览面板在适用时会这样提示）。
+- **精简的 Linux 镜像可能缺少 OfficeCLI 所需的某个系统库**（例如精简服务器镜像上的 ICU/`libicu`）。如果引擎无法启动，检测行和预览会给出一条可操作的提示，指明需要添加什么。
+- **在同一处进行管理。** Office 标签页还可以**卸载** OfficeCLI，并在新版本发布时重新同步技能。
+
+## 后续步骤 {#next-steps}
+
+- [**技能**](/zh/guide/skills)——按智能体启用技能包是如何运作的，以及如何编写你自己的技能。
+- [**科学研究**](/zh/guide/research)——另一个精选的领域技能包，从假设到撰写。
+- [**工作区**](/zh/guide/workspace)——这些文档在其中打开的文件标签页和预览界面。
+- [**使用智能体**](/zh/guide/agents)——挑选并登录将执行撰写工作的智能体。
