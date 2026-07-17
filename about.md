@@ -34,6 +34,13 @@ Codeg's development is supported by the sponsors below. If what they offer fits 
       </td>
       <td>Thanks to <a href="https://hezu.ink/sign-up?aff=0wVz" target="_blank" rel="noreferrer">合租巴士</a> for sponsoring Codeg! 合租巴士 is a reliable, efficient AI relay platform with highly stable relay for mainstream models such as Codex and Claude Code. Top-ups are credited at a transparent 1:1 ratio, with Codex rate subsidies as low as 0.08. <a href="https://hezu.ink/sign-up?aff=0wVz" target="_blank" rel="noreferrer">Join via the official website</a> to get $5 in trial credit.</td>
     </tr>
+    <tr>
+      <td align="center" width="210">
+        <a href="https://onehop.ai/platform/login?ref=CODEG&amp;utm_source=github&amp;utm_medium=readme_sponsor&amp;utm_campaign=codeg&amp;utm_content=sponsor_cta" target="_blank" rel="noreferrer"><img src="/images/onehop.jpg" alt="OneHop" style="max-width: 190px; max-height: 80px;" /></a><br/>
+        <strong><a href="https://onehop.ai/platform/login?ref=CODEG&amp;utm_source=github&amp;utm_medium=readme_sponsor&amp;utm_campaign=codeg&amp;utm_content=sponsor_cta" target="_blank" rel="noreferrer">OneHop</a></strong>
+      </td>
+      <td>Thanks to <a href="https://onehop.ai/platform/login?ref=CODEG&amp;utm_source=github&amp;utm_medium=readme_sponsor&amp;utm_campaign=codeg&amp;utm_content=sponsor_cta" target="_blank" rel="noreferrer">OneHop</a> for sponsoring Codeg! OneHop gives Codeg users one OpenAI-compatible API key for hundreds of leading models, including GPT, Claude, Gemini, DeepSeek, Kimi, and Qwen. Switch models without managing multiple provider accounts or repeatedly changing your code, and pay only for what you use. <a href="https://onehop.ai/platform/login?ref=CODEG&amp;utm_source=github&amp;utm_medium=readme_sponsor&amp;utm_campaign=codeg&amp;utm_content=sponsor_cta" target="_blank" rel="noreferrer">Sign up through Codeg</a> to receive $1 in credit, then join the OneHop community and participate in the welcome activity for an additional $5 — up to $6 in test credit in total.</td>
+    </tr>
   </tbody>
 </table>
 
