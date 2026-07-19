@@ -10,13 +10,13 @@ A **skill** is a reusable instruction file — a Markdown `SKILL.md` with a name
 Skills are the agent's own feature — each supported agent reads them from its own skills directory. Codeg is the management layer on top, and it gives you two ways to put skills there:
 
 - **Skill packs** — curated bundles Codeg ships (**Experts**, **Science**, **Office**). You enable a pack's skills for the agents you choose, and Codeg links them in.
-- **Your own skills** — write a `SKILL.md` by hand for any agent, at global or per-project scope.
+- **Your own skills** — write a `SKILL.md` by hand. Author it once in the shared store and switch it on across agents from the same matrix as the packs (**Skill Packs → Custom**), or write it straight into a single agent's own directory (**Skills**).
 
-Either way the result is the same: the skill shows up in that agent's `/` menu, ready to invoke. The two live under adjacent Settings screens — **Skill Packs** and **Skills** — and the rest of this page covers each in turn.
+Either way the result is the same: the skill shows up in that agent's `/` menu, ready to invoke. Both live under adjacent Settings screens — **Skill Packs** and **Skills** — and the rest of this page covers each in turn.
 
 ## Enable a curated skill pack
 
-Open **Settings → Skill Packs**. It's a tabbed hub over three curated, Codeg-managed bundles, all sharing one **central store** (`~/.codeg/skills`) and one enabling model:
+Open **Settings → Skill Packs**. It's a tabbed hub over three curated, Codeg-managed bundles — plus a **Custom** tab for your own skills ([below](#custom-skills)) — all sharing one **central store** (`~/.codeg/skills`) and one enabling model:
 
 | Pack | What's in it | Depth |
 | ---- | ------------ | ----- |
@@ -49,7 +49,22 @@ A cell isn't always a plain on/off. You may see:
 Experts (and any bundled skill) are baked into Codeg and re-extracted to the central store when you upgrade — so enabled skills stay current with no action from you. Edit a bundled skill in place and Codeg flags it **user modified** and preserves your version. Science skills may carry a **needs key** or **needs setup** badge — they'll link fine, but the skill itself needs an API key or a Python environment before it runs; see the skill's own instructions and [where credentials live](/guide/authentication#where-credentials-are-stored).
 :::
 
+### Author your own skills in the shared store {#custom-skills}
+
+The fourth tab, **Custom**, is where your *own* skills live in that same central store — so you write a skill once and enable it across any agent from the matrix, instead of re-creating it in each agent's directory. It behaves like the pack tabs (same grid, same symlink-in), but the skills are yours to edit.
+
+From the Custom tab you can:
+
+- **Create, edit, duplicate, and delete** skills, kept under `~/.codeg/skills`.
+- **Import from a folder** — bring in an existing skill directory. On the desktop that's the native file picker; on the web or a remote workspace it's the server-side directory browser.
+- **Import from an agent** — pull several skills at once out of an agent's own global skills directory into the shared store.
+- Drop a skill folder into `~/.codeg/skills` yourself, and it shows up on the next **refresh** — anything that isn't part of the Experts, Science, or Office packs counts as a custom skill.
+
+Once a custom skill is in the store, enable it per agent exactly like a pack skill — tick its cells in [the matrix](#the-skill-and-agent-matrix), or fan it out with the **⋯** and column menus.
+
 ## Write your own skill
+
+The **Skills** screen authors a skill a different way from the Custom tab above: you write **straight into one agent's own skills directory** (global or per-project), not the shared store — no matrix, and the skill belongs to that agent alone. Use it for something specific to one agent or one project; use **Skill Packs → Custom** when you want to write once and share across every agent.
 
 For a skill that isn't in any pack — an internal convention, a workflow you keep repeating — open **Settings → Skills** and author it directly.
 

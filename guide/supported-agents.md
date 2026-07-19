@@ -1,11 +1,11 @@
 ---
 title: Supported Agents
-description: The eleven coding agents Codeg drives over ACP — what each one is, the runtime it needs, and where it keeps its sessions on disk.
+description: The twelve coding agents Codeg drives over ACP — what each one is, the runtime it needs, and where it keeps its sessions on disk.
 ---
 
 # Supported Agents
 
-Codeg drives **eleven coding agents**, and once one is running they all feel the same — same composer, same diffs, same git and terminal — because Codeg talks to each over the **Agent Client Protocol (ACP)**. What differs is underneath: who builds the agent, what runtime it needs on your machine, and where it keeps its own history. This page is the map.
+Codeg drives **twelve coding agents**, and once one is running they all feel the same — same composer, same diffs, same git and terminal — because Codeg talks to each over the **Agent Client Protocol (ACP)**. What differs is underneath: who builds the agent, what runtime it needs on your machine, and where it keeps its own history. This page is the map.
 
 Enabling an agent, its preflight health check, and starting a session are covered in [Working with Agents](/guide/agents); signing in and choosing a model are in [Authentication & Models](/guide/authentication). Here we stick to the roster itself.
 
@@ -26,11 +26,12 @@ Codeg installs, pins, and updates every one of these for you — you never fetch
 | **Kimi Code** | Moonshot AI's CLI coding assistant | Node.js |
 | **Pi** | A self-extensible coding agent | Node.js |
 | **Grok** | xAI's coding agent and CLI | Node.js |
+| **Cursor** | Anysphere's Cursor coding agent | Bundled binary |
 
 Three delivery routes sit behind that last column:
 
-- **Node.js (npm).** Nine of the eleven ship as npm packages that Codeg runs with `npx`, so they need Node.js installed. Codeg pins a known-good version of each and upgrades it for you.
-- **Bundled binary.** **OpenCode** is a native binary Codeg downloads for your exact platform — nothing else to install.
+- **Node.js (npm).** Nine of the twelve ship as npm packages that Codeg runs with `npx`, so they need Node.js installed. Codeg pins a known-good version of each and upgrades it for you.
+- **Bundled binary.** **OpenCode** and **Cursor** are native binaries Codeg downloads for your exact platform — nothing else to install. Cursor's download is larger because it carries its own Node runtime and tools, so it doesn't need Node.js on your machine either.
 - **Python (uv).** **Hermes** runs through `uv`, the Python tool runner; Codeg launches it with a pinned Python, so you don't manage the environment.
 
 The order above is the **default Agent List order** in Settings → Agents. It's a preference, not a ranking — drag agents to reorder them, and the first enabled one becomes Codeg's fallback when nothing else has picked the agent for a conversation. → [Working with Agents](/guide/agents#start-a-session)
@@ -54,8 +55,9 @@ Here's where "each agent's native store" actually lives:
 | **Kimi Code** | `~/.kimi-code/sessions/` | JSONL | `KIMI_CODE_HOME` |
 | **Pi** | `~/.pi/agent/sessions/` | JSONL | `PI_CODING_AGENT_SESSION_DIR` |
 | **Grok** | `~/.grok/sessions/` | JSONL | `GROK_HOME` |
+| **Cursor** | `~/.cursor/chats/` | SQLite (blob store) | `CURSOR_CONFIG_DIR` |
 
-Most agents write a **JSONL transcript** — a plain-text log, one event per line — while OpenCode and Hermes keep everything in a single **SQLite** database and Gemini and Cline use their own JSON files. Codeg reads each format natively; you never convert anything.
+Most agents write a **JSONL transcript** — a plain-text log, one event per line — while OpenCode and Hermes keep everything in a single **SQLite** database, Cursor stores each conversation as its own SQLite blob file, and Gemini and Cline use their own JSON files. Codeg reads each format natively; you never convert anything.
 
 ::: tip Moved a store? Codeg follows the same variable.
 Point an agent at a non-default location with one of the environment variables above and Codeg honors it too — so a relocated history still imports — as long as Codeg sees that variable in its own environment. OpenClaw is the exception: its store isn't relocatable.

@@ -69,9 +69,9 @@ Each server's detail pane has an **Enabled apps** row — a checkbox per agent. 
 | **Claude Code** | `~/.claude.json` (`mcpServers`) |
 | **Codex** | Codex's `config.toml` (`[mcp_servers.*]`) |
 | **Gemini** | `~/.gemini/settings.json` |
-| **OpenCode**, **Cline**, **Hermes**, **CodeBuddy**, **Kimi Code**, **Grok** | each agent's own MCP config |
+| **OpenCode**, **Cline**, **Hermes**, **CodeBuddy**, **Kimi Code**, **Grok**, **Cursor** | each agent's own MCP config |
 
-That's **nine of the eleven agents** — every one except **OpenClaw** and **Pi**. OpenClaw doesn't accept MCP servers at all (it's the one agent that opts out), so it's not offered as a target; Pi isn't in the list either. → [How agents differ](/guide/supported-agents#how-agents-differ)
+That's **ten of the twelve agents** — every one except **OpenClaw** and **Pi**. OpenClaw doesn't accept MCP servers at all (it's the one agent that opts out), so it's not offered as a target; Pi isn't in the list either. → [How agents differ](/guide/supported-agents#how-agents-differ)
 
 ::: tip Changes apply on the next session
 Because a server lives in the agent's config, the agent reads it when it **starts a session**. Add or change a server and it takes effect for new conversations; for one that's already open, **Reconnect to apply** picks up the new config without losing your history. → [Configure an agent](/guide/agents#configure-an-agent)

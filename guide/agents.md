@@ -13,10 +13,10 @@ This page covers the essentials — enabling an agent, making sure it's ready to
 
 Each agent is a separate command-line program. When you start a session, Codeg launches that program as a background process and talks to it over the **Agent Client Protocol (ACP)** — the shared language that lets one workspace drive many different agents. That's why the experience is consistent no matter which one you pick.
 
-Codeg supports **eleven agents** today, delivered three ways — and it installs and updates them for you:
+Codeg supports **twelve agents** today, delivered three ways — and it installs and updates them for you:
 
 - Most run through **npx** (an npm package), so they need Node.js on your machine.
-- **OpenCode** is a native **binary** Codeg downloads for your platform.
+- **OpenCode** and **Cursor** are native **binaries** Codeg downloads for your platform (Cursor bundles its own runtime, so it needs no Node.js either).
 - **Hermes** runs through **uv**, a Python tool runner.
 
 Two things are tracked separately for each agent: whether it's **enabled** (allowed to appear in Codeg) and whether it's **installed** (actually present on your machine). They're independent — you can enable an agent before installing it, and Codeg will help you install it when the time comes.
@@ -34,7 +34,7 @@ Open Settings → Agents and Codeg runs a **preflight check** on each agent — 
 What it checks depends on how the agent is delivered:
 
 - **npx agents** — that **Node.js** and **npm** are installed and new enough (each agent sets a minimum Node version).
-- **OpenCode** — that your platform is supported, the binary is downloaded, and its plugins are installed.
+- **OpenCode** and **Cursor** — that your platform is supported and the binary is downloaded (OpenCode also fetches its plugins).
 - **Hermes** — that the **uv** runtime is available.
 
 Every failing check comes with a **fix button** right beside it — *Install Node.js*, *Install uv*, *Install Plugins*, and so on — and the version row offers **Install**, **Upgrade**, or **Uninstall** as needed. Changed something outside Codeg? **Refresh check** re-runs the preflight.

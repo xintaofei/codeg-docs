@@ -1,11 +1,11 @@
 ---
 title: Appearance
-description: The Appearance settings screen — theme mode and accent color, window zoom, per-surface fonts, the welcome-screen shortcut cards, and the desktop pet manager.
+description: The Appearance settings screen — theme mode and accent color, window zoom, per-surface fonts, a workspace background image, the welcome-screen shortcut cards, and the desktop pet manager.
 ---
 
 # Appearance
 
-**Settings → Appearance** controls how Codeg looks: light or dark, the accent color, how large everything is drawn, the fonts used across each surface, and a couple of extras. It's the screen Settings opens on, and every change here saves automatically and applies immediately — no save button, no restart.
+**Settings → Appearance** controls how Codeg looks: light or dark, the accent color, how large everything is drawn, the fonts used across each surface, an optional background image, and a couple of extras. It's the screen Settings opens on, and every change here saves automatically and applies immediately — no save button, no restart.
 
 ## Theme mode
 
@@ -17,7 +17,7 @@ The accent palette used for buttons, accents, and highlights. Twelve presets —
 
 **Neutral** *(default)* · Zinc · Slate · Stone · Gray · Red · Rose · Orange · Green · Blue · Yellow · Violet
 
-The choice recolors the whole app instantly.
+The choice recolors the whole app instantly. The first five — **Neutral** *(default)*, Zinc, Slate, Stone, and Gray — keep every surface gray; the seven **accent** colors (Red, Rose, Orange, Green, Blue, Yellow, Violet) go further, tinting panels, the sidebar, the canvas, and even the code-editor background with that hue. It's automatic — there's no separate toggle.
 
 ## Window zoom
 
@@ -41,6 +41,25 @@ Three independent typefaces, one per surface. Each picks from a set of bundled f
 - A **live preview** at the bottom renders a line of interface text, a snippet of code, and a terminal command in your current choices — so you can compare before committing.
 
 The editor and terminal these style are the ones in [the workspace](/guide/workspace).
+
+## Workspace background
+
+Put a picture behind the whole workspace. Turn on **Enable background image** and pick an image (**PNG, JPEG, or WebP**, up to **16 MB**); the sidebar, panels, and tab bars turn translucent and **frosted** so the image shows through, while a mask keeps text readable. One image is shared by light and dark mode.
+
+The controls, top to bottom:
+
+| Control | What it does | Default |
+| ------- | ------------ | ------- |
+| **Enable background image** | The on/off switch for the whole feature | Off |
+| **Image** | Choose, replace, or remove the picture | — |
+| **Fill mode** | How the image sits: **Cover**, **Contain**, **Center**, or **Tile** | Cover |
+| **Mask opacity** | Fades the image toward the theme background — higher gives text more contrast | 82% |
+| **Image blur** | Softens the image, 0–24 px | 0 px |
+| **Panel opacity** | How solid the sidebar, panels, and tab bars are — lower lets more image through | 30% |
+
+::: tip It travels to the browser too
+The image is saved on disk with Codeg's data, so a background you set on the desktop also shows when you open the same install as a [server](/getting-started/deployment) in a browser. The display settings (opacity, blur, fill) are stored per device, like zoom.
+:::
 
 ## Mode selection area
 

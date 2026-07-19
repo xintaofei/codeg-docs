@@ -5,7 +5,7 @@ description: Review diffs, commit and push, branch and merge, resolve conflicts,
 
 # Git & Worktrees
 
-Codeg has a full git client built into the workspace, so reviewing what an agent wrote and landing it are part of the same loop as prompting — no jumping out to a separate git tool. Everything sits in panels you already have open: the **Changes** and **Commits** tabs on the right, and the **branch menu** — the folder-and-branch button in the title bar — for everything else. The integrated [terminal](/guide/workspace#the-terminal) is always there for the odd command, but you'll rarely need it.
+Codeg has a full git client built into the workspace, so reviewing what an agent wrote and landing it are part of the same loop as prompting — no jumping out to a separate git tool. Everything sits in panels you already have open: the **Changes** and **Commits** tabs on the right, and the **branch menu** — the branch selector at the top of the **Session Details** tab — for everything else. The integrated [terminal](/guide/workspace#the-terminal) is always there for the odd command, but you'll rarely need it.
 
 ## Review your changes
 
@@ -34,7 +34,7 @@ The commit button doubles as a menu: **Commit** records the selected files, and 
 
 ## Branch, merge, and rebase
 
-The **branch menu** in the title bar is your branch switcher and the home for most git operations. It lists your **local** and **remote** branches; pick one to **switch** to it, or open a branch's submenu to **merge** it into the current branch, **rebase** the current branch onto it, or **delete** it. **New branch** creates one from where you are and checks it out.
+The **branch menu** — the branch selector in the [Session Details](/guide/workspace#session-details) tab — is your branch switcher and the home for most git operations. It lists your **local** and **remote** branches; pick one to **switch** to it, or open a branch's submenu to **merge** it into the current branch, **rebase** the current branch onto it, or **delete** it. **New branch** creates one from where you are and checks it out.
 
 Switching uses a plain checkout, so Codeg won't move your uncommitted changes for you — **commit or stash first** if git would refuse. For stashing, **Stash changes** tucks your work away (optionally keeping the index staged), and **Unstash** lists your stashes to **apply** or **drop**.
 

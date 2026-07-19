@@ -10,7 +10,7 @@ description: Codeg is a multi-agent coding workspace — one place to run, aggre
 Rather than tying you to a single assistant, Codeg brings Claude Code, Codex CLI, Gemini CLI, OpenCode, Cline, and [more](/guide/supported-agents) into a shared workspace — then lets them work *together*: a lead agent can hand subtasks to agents of other types, each running as its own session. You conduct; they collaborate.
 
 <div class="stat-strip">
-  <div class="stat"><span class="stat__num">11</span><span class="stat__label">coding agents, one workspace</span></div>
+  <div class="stat"><span class="stat__num">12</span><span class="stat__label">coding agents, one workspace</span></div>
   <div class="stat"><span class="stat__num">3</span><span class="stat__label">chat channels to drive them</span></div>
   <div class="stat"><span class="stat__num">3</span><span class="stat__label">ways to run — desktop · server · Docker</span></div>
   <div class="stat"><span class="stat__num">0</span><span class="stat__label">telemetry — local-first by default</span></div>
@@ -59,9 +59,9 @@ Three ideas define the workspace.
 
 ### 1. Aggregate — one home for every agent
 
-Codeg reads the native session store of each supported agent and pulls them into a single, searchable workspace. Your Claude Code, Codex, Gemini, and OpenCode histories stop living in eleven separate directories and become one timeline you can browse, resume, and search — no matter which tool produced them.
+Codeg reads the native session store of each supported agent and pulls them into a single, searchable workspace. Your Claude Code, Codex, Gemini, and OpenCode histories stop living in twelve separate directories and become one timeline you can browse, resume, and search — no matter which tool produced them.
 
-Eleven agents plug in today, each with its own models, strengths, and session format:
+Twelve agents plug in today, each with its own models, strengths, and session format:
 
 <AgentRoster />
 

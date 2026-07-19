@@ -70,6 +70,27 @@ After `/task`, drop the slashes — **any message without the prefix is forwarde
 The current folder, agent, and session are tracked **per chat member**, so several people can share one connected bot and each run their own tasks without stepping on each other.
 :::
 
+### Telegram topic mode
+
+If your Telegram channel points at a **forum supergroup** — the kind with separate **topics** — Codeg can give each session its own topic, so one group hosts many conversations side by side instead of interleaving them in a single thread. Each topic is bound to one Codeg session. It's off until you switch it on, and it's **Telegram-only** — Lark and WeChat are unaffected.
+
+**What it needs:**
+
+- The chat is a **forum-enabled supergroup**, and the bot is a **member** of it.
+- To let Codeg **create and rename** topics, make the bot an **administrator with the *Manage Topics* permission**.
+- The channel's **Chat ID** points at that supergroup — updates from any other chat are ignored.
+
+**Turn it on:** edit the Telegram channel (disconnect first), switch on **Topic mode**, save, and connect. Existing channels keep their old single-thread behavior until you flip this on.
+
+**How sessions map to topics:**
+
+- In the **General** topic, `/task <description>` **creates a new topic** and starts a session bound to it. Plain text in General is ignored — send `/task` explicitly, so the bot never fires on ordinary group chatter.
+- In a topic you made by hand, `/task <description>` starts a session and **binds it to that topic**; `/resume [id]` binds an **existing** session instead.
+- In a **bound** topic, plain text is just the next message to that topic's agent — no command needed.
+- `/sessions`, `/cancel`, `/approve`, `/deny`, `/folder`, and `/agent` keep their meanings; the session-specific ones resolve to whichever session the current topic is bound to. `/folder` and `/agent` with no argument show inline buttons.
+
+When Codeg updates a conversation's title it tries to **rename the bound topic** to match — best-effort, so if Telegram refuses or the bot lacks permission, the conversation still renames on Codeg's side. Closing or deleting a topic doesn't cancel its session, and past sessions aren't migrated in — topic mode applies to sessions you start after enabling it.
+
 ## Approve, and follow along
 
 The **Events** tab controls what Codeg pushes back to your chat. Five events, each a toggle:

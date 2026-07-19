@@ -1,11 +1,11 @@
 ---
 title: 支持的智能体
-description: Codeg 通过 ACP 驱动的十一个编程智能体——每一个是什么、需要什么运行环境，以及它把会话保存在磁盘的什么位置。
+description: Codeg 通过 ACP 驱动的十二个编程智能体——每一个是什么、需要什么运行环境，以及它把会话保存在磁盘的什么位置。
 ---
 
 # 支持的智能体
 
-Codeg 驱动**十一个编程智能体**，一旦其中一个开始运行，它们的使用感受都是一样的——同一个 composer、同样的 diff、同样的 git 和终端——因为 Codeg 通过 **Agent Client Protocol（ACP）**与每一个通信。不同之处在底层：智能体由谁构建、它在你的机器上需要什么运行时，以及它把自己的历史保存在哪里。本页就是这张地图。
+Codeg 驱动**十二个编程智能体**，一旦其中一个开始运行，它们的使用感受都是一样的——同一个 composer、同样的 diff、同样的 git 和终端——因为 Codeg 通过 **Agent Client Protocol（ACP）**与每一个通信。不同之处在底层：智能体由谁构建、它在你的机器上需要什么运行时，以及它把自己的历史保存在哪里。本页就是这张地图。
 
 启用一个智能体、它的预检健康检查，以及开启一个会话，都在[使用智能体](/zh/guide/agents)中介绍；登录和选择模型则在[认证与模型](/zh/guide/authentication)中。这里我们只专注于名单本身。
 
@@ -26,11 +26,12 @@ Codeg 会为你安装、固定版本并更新其中的每一个——你从不�
 | **Kimi Code** | Moonshot AI 的 CLI 编程助手 | Node.js |
 | **Pi** | 一个可自我扩展的编程智能体 | Node.js |
 | **Grok** | xAI 的编程智能体与 CLI | Node.js |
+| **Cursor** | Anysphere 的 Cursor 编程智能体 | 捆绑二进制文件 |
 
 最后一列背后有三条交付路径：
 
-- **Node.js（npm）。** 十一个中有九个以 npm 包的形式交付，Codeg 用 `npx` 运行它们，因此它们需要安装 Node.js。Codeg 会为每一个固定一个已知可用的版本，并为你升级它。
-- **捆绑二进制文件。** **OpenCode** 是一个原生二进制文件，Codeg 会为你确切的平台下载它——无需安装其他任何东西。
+- **Node.js（npm）。** 十二个中有九个以 npm 包的形式交付，Codeg 用 `npx` 运行它们，因此它们需要安装 Node.js。Codeg 会为每一个固定一个已知可用的版本，并为你升级它。
+- **捆绑二进制文件。** **OpenCode** 和 **Cursor** 是原生二进制文件，Codeg 会为你确切的平台下载它们——无需安装其他任何东西。Cursor 的下载体积更大，因为它自带 Node 运行时和工具，所以它同样不需要你的机器上有 Node.js。
 - **Python（uv）。** **Hermes** 通过 `uv`（Python 工具运行器）运行；Codeg 会用一个固定版本的 Python 启动它，因此你无需管理环境。
 
 上面的顺序是设置 → 智能体中**默认的智能体列表顺序**。它是一种偏好设置，而非排名——拖动智能体即可重新排序，而当没有其他方式为一段对话选定智能体时，第一个已启用的智能体就成为 Codeg 的后备选择。→ [使用智能体](/zh/guide/agents#start-a-session)
@@ -54,8 +55,9 @@ Codeg 会为你安装、固定版本并更新其中的每一个——你从不�
 | **Kimi Code** | `~/.kimi-code/sessions/` | JSONL | `KIMI_CODE_HOME` |
 | **Pi** | `~/.pi/agent/sessions/` | JSONL | `PI_CODING_AGENT_SESSION_DIR` |
 | **Grok** | `~/.grok/sessions/` | JSONL | `GROK_HOME` |
+| **Cursor** | `~/.cursor/chats/` | SQLite（blob 存储） | `CURSOR_CONFIG_DIR` |
 
-大多数智能体写入一份 **JSONL 对话记录**——一种纯文本日志，每行一个事件——而 OpenCode 和 Hermes 把一切保存在单个 **SQLite** 数据库中，Gemini 和 Cline 则使用它们自己的 JSON 文件。Codeg 会原生读取每一种格式；你从不需要转换任何东西。
+大多数智能体写入一份 **JSONL 对话记录**——一种纯文本日志，每行一个事件——而 OpenCode 和 Hermes 把一切保存在单个 **SQLite** 数据库中，Cursor 把每段对话存为各自的 SQLite blob 文件，Gemini 和 Cline 则使用它们自己的 JSON 文件。Codeg 会原生读取每一种格式；你从不需要转换任何东西。
 
 ::: tip 移动过存储位置？Codeg 会跟随同一个变量。
 用上面某个环境变量把智能体指向一个非默认位置，Codeg 也会遵从它——因此重定位后的历史仍能导入——只要 Codeg 在它自己的环境中能看到那个变量。OpenClaw 是例外：它的存储无法重定位。

@@ -69,9 +69,9 @@ Codeg 并不运行这些工具——MCP 是*智能体*的功能，服务器与�
 | **Claude Code** | `~/.claude.json`（`mcpServers`） |
 | **Codex** | Codex 的 `config.toml`（`[mcp_servers.*]`） |
 | **Gemini** | `~/.gemini/settings.json` |
-| **OpenCode**、**Cline**、**Hermes**、**CodeBuddy**、**Kimi Code**、**Grok** | 各智能体自己的 MCP 配置 |
+| **OpenCode**、**Cline**、**Hermes**、**CodeBuddy**、**Kimi Code**、**Grok**、**Cursor** | 各智能体自己的 MCP 配置 |
 
-这就是**十一个智能体中的九个**——除 **OpenClaw** 和 **Pi** 之外的每一个。OpenClaw 根本不接受 MCP 服务器（它是唯一选择不参与的智能体），因此不会作为目标提供；Pi 也不在列表中。→ [智能体之间有何不同](/zh/guide/supported-agents#how-agents-differ)
+这就是**十二个智能体中的十个**——除 **OpenClaw** 和 **Pi** 之外的每一个。OpenClaw 根本不接受 MCP 服务器（它是唯一选择不参与的智能体），因此不会作为目标提供；Pi 也不在列表中。→ [智能体之间有何不同](/zh/guide/supported-agents#how-agents-differ)
 
 ::: tip 更改在下一个会话生效
 因为服务器存在于智能体的配置中，智能体会在它**启动会话**时读取它。添加或更改服务器后，它会对新的对话生效；对于一个已经打开的对话，**重新连接以应用**会在不丢失你历史的情况下加载新配置。→ [配置智能体](/zh/guide/agents#configure-an-agent)

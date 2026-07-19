@@ -21,30 +21,30 @@ The workspace is where you actually get work done in Codeg. It puts four things 
 
 ## The layout
 
-The workspace fills the window with a few resizable regions:
+The desktop workspace is **four columns** side by side, each with its own header strip and divided by draggable hairlines that run from the top edge to the bottom:
 
-- **Conversations (left).** Every session across every folder you've opened — your history, and where you start new ones. They're grouped by project, each with a live status dot: *In Progress*, *Review*, *Completed*.
-- **Conversation (center).** The agent's transcript, with the composer docked at the bottom.
-- **Files (center, alongside the conversation).** The editor, diffs, and live previews for the files you open — right next to the conversation, so you can watch changes land as the agent makes them.
-- **Terminal (bottom).** A collapsible integrated terminal running in your working folder.
-- **Files · Changes · Commits (right).** A tabbed panel holding the project tree, your working-tree changes, and commit history.
+- **Conversations (far left).** Every session across every folder you've opened — your history, and where you start new ones. They're grouped by project, each with a live status dot: *In Progress*, *Review*, *Completed*. The strip on top holds **new chat**, **search**, **automations**, and view options.
+- **Conversation (center-left).** The agent's transcript, with the composer docked at the bottom. Its tabs sit on top, and a slim **detail header** below shows the folder breadcrumb and the conversation's title.
+- **Files (center-right).** The editor, diffs, and live previews for the files you open — right next to the conversation, so you can watch changes land as the agent makes them. It has its own tab strip and a file-path detail header.
+- **Aux panel (far right).** A tabbed panel — **Session Details · Files · Changes · Commits** — holding session info, the project tree, your working-tree changes, and commit history. When the panel is narrow, the four tabs fold into a single dropdown.
 
-A **title bar** across the top carries the folder and branch menus, panel toggles, and settings; a **status bar** along the bottom shows folder and conversation counts, running background tasks, token usage, and the active session's agent and branch.
+The **terminal** opens beneath the two center columns, and a **status bar** along the bottom shows folder and conversation counts, running background tasks, token usage, and the active session's agent and branch.
 
-Every panel resizes by dragging, and the side panels and terminal collapse away when you want room — **⌘B** (conversations), **⌘E** (right panel), **⌘J** (terminal). On a phone or a narrow browser window, the side panels become slide-in sheets.
+There's no full-width title bar — instead, the window chrome lives in two **corner clusters** that stay put as panels open and close: top-left toggles the sidebar and switches remote workspace, top-right holds **Terminal**, **Auxiliary Panel**, and **Settings**. Every panel resizes by dragging, and the side panels and terminal collapse away when you want room — **⌘B** (conversations), **⌘E** (aux panel), **⌘J** (terminal). On a phone or a narrow browser window, the side panels become slide-in sheets.
 
 ## Folders and the sidebar
 
-The left sidebar is your home base: every **folder** you've opened — a project directory — with its conversations grouped beneath it. Add one with the **New** menu in the title bar. Right-click a folder's header (or click its **⋯**) for everything you can do with it:
+The left sidebar is your home base: every **folder** you've opened — a project directory — with its conversations grouped beneath it. Open a project folder to add one (**⌘O**). Right-click a folder's header (or click its **⋯**) for everything you can do with it:
 
 - **Set default agent.** Choose the agent a folder should use, and every new conversation you start there opens with it preselected. Pick **No default (use global)** to fall back to your global choice. It sets the agent only — model and mode still come from that agent once it connects.
 - **Change color.** Give a folder an accent color so its section stands out when you're juggling several projects. The color tints the folder and its conversations in the sidebar; it doesn't carry into the tabs.
+- **Set alias.** Give the folder a friendlier display name without touching anything on disk — it shows as *alias [ folder ]* in the sidebar and the conversation header. Leave the field empty to clear it and fall back to the plain name.
 - **Import local sessions.** Pull this project's past sessions from your installed agents into the workspace in one click — Codeg's conversation aggregation in action. → [Conversation Aggregation](/guide/aggregation) covers what it sweeps and how it matches.
 - **Manage conversations.** Bulk-select the folder's conversations to filter by agent or status, change their status, or delete them.
 - **Open in.** Reveal the folder in Finder / Explorer / your file manager, or drop into a terminal there (desktop only).
 - **Remove from workspace.** Take the folder out of Codeg — its tabs and terminals close, but nothing on disk is touched.
 
-A folder's name is just its directory name, so there's no rename — organize with color and grouping instead.
+The folder's real name is always its on-disk directory name — that never changes — but **Set alias** gives it a friendlier label, and color and grouping help you tell projects apart at a glance.
 
 ## Start a session — the composer
 
@@ -73,7 +73,7 @@ As the agent works, its **transcript** streams in: replies as formatted Markdown
 
 ## Work with files — editor, diffs, and previews
 
-The **Files** tab in the right panel is your project tree, rooted at the workspace; click any file to open it in the center file pane.
+The **Files** tab in the right panel is your project tree, rooted at the workspace; click any file to open it in the center file pane. **Drag** an entry to rearrange the project or feed the agent: drop a file or folder onto another folder (or the workspace root) to **move it on disk**, or drop it into the composer to **attach it** as a file reference for your next message — the drop target decides which, with no modifier keys.
 
 - **Editing.** Files open in a full editor. There's **no Save button** — Codeg saves on **⌘/Ctrl+S**, when the editor loses focus, and automatically a few seconds after you stop typing; an unsaved file shows a **`*`** in its tab. Send a file, or just a selection, to the agent with **⌘L**.
 - **Diffs.** The agent's edits open as **read-only diffs** — side by side (**HEAD ↔ Working Tree**) or as an inline unified diff, one file at a time, with change counts and prev/next navigation. Diffs are for *review*; you commit from the git panel (below), not by accepting individual lines.
@@ -83,6 +83,15 @@ The **Files** tab in the right panel is your project tree, rooted at the workspa
 Resolving a conflict opens a three-pane merge editor — **Local**, **Result**, **Remote** — where you *can* accept changes hunk by hunk. It's the one place with per-hunk controls; everywhere else, diffs stay read-only.
 :::
 
+## Session details
+
+The aux panel opens on **Session Details** — an at-a-glance readout of the conversation you're in: its title and ids, the agent and model running it, status and current git branch, and live **token usage** (input, output, cache, and context-window totals) with timing and timestamps. Every field has a copy button; with nothing focused it just reads *No active session*.
+
+When you're working in a project folder, the top of this tab also carries two controls that used to sit in the title bar:
+
+- **Branch selector.** Shows the current branch and opens the full git menu — switch branches, and commit, push, pull, fetch, stash, create a branch or **worktree**, or manage remotes. → [Git & Worktrees](/guide/git)
+- **Command launcher.** Runs your saved per-folder commands in a terminal — Codeg seeds these from a project's `package.json` scripts, and **Manage Commands** edits the list. It reads **Add Command** until you've saved one.
+
 ## Review and commit
 
 Two right-panel tabs put version control a glance away:
@@ -90,7 +99,7 @@ Two right-panel tabs put version control a glance away:
 - **Changes** lists your working-tree edits — tracked and untracked, with per-file line counts. From here you can open a file's diff, discard an edit (**Rollback**), or start a commit.
 - **Commits** shows history with push status, and lets you branch, reset, or push.
 
-Committing opens a dedicated **Commit** window: tick the files you want, write a message, and choose **Commit** or **Commit and Push**. The **branch menu** in the title bar covers the rest — pull, fetch, stash, worktrees, remotes, and switching or merging branches.
+Committing opens a dedicated **Commit** window: tick the files you want, write a message, and choose **Commit** or **Commit and Push**. The **branch selector** in [Session Details](#session-details) covers the rest — pull, fetch, stash, worktrees, remotes, and switching or merging branches.
 
 Parallel development with worktrees, remote accounts, and the full git workflow have their own page. → [Git & Worktrees](/guide/git)
 
@@ -133,7 +142,7 @@ The workspace is the same whether you run the [desktop app](/getting-started/ins
 | Shortcut | Action |
 | -------- | ------ |
 | `⌘/Ctrl B` | Toggle the Conversations panel |
-| `⌘/Ctrl E` | Toggle the right (Files / Changes / Commits) panel |
+| `⌘/Ctrl E` | Toggle the right (Session Details / Files / Changes / Commits) panel |
 | `⌘/Ctrl J` | Toggle the terminal |
 | `⌘/Ctrl T` | New conversation |
 | `⌘/Ctrl K` | Search conversations and files |
