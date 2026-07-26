@@ -5,7 +5,7 @@ description: Let the agent you're working with delegate self-contained sub-tasks
 
 # Multi-Agent Collaboration
 
-This is Codeg's headline feature. Inside a single conversation, the agent you're working with — the **lead** — can hand a self-contained sub-task to *another* agent and fold the result into its own answer. Claude Code can call Codex to write tests, ask Gemini to update the docs, or spin up a second agent to review its own work — each **sub-agent** running as its own live session, in parallel, without you ever leaving the conversation.
+This is Codeg's headline feature. Inside a single conversation, the agent you're working with — the **lead** — can hand a self-contained sub-task to *another* agent and fold the result into its own answer. Claude Code can call Codex to write tests, ask Grok to update the docs, or spin up a second agent to review its own work — each **sub-agent** running as its own live session, in parallel, without you ever leaving the conversation.
 
 Why bother? Two reasons. **Strengths** — every agent is good at different things, and delegation lets one task draw on several. **Parallelism** — independent pieces of work run at the same time instead of one after another; the lead fans them out and collects the results.
 
@@ -80,7 +80,7 @@ You can always ask for delegation in plain prose, but naming the agent with an *
 Some things worth knowing:
 
 - **One mention per agent, one sub-agent each.** Name several agents in a single message and each one gets its own hand-off carrying its own slice of the work — the basis of [fan-out](#fan-out-independent-slices-at-once).
-- **Say what the work *is*, next to the mention.** A mention decides *who*; it doesn't decide *what*. `@Gemini` on its own gives the lead a target and nothing to send it. Keep the task in the same breath as the name.
+- **Say what the work *is*, next to the mention.** A mention decides *who*; it doesn't decide *what*. `@Grok` on its own gives the lead a target and nothing to send it. Keep the task in the same breath as the name.
 - **Only enabled agents are mentionable.** An agent you've toggled off in **Settings → Agents** never appears in the picker. An agent that's enabled but not installed or signed in *can* be mentioned — and comes back as *spawn failed*.
 - **A mention is a strong instruction, not a hard route.** Codeg puts the mention in front of the lead and tells it what a mention means; the lead is still the one that calls the tool. In practice a capable lead honours it consistently, but it isn't a mechanical guarantee — if a mention is ignored, the usual cause is delegation not being active in that session (see the warning [above](#turn-it-on)).
 - **Mentioning the agent you're already talking to** asks it to spawn a *second, separate session* of itself rather than just doing the work — occasionally useful for isolation, usually not what you want.
@@ -117,11 +117,11 @@ A prompt that kicks off a three-way split might read:
 ```text
 Refactor src/auth.ts to use the new token helper yourself.
 In parallel, @Codex write integration tests for the login flow,
-and @Gemini update the auth section of the README.
+and @Grok update the auth section of the README.
 When all three are done, summarize what changed.
 ```
 
-The lead does the refactor, delegates the tests to Codex and the docs to Gemini as two parallel sub-agents, waits for both, and gives you a single summary — while you watch all three in the Sub-agents panel.
+The lead does the refactor, delegates the tests to Codex and the docs to Grok as two parallel sub-agents, waits for both, and gives you a single summary — while you watch all three in the Sub-agents panel.
 
 ## Collaboration patterns
 
@@ -144,8 +144,8 @@ The workhorse. Split work that doesn't overlap and let every piece run simultane
 
 ```text
 @Codex write integration tests for src/auth/login.ts.
-@Gemini update docs/auth.md to match the new token flow.
-@Cline add the missing type annotations in src/auth/types.ts.
+@Grok update docs/auth.md to match the new token flow.
+@OpenCode add the missing type annotations in src/auth/types.ts.
 Report back with a one-line summary of each.
 ```
 
@@ -156,7 +156,7 @@ Give the lead a share of the work too, and it produces while its workers do. The
 When stage two needs what stage one produced — design, then implement, then test — ask for the stages in order and the lead will wait for each before starting the next.
 
 ```text
-First have @Gemini read src/api/ and write a short migration plan
+First have @Grok read src/api/ and write a short migration plan
 for moving to the v2 client. When it comes back, hand that plan to
 @Codex to implement, then have @Claude Code review the diff.
 ```
@@ -184,8 +184,8 @@ For a change that could fail in more than one way, one reviewer is a single poin
 I've finished the auth refactor. Send the diff to three reviewers in parallel,
 each with a different focus:
 @Codex — correctness and edge cases.
-@Gemini — security: token handling, timing, what leaks into logs.
-@Cline — does the public API still read sensibly to a caller?
+@Grok — security: token handling, timing, what leaks into logs.
+@OpenCode — does the public API still read sensibly to a caller?
 Then reconcile: what did more than one of them flag?
 ```
 
@@ -256,7 +256,7 @@ When the user invokes this skill:
 
 1. Implement the requested change yourself.
 2. When it works, **delegate a review to a different agent** — hand another
-   agent (say Codex or Gemini) the diff, the goal, and the files you touched,
+   agent (say Codex or Grok) the diff, the goal, and the files you touched,
    and ask it to hunt for bugs, missed edge cases, and unclear code. It can't
    see this conversation, so include everything it needs.
 3. Read the review back, address what's worth addressing, and summarize both

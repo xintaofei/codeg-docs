@@ -69,7 +69,7 @@ Beyond starting in **Review**, imported conversations get no special treatment �
 
 ## Reference a past session with @
 
-Aggregation's real payoff isn't the list — it's that **any agent can be pointed at any other agent's history.** Once a session is in Codeg, mention it with `@` and the agent you're talking to can read what happened in it. A Claude Code conversation can look up what a Codex session did last Tuesday; a Gemini session can pick up the thread from a Cline one. The agents can't see each other's stores, but Codeg can, so it stands in the middle and brokers the lookup.
+Aggregation's real payoff isn't the list — it's that **any agent can be pointed at any other agent's history.** Once a session is in Codeg, mention it with `@` and the agent you're talking to can read what happened in it. A Claude Code conversation can look up what a Codex session did last Tuesday; a Grok session can pick up the thread from an OpenCode one. The agents can't see each other's stores, but Codeg can, so it stands in the middle and brokers the lookup.
 
 **How to reference one.** Type **@** in the composer and choose from the **Sessions** group. The list covers **every conversation in your workspace** — every agent, every folder, imported and Codeg-native alike, regardless of status — with the owning agent's icon on each row and its branch or status beside the title. Typing filters on the title *and* the agent, so `codex` narrows the list to Codex sessions. Pick one and it drops into your message as a badge.
 
