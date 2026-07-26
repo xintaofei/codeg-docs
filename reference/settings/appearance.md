@@ -53,9 +53,9 @@ The controls, top to bottom:
 | **Enable background image** | The on/off switch for the whole feature | Off |
 | **Image** | Choose, replace, or remove the picture | — |
 | **Fill mode** | How the image sits: **Cover**, **Contain**, **Center**, or **Tile** | Cover |
-| **Mask opacity** | Fades the image toward the theme background — higher gives text more contrast | 82% |
+| **Mask opacity** | Fades the image toward the theme background — higher gives text more contrast (up to 99%) | 82% |
 | **Image blur** | Softens the image, 0–24 px | 0 px |
-| **Panel opacity** | How solid the sidebar, panels, and tab bars are — lower lets more image through | 30% |
+| **Panel opacity** | How solid the sidebar, panels, and tab bars are — lower lets more image through, all the way to fully transparent | 30% |
 
 ::: tip It travels to the browser too
 The image is saved on disk with Codeg's data, so a background you set on the desktop also shows when you open the same install as a [server](/getting-started/deployment) in a browser. The display settings (opacity, blur, fill) are stored per device, like zoom.

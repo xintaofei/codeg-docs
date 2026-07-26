@@ -142,5 +142,5 @@ export CODEG_MCP_BIN=$(pwd)/src-tauri/target/release/codeg-mcp
 
 - [Architecture](/reference/architecture) — the one-core / three-binary design these commands compile.
 - [Deployment](/getting-started/deployment) — the packaged ways to run `codeg-server` once it's built.
-- [Configuration](/getting-started/configuration) — every environment variable, including `CODEG_STATIC_DIR`, `CODEG_MCP_BIN`, and `CODEG_SKIP_SIDECAR`.
+- [Configuration](/getting-started/configuration) — the runtime environment variables, including `CODEG_STATIC_DIR` and `CODEG_MCP_BIN`. (`CODEG_SKIP_SIDECAR` is a build-time flag and lives on this page.)
 - [Working with Multiple Agents](/guide/multi-agent) — the delegation feature the `codeg-mcp` companion powers.

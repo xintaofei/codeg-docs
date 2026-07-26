@@ -82,7 +82,7 @@ curl -fsSL https://raw.githubusercontent.com/xintaofei/codeg/main/install.sh | b
 这会将 `codeg-server` 和 `codeg-mcp` 放入 `/usr/local/bin`，并将捆绑的 Web 资源放入 `/usr/local/share/codeg/web`，仅在目标位置尚不可写时才使用 `sudo`。用 `--version` / `--dir` 来固定版本或更改位置：
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/xintaofei/codeg/main/install.sh | bash -s -- --version v0.20.1 --dir ~/.local/bin
+curl -fsSL https://raw.githubusercontent.com/xintaofei/codeg/main/install.sh | bash -s -- --version v0.21.9 --dir ~/.local/bin
 ```
 
 然后启动它。安装程序会为你打印出确切的命令；在无人值守的主机上添加 `--supervise`，这样失败的自我升级就会自动回滚：
@@ -99,7 +99,7 @@ CODEG_STATIC_DIR=/usr/local/share/codeg/web codeg-server --supervise
 irm https://raw.githubusercontent.com/xintaofei/codeg/main/install.ps1 | iex
 ```
 
-这会安装到 `%LOCALAPPDATA%\codeg` 并将其添加到你的 PATH。用 `.\install.ps1 -Version v0.20.1` 固定版本。Windows 上禁用了自我更新——请通过重新运行安装程序来升级。
+这会安装到 `%LOCALAPPDATA%\codeg` 并将其添加到你的 PATH。用 `.\install.ps1 -Version v0.21.9` 固定版本。Windows 上禁用了自我更新——请通过重新运行安装程序来升级。
 
 ## 预构建二进制文件 {#prebuilt-binaries}
 

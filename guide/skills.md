@@ -57,7 +57,7 @@ From the Custom tab you can:
 
 - **Create, edit, duplicate, and delete** skills, kept under `~/.codeg/skills`.
 - **Import from a folder** — bring in an existing skill directory. On the desktop that's the native file picker; on the web or a remote workspace it's the server-side directory browser.
-- **Import from an agent** — pull several skills at once out of an agent's own global skills directory into the shared store.
+- **Import from an agent** — pull several skills at once out of an agent's own global skills directory into the shared store. The picker lists only that agent's *own* skills; anything already provided by the Experts, Science, or Office packs is filtered out, so you won't re-import a bundled skill.
 - Drop a skill folder into `~/.codeg/skills` yourself, and it shows up on the next **refresh** — anything that isn't part of the Experts, Science, or Office packs counts as a custom skill.
 
 Once a custom skill is in the store, enable it per agent exactly like a pack skill — tick its cells in [the matrix](#the-skill-and-agent-matrix), or fan it out with the **⋯** and column menus.

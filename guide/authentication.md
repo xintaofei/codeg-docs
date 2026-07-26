@@ -25,7 +25,10 @@ The simplest path is to use the agent's own subscription — the plan you'd use 
 
 - **Claude Code** — choose **Official Subscription** and Codeg uses your existing `claude` login. No key required.
 - **Gemini** — choose **Google Login** and complete Google's sign-in by running `gemini` in a terminal first.
-- **Kimi Code**, **CodeBuddy**, **Grok** — run the agent's own login in a terminal (`kimi login`, `codebuddy`, `grok login`) and Codeg picks it up.
+- **Kimi Code**, **CodeBuddy** — run the agent's own login in a terminal (`kimi login`, `codebuddy`) and Codeg picks it up.
+- **Grok** and **Cursor** each have an **Authentication method** picker of their own:
+  - **Grok** — **Official Subscription** (SuperGrok or X Premium+ via `grok login`; nothing stored), **XAI API key** (a key from the xAI console, for headless runs), or **Custom endpoint** (a custom model with its own base URL and key, which becomes Grok's default).
+  - **Cursor** — **official subscription**, where Codeg shows you the `cursor-agent login` command to run (a browser window opens) and reports **Logged in** once you refresh, or a **Cursor API key** from the Cursor dashboard for headless and server machines. Note that key is a *Cursor account* key — `cursor-agent` only talks to Cursor's own backend, so it isn't a route to a third-party endpoint. Codeg writes both into `~/.cursor/cli-config.json`, shared with the CLI.
 
 The integrated terminal (**⌘J**) is right there for those one-time logins.
 

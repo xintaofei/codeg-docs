@@ -5,7 +5,7 @@ description: Review diffs, commit and push, branch and merge, resolve conflicts,
 
 # Git & Worktrees
 
-Codeg has a full git client built into the workspace, so reviewing what an agent wrote and landing it are part of the same loop as prompting — no jumping out to a separate git tool. Everything sits in panels you already have open: the **Changes** and **Commits** tabs on the right, and the **branch menu** — the branch selector at the top of the **Session Details** tab — for everything else. The integrated [terminal](/guide/workspace#the-terminal) is always there for the odd command, but you'll rarely need it.
+Codeg has a full git client built into the workspace, so reviewing what an agent wrote and landing it are part of the same loop as prompting — no jumping out to a separate git tool. Everything sits in panels you already have open: the **Changes** and **Commits** tabs on the right, and the **branch menu** — the branch chip just below the composer — for everything else. The integrated [terminal](/guide/workspace#the-terminal) is always there for the odd command, but you'll rarely need it.
 
 ## Review your changes
 
@@ -34,7 +34,9 @@ The commit button doubles as a menu: **Commit** records the selected files, and 
 
 ## Branch, merge, and rebase
 
-The **branch menu** — the branch selector in the [Session Details](/guide/workspace#session-details) tab — is your branch switcher and the home for most git operations. It lists your **local** and **remote** branches; pick one to **switch** to it, or open a branch's submenu to **merge** it into the current branch, **rebase** the current branch onto it, or **delete** it. **New branch** creates one from where you are and checks it out.
+The **branch menu** — the [branch chip below the composer](/guide/workspace#branch-and-run-git) — is your branch switcher and the home for most git operations. It lists your **local** and **remote** branches, folding shared prefixes like `feature/…` into collapsed groups and marking the checked-out one **Current**; pick a branch for its actions — **Switch to this branch**, **merge** it into the current branch, **rebase** the current branch onto it, or **delete** it. **New branch…** creates one from where you are and checks it out. A single search box at the top filters branches *and* operations together, so you can type `stash` or part of a branch name and get straight to it.
+
+There's one chip per conversation, so when you [tile several sessions](/guide/workspace#tile-several-sessions-side-by-side) each one shows and switches its own branch.
 
 Switching uses a plain checkout, so Codeg won't move your uncommitted changes for you — **commit or stash first** if git would refuse. For stashing, **Stash changes** tucks your work away (optionally keeping the index staged), and **Unstash** lists your stashes to **apply** or **drop**.
 
@@ -42,8 +44,26 @@ Switching uses a plain checkout, so Codeg won't move your uncommitted changes fo
 
 - **Pull code** fetches and merges your upstream; if the merge conflicts, Codeg opens the conflict tool (below) rather than leaving you at a half-finished merge.
 - **Fetch remote branches** refreshes everything from your remotes without touching your working tree.
-- **Push** opens a window listing the commits you haven't pushed yet, so you see exactly what's about to go out before it does. In the **Commits** tab, a cloud icon on each commit shows at a glance whether it's **pushed**, **not pushed**, or has **no upstream** configured.
+- **Push** opens a window listing the commits you haven't pushed yet, so you see exactly what's about to go out before it does. In the **Commits** tab, every commit is tagged with its push state: a cloud with a check for **Pushed to remote**, a crossed-out cloud for **Not pushed to remote**, and — once you've filtered to a local branch with no upstream — a question mark for **Push status unknown**.
 - **Manage Remotes** lets you add, edit, or remove the remotes a repo points at.
+
+## Read the history — the Commits tab
+
+The **Commits** tab in the right panel is the project's full history, not just a recent page: it's a timeline that keeps loading older commits as you scroll. Each row carries its push state, the commit subject, the author, when it landed, and its short hash.
+
+Two pills at the top narrow what you're looking at, and **Codeg remembers both per project**, so a repo reopens on the view you left it in:
+
+- **Branch** — every branch at once by default. Open it to search and pick one; local and remote branches are grouped, the checked-out one is tagged **Current**, and an ✕ clears the filter.
+- **Author** — your own commits are one click away (your git identity is listed first, badged **you**), recent choices are kept for reuse, and typing searches every author in the repo.
+
+**Click a commit to expand it** and you get the full picture without leaving the panel: the complete hash and message (both copyable, with a **Show more** toggle when the message is long), the author and exact timestamp, every file it touched with `+`/`−` counts — click a file for its diff at that commit — and chips for the branches that contain it.
+
+**Right-click a commit** for the actions:
+
+- **View Diff** — the whole commit as one diff, in an editor tab.
+- **New branch…** — branch from that commit; Codeg creates it *and* switches you to it.
+- **Reset to Here** — move the current branch to that commit, choosing the mode: **`--soft`**, **`--mixed`** *(the default)*, **`--hard`**, or **`--keep`**, each explained in the dialog. It's available only while you're viewing the current branch, and Codeg says so when it isn't.
+- **Refresh** and **Push…**
 
 ## Sign in to push — git accounts {#git-accounts}
 

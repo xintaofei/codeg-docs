@@ -25,7 +25,10 @@ Codeg 不附带自己的任何模型。每个智能体都带来自己的凭据�
 
 - **Claude Code**——选择**官方订阅**，Codeg 就会使用你现有的 `claude` 登录。无需密钥。
 - **Gemini**——选择 **Google 登录**，并先在终端中运行 `gemini` 来完成 Google 的登录。
-- **Kimi Code**、**CodeBuddy**、**Grok**——在终端中运行智能体自己的登录命令（`kimi login`、`codebuddy`、`grok login`），Codeg 会自动识别它。
+- **Kimi Code**、**CodeBuddy**——在终端中运行智能体自己的登录命令（`kimi login`、`codebuddy`），Codeg 会自动识别它。
+- **Grok** 和 **Cursor** 各自拥有一个**认证方式**选择器：
+  - **Grok**——**官网订阅**（通过 `grok login` 使用 SuperGrok 或 X Premium+；不存储任何东西）、**XAI API 密钥**（来自 xAI 控制台的密钥，用于无人值守运行），或**自定义接口**（一个带有自己的基础 URL 和密钥的自定义模型，它会成为 Grok 的默认模型）。
+  - **Cursor**——**官方订阅**，此时 Codeg 会向你展示需要运行的 `cursor-agent login` 命令（会打开一个浏览器窗口），你刷新后它会显示**已登录**；或者使用来自 Cursor 控制台的 **Cursor API 密钥**，用于无人值守和服务器机器。请注意该密钥是一个 *Cursor 账户*密钥——`cursor-agent` 只与 Cursor 自己的后端通信，因此它并非通往第三方端点的途径。Codeg 会把两者都写入与该 CLI 共享的 `~/.cursor/cli-config.json`。
 
 集成终端（**⌘J**）就在手边，供你完成这些一次性登录。
 

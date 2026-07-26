@@ -43,6 +43,14 @@ Every failing check comes with a **fix button** right beside it — *Install Nod
 Preflight confirms the runtime, version, and install — not whether you're signed in. Getting an agent authenticated (its own subscription, an API key, or a custom endpoint) is a separate step. → [Authentication & Models](/guide/authentication)
 :::
 
+### When Codeg and your terminal disagree
+
+Sometimes an agent runs fine in your terminal but Codeg insists it isn't installed. That's almost always a **PATH gap**: a desktop app launched from the dock doesn't inherit the shell setup that a terminal does, so a Node installed by `nvm`, `fnm`, or Homebrew can be invisible to it.
+
+**Diagnose** — beside the preflight list, and on the banner you get when a session is blocked — runs **Environment diagnostics** to find out. It probes how *the app* resolves things, not your shell: the Node and npm it sees, the npm global prefix, where it looked for the agent's executable, any version-manager directories, and — the useful part — a **comparison against your login shell**, listing the PATH entries your terminal has that the app doesn't. It finishes with a plain verdict, like *"The command resolves in your terminal but not in the app — a GUI PATH gap"*, and often a concrete fix such as fully restarting the app. **Copy all** puts the whole report on your clipboard for a bug report.
+
+Preflight runs on its own every time you open the screen; Diagnose is the deeper probe you run yourself when preflight and reality disagree.
+
 ## Configure an agent
 
 Most agents work the moment they're installed, but each one's detail pane has plenty you can tune — and there are two ways to do it: **visual controls** for the everyday settings, or the agent's **raw config file** for anything the UI doesn't expose.
@@ -53,6 +61,24 @@ Most agents work the moment they're installed, but each one's detail pane has pl
 - **Drag to reorder.** The order of the Agent List doubles as a preference — the first enabled agent is the one Codeg reaches for when nothing else is specified (more on that below).
 
 Change a setting while a session is open and that session keeps running on its old configuration — Codeg won't interrupt you mid-task. Instead, a bar appears at the **top of the conversation** noting it's still on the previous config; click **Reconnect to apply** and the session reloads with the new settings while **keeping its full history**. No need to close and reopen anything.
+
+### Codex: sandbox and approvals
+
+Codex's pane has a **Sandbox & approvals** group — the two questions of how much it can touch and when it stops to ask:
+
+- **Approval policy** — how readily Codex asks permission: **On request** (it decides when to ask), **Untrusted** (only known-safe read-only commands run unattended), **Never** (no prompts at all), or **Granular**, which breaks it down per prompt type — shell escalations, policy rules, skill scripts, permission requests, and MCP prompts — each of which is either shown to you or auto-rejected. Left alone it follows Codex's own default of asking on request.
+- **Sandbox mode** — what it can write: **Read-only**, **Workspace write**, or **Full access (no sandbox)**. Workspace write adds **Extra writable folders** (absolute paths, one per line), plus switches for **network access** and whether to exclude **TMPDIR** and **/tmp** — all off by default.
+
+Two things to know: these go into your global `~/.codex/config.toml`, so the `codex` CLI and its IDE sessions pick them up too; and they're **thread defaults** — they govern the turns Codex starts by itself, while ordinary prompts follow the composer's own approval preset. Restart a session to apply a change. On Windows, workspace write falls back to read-only unless you've enabled Codex's experimental Windows sandbox.
+
+### Claude Code: attribution and telemetry
+
+Claude Code's pane carries two switches that Codeg deliberately ships opposite to Claude Code's own defaults:
+
+- **Send attribution/billing identifier to the API** — **off**, so Codeg doesn't add the identifying header.
+- **Disable telemetry or redundant network requests** — **on**, so non-essential traffic stays off.
+
+Codeg writes both explicitly rather than leaving them implied, so what the pane shows is what's applied. Flip either back if your setup needs it — a managed account that bills by attribution header, say. → [Privacy](/reference/privacy)
 
 ## Start a session
 

@@ -53,7 +53,7 @@ One catch worth knowing: agents usually only look for feedback when you ask them
 ## Good to know
 
 - **Two save styles.** Terminal and rendering apply on change; each of the four tool panels needs its own **Save** button — and rendering additionally needs a restart.
-- **Tool toggles apply to *new* sessions.** Each of the four adds or removes a tool "for agents started after this is turned on" — a session already running won't gain or lose the capability mid-flight. Start a fresh session to pick up the change.
+- **Tool toggles apply the next time an agent starts.** Each of the four adds or removes a tool "for agents started after this is turned on" — an agent that's connected right now won't gain or lose the capability mid-flight. It needn't be a brand-new conversation, though: any conversation picks the change up whenever its agent next launches, including an existing one you return to after its connection ended. A new conversation is simply the surest way.
 - **These are the codeg-mcp tools.** Delegation, live feedback, ask-a-question, and session lookup are all served by the [`codeg-mcp` companion](/reference/architecture); the toggles here decide which appear in each agent's catalog.
 - **Rendering is Windows-only.** The section is simply absent everywhere else.
 

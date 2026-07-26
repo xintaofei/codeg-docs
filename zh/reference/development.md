@@ -142,5 +142,5 @@ export CODEG_MCP_BIN=$(pwd)/src-tauri/target/release/codeg-mcp
 
 - [架构](/zh/reference/architecture) —— 这些命令所编译的一核心 / 三二进制文件设计。
 - [部署](/zh/getting-started/deployment) —— 服务器构建完成后运行 `codeg-server` 的已打包方式。
-- [配置](/zh/getting-started/configuration) —— 每一个环境变量，包括 `CODEG_STATIC_DIR`、`CODEG_MCP_BIN` 和 `CODEG_SKIP_SIDECAR`。
+- [配置](/zh/getting-started/configuration) —— 运行时环境变量，包括 `CODEG_STATIC_DIR` 和 `CODEG_MCP_BIN`。（`CODEG_SKIP_SIDECAR` 是构建期标志，介绍在本页。）
 - [使用多个智能体](/zh/guide/multi-agent) —— `codeg-mcp` 伴生程序所驱动的委派功能。

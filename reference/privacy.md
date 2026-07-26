@@ -29,6 +29,10 @@ Codeg reaches the network for a handful of clearly-triggered reasons, each the d
 
 That's the whole list. None of it runs on a background timer against your files; each is a response to a button you pressed or an agent you started.
 
+::: tip Codeg tightens the agents' own defaults
+Codeg has no telemetry of its own, but the agents it runs are separate programs with their own habits. Where Codeg can quiet them down, it does — **Claude Code** ships here with **Disable telemetry or redundant network requests** switched **on** and its **attribution/billing identifier** header switched **off**, the opposite of that CLI's own defaults, written explicitly so the setting is real rather than implied. Both are yours to change in **Settings → Agents**. → [Working with Agents](/guide/agents#claude-code-attribution-and-telemetry)
+:::
+
 ## macOS folder-access prompts
 
 On macOS you may see a system dialog like **"Codeg would like to access files in your Documents folder"** — or Desktop, Downloads, or Music. This is macOS's standard privacy prompt, and it's worth being clear about what actually sets it off.
