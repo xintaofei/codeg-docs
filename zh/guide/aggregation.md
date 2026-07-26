@@ -81,8 +81,8 @@ description: 将你已经运行过的会话——横跨每一个编程智能体�
 它有几种颇能派上用场的方式：
 
 ```text
-@[Tuesday's Codex session] hit a wall on the migration.
-Read what it tried, then take a different approach.
+@[周二的 Codex 会话] 在迁移上卡住了。
+读一下它尝试过什么，然后换一条思路来做。
 ```
 
 - **跨智能体交接。** 把上个月的终端工作扫描进来，然后让你今天更喜欢的那个智能体在其基础上继续——接手的不必是当初那个智能体。

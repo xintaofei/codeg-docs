@@ -78,7 +78,7 @@ description: 让你正在使用的智能体把自成一体的子任务委派给�
 **主导智能体收到的是什么。** 该徽标以可读文本的形式传递——`@Codex`——并附带该智能体的内部标识，正是它告诉主导智能体究竟该指向哪一个智能体，而不必从显示名称去猜。由于可读的名称留在句子里，这个提及同时也是一句普通的话：
 
 ```text
-@Codex write integration tests for the login flow in src/auth/login.ts.
+@Codex 为 src/auth/login.ts 里的登录流程写集成测试。
 ```
 
 有几点值得了解：
@@ -119,10 +119,10 @@ description: 让你正在使用的智能体把自成一体的子任务委派给�
 一个开启三方拆分的提示词可能会这样写：
 
 ```text
-Refactor src/auth.ts to use the new token helper yourself.
-In parallel, @Codex write integration tests for the login flow,
-and @Gemini update the auth section of the README.
-When all three are done, summarize what changed.
+你自己把 src/auth.ts 重构成使用新的 token helper。
+同时，@Codex 为登录流程写集成测试，
+@Gemini 更新 README 里的认证章节。
+三件事都完成后，总结一下改了什么。
 ```
 
 主导智能体亲自完成重构，把测试委派给 Codex、把文档委派给 Gemini，作为两个并行的子智能体，等待两者完成，然后给你一份统一的总结——与此同时，你在子智能体面板中观看三者。
@@ -147,10 +147,10 @@ When all three are done, summarize what changed.
 主力形态。把互不重叠的工作拆开，让每一片同时运行——正是这种形态让整个功能值回票价，因为交接不会阻塞主导智能体。
 
 ```text
-@Codex write integration tests for src/auth/login.ts.
-@Gemini update docs/auth.md to match the new token flow.
-@Cline add the missing type annotations in src/auth/types.ts.
-Report back with a one-line summary of each.
+@Codex 为 src/auth/login.ts 写集成测试。
+@Gemini 更新 docs/auth.md，与新的 token 流程保持一致。
+@Cline 补上 src/auth/types.ts 里缺失的类型标注。
+每一项都用一句话汇报结果。
 ```
 
 也给主导智能体分一份活，它就会在工作智能体忙碌的同时一起产出。唯一的要求是真正的独立性：会碰到同一批文件的片段，应当放进[接力](#relay-hand-the-result-down-a-chain)或一个 [worktree](/zh/guide/git#work-in-parallel-with-worktrees)。
@@ -160,9 +160,9 @@ Report back with a one-line summary of each.
 当第二阶段需要第一阶段的产出时——设计，然后实现，再测试——按顺序提出各个阶段，主导智能体就会在开始下一个之前等待上一个。
 
 ```text
-First have @Gemini read src/api/ and write a short migration plan
-for moving to the v2 client. When it comes back, hand that plan to
-@Codex to implement, then have @Claude Code review the diff.
+先让 @Gemini 读一遍 src/api/，写一份迁移到 v2 客户端的简短方案。
+方案回来后，把它原文交给 @Codex 去实现，
+再让 @Claude Code 审查 diff。
 ```
 
 难点在于冷启动：链条上的每个工作智能体都是陌生人，所以主导智能体必须**把上一步的结果带进**下一份任务里，而不能只是指一指。值得把这一点明说出来——*"把那份计划原文放进你交给 Codex 的任务中"*——因为第二阶段从未收到第一阶段输出的接力，正是这种形态最常见的失望来源。这里没有任何东西是并行的，因此只在依赖关系真实存在时才用它。
@@ -172,10 +172,10 @@ for moving to the v2 client. When it comes back, hand that plan to
 让主导智能体完成工作，然后把对它的审查委派给一个*不同的*智能体。冷启动正是关键：审查者从未见过产出这处改动的推理过程，因此它无法被说服，而是从代码而非叙述中重新推导出问题。
 
 ```text
-Fix the race in src/queue/worker.ts.
-When it passes, @Codex review the diff — the goal, the files I touched,
-and what to look for: lost wakeups, double-processing, error paths.
-Then address what's worth addressing and tell me what changed.
+修掉 src/queue/worker.ts 里的竞态。
+跑通之后，@Codex 审查这份 diff——把目标、我改动过的文件，
+以及要重点看什么都告诉它：丢失唤醒、重复处理、错误路径。
+然后处理值得处理的问题，并告诉我改了什么。
 ```
 
 这就是下文的[教程](#tutorial-a-reviewed-feature-built-by-a-team)，也是最值得封装成[技能](#turn-a-workflow-into-a-skill)的模式。
@@ -185,12 +185,11 @@ Then address what's worth addressing and tell me what changed.
 对于一处可能以多种方式出错的改动，单个审查者就是单点故障。把同一份 diff 发给多个智能体，并**给每一个不同的视角**——在这里视角胜过冗余，因为三份雷同的审查大多只是彼此附和。
 
 ```text
-I've finished the auth refactor. Send the diff to three reviewers in parallel,
-each with a different focus:
-@Codex — correctness and edge cases.
-@Gemini — security: token handling, timing, what leaks into logs.
-@Cline — does the public API still read sensibly to a caller?
-Then reconcile: what did more than one of them flag?
+认证重构我做完了。把 diff 并行发给三位审查者，各自侧重不同：
+@Codex——正确性与边界情况。
+@Gemini——安全性：token 处理、时序、有什么会泄漏到日志里。
+@Cline——这套公开 API 对调用方来说读起来还合理吗？
+然后汇总：有哪些问题是不止一位提到的？
 ```
 
 一定要明确要求汇总。不然你拿到的是三份需要自己读的审查报告——而那正是你原本想委派出去的大部分工作。
@@ -200,8 +199,8 @@ Then reconcile: what did more than one of them flag?
 继续与你喜欢的智能体保持对话，只把更适合别人的那一片委派出去——它擅长的某门语言、一次棘手的重构、一遍文档梳理。主导智能体保有上下文与思路；专才拿到的是一份范围狭窄、界定清楚的活。
 
 ```text
-Keep driving this refactor, but the Rust FFI shim in src-tauri/src/bridge.rs
-is fiddly — @Codex handle just that file and report back what it changed.
+这个重构你继续推进，但 src-tauri/src/bridge.rs 里的 Rust FFI 那层
+比较绕——@Codex 只负责那一个文件，改完汇报它改了什么。
 ```
 
 ### 切分大范围：每个文件夹一个工作智能体 {#split-a-surface-one-worker-per-folder}
@@ -209,9 +208,9 @@ is fiddly — @Codex handle just that file and report back what it changed.
 对于一次大范围的机械式改动，把每个工作智能体指向不同的文件夹或模块。一次交接可以携带**它自己的工作目录**，因此工作智能体不必都待在主导智能体的文件夹里。
 
 ```text
-Rename the `useSession` hook to `useConversation` across the app.
-Split it by area and run them in parallel: one agent per top-level
-folder under src/, each reporting the files it touched.
+把整个应用里的 `useSession` hook 改名为 `useConversation`。
+按区域拆开并行执行：src/ 下每个顶层文件夹交给一个智能体，
+各自汇报自己改动过的文件。
 ```
 
 两个工作智能体编辑同一个文件会打架，而且谁都不知道对方存在。凡是切片可能重叠之处，就给每个工作智能体**它自己的 [git worktree](/zh/guide/git#work-in-parallel-with-worktrees)**——同一仓库的独立检出——事后再合并。子智能体*不会*自动获得一个隔离的 worktree。
@@ -227,8 +226,8 @@ folder under src/, each reporting the files it touched.
 你需要的上下文往往在昨天的某段对话里。用 **`@`** 提及它——从**会话**分组中选取——主导智能体便能读到那个会话的标题、智能体、工作区、状态和最近的消息，然后依据所见采取行动，包括把后续工作委派出去。
 
 ```text
-@[yesterday's session] stalled on the migration halfway through.
-Read what it got done, then have @Codex finish the remaining files.
+@[昨天的会话] 在迁移做到一半时卡住了。
+读一下它已经完成的部分，然后让 @Codex 把剩下的文件做完。
 ```
 
 这一项需要在**设置 → 通用**中打开**获取会话信息**（默认已开启）——参见[设置参考](/zh/reference/settings/general#get-session-info)。它是只读的：主导智能体从旧会话中获知情况，但不会恢复它。
@@ -251,20 +250,19 @@ Read what it got done, then have @Codex finish the remaining files.
 ```markdown
 ---
 name: build-with-review
-description: Implement a change, then have a different agent review it.
+description: 实现一处改动，然后让另一个智能体来审查它。
 ---
 
-# Build With Cross-Agent Review
+# 构建并跨智能体审查
 
-When the user invokes this skill:
+当用户调用这个技能时：
 
-1. Implement the requested change yourself.
-2. When it works, **delegate a review to a different agent** — hand another
-   agent (say Codex or Gemini) the diff, the goal, and the files you touched,
-   and ask it to hunt for bugs, missed edge cases, and unclear code. It can't
-   see this conversation, so include everything it needs.
-3. Read the review back, address what's worth addressing, and summarize both
-   what you changed and what the reviewer flagged.
+1. 自己实现所请求的改动。
+2. 改动可用之后，**把审查委派给另一个智能体**——把 diff、目标和你改动过
+   的文件交给另一个智能体（比如 Codex 或 Gemini），请它找出 bug、遗漏的
+   边界情况和不清晰的代码。它看不到这段对话，所以要把它需要的一切都写进去。
+3. 读回审查意见，处理值得处理的部分，然后同时总结你改了什么，以及审查者
+   指出了什么。
 ```
 
 在**设置 → 技能**下撰写它，为**主导**智能体——也就是你将对其调用它的那个——启用它，然后在 composer 中输入 `/`（如果主导智能体是 Codex，则输入 `$`）来触发它。工作智能体不需要任何特别之处；它们只是执行主导智能体交给它们的任务。→ [技能](/zh/guide/skills) 全面介绍了撰写和启用。
@@ -282,10 +280,10 @@ When the user invokes this skill:
 3. **开启会话。** 在项目文件夹中用你的主导智能体开启一个对话。如果你原本想用的那个对话已经处于连接状态，就用一个**新**的——这是拿到你刚刚启用的委派工具最稳妥的方式。
 4. **把工作和审查一起提出来。** 例如：
    ```text
-   Add a "Copy link" button to the share dialog in src/share/Dialog.tsx.
-   When it works, @Codex review it: give it the diff, the goal, and the
-   files you touched, and ask it to check for bugs and edge cases.
-   Then address its feedback and tell me what changed.
+   在 src/share/Dialog.tsx 的分享对话框里加一个"复制链接"按钮。
+   做好之后，@Codex 审查一下：把 diff、目标和你改动过的文件交给它，
+   请它检查 bug 和边界情况。
+   然后处理它的反馈，并告诉我改了什么。
    ```
 5. **跟随进展。** 当主导智能体完成编码时，审查子智能体会出现在**子智能体**面板中。打开它，观看 Codex 阅读更改，并批准它弹出的任何权限提示——当它被你卡住时，徽标会显示*等待批准*。
 6. **让它收敛。** 主导智能体读回审查意见，采纳值得采纳的部分，然后返回一个完成的、经过审查的更改。
