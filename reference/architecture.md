@@ -33,6 +33,12 @@ What connects the frontend to the core is a **transport layer**, and it's the ke
 
 This is why the [Web Service](/reference/settings/web-service) screen can hand your phone "the full workspace," and a [headless deployment](/getting-started/deployment) feels identical to the desktop — it's one frontend over two transports, not two apps.
 
+### Native mobile clients
+
+The [iOS and Android apps](/getting-started/installation#mobile-apps) add a third client path without moving the core. They are native SwiftUI and Jetpack Compose applications rather than wrappers around the web frontend, and they talk to a desktop Web Service or `codeg-server` through the same authenticated **HTTP + WebSocket API**. The access token is kept in iOS Keychain or protected by Android Keystore.
+
+No agent CLI or project checkout runs on the phone. The host still owns the files, database, git operations, and agent subprocesses; the mobile app sends commands and renders the resulting live event stream. Both clients are open source: [Codeg for iOS](https://github.com/xintaofei/codeg-ios) and [Codeg for Android](https://github.com/xintaofei/codeg-android).
+
 ## How agents run
 
 Codeg doesn't reimplement Claude Code, Codex, Gemini, and the rest — it **drives their real CLIs**. Each agent runs as a **subprocess**, and Codeg speaks to it over the **[Agent Client Protocol](https://agentclientprotocol.com/) (ACP)** — the same JSON-RPC protocol an editor like Zed uses to talk to a coding agent.
@@ -62,6 +68,7 @@ There's no Codeg cloud in the middle. The desktop app and a server you run both 
 
 - **Three binaries, one codebase.** `codeg`, `codeg-server`, and `codeg-mcp` are build targets of the same Rust workspace over the same `codeg_lib` core — not three separate programs to keep in sync.
 - **Desktop and server are the same app.** The distinction is the transport (Tauri IPC vs HTTP/WebSocket), not the feature set — the [Web Service](/reference/settings/web-service) screen and a [headless deployment](/getting-started/deployment) are two ways to reach the identical UI.
+- **Mobile is a client, not another core.** iOS and Android connect over the authenticated API; projects and agents keep running on the desktop or server host.
 - **Agents stay agents.** Codeg orchestrates the official CLIs over ACP; it doesn't fork or replace them, so each keeps its own behavior, auth, and updates.
 - **`codeg-mcp` is per-session and disposable.** One is spawned per agent launch and exits with it; losing it costs you only delegation, nothing else.
 
@@ -69,6 +76,7 @@ There's no Codeg cloud in the middle. The desktop app and a server you run both 
 
 - [Deployment](/getting-started/deployment) — running `codeg-server` (or Docker) as a headless deployment of the same core.
 - [Web Service](/reference/settings/web-service) — the desktop app's own front door to the browser UI.
+- [Download and install](/getting-started/installation#mobile-apps) — get the native clients and connect them to a Codeg host.
 - [Working with Multiple Agents](/guide/multi-agent) — the delegation feature that `codeg-mcp` implements.
 - [General](/reference/settings/general) — the toggles that decide which `codeg-mcp` tools each agent receives.
 - [Privacy & Security](/reference/privacy) — what stays local, and what leaves for the model provider.

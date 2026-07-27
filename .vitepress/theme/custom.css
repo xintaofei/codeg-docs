@@ -40,38 +40,158 @@ html:not(.dark) .dark-only {
   --vp-button-brand-active-text: #1a1a2e;
 }
 
-/* Home hero — the one place color leads. The wordmark and the soft halo behind
-   the logo both run pink → yellow → blue, matching the icon's three dots. */
-:root {
-  --vp-home-hero-name-color: transparent;
-  --vp-home-hero-name-background: linear-gradient(120deg, #ff4081 20%, #fdd835 50%, #29b6f6 82%);
-  --vp-home-hero-image-background-image: linear-gradient(-45deg, #ff4081 25%, #fdd835 55%, #29b6f6);
-  --vp-home-hero-image-filter: blur(56px);
+/* Home page — keep the opening message compact and centered so the Workspace
+   screenshot reads as the natural continuation of the hero. */
+.VPHome .VPHomeHero {
+  padding-top: calc(var(--vp-nav-height) + var(--vp-layout-top-height, 0px) + 44px);
+  padding-bottom: 40px;
 }
 
-/* Home page — the trailing markdown (screenshot + closing CTA) should read as a
-   landing section, not a docs article. Scoped to .VPHome so real doc pages keep
-   their ruled headings and # anchors. */
-.VPHome .vp-doc h2 {
-  border-top: none;
-  padding-top: 0;
-  margin: 56px 0 4px;
-  font-size: 1.6rem;
+.VPHome .VPHomeHero .container {
+  align-items: center;
+  justify-content: center;
   text-align: center;
 }
-.VPHome .vp-doc .header-anchor {
-  display: none;
-}
-.VPHome .vp-doc img {
-  display: block;
+
+.VPHome .VPHomeHero .main {
   width: 100%;
-  max-width: 1024px;
-  margin: 24px auto 0;
-  border-radius: 12px;
-  border: 1px solid var(--vp-c-divider);
-  box-shadow: var(--vp-shadow-3);
+  max-width: 960px;
 }
 
+.VPHome .VPHomeHero .heading {
+  align-items: center;
+  justify-content: center;
+}
+
+.VPHome .VPHomeHero .text {
+  width: 100%;
+  max-width: 920px;
+  margin-right: auto;
+  margin-left: auto;
+  font-size: clamp(32px, 5vw, 60px);
+  letter-spacing: -0.04em;
+  line-height: 1.06;
+}
+
+.VPHome .VPHomeHero .tagline {
+  max-width: 720px;
+  margin-right: auto;
+  margin-left: auto;
+  padding-top: 18px;
+  font-size: clamp(15px, 1.4vw, 18px);
+  line-height: 1.65;
+}
+
+.VPHome .vp-doc .home-hero-workspace {
+  width: 100%;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 10px;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 20px;
+  background:
+    linear-gradient(135deg, rgba(255, 64, 129, 0.1), rgba(253, 216, 53, 0.07) 48%, rgba(41, 182, 246, 0.1)),
+    var(--vp-c-bg-soft);
+  box-shadow: 0 28px 80px rgba(15, 23, 42, 0.14);
+}
+
+.VPHome .vp-doc .home-hero-workspace img {
+  display: block;
+  width: 100%;
+  max-width: none;
+  height: auto;
+  margin: 0;
+  border-radius: 12px;
+  border: 1px solid var(--vp-c-divider);
+  box-shadow: none;
+}
+
+.VPHome .vp-doc .home-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: fit-content;
+  max-width: calc(100% - 32px);
+  gap: 5px;
+  margin: 32px auto 0;
+  padding: 6px;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 999px;
+  background: var(--vp-c-bg-soft);
+  box-shadow: 0 12px 32px rgba(15, 23, 42, 0.09);
+}
+
+.VPHome .vp-doc .home-hero-action {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 18px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--vp-c-text-1);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 650;
+  line-height: 1.3;
+  text-decoration: none;
+  transition: border-color 0.2s ease, background-color 0.2s ease, color 0.2s ease;
+}
+
+.VPHome .vp-doc .home-hero-action:hover {
+  border-color: var(--vp-c-brand-1);
+  background: var(--vp-c-bg-soft);
+  color: var(--vp-c-text-1);
+}
+
+.VPHome .vp-doc .home-hero-action:focus-visible {
+  outline: 3px solid var(--vp-c-brand-1);
+  outline-offset: 3px;
+}
+
+.VPHome .vp-doc .home-hero-action--primary {
+  border-color: var(--vp-c-brand-1);
+  background: var(--vp-c-brand-1);
+  color: var(--vp-c-bg);
+}
+
+.VPHome .vp-doc .home-hero-action--primary:hover {
+  border-color: var(--vp-c-brand-2);
+  background: var(--vp-c-brand-2);
+  color: var(--vp-c-bg);
+}
+
+@media (max-width: 640px) {
+  .VPHome .VPHomeHero {
+    padding-top: calc(var(--vp-nav-height) + var(--vp-layout-top-height, 0px) + 40px);
+    padding-bottom: 30px;
+  }
+
+  .VPHome .vp-doc .home-hero-workspace {
+    padding: 5px;
+    border-radius: 14px;
+  }
+
+  .VPHome .vp-doc .home-hero-workspace img {
+    border-radius: 9px;
+  }
+
+  .VPHome .vp-doc .home-hero-actions {
+    display: grid;
+    width: min(100%, 304px);
+    max-width: calc(100% - 16px);
+    grid-template-columns: 1fr;
+    gap: 6px;
+    margin-top: 24px;
+    padding: 7px;
+    border-radius: 22px;
+  }
+
+  .VPHome .vp-doc .home-hero-action {
+    width: 100%;
+  }
+}
 /**
  * Introduction-page building blocks.
  *
@@ -212,6 +332,11 @@ html:not(.dark) .dark-only {
 .cta:hover {
   border-color: var(--vp-c-brand-1);
 }
+.cta:focus-visible,
+.nextstep:focus-visible {
+  outline: 3px solid var(--vp-c-brand-1);
+  outline-offset: 3px;
+}
 .cta--brand {
   background: var(--vp-c-brand-1);
   border-color: var(--vp-c-brand-1);
@@ -257,5 +382,11 @@ html:not(.dark) .dark-only {
 @media (max-width: 640px) {
   .beforeafter {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nextstep:hover {
+    transform: none;
   }
 }

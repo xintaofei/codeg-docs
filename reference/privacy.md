@@ -56,6 +56,7 @@ Credentials get special handling — they're kept **out of the database and off 
 
 - On the **desktop**, tokens go into your operating system's **keyring** — Keychain on macOS, Credential Manager on Windows, the Secret Service on Linux. Only the non-secret metadata (server, username, scopes) sits in the app database; the secret itself never does.
 - On a **headless server**, where no desktop keyring exists, the same secrets fall back to a **`tokens.json`** file in the data directory, readable only within that deployment.
+- In the **native mobile clients**, the server access token stays in iOS Keychain or is encrypted with a key held by Android Keystore. It is sent only to the Codeg host you configure for authenticated HTTP and WebSocket requests.
 
 This is the split that surfaces in a couple of places: your [Git and chat tokens](/reference/settings/version-control) live in the keyring, which is why a **desktop backup can't include them** (you re-enter them after a restore), whereas a server's `tokens.json` *is* part of its backup. The [model-provider credentials](/guide/authentication) your agents use are configured separately again.
 
@@ -65,6 +66,8 @@ By default Codeg listens to no one — the desktop app opens no port. Two featur
 
 - **[Web Service](/reference/settings/web-service)** turns the desktop app into a browser-reachable server. It binds to **all interfaces (`0.0.0.0`)**, so anyone who can route to your machine on that port can reach the login — which is exactly why it's **gated by an access token**. Treat that token like a password: keep it strong, and stop the service when you're done on an untrusted network.
 - A **[standalone server](/getting-started/deployment)** is the same idea by design, and is likewise token-gated.
+
+The [native mobile clients](/getting-started/installation#mobile-apps) connect through one of those two doors. Use plain HTTP only on a trusted local network; use HTTPS, a VPN, or a trusted tunnel when traffic crosses an untrusted network.
 
 For enterprise networks, the **[network proxy](/reference/settings/system)** routes all of Codeg's outbound traffic — agent calls, git, updates — through the proxy you specify, so egress follows your organization's policy.
 

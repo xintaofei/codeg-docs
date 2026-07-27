@@ -1,17 +1,39 @@
 ---
-title: Installation
-description: Install the Codeg desktop app on macOS, Windows, or Linux — then enable an agent and run your first session.
+title: Download and install
+description: Download Codeg for macOS, Windows, Linux, iPhone, iPad, or Android, then connect to your workspace and run your first session.
 ---
 
-# Installation
+# Download and install
 
-Codeg runs two ways. Most people want the **desktop app** — a native application for macOS, Windows, and Linux, covered on this page. To run Codeg headlessly on a server and reach it from a browser instead, see [Deployment](/getting-started/deployment).
+Codeg has two complementary parts. The **desktop app** runs agents and projects locally on macOS, Windows, or Linux. The native **iOS and Android clients** connect to a Codeg desktop or server you control, so you can keep a task moving away from your computer.
 
-## Download
+## Desktop app
+
+Install the desktop app when you want Codeg and its agents to run on this computer. To run Codeg headlessly on a dedicated machine instead, see [Deployment](/getting-started/deployment).
 
 <Download />
 
-## Install
+## Mobile apps
+
+Use the mobile apps to start and follow sessions, stream agent output, answer permission prompts, and browse project context. They are clients rather than standalone agent runtimes: your files, agent CLIs, and conversations remain on the machine running Codeg.
+
+<MobileDownload />
+
+On Android, open the downloaded `.apk` and allow installation from your browser or file manager if Android asks. The official [release page](https://github.com/xintaofei/codeg-android/releases/latest) also publishes a SHA-256 checksum for verification.
+
+### Connect a mobile app
+
+The app needs a reachable Codeg host and its access token:
+
+1. **Choose where Codeg runs.** On an existing desktop app, enable **Settings → Web Service** and copy the displayed URL and token. For an always-on workspace, [deploy `codeg-server`](/getting-started/deployment) instead.
+2. **Make the host reachable.** A local-network address such as `http://192.168.1.10:3080` works while both devices are on the same trusted network. For remote access, use HTTPS through a trusted reverse proxy, VPN, or tunnel.
+3. **Add the server.** In the mobile app, add a server profile, enter its URL and token, run **Test Connection**, and save it. The app will load the projects and sessions from that host.
+
+::: warning Keep the token private
+The token grants access to your Codeg workspace. Plain HTTP is suitable only on a trusted local network; use HTTPS or a trusted tunnel across any untrusted network. iOS stores the token in Keychain, and Android protects it with the Android Keystore.
+:::
+
+## Install the desktop app
 
 ### macOS
 
@@ -39,7 +61,7 @@ The macOS build is signed with an Apple Developer ID and **notarized by Apple**,
 
 Codeg's UI runs on a **WebKitGTK** runtime (`libwebkit2gtk-4.1`). The `.deb` / `.rpm` packages pull it in automatically; for the AppImage, install it yourself if it isn't already present. No AppImage is published for arm64 — use the `.deb` or `.rpm` there.
 
-## System requirements
+## Desktop system requirements
 
 - A 64-bit desktop OS: **macOS** (Apple Silicon or Intel), **Windows 10/11**, or a modern **Linux** distribution with WebKitGTK.
 - To *drive* agents you need at least one agent CLI installed. Codeg can install and manage most of them for you — via `npx`, `uvx`, or a prebuilt binary — from **Settings → Agents**. A few (the `npx`- and `uvx`-based ones) expect **Node.js** or **[uv](https://docs.astral.sh/uv/)** on your `PATH`. See [Supported Agents](/guide/supported-agents).
@@ -48,7 +70,7 @@ Codeg's UI runs on a **WebKitGTK** runtime (`libwebkit2gtk-4.1`). The `.deb` / `
 The desktop app bundles the `codeg-mcp` companion, so [multi-agent collaboration](/guide/multi-agent) is available immediately — no extra setup.
 :::
 
-## First run
+## First desktop session
 
 Three steps take you from a fresh install to a running session:
 
@@ -58,9 +80,11 @@ Three steps take you from a fresh install to a running session:
 
 ## Staying up to date
 
-The desktop app keeps itself current. When a new version ships, **Settings → System → Software Update** downloads the signed release, swaps it in, and restarts — while keeping the previous version so you can **roll back** if needed. See [System settings](/reference/settings/system).
+- **iPhone and iPad:** updates arrive through the App Store.
+- **Android:** download new APKs and their SHA-256 checksums from the [Android releases page](https://github.com/xintaofei/codeg-android/releases/latest).
+- **Desktop:** **Settings → System → Software Update** downloads the signed release and restarts Codeg. See [System settings](/reference/settings/system).
 
-## Alternatives
+## Other ways to connect
 
 - **Use your desktop app from any browser** — enable **Settings → Web Service** and Codeg serves its interface over the network, protected by an access token (with a QR code for phones). Because it listens on all network interfaces, you can reach your desktop session from any device that can connect to your machine — no separate server required. → [Web Service](/reference/settings/web-service)
 - **Run it on a dedicated server** — for headless or team use, deploy `codeg-server` and use Codeg from any browser. → [Deployment](/getting-started/deployment)

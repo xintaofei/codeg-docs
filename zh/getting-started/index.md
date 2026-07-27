@@ -12,14 +12,14 @@ Codeg 不会将你绑定到单一助手，而是把 Claude Code、Codex CLI、Ge
 <div class="stat-strip">
   <div class="stat"><span class="stat__num">12</span><span class="stat__label">个编程智能体，一个工作区</span></div>
   <div class="stat"><span class="stat__num">3</span><span class="stat__label">个聊天频道来驱动它们</span></div>
-  <div class="stat"><span class="stat__num">3</span><span class="stat__label">种运行方式——桌面 · 服务器 · Docker</span></div>
+  <div class="stat"><span class="stat__num">3</span><span class="stat__label">种托管方式——桌面 · 服务器 · Docker</span></div>
   <div class="stat"><span class="stat__num">0</span><span class="stat__label">遥测——默认本地优先</span></div>
 </div>
 
 ![Codeg 导览](/images/gallery.svg)
 
 <div class="cta-row">
-  <a class="cta cta--brand" href="/zh/getting-started/installation">安装桌面应用 →</a>
+  <a class="cta cta--brand" href="/zh/getting-started/installation">下载 Codeg →</a>
   <a class="cta" href="/zh/getting-started/deployment">运行服务器</a>
   <a class="cta" href="/zh/guide/">浏览指南</a>
 </div>
@@ -44,7 +44,7 @@ Codeg 不会将你绑定到单一助手，而是把 Claude Code、Codex CLI、Ge
     <ul>
       <li>横跨你所运行的每一个智能体的单一可搜索时间线</li>
       <li>主导智能体在会话进行中将子任务委派给其他智能体</li>
-      <li>桌面、服务器或 Docker——可从任意浏览器访问，连手机也行</li>
+      <li>桌面端或服务器承载核心，原生 iOS 与 Android 客户端随身连接</li>
     </ul>
   </div>
 </div>
@@ -91,7 +91,7 @@ Codeg 把智能体视为你可以*运行*的东西，而不仅仅是与之聊天
 
 - **[自动化](/zh/guide/automations)**——保存一套完整配置的设置，以无头方式按 cron 计划或按需运行。
 - **[聊天频道](/zh/guide/chat-channels)**——从 Telegram、Lark（飞书）或 iLink（微信）驱动会话：创建任务、批准权限，并实时获得回复，无需打开浏览器。
-- **[随处运行](/zh/getting-started/deployment)**——原生桌面应用、独立的 `codeg-server` 或 Docker——可从任意浏览器访问以进行远程工作。
+- **[随处使用](/zh/getting-started/installation)**——在桌面应用、独立服务器或 Docker 中运行智能体，再通过原生 iOS、Android 客户端或任意浏览器保持连接。
 - **[可扩展](/zh/guide/mcp)**——MCP 服务器和[技能](/zh/guide/skills)可添加工具与专业能力，而内置的 [Office](/zh/guide/office) 和[科学研究](/zh/guide/research)工具集则赋予智能体真实世界的能力。新项目从[项目引导](/zh/guide/project-boot)开始。
 
 <div class="light-only">
@@ -112,7 +112,7 @@ Codeg 刻意不对你*应该*使用哪个智能体持有成见，并谨慎对待
 
 - **智能体无关。** 新智能体通过 ACP 接入，而非借助定制集成，因此工作区会随生态系统一同成长。
 - **本地优先。** 解析、存储和项目操作默认都在你的机器上进行；只有在你触发操作时才会发生网络调用。参见[隐私与安全](/zh/reference/privacy)。
-- **一个内核，三种形态。** 一个共享的 Rust 内核同时驱动桌面应用、独立服务器和 MCP 伴生程序——无论你在笔记本电脑还是服务器上运行，都是同一个引擎。参见[架构](/zh/reference/architecture)。
+- **一个内核，三个二进制文件。** 一个共享的 Rust 内核同时驱动桌面应用、独立服务器和 MCP 伴生程序；原生移动客户端则通过经过认证的 API 连接到这个内核。参见[架构](/zh/reference/architecture)。
 
 Codeg 站在开放工作的肩膀之上——用 [Agent Client Protocol](https://agentclientprotocol.com) 实现智能体连接，用 [Superpowers](https://github.com/obra/superpowers) 提供专家技能，用 [OfficeCLI](https://github.com/iOfficeAI/OfficeCLI) 处理文档，用 [scientific-agent-skills](https://github.com/K-Dense-AI/scientific-agent-skills) 支持科研。
 
@@ -126,8 +126,8 @@ Codeg 站在开放工作的肩膀之上——用 [Agent Client Protocol](https:/
 
 <div class="nextsteps">
   <a class="nextstep" href="/zh/getting-started/installation">
-    <span class="nextstep__title">安装 →</span>
-    <span class="nextstep__desc">安装桌面应用或搭建一台服务器，并运行你的第一个会话。</span>
+    <span class="nextstep__title">下载与安装 →</span>
+    <span class="nextstep__desc">获取桌面、iPhone、iPad 或 Android 版 Codeg，并连接你的第一个工作区。</span>
   </a>
   <a class="nextstep" href="/zh/guide/supported-agents">
     <span class="nextstep__title">支持的智能体 →</span>

@@ -3,24 +3,10 @@
 layout: home
 
 hero:
-  name: Codeg
   text: Multi-agent coding workspace
-  tagline: Run every AI coding agent in one place — and let them work together.
-  image:
-    src: /icon.svg
-    alt: Codeg
-  actions:
-    - theme: brand
-      text: Get Started
-      link: /getting-started/installation
-    - theme: alt
-      text: What is Codeg?
-      link: /getting-started/
-    - theme: alt
-      text: View on GitHub
-      link: https://github.com/xintaofei/codeg
+  tagline: Run every coding agent together — and keep the work moving on every screen.
 
-features:
+homeFeatures:
   - icon: 📥
     title: Conversation Aggregation
     details: Import sessions from every supported agent into one unified, searchable workspace — one timeline no matter which tool produced them.
@@ -56,29 +42,27 @@ features:
     details: Save a composer setup as a reusable automation that runs headlessly, on a cron schedule or on demand.
     link: /guide/automations
     linkText: Learn more
-  - icon: 🖥️
-    title: Desktop, Server & Docker
-    details: Run it as a Tauri desktop app, a standalone codeg-server for the browser, or via docker compose up.
-    link: /getting-started/deployment
-    linkText: Deploy it
+  - icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M10 5h4M11 18.5h2"/></svg>'
+    title: Native iOS & Android
+    details: Start sessions, stream replies, handle approvals, and browse projects from the native mobile clients while your agents keep running on your machine.
+    link: /getting-started/installation#mobile-apps
+    linkText: Get the apps
 ---
 
-## See Codeg in action
-
-<div class="light-only">
-
-![Codeg main interface](/images/main-light.png)
-
+<div class="light-only home-hero-workspace">
+  <img src="/images/main-light.png" width="3026" height="2048" alt="Codeg main interface" decoding="async">
 </div>
 
-<div class="dark-only">
-
-![Codeg main interface](/images/main-dark.png)
-
+<div class="dark-only home-hero-workspace">
+  <img src="/images/main-dark.png" width="3026" height="2048" alt="Codeg main interface" decoding="async">
 </div>
 
-<div class="cta-row">
-  <a class="cta cta--brand" href="/getting-started/installation">Get the desktop app →</a>
-  <a class="cta" href="/getting-started/deployment">Run a server</a>
-  <a class="cta" href="/guide/">Explore the guide</a>
-</div>
+<nav class="home-hero-actions" aria-label="Get started with Codeg">
+  <a class="home-hero-action home-hero-action--primary" href="/getting-started/installation">Download Codeg →</a>
+  <a class="home-hero-action" href="/getting-started/">What is Codeg?</a>
+  <a class="home-hero-action no-icon" href="https://github.com/xintaofei/codeg">View on GitHub</a>
+</nav>
+
+<MobileShowcase />
+
+<HomeFeatures />

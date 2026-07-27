@@ -110,7 +110,7 @@ export default defineConfig({
               text: 'Getting Started',
               items: [
                 { text: 'Introduction', link: '/getting-started/' },
-                { text: 'Installation', link: '/getting-started/installation' },
+                { text: 'Download & Install', link: '/getting-started/installation' },
                 { text: 'Deployment', link: '/getting-started/deployment' },
                 { text: 'Configuration', link: '/getting-started/configuration' }
               ]
@@ -217,7 +217,7 @@ export default defineConfig({
               text: '快速开始',
               items: [
                 { text: '简介', link: '/zh/getting-started/' },
-                { text: '安装', link: '/zh/getting-started/installation' },
+                { text: '下载与安装', link: '/zh/getting-started/installation' },
                 { text: '部署', link: '/zh/getting-started/deployment' },
                 { text: '配置', link: '/zh/getting-started/configuration' }
               ]

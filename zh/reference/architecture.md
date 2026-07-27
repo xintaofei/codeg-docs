@@ -33,6 +33,12 @@ Codeg 从**单个 Cargo 工作区中交付三个 Rust 二进制文件**，它们
 
 这正是为什么 [Web 服务](/zh/reference/settings/web-service)界面能把"完整的工作区"递到你的手机上，而[无头部署](/zh/getting-started/deployment)体验起来与桌面应用别无二致 —— 这是一个前端跑在两种传输之上，而不是两个应用。
 
+### 原生移动客户端 {#native-mobile-clients}
+
+[iOS 与 Android 应用](/zh/getting-started/installation#mobile-apps)在不移动核心的前提下增加了第三种客户端路径。它们是使用 SwiftUI 和 Jetpack Compose 构建的原生应用，而不是 Web 前端的外壳；两者都通过经过认证的 **HTTP + WebSocket API** 与桌面 Web 服务或 `codeg-server` 通信。访问令牌存放在 iOS Keychain 中，或由 Android Keystore 保护。
+
+手机上不会运行智能体 CLI，也不会放置项目检出。文件、数据库、git 操作和智能体子进程仍由主机持有；移动应用负责发送指令并渲染实时事件流。两个客户端均开放源码：[Codeg for iOS](https://github.com/xintaofei/codeg-ios) 与 [Codeg for Android](https://github.com/xintaofei/codeg-android)。
+
 ## 智能体如何运行 {#how-agents-run}
 
 Codeg 并不重新实现 Claude Code、Codex、Gemini 等等 —— 它**驱动它们真正的 CLI**。每个智能体作为一个**子进程**运行，Codeg 通过 **[Agent Client Protocol](https://agentclientprotocol.com/)（ACP）**与之通信 —— 这与像 Zed 这样的编辑器和编码智能体对话所用的是同一套 JSON-RPC 协议。
@@ -62,6 +68,7 @@ Codeg 将其状态保存在**本地机器**上，默认位于 **`~/.codeg/`** �
 
 - **三个二进制文件，一套代码库。** `codeg`、`codeg-server` 和 `codeg-mcp` 是同一 Rust 工作区、同一 `codeg_lib` 核心之上的构建目标 —— 而不是需要保持同步的三个独立程序。
 - **桌面应用和服务器是同一个应用。** 区别在于传输方式（Tauri IPC 对 HTTP/WebSocket），而非功能集 —— [Web 服务](/zh/reference/settings/web-service)界面和[无头部署](/zh/getting-started/deployment)是访问同一份 UI 的两种途径。
+- **移动端是客户端，而不是另一套核心。** iOS 与 Android 通过经过认证的 API 连接；项目和智能体仍运行在桌面端或服务器主机上。
 - **智能体依旧是智能体。** Codeg 通过 ACP 编排官方 CLI；它不会 fork 或替换它们，因此每个智能体都保留自己的行为、认证和更新。
 - **`codeg-mcp` 是按会话且用后即弃的。** 每次智能体启动会生成一个，并随其退出；失去它只会让你损失委派功能，别无其他。
 
@@ -69,6 +76,7 @@ Codeg 将其状态保存在**本地机器**上，默认位于 **`~/.codeg/`** �
 
 - [部署](/zh/getting-started/deployment) —— 将 `codeg-server`（或 Docker）作为同一核心的无头部署来运行。
 - [Web 服务](/zh/reference/settings/web-service) —— 桌面应用通往浏览器 UI 的自有前门。
+- [下载与安装](/zh/getting-started/installation#mobile-apps) —— 获取原生客户端，并将其连接到 Codeg 主机。
 - [使用多个智能体](/zh/guide/multi-agent) —— `codeg-mcp` 所实现的委派功能。
 - [通用](/zh/reference/settings/general) —— 决定每个智能体接收哪些 `codeg-mcp` 工具的开关。
 - [隐私与安全](/zh/reference/privacy) —— 哪些内容留在本地，哪些离开去往模型提供商。

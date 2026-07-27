@@ -12,14 +12,14 @@ Rather than tying you to a single assistant, Codeg brings Claude Code, Codex CLI
 <div class="stat-strip">
   <div class="stat"><span class="stat__num">12</span><span class="stat__label">coding agents, one workspace</span></div>
   <div class="stat"><span class="stat__num">3</span><span class="stat__label">chat channels to drive them</span></div>
-  <div class="stat"><span class="stat__num">3</span><span class="stat__label">ways to run — desktop · server · Docker</span></div>
+  <div class="stat"><span class="stat__num">3</span><span class="stat__label">ways to host — desktop · server · Docker</span></div>
   <div class="stat"><span class="stat__num">0</span><span class="stat__label">telemetry — local-first by default</span></div>
 </div>
 
 ![A tour of Codeg](/images/gallery.svg)
 
 <div class="cta-row">
-  <a class="cta cta--brand" href="/getting-started/installation">Install the desktop app →</a>
+  <a class="cta cta--brand" href="/getting-started/installation">Download Codeg →</a>
   <a class="cta" href="/getting-started/deployment">Run a server</a>
   <a class="cta" href="/guide/">Explore the guide</a>
 </div>
@@ -44,7 +44,7 @@ That shift has been remarkable, and messy. The strongest agents ship as separate
     <ul>
       <li>One searchable timeline across every agent you run</li>
       <li>A lead agent delegates sub-tasks to other agents, mid-session</li>
-      <li>Desktop, server, or Docker — reachable from any browser, even your phone</li>
+      <li>Desktop or server at the core, with native iOS and Android clients in your pocket</li>
     </ul>
   </div>
 </div>
@@ -91,7 +91,7 @@ Codeg treats agents as something you *run*, not just chat with:
 
 - **[Automations](/guide/automations)** — save a fully-configured setup and run it headlessly, on a cron schedule or on demand.
 - **[Chat Channels](/guide/chat-channels)** — drive sessions from Telegram, Lark (Feishu), or iLink (Weixin): create tasks, approve permissions, and get real-time replies without opening a browser.
-- **[Anywhere it needs to run](/getting-started/deployment)** — a native desktop app, a standalone `codeg-server`, or Docker — reachable from any browser for remote work.
+- **[Anywhere you need it](/getting-started/installation)** — run agents in the desktop app, on a standalone server, or in Docker, then stay connected through the native iOS and Android clients or any browser.
 - **[Extensible](/guide/mcp)** — MCP servers and [Skills](/guide/skills) add tools and expertise, while bundled [Office](/guide/office) and [Scientific Research](/guide/research) toolsets give agents real-world capabilities. New projects start from [Project Boot](/guide/project-boot).
 
 <div class="light-only">
@@ -112,7 +112,7 @@ Codeg is deliberately un-opinionated about *which* agent you should use, and car
 
 - **Agent-agnostic.** New agents plug in through ACP rather than bespoke integrations, so the workspace grows as the ecosystem does.
 - **Local-first.** Parsing, storage, and project operations happen on your machine by default; network calls occur only on actions you trigger. See [Privacy & Security](/reference/privacy).
-- **One core, three surfaces.** A shared Rust core powers the desktop app, the standalone server, and the MCP companion alike — the same engine whether you run it on your laptop or a server. See the [Architecture](/reference/architecture).
+- **One core, three binaries.** A shared Rust core powers the desktop app, the standalone server, and the MCP companion alike; native mobile clients connect to that core over its authenticated API. See the [Architecture](/reference/architecture).
 
 Codeg stands on the shoulders of open work — the [Agent Client Protocol](https://agentclientprotocol.com) for agent connectivity, [Superpowers](https://github.com/obra/superpowers) for expert skills, [OfficeCLI](https://github.com/iOfficeAI/OfficeCLI) for documents, and [scientific-agent-skills](https://github.com/K-Dense-AI/scientific-agent-skills) for research.
 
@@ -126,8 +126,8 @@ The goal stays constant: a workspace that keeps pace with the agents, so you can
 
 <div class="nextsteps">
   <a class="nextstep" href="/getting-started/installation">
-    <span class="nextstep__title">Installation →</span>
-    <span class="nextstep__desc">Install the desktop app or stand up a server, and run your first session.</span>
+    <span class="nextstep__title">Download & install →</span>
+    <span class="nextstep__desc">Get Codeg for desktop, iPhone, iPad, or Android and connect your first workspace.</span>
   </a>
   <a class="nextstep" href="/guide/supported-agents">
     <span class="nextstep__title">Supported Agents →</span>

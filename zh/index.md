@@ -3,24 +3,10 @@
 layout: home
 
 hero:
-  name: Codeg
   text: 多智能体编程工作区
-  tagline: 在一处运行每一个 AI 编程智能体——并让它们协同工作。
-  image:
-    src: /icon.svg
-    alt: Codeg
-  actions:
-    - theme: brand
-      text: 快速开始
-      link: /zh/getting-started/installation
-    - theme: alt
-      text: 什么是 Codeg？
-      link: /zh/getting-started/
-    - theme: alt
-      text: 在 GitHub 上查看
-      link: https://github.com/xintaofei/codeg
+  tagline: 让每个编程智能体协同工作，并在任意设备上随时接手。
 
-features:
+homeFeatures:
   - icon: 📥
     title: 对话聚合
     details: 将每个受支持智能体的会话导入统一、可搜索的工作区——无论出自哪种工具，都汇聚成同一条时间线。
@@ -56,29 +42,27 @@ features:
     details: 将一套 composer 配置保存为可复用的自动化，以无头方式按 cron 计划或按需运行。
     link: /zh/guide/automations
     linkText: 了解更多
-  - icon: 🖥️
-    title: 桌面、服务器与 Docker
-    details: 以 Tauri 桌面应用、面向浏览器的独立 codeg-server，或通过 docker compose up 运行。
-    link: /zh/getting-started/deployment
-    linkText: 部署
+  - icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6.5" y="2.5" width="11" height="19" rx="2.5"/><path d="M10 5h4M11 18.5h2"/></svg>'
+    title: 原生 iOS 与 Android
+    details: 通过原生移动客户端发起会话、跟进实时回复、处理审批并浏览项目；智能体则继续在你的电脑上运行。
+    link: /zh/getting-started/installation#mobile-apps
+    linkText: 获取应用
 ---
 
-## 一览 Codeg {#see-codeg-in-action}
-
-<div class="light-only">
-
-![Codeg 主界面](/images/main-light.png)
-
+<div class="light-only home-hero-workspace">
+  <img src="/images/main-light.png" width="3026" height="2048" alt="Codeg 主界面" decoding="async">
 </div>
 
-<div class="dark-only">
-
-![Codeg 主界面](/images/main-dark.png)
-
+<div class="dark-only home-hero-workspace">
+  <img src="/images/main-dark.png" width="3026" height="2048" alt="Codeg 主界面" decoding="async">
 </div>
 
-<div class="cta-row">
-  <a class="cta cta--brand" href="/zh/getting-started/installation">获取桌面应用 →</a>
-  <a class="cta" href="/zh/getting-started/deployment">运行服务器</a>
-  <a class="cta" href="/zh/guide/">浏览指南</a>
-</div>
+<nav class="home-hero-actions" aria-label="开始使用 Codeg">
+  <a class="home-hero-action home-hero-action--primary" href="/zh/getting-started/installation">下载 Codeg →</a>
+  <a class="home-hero-action" href="/zh/getting-started/">什么是 Codeg？</a>
+  <a class="home-hero-action no-icon" href="https://github.com/xintaofei/codeg">在 GitHub 上查看</a>
+</nav>
+
+<MobileShowcase />
+
+<HomeFeatures />
