@@ -132,6 +132,7 @@ export default defineConfig({
               items: [
                 { text: 'Working with Agents', link: '/guide/agents' },
                 { text: 'Supported Agents', link: '/guide/supported-agents' },
+                { text: 'Custom Agents', link: '/guide/custom-agents' },
                 { text: 'Authentication & Models', link: '/guide/authentication' },
                 { text: 'Multi-Agent Collaboration', link: '/guide/multi-agent' }
               ]
@@ -239,6 +240,7 @@ export default defineConfig({
               items: [
                 { text: '使用智能体', link: '/zh/guide/agents' },
                 { text: '支持的智能体', link: '/zh/guide/supported-agents' },
+                { text: '自定义智能体', link: '/zh/guide/custom-agents' },
                 { text: '认证与模型', link: '/zh/guide/authentication' },
                 { text: '多智能体协作', link: '/zh/guide/multi-agent' }
               ]

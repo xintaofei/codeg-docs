@@ -32,9 +32,13 @@ This section appears only on the **Windows desktop build** — it's hidden on ma
 The switch that lets an active agent hand sub-tasks to other agents — Codeg's **delegation** feature. Two tabs:
 
 - **General** — **Enable delegation** (off by default; when off, the `delegate_to_agent` tool is hidden from the agent's tool catalog), **Maximum delegation depth** (1–8, default **1** — how deep a chain of agents-spawning-agents may recurse), and **Completed-result cache (MB)** (default 512 — how much finished sub-agent output is held in memory while the lead session runs; `0` = unlimited).
-- **Agent defaults** — per-agent overrides (mode and config) applied when a delegation call spawns that agent as a worker. The options come from a live probe of each agent, so what you pick is exactly what it will accept.
+- **Agent defaults** — per-agent overrides (mode and config) applied when a delegation call spawns that agent as a worker. The tabs are built from the live agent registry, so a [custom agent](/guide/custom-agents) gets one too, and the options come from a live probe of each agent — what you pick is exactly what it will accept.
 
 Press **Save** to apply. This panel is the control surface; the how-to — writing delegation prompts, watching the team, turning a workflow into a skill — lives in **[Working with Multiple Agents](/guide/multi-agent)**.
+
+::: info The target list follows your enable toggles
+`delegate_to_agent` advertises only the agents you can actually launch, re-read each time an agent starts: a built-in you've disabled in **Settings → Agents** is struck from its list of targets, an enabled custom agent is added to it, and a disabled one is simply never offered. So switching an agent off hides it from the lead as well as from the composer picker.
+:::
 
 ## Live Feedback
 
@@ -49,6 +53,8 @@ One catch worth knowing: agents usually only look for feedback when you ask them
 ## Get session info
 
 **Enable get session info** (on by default) lets an agent resolve a session you reference in the composer — a session badge like `codeg://session/<id>` — into its title, agent, status, workspace, token usage, and recent messages. It's read-only, and adds the `get_session_info` tool to agents.
+
+The tool now spells out to the agent what that badge *means*: mentioning a session is you pointing at it deliberately, so the agent looks it up without being asked to, once per session mentioned. That mirrors how an `@agent` mention is treated as an instruction to delegate. → [Pick up where another session left off](/guide/multi-agent#pick-up-where-another-session-left-off)
 
 ## Good to know
 

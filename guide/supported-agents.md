@@ -1,13 +1,13 @@
 ---
 title: Supported Agents
-description: The twelve coding agents Codeg drives over ACP — what each one is, the runtime it needs, and where it keeps its sessions on disk.
+description: The twelve coding agents Codeg drives over ACP — what each one is, the runtime it needs, and where it keeps its sessions on disk — plus how to register one that isn't on the list.
 ---
 
 # Supported Agents
 
 Codeg drives **twelve coding agents**, and once one is running they all feel the same — same composer, same diffs, same git and terminal — because Codeg talks to each over the **Agent Client Protocol (ACP)**. What differs is underneath: who builds the agent, what runtime it needs on your machine, and where it keeps its own history. This page is the map.
 
-Enabling an agent, its preflight health check, and starting a session are covered in [Working with Agents](/guide/agents); signing in and choosing a model are in [Authentication & Models](/guide/authentication). Here we stick to the roster itself.
+Enabling an agent, its preflight health check, and starting a session are covered in [Working with Agents](/guide/agents); signing in and choosing a model are in [Authentication & Models](/guide/authentication). Here we stick to the roster itself — and, at the end, [how to add to it](#beyond-the-twelve).
 
 ## The roster
 
@@ -63,6 +63,8 @@ Most agents write a **JSONL transcript** — a plain-text log, one event per lin
 Point an agent at a non-default location with one of the environment variables above and Codeg honors it too — so a relocated history still imports — as long as Codeg sees that variable in its own environment. OpenClaw is the exception: its store isn't relocatable.
 :::
 
+A [custom agent](/guide/custom-agents) has no row here, because it usually keeps no store Codeg could read. For those, Codeg writes the history itself — an append-only JSONL transcript per session under `acp-transcripts/<registry-id>/`, in `~/.codeg/` by default — and reads it back exactly as it reads a native store. Being Codeg's own data, it relocates with `CODEG_HOME` (or `CODEG_DATA_DIR`) rather than with any agent's variable.
+
 ## How agents differ
 
 The surface is identical, but a few things vary by agent — worth knowing so nothing catches you off guard:
@@ -71,8 +73,15 @@ The surface is identical, but a few things vary by agent — worth knowing so no
 - **Sign-in differs too.** Some agents log in with their own subscription or OAuth, others take a provider API key or a custom endpoint. Each agent's detail pane shows only the options that apply to it. → [Authentication & Models](/guide/authentication)
 - **OpenClaw opts out of MCP.** It's the one agent that doesn't accept Model Context Protocol servers, so an MCP server you've added won't reach an OpenClaw session — Codeg forwards none to it. Most other agents receive your MCP servers normally. → [MCP Servers](/guide/mcp)
 
+## Beyond the twelve
+
+The roster above is the set Codeg **adapts by hand** — each of those agents got a parser for its session files, its own settings pane, and whatever small accommodations its quirks demand. That work is what earns a slot in the table.
+
+It isn't the boundary of what Codeg can drive, though. ACP is an open standard, so since **0.22** you can register any other agent that speaks it: pick one from the protocol's public registry, or paste its distribution JSON. Codeg installs it, runs the same preflight, records its history for it, and treats it like a built-in everywhere else — the picker, the status bar, search, and delegation. → [Custom Agents](/guide/custom-agents)
+
 ## Next steps
 
 - [**Working with Agents**](/guide/agents) — enable one of these, run its preflight, and start a session.
+- [**Custom Agents**](/guide/custom-agents) — add an ACP-compatible agent that isn't on this roster.
 - [**Authentication & Models**](/guide/authentication) — sign in and pick a model for the agent you chose.
 - [**Conversation Aggregation**](/guide/aggregation) — import the sessions from the stores listed above.

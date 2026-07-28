@@ -73,6 +73,10 @@ Each server's detail pane has an **Enabled apps** row — a checkbox per agent. 
 
 That's **ten of the twelve agents** — every one except **OpenClaw** and **Pi**. OpenClaw doesn't accept MCP servers at all (it's the one agent that opts out), so it's not offered as a target; Pi isn't in the list either. → [How agents differ](/guide/supported-agents#how-agents-differ)
 
+::: info Custom agents aren't listed here
+This screen works by writing into each agent's **own** config file, and Codeg deliberately knows nothing about the config file of a [custom agent](/guide/custom-agents) you registered yourself — so those aren't offered as targets. What they still get is Codeg's own companion server, on the same terms as any built-in: it's attached whenever one of its [General settings](/reference/settings/general) features is on, and carries the [delegation](/guide/multi-agent) tool once delegation itself is enabled. To give a custom agent an MCP server of its own, configure it in that agent's native way.
+:::
+
 ::: tip Changes apply on the next session
 Because a server lives in the agent's config, the agent reads it when it **starts a session**. Add or change a server and it takes effect for new conversations; for one that's already open, **Reconnect to apply** picks up the new config without losing your history. → [Configure an agent](/guide/agents#configure-an-agent)
 :::

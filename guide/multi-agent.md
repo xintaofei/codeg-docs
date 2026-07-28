@@ -39,6 +39,8 @@ Two properties shape everything about how you use this.
 
 **Who can lead, who can work.** The delegate ability reaches an agent as an extra tool, delivered through Codeg's built-in MCP server over ACP — so an agent can only lead if it accepts MCP tools over the protocol. Ten do, and can *initiate* delegation: Claude Code, Codex, Gemini, OpenCode, Cline, Hermes, CodeBuddy, Kimi Code, Grok, and Cursor. **OpenClaw** and **Pi** don't — OpenClaw refuses MCP servers outright, and Pi quietly ignores them — so the delegate tool never reaches them and they can't lead. All twelve can still be delegated *to*, which makes OpenClaw and Pi perfectly good workers. Whichever capable agent you're chatting with is the lead; there's no separate "orchestrator" to set up.
 
+**[Custom agents](/guide/custom-agents) join in too.** Any ACP agent you've registered yourself is a target like the built-ins — mentionable with `@`, spawnable as a worker, and given its own tab under *Agent defaults*. Whether it can *lead* follows the same rule as everyone else: it needs to accept MCP tools over the protocol.
+
 ## Turn it on
 
 Delegation ships **off**, so the first step is enabling it:
@@ -57,7 +59,7 @@ It does **not** have to be an empty conversation, though. Any conversation picks
 Two neighbouring settings are worth knowing before you build a team:
 
 - **Maximum delegation depth** — how many levels deep delegation can nest. The default is **1**: the lead can delegate, but a sub-agent can't delegate further. Raise it (up to 8) only if you want sub-agents that build teams of their own — see [Sub-teams](#sub-teams-let-a-worker-build-its-own-team).
-- **Agent defaults** — per-agent overrides applied whenever Codeg spawns that agent as a **worker**, so delegated sessions start configured the way you want. Each agent gets its own tab holding a **Mode** row plus whatever options that agent advertises (Codex's approval policy and sandbox mode, for instance). The choices come from a **live probe** of the agent, so what you pick is exactly what it will accept. Leaving a row on **Default (…)** means *inherit whatever the agent's own default is*; picking the same value explicitly pins it, even if the agent later changes its default.
+- **Agent defaults** — per-agent overrides applied whenever Codeg spawns that agent as a **worker**, so delegated sessions start configured the way you want. Each agent gets its own tab — including any [custom agent](/guide/custom-agents) you've registered — holding a **Mode** row plus whatever options that agent advertises (Codex's approval policy and sandbox mode, for instance). The choices come from a **live probe** of the agent, so what you pick is exactly what it will accept. Leaving a row on **Default (…)** means *inherit whatever the agent's own default is*; picking the same value explicitly pins it, even if the agent later changes its default.
 
 The full control surface — including the completed-result cache — is documented in [Settings → General](/reference/settings/general#multi-agent-collaboration).
 
@@ -81,7 +83,7 @@ Some things worth knowing:
 
 - **One mention per agent, one sub-agent each.** Name several agents in a single message and each one gets its own hand-off carrying its own slice of the work — the basis of [fan-out](#fan-out-independent-slices-at-once).
 - **Say what the work *is*, next to the mention.** A mention decides *who*; it doesn't decide *what*. `@Grok` on its own gives the lead a target and nothing to send it. Keep the task in the same breath as the name.
-- **Only enabled agents are mentionable.** An agent you've toggled off in **Settings → Agents** never appears in the picker. An agent that's enabled but not installed or signed in *can* be mentioned — and comes back as *spawn failed*.
+- **Only enabled agents are mentionable — or reachable at all.** An agent you've toggled off in **Settings → Agents** never appears in the picker, and since 0.22 it's also struck from the list of targets the lead is offered, so the lead can't pick it on its own initiative either. (An agent that's enabled but not installed or signed in *can* still be named — and comes back as *spawn failed*.)
 - **A mention is a strong instruction, not a hard route.** Codeg puts the mention in front of the lead and tells it what a mention means; the lead is still the one that calls the tool. In practice a capable lead honours it consistently, but it isn't a mechanical guarantee — if a mention is ignored, the usual cause is delegation not being active in that session (see the warning [above](#turn-it-on)).
 - **Mentioning the agent you're already talking to** asks it to spawn a *second, separate session* of itself rather than just doing the work — occasionally useful for isolation, usually not what you want.
 
@@ -94,6 +96,7 @@ Delegation is visible the whole way through — never a black box:
 - **In the lead's reply**, each hand-off shows up as a **delegating** card — the target agent, the task, and a live status — in place of a raw tool call. The card is a status-and-navigation affordance: it doesn't print the worker's output inline, it points you at the session that has it.
 - **A Sub-agents panel** collects the workers from the latest reply. Collapsed, it's a small *Sub-agents 3* chip; expanded, each row shows the agent, its task, and a status badge that moves from **running** to **done** (or **failed**, with a reason like *spawn failed* or *depth limit*).
 - **Open any sub-agent** to watch its full conversation stream live — the same transcript you'd see if you'd started it yourself. It's a viewer, not a second composer: you follow along, you don't drive its turns.
+- **An agent's *own* sub-agents show their work too.** When Claude Code spins up its internal sub-agents (its own feature, not Codeg's delegation — see the note [below](#turn-a-workflow-into-a-skill)), the capsule that used to just say *Running…* now carries a **Live activity** section streaming what that sub-agent is actually doing. It's live-only: once the capsule settles, it goes back to the finished summary and its stats.
 - **You still hold the controls that matter.** A sub-agent runs at your normal permission level for that agent, so when it wants to run a command or write a file, its **permission prompt** appears inside its view for you to allow or reject. Multiple-choice questions land there too. While a worker is waiting on you, its badge reads **awaiting approval** — the cue to open it, since nothing progresses until you answer.
 - **When the lead checks on its team**, you'll see it in the transcript as a compact status card with one row per task. Repeated checks on the same task collapse into that single card rather than stacking up.
 
@@ -222,6 +225,8 @@ Treat it as a deliberate choice. Every level multiplies the sessions in flight, 
 
 The context you need is often in a conversation you had yesterday. Mention it with **`@`** — pick from the **Sessions** group — and the lead can read that session's title, agent, workspace, status, and recent messages, then act on what it finds, including delegating the follow-up.
 
+Like an `@agent` mention, this is now read as an **explicit instruction**: naming a session means you're pointing at it, so the lead looks it up without being told to, once per session you mention.
+
 ```text
 @[yesterday's session] stalled on the migration halfway through.
 Read what it got done, then have @Codex finish the remaining files.
@@ -300,10 +305,12 @@ Doing this a lot? Bottle step 4 as a skill (above) and it becomes a one-command 
 - **Results live in the worker's session.** The lead keeps finished output in memory only while its own session is running. Once that ends, the full transcript is still there in the sub-agent's own conversation — reachable from the chevron on the parent conversation in the sidebar.
 - **Every sub-agent is a full session.** It has its own token cost and its own transcript — delegation multiplies the work being done, and the usage along with it.
 - **OpenClaw and Pi are workers only.** Neither accepts MCP tools over ACP — the way the delegate tool is delivered — so it can't reach them. Both are fine as workers, but can't lead.
+- **Your own agents count.** A [custom ACP agent](/guide/custom-agents) is a first-class teammate — mention it, delegate to it, give it worker defaults.
 
 ## Next steps
 
 - [**Working with Agents**](/guide/agents) — enable and sign in the agents you'll put on a team.
+- [**Custom Agents**](/guide/custom-agents) — add an agent of your own to the roster you can delegate to.
 - [**Settings → General**](/reference/settings/general#multi-agent-collaboration) — the delegation switches, depth limit, and per-agent worker defaults.
 - [**Skills**](/guide/skills) — bottle a delegation workflow into a reusable `/command`.
 - [**Git & Worktrees**](/guide/git#work-in-parallel-with-worktrees) — give parallel workers isolated checkouts so they don't collide.

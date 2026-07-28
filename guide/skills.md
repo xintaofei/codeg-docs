@@ -26,7 +26,7 @@ Open **Settings → Skill Packs**. It's a tabbed hub over three curated, Codeg-m
 
 ### The skill-and-agent matrix
 
-Each tab shows a grid: skills down the side (grouped by category), your agents across the top. Tick a cell to enable that skill for that agent, untick to remove it. Everything is batchable:
+Each tab shows a grid: skills down the side (grouped by category), your agents across the top — every agent that actually reads skills from somewhere Codeg can write to. Tick a cell to enable that skill for that agent, untick to remove it. Everything is batchable:
 
 - A skill's **⋯** menu enables or disables it across **every agent** at once.
 - An agent's column header does the reverse — **every skill** for one agent.
@@ -105,10 +105,12 @@ Two things to know:
 - **Disabling is safe.** It only removes the link from that one agent — the central copy, and every other agent's link, stay put. Removing a bundled skill entirely takes it out of all agents at once.
 - **It works the same on a server.** Both Settings screens are in the browser build; skills live on the machine Codeg runs on.
 - **A custom Pi agent directory opts out.** If you've pointed Pi at a non-default `PI_CODING_AGENT_DIR`, it isn't managed by the shared store and won't appear as a target. → [How agents differ](/guide/supported-agents#how-agents-differ)
+- **A custom agent has to declare where its skills go.** Codeg can't guess where an agent you registered yourself reads skills from, so it appears as a column only once you tick the **shared `.agents/skills` store** or name a **dedicated skills directory** on its settings card. Until then it's left out — a link there could only fail. → [Custom Agents](/guide/custom-agents#give-it-skills)
 
 ## Next steps
 
 - [**Office Documents**](/guide/office) — put the Office pack to work: build and edit `.docx`, `.xlsx`, and `.pptx` with live preview.
 - [**Scientific Research**](/guide/research) — the Science pack in depth, from hypothesis to write-up.
 - [**MCP Servers**](/guide/mcp) — the other way to extend an agent: give it new tools and data sources.
+- [**Custom Agents**](/guide/custom-agents#give-it-skills) — declare where an agent you registered yourself loads its skills from.
 - [**Multi-Agent Collaboration**](/guide/multi-agent) — distinct from the Experts pack: one agent delegating whole sub-tasks to another agent type.

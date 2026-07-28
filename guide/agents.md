@@ -7,25 +7,27 @@ description: Enable a coding agent, make sure it's healthy with a preflight chec
 
 Codeg doesn't ship its own model. It's a workspace *for* agents — it connects to the coding-agent CLIs you already run, like Claude Code, Codex, and Gemini, and gives every one of them the same surface: the same composer, the same files and diffs, the same git and terminal. You choose which agent handles a conversation, and everything around it stays the same.
 
-This page covers the essentials — enabling an agent, making sure it's ready to run, and starting a session. Two neighbours go deeper: [Supported Agents](/guide/supported-agents) is the full roster, and [Authentication & Models](/guide/authentication) covers signing in and picking a model.
+This page covers the essentials — enabling an agent, making sure it's ready to run, and starting a session. Three neighbours go deeper: [Supported Agents](/guide/supported-agents) is the full roster, [Custom Agents](/guide/custom-agents) is how to add one that isn't on it, and [Authentication & Models](/guide/authentication) covers signing in and picking a model.
 
 ## How agents work
 
 Each agent is a separate command-line program. When you start a session, Codeg launches that program as a background process and talks to it over the **Agent Client Protocol (ACP)** — the shared language that lets one workspace drive many different agents. That's why the experience is consistent no matter which one you pick.
 
-Codeg supports **twelve agents** today, delivered three ways — and it installs and updates them for you:
+Codeg supports **twelve agents** out of the box, delivered three ways — and it installs and updates them for you:
 
 - Most run through **npx** (an npm package), so they need Node.js on your machine.
 - **OpenCode** and **Cursor** are native **binaries** Codeg downloads for your platform (Cursor bundles its own runtime, so it needs no Node.js either).
 - **Hermes** runs through **uv**, a Python tool runner.
 
+Because ACP is an open protocol, the twelve aren't a limit: you can **register any other ACP-compatible agent** yourself, from the protocol's public registry or from its distribution JSON, and Codeg drives it the same way. → [Custom Agents](/guide/custom-agents)
+
 Two things are tracked separately for each agent: whether it's **enabled** (allowed to appear in Codeg) and whether it's **installed** (actually present on your machine). They're independent — you can enable an agent before installing it, and Codeg will help you install it when the time comes.
 
 ## Enable an agent
 
-Agents are managed in **Settings → Agents** (titled *Agent SDK Management*). The **Agent List** on the left holds every supported agent; select one to see its details on the right. **All agents are enabled by default**, so there's usually nothing to switch on — but the enable toggle in each agent's header lets you hide the ones you don't use.
+Agents are managed in **Settings → Agents** (titled *Agent SDK Management*). The **Agent List** on the left holds every supported agent; select one to see its details on the right. **All agents are enabled by default**, so there's usually nothing to switch on — but the enable toggle in each agent's header lets you hide the ones you don't use. A **+ Add custom agent** button in the top-right corner is how you extend the list beyond the built-in twelve. → [Custom Agents](/guide/custom-agents)
 
-Only **enabled** agents appear in the composer's agent picker. Disable the ones you'll never touch to keep that list short; if you ever disable everything, the composer just prompts you to *Open Agents settings* and turn one back on.
+Only **enabled** agents appear in the composer's agent picker. Disable the ones you'll never touch to keep that list short; if you ever disable everything, the composer just prompts you to *Open Agents settings* and turn one back on. The toggle reaches past the picker, too: an agent you've switched off is also dropped from the targets another agent can [delegate](/guide/multi-agent) to.
 
 ## Check it's ready — preflight
 
@@ -38,6 +40,8 @@ What it checks depends on how the agent is delivered:
 - **Hermes** — that the **uv** runtime is available.
 
 Every failing check comes with a **fix button** right beside it — *Install Node.js*, *Install uv*, *Install Plugins*, and so on — and the version row offers **Install**, **Upgrade**, or **Uninstall** as needed. Changed something outside Codeg? **Refresh check** re-runs the preflight.
+
+**Installed an agent's CLI yourself?** Codeg counts that. Where it has no managed install of its own, it probes your system for the command — an `npx` package via `npm list -g`, a binary on your `PATH`, or the plain `--version` convention — and reports the real version instead of *Not installed*. Since a session already preferred whatever was on your `PATH`, this just means the version row now agrees with what actually runs.
 
 ::: tip Preflight checks the plumbing, not the login
 Preflight confirms the runtime, version, and install — not whether you're signed in. Getting an agent authenticated (its own subscription, an API key, or a custom endpoint) is a separate step. → [Authentication & Models](/guide/authentication)
@@ -102,5 +106,6 @@ Sessions you're not looking at may disconnect after a few idle minutes to free u
 ## Next steps
 
 - [**Supported Agents**](/guide/supported-agents) — the full roster, and where each agent keeps its sessions.
+- [**Custom Agents**](/guide/custom-agents) — register an ACP-compatible agent that isn't on that roster.
 - [**Authentication & Models**](/guide/authentication) — sign in with a subscription, an API key, or a custom endpoint, and choose your model.
 - [**Multi-Agent Collaboration**](/guide/multi-agent) — let one agent delegate parts of a task to others.

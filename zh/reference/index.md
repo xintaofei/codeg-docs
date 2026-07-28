@@ -20,7 +20,7 @@ Codeg 将每一项偏好都汇集到同一个**设置**窗口中（其侧边栏�
 | **MCP** | Model Context Protocol 服务器 —— 添加、扫描、按智能体启用 | [指南 → MCP 服务器](/zh/guide/mcp) |
 | **Skills** | 编写和编辑你自己的智能体技能 | [指南 → 技能](/zh/guide/skills) |
 | **Skill Packs** | 精选合集 —— Experts、Science、Office | [指南 → 技能](/zh/guide/skills#enable-a-curated-skill-pack) |
-| **Agents** | 智能体 CLI —— 连接、配置、运行预检 | [指南 → 使用智能体](/zh/guide/agents) |
+| **Agents** | 智能体 CLI —— 连接、配置、运行预检，以及[注册你自己的](/zh/guide/custom-agents) | [指南 → 使用智能体](/zh/guide/agents) |
 | **Model Providers** | 智能体使用的 API 提供商凭据 | [指南 → 认证与模型](/zh/guide/authentication) |
 | **Quick Messages** | 供 composer 使用的可复用消息片段 | [快捷消息](/zh/reference/settings/quick-messages) |
 | **Shortcuts** | 键盘快捷键 | [快捷键](/zh/reference/settings/shortcuts) |

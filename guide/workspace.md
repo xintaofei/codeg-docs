@@ -30,6 +30,8 @@ The desktop workspace is **four columns** side by side, each with its own header
 
 The **terminal** opens beneath the two center columns, and a **status bar** along the bottom shows your conversation count (click it for a per-agent breakdown), running background tasks, update notices, and the [command launcher](#run-a-saved-command). Attached to a remote workspace, its name shows there too.
 
+When a newer Codeg is out, the status bar says so itself rather than waiting to be found in Settings: a **New v…** badge appears, and clicking it opens a popover with the version, the full **What's new** release notes, and the buttons to act on it — the same **Download → Install → Restart** sequence as the settings panel, plus **Later** to wave it off. Dismissing a release quiets it in every open window, and leaves a plain grey icon behind so you can still get back to it; the next release lights the badge up again. → [Settings → System](/reference/settings/system#software-update)
+
 There's no full-width title bar — instead, the window chrome lives in two **corner clusters** that stay put as panels open and close: top-left toggles the sidebar and switches remote workspace, top-right holds **Terminal**, **Auxiliary Panel**, and **Settings**. Every panel resizes by dragging, and the side panels and terminal collapse away when you want room — **⌘B** (conversations), **⌘E** (aux panel), **⌘J** (terminal). On a phone or a narrow browser window, the side panels become slide-in sheets.
 
 ## Folders and the sidebar
@@ -79,6 +81,7 @@ As the agent works, its **transcript** streams in: replies as formatted Markdown
 
 - **Tool calls** appear as collapsible cards tagged with status — *Awaiting Approval*, *Running*, *Completed*, *Denied*. Shell commands stream their output live; repeated actions fold into a single summary like "Ran 3 commands."
 - **What the agent touched** is summarized at the end of each reply, in two groups: **New files** (shown by default) and **Files changed** (folded up, with a count and `+`/`−` totals). Click a card to open that file in the editor, or use its **View Diff** button to see just what this reply did to it — and on the desktop, **Show in file manager** to reveal it on disk. Deleted files are listed too, marked **Remove**.
+- **File names are live.** A file the agent mentions — and any file you attached with `@` — renders as a **badge** you can click to open in the file pane. **Right-click** it for the same actions the file tree offers: reveal it in **Finder / Explorer / your file manager**, **Copy relative path**, or **Copy absolute path**. (The reveal option is hidden where it couldn't work — in the browser, or a desktop window attached to a remote workspace — and the relative form is greyed out for a file outside the current folder.)
 - **Permission prompts.** When the agent needs the go-ahead — to run a command, apply an edit, follow a plan — a card docks just above the composer: *"Agent requests permission to continue this turn."* Its buttons are the agent's own choices (Allow, Reject, and the like). A separate card handles multiple-choice questions the agent asks you.
 - **Delegated work.** When one agent hands off to another, a **Sub-agents** overlay tracks the delegated sessions — the heart of [Multi-Agent Collaboration](/guide/multi-agent).
 - Each turn ends with its **model, token, and duration** stats, and you can **export** a whole conversation to image, Markdown, or HTML.
@@ -135,15 +138,38 @@ The center area is **tabbed**, so several sessions stay open at once:
 
 - **Conversation tabs** reorder by dragging and **pin** with a double-click. **⌘T** opens a new conversation, **⌘W** closes a tab, **⌘Tab** cycles between them.
 - **File tabs** track the files, diffs, and previews you've opened in the file pane.
+- **Unsent drafts survive a restart.** A conversation you started but never sent comes back where it was — with whatever you'd typed in the composer still in it. Each draft keeps its own text, so two of them side by side no longer overwrite each other.
+
+### Split the conversation view into groups
+
+One tab strip isn't always enough. **Right-click any conversation tab** and you can split the conversation area into **tab groups** — the same idea as an editor's split panes, with no fixed limit on how many:
+
+- **Split Right** / **Split Down** — divide the current group in two. The new group opens on a **fresh draft**, because a conversation can't be open in two groups at once.
+- **Split and Move Right** / **Split and Move Down** — same split, except *this* tab moves into the new group.
+
+Every group is a complete workspace of its own: its own tab strip, its own conversation header underneath, and its own **new-conversation** button that inherits that group's folder. Only one conversation is *active* at a time — the one the composer and shortcuts act on — so splitting never leaves you guessing where a keystroke landed.
+
+Once you're split, the same right-click menu manages the layout:
+
+- **Move to Opposite Group**, or **Move to Group *n*** when there are several (each listed with the conversation it's showing).
+- **Change Splitter Orientation** — flip a side-by-side pair into a stacked one, or back.
+- **Unsplit** dissolves the current group into its neighbour; **Unsplit All** collapses everything back to one.
+
+You can also just **drag a tab across** — onto another group's strip, or anywhere in its pane — and a floating chip follows the cursor while a drop indicator shows where it will land. **Drag the divider** between two groups to change how the space is shared. Splits mix freely: split right, then split one of those halves downward, and you get a grid.
+
+Your layout is remembered **per workspace**, drafts included — reopen Codeg and the split comes back, with the same conversations in the same groups.
+
+Two small rules keep this predictable. A **draft stays in the group that spawned it** (it has nothing on the server to move yet), so its move items and cross-group drag are withheld — reordering it inside its own group still works. And **moving a tab between groups doesn't interrupt it**: the session keeps its connection and keeps streaming while it changes home.
 
 ### Tile several sessions side by side
 
-Right-click any conversation tab and choose **Tile Display** to lay *all* of your open conversations out next to each other in a single view. It isn't a fixed two-up split — it's **one pane per open tab**, side by side, scrolling horizontally when they don't all fit. This is how you run a fleet of agents at once: start a task in one, a different task in another, and watch every transcript stream in parallel without switching tabs.
+Splitting shows one conversation per group. **Tile Display** does the opposite — it shows *all* of a group's tabs at once. Right-click a conversation tab and choose it to lay that group's conversations out next to each other: not a fixed two-up split, but **one pane per open tab**, side by side, scrolling horizontally when they don't all fit. This is how you run a fleet of agents at once: start a task in one, a different task in another, and watch every transcript stream in parallel without switching tabs.
 
-- **Panes are your tabs.** Open another conversation (⌘T or the sidebar) to add a pane; close a tab to remove one. You need at least two open conversations for tiling to take effect.
+- **Panes are your tabs.** Open another conversation (⌘T or the sidebar) to add a pane; close a tab to remove one. You need at least two conversations in the group for tiling to take effect.
 - **Mix projects freely.** Tiled panes aren't tied to one folder — put sessions from different projects side by side.
 - **One pane is active.** The active pane — the one the composer and shortcuts act on — is outlined with a flowing gradient border. Click any other pane to focus it.
-- **Leave anytime.** Right-click → **Exit Tile** returns you to the single-tab view.
+- **It's per group.** Tiling and splitting compose: tile one group into a wall of transcripts and leave the group beside it on a single conversation.
+- **Leave anytime.** Right-click → **Exit Tile** returns that group to the single-tab view.
 
 Tiling is a great companion to [multi-agent collaboration](/guide/multi-agent): tile the lead session beside the sub-agent sessions it spawns and watch the whole team work.
 

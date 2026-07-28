@@ -11,6 +11,10 @@ description: The System settings screen — Codeg's operations hub for software 
 
 Checks the configured release source for a newer Codeg and, where it can, installs it in place. The panel shows your **current version** and a **Check for updates** button; after a check it notes the time (*"Last checked…"*) and either *"You're on the latest version"* or the details of the release waiting for you — its version, date, and full release notes.
 
+::: tip You don't have to come looking
+A new release also announces itself in the workspace: a **New v…** badge appears in the [status bar](/guide/workspace#the-layout), and its popover carries the same version, **What's new** notes, and actions. Both surfaces read one shared check — a single fetch answers both, and they never disagree. **Later** dismisses a release, per version and across every open window, leaving a plain grey icon you can still click; the next release lights the badge again.
+:::
+
 What the upgrade button does depends on where you're running — this is the one screen where desktop and server genuinely differ:
 
 - **Desktop app** — **Upgrade to vX** downloads the release, shows a progress bar, and when it's staged flips to **Restart to update**; clicking that relaunches into the new version. This is Codeg's built-in auto-updater.

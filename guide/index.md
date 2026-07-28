@@ -27,6 +27,7 @@ Codeg is agent-agnostic — one consistent interface over many coding CLIs.
 
 - [**Working with Agents**](/guide/agents) — enable an agent, run its preflight check, and start a session.
 - [**Supported Agents**](/guide/supported-agents) — the full roster, and where each agent keeps its sessions on disk.
+- [**Custom Agents**](/guide/custom-agents) — register any other ACP-compatible agent: pick one from the public registry or paste its distribution JSON.
 - [**Authentication & Models**](/guide/authentication) — sign in with an agent's own plan, point it at a custom endpoint, or use a provider API key, and choose your model.
 - [**Multi-Agent Collaboration**](/guide/multi-agent) — let the main agent delegate to sub-agents of other types within a single task, each running as its own session.
 
