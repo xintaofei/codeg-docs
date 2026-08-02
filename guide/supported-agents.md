@@ -36,6 +36,27 @@ Three delivery routes sit behind that last column:
 
 The order above is the **default Agent List order** in Settings → Agents. It's a preference, not a ranking — drag agents to reorder them, and the first enabled one becomes Codeg's fallback when nothing else has picked the agent for a conversation. → [Working with Agents](/guide/agents#start-a-session)
 
+## ACP adapters {#acp-adapters}
+
+Codeg speaks exactly one language to an agent: **ACP**. For ten of the twelve that costs nothing, because the package Codeg installs *is* the vendor's own CLI — Gemini, OpenClaw, OpenCode, Cline, Hermes, CodeBuddy, Kimi Code, Pi, Grok, and Cursor all ship the protocol themselves, which is why a copy you installed by hand is picked up straight away.
+
+**Claude Code and Codex are the two exceptions.** Anthropic's `claude` CLI and OpenAI's `codex` CLI don't speak ACP. So what Codeg installs for those two entries isn't the vendor CLI at all — it's a separate **ACP adapter**: an npm package, maintained by the Agent Client Protocol organization (the project the Zed team originally started), that wraps the vendor's agent and translates it into the protocol.
+
+| Entry in Codeg | Package it installs | Executable | Upstream |
+| -------------- | ------------------- | ---------- | -------- |
+| **Claude Code** | `@agentclientprotocol/claude-agent-acp` | `claude-agent-acp` | [agentclientprotocol/claude-agent-acp](https://github.com/agentclientprotocol/claude-agent-acp) |
+| **Codex** | `@agentclientprotocol/codex-acp` | `codex-acp` | [agentclientprotocol/codex-acp](https://github.com/agentclientprotocol/codex-acp) |
+
+That table answers the most common surprise on this page: **"I have `claude` in my terminal, but Codeg says it's not installed."** Both halves of that sentence are true. Codeg looks for `claude-agent-acp`, not `claude` — and for `codex-acp`, not `codex`. These aren't two names for one thing; they're different packages with different executable names, and having one tells you nothing about the other.
+
+Installing the adapter doesn't touch the CLI you already have. It's a separate package under its own name — it won't overwrite, upgrade, or uninstall your `claude` or `codex`. It doesn't *need* one either: each adapter carries its own runtime, `claude-agent-acp` depending on `@anthropic-ai/claude-agent-sdk` and `codex-acp` on `@openai/codex`, both pulled down with it at install time. So either agent runs on a machine that has never seen the vendor CLI.
+
+What the adapter does share is your configuration — including being signed in. Claude Code reads `~/.claude` (`CLAUDE_CONFIG_DIR` moves it) and Codex reads `~/.codex` (`CODEX_HOME` moves it): the same directories the CLIs use, and the same files Codeg's own settings panes write to, `~/.claude/settings.json` and `~/.codex/config.toml`. Sign in once in your terminal and the adapter simply continues with that account — there's no second login. History follows the same rule and stays in the vendor's own folders, [as the table below shows](#where-each-agent-keeps-its-sessions).
+
+::: tip Point the Codex adapter at your own binary
+Set `CODEX_PATH` in the Codex agent's **Environment Variables** and `codex-acp` runs the executable you name instead of the copy it bundles — useful if you keep a particular `codex` build around. → [Working with Agents](/guide/agents#configure-an-agent)
+:::
+
 ## Where each agent keeps its sessions
 
 Every agent stores its own conversation history in its own place and format, long before Codeg is in the picture. That's exactly what [Conversation Aggregation](/guide/aggregation) reads when it imports your past work: Codeg looks in each agent's native store for sessions you ran in the folder you're importing, and lists what it finds.

@@ -41,7 +41,7 @@ What it checks depends on how the agent is delivered:
 
 Every failing check comes with a **fix button** right beside it — *Install Node.js*, *Install uv*, *Install Plugins*, and so on — and the version row offers **Install**, **Upgrade**, or **Uninstall** as needed. Changed something outside Codeg? **Refresh check** re-runs the preflight.
 
-**Installed an agent's CLI yourself?** Codeg counts that. Where it has no managed install of its own, it probes your system for the command — an `npx` package via `npm list -g`, a binary on your `PATH`, or the plain `--version` convention — and reports the real version instead of *Not installed*. Since a session already preferred whatever was on your `PATH`, this just means the version row now agrees with what actually runs.
+**Installed an agent's CLI yourself?** Codeg counts that. Where it has no managed install of its own, it probes your system for the command — an `npx` package via `npm list -g`, a binary on your `PATH`, or the plain `--version` convention — and reports the real version instead of *Not installed*. Since a session already preferred whatever was on your `PATH`, this just means the version row now agrees with what actually runs. Claude Code and Codex are the exception — there Codeg probes for an ACP adapter with its own executable name, not the `claude` or `codex` you already have. → [ACP adapters](/guide/supported-agents#acp-adapters)
 
 ::: tip Preflight checks the plumbing, not the login
 Preflight confirms the runtime, version, and install — not whether you're signed in. Getting an agent authenticated (its own subscription, an API key, or a custom endpoint) is a separate step. → [Authentication & Models](/guide/authentication)

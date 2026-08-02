@@ -36,6 +36,27 @@ Codeg 会为你安装、固定版本并更新其中的每一个——你从不�
 
 上面的顺序是设置 → 智能体中**默认的智能体列表顺序**。它是一种偏好设置，而非排名——拖动智能体即可重新排序，而当没有其他方式为一段对话选定智能体时，第一个已启用的智能体就成为 Codeg 的后备选择。→ [使用智能体](/zh/guide/agents#start-a-session)
 
+## ACP 适配器 {#acp-adapters}
+
+Codeg 与智能体之间只说一种语言：**ACP**。十二个里有十个不需要为此付出什么，因为 Codeg 安装的那个包*本身就是*厂商自己的 CLI——Gemini、OpenClaw、OpenCode、Cline、Hermes、CodeBuddy、Kimi Code、Pi、Grok 和 Cursor 都自带这个协议，所以你手动装过的那一份，Codeg 会直接认出来。
+
+**Claude Code 和 Codex 是仅有的两个例外。** Anthropic 的 `claude` CLI 和 OpenAI 的 `codex` CLI 并不会说 ACP。所以 Codeg 为这两个条目装的根本不是厂商 CLI，而是一个独立的 **ACP 适配器**：一个由 Agent Client Protocol 官方组织（该项目最初由 Zed 团队发起）维护的 npm 包，它把厂商的智能体包裹起来，翻译成这个协议。
+
+| Codeg 里的条目 | 实际安装的包 | 可执行命令 | 上游仓库 |
+| -------------- | ------------ | ---------- | -------- |
+| **Claude Code** | `@agentclientprotocol/claude-agent-acp` | `claude-agent-acp` | [agentclientprotocol/claude-agent-acp](https://github.com/agentclientprotocol/claude-agent-acp) |
+| **Codex** | `@agentclientprotocol/codex-acp` | `codex-acp` | [agentclientprotocol/codex-acp](https://github.com/agentclientprotocol/codex-acp) |
+
+这张表回答的，正是本页最常见的那句困惑：**"我终端里明明有 `claude`，Codeg 却说没装。"** 这句话的两半其实都没错。Codeg 找的是 `claude-agent-acp` 而不是 `claude`，是 `codex-acp` 而不是 `codex`。它们不是同一个东西的两种叫法，而是两个不同的包、两个不同的可执行命令——有没有其中一个，说明不了另一个的情况。
+
+装适配器不会动你已有的 CLI。它是一个用着自己名字的独立包，不会覆盖、升级或卸载你的 `claude` 和 `codex`。它也并不*需要*它们：每个适配器都自带运行时，`claude-agent-acp` 依赖 `@anthropic-ai/claude-agent-sdk`，`codex-acp` 依赖 `@openai/codex`，安装时一并带下来。所以在一台从没装过厂商 CLI 的机器上，这两个智能体照样能跑。
+
+适配器真正与 CLI 共用的是配置——登录状态也在其中。Claude Code 读的是 `~/.claude`（用 `CLAUDE_CONFIG_DIR` 可以改），Codex 读的是 `~/.codex`（用 `CODEX_HOME` 可以改）：正是两个 CLI 各自使用的目录，也正是 Codeg 的设置面板所写入的那两个文件——`~/.claude/settings.json` 和 `~/.codex/config.toml`。你在终端里登录过一次，适配器就沿用那个账号，不必再登录一遍。历史记录也遵循同样的规则，仍留在厂商自己的目录里，[见下方的表格](#where-each-agent-keeps-its-sessions)。
+
+::: tip 让 Codex 适配器改用你指定的可执行文件
+在 Codex 智能体的**环境变量**中设置 `CODEX_PATH`，`codex-acp` 就会运行你指定的那个可执行文件，而不是它自带的那一份——如果你手头留着某个特定的 `codex` 构建版本，这会很有用。→ [使用智能体](/zh/guide/agents#configure-an-agent)
+:::
+
 ## 每个智能体把会话保存在何处 {#where-each-agent-keeps-its-sessions}
 
 早在 Codeg 出现之前，每个智能体就以自己的位置和格式存储着自己的对话历史。这正是[对话聚合](/zh/guide/aggregation)在导入你过往工作时所读取的内容：Codeg 会在每个智能体的原生存储中查找你在所导入文件夹里运行过的会话，并列出它找到的内容。
