@@ -1,6 +1,6 @@
 ---
 title: The Workspace
-description: A tour of the Codeg workspace — the conversation, files, diffs, git changes, and terminal that make up its integrated engineering loop.
+description: A tour of the Codeg workspace — the conversation, files, diffs, git changes, and terminal that make up its integrated engineering loop, and how to link several folders into one of them.
 ---
 
 # The Workspace
@@ -34,6 +34,8 @@ When a newer Codeg is out, the status bar says so itself rather than waiting to 
 
 There's no full-width title bar — instead, the window chrome lives in two **corner clusters** that stay put as panels open and close: top-left toggles the sidebar and switches remote workspace, top-right holds **Terminal**, **Auxiliary Panel**, and **Settings**. Every panel resizes by dragging, and the side panels and terminal collapse away when you want room — **⌘B** (conversations), **⌘E** (aux panel), **⌘J** (terminal). On a phone or a narrow browser window, the side panels become slide-in sheets.
 
+The [task board](/guide/tasks) and [automations](/guide/automations) take over that whole area, so while one of them is open the top-right cluster swaps its terminal and panel toggles — which would have nothing to act on — for a **back arrow** to your conversations. It's the way out when the sidebar is collapsed and there's no conversation on screen to click, and it changes nothing else: whatever tab you were on comes back exactly as you left it.
+
 ## Folders and the sidebar
 
 The left sidebar is your home base: every **folder** you've opened — a project directory — with its conversations grouped beneath it. Open a project folder to add one (**⌘O**). Right-click a folder's header (or click its **⋯**) for everything you can do with it:
@@ -43,6 +45,7 @@ The left sidebar is your home base: every **folder** you've opened — a project
 - **Set alias.** Give the folder a friendlier display name without touching anything on disk — it shows as *alias [ folder ]* in the sidebar and the conversation header. Leave the field empty to clear it and fall back to the plain name.
 - **Import local sessions.** Open the import window with this project's past sessions preselected, to pull your agents' own history into the workspace — Codeg's conversation aggregation in action. → [Conversation Aggregation](/guide/aggregation) covers what it sweeps and how it matches.
 - **Manage conversations.** Bulk-select the folder's conversations to filter by agent or status, change their status, or delete them.
+- **Linked folders.** Bring other directories into this workspace as subdirectories, so one agent can work across all of them. → [Work across several folders](#work-across-several-folders)
 - **Open in.** Reveal the folder in Finder / Explorer / your file manager, or drop into a terminal there (desktop only).
 - **Remove from workspace.** Take the folder out of Codeg — its tabs and terminals close, but nothing on disk is touched.
 
@@ -60,6 +63,60 @@ Two buttons at the top of the sidebar keep a long history manageable. **Locate A
 - **Section order** — **Folders on top** (the default) or **Chat on top**.
 
 On the desktop the same menu also expands or collapses every group at once.
+
+## Work across several folders
+
+A workspace doesn't have to be one directory. Since **0.23.1** you can **link other folders in as subdirectories** of it — a sibling service, a shared library, the docs repo — and the agent reads and edits across all of them from the one conversation. The file tree shows them, workspace search covers them, and `@`-mentions reach into them.
+
+It takes one gesture: **right-click the folder in the sidebar → Linked folders**, then **Add folders** and pick as many as you like. (Opening a brand-new folder offers the same step right after you choose the root, so you can assemble a workspace as you create it.)
+
+### What it's for
+
+The point isn't really "more directories." It's that the root stops having to be *the* project and becomes the place you **assemble** one — for as long as the work needs it, and no longer.
+
+- **A frontend and a backend that live in separate repos.** Link `api` next to `web` and one turn can change an endpoint and the code that calls it, with both sides of the contract in front of the agent instead of one side and a guess.
+- **Whichever microservices this week's change actually spans.** Link the two or three involved, do the work, unlink them, link a different set next week. The workspace becomes a *view over* your services rather than a checkout you have to maintain.
+- **An empty root that owns no code at all.** Make a directory purely to compose things — `~/work/current-task` — and link whatever the job needs into it. Nothing to tidy up afterwards, because there was never anything there.
+- **Code beside its documentation.** Link the docs repo into the code repo and a change plus the page describing it land in the same session, in the same review. (This is how these docs are kept in step with Codeg itself.)
+- **A library you'd rather fix at the source.** Link the shared package into the app that depends on it, and the agent can fix the bug where it actually lives instead of papering over it in the caller.
+- **Reference you have no intention of changing.** A design-system repo, an API spec, another team's service. The agent works from the real interface rather than from what it can infer about it.
+- **An old repo and its replacement, side by side**, while you port code across — the one case where having both trees open is the entire job.
+- **Sample data you deliberately keep out of the repo.** Link a directory of fixtures or real-world input files so the agent can run against them without any of it being committed.
+
+### How it works underneath
+
+The links are **real filesystem links** on disk, and that's a deliberate choice: agent CLIs run with their working directory set to the workspace root, so a merge that existed only in Codeg's UI would be invisible to them. Because it's a real directory entry, everything else follows — `ls` finds it, the agent's own file tools find it, your terminal finds it.
+
+On macOS and Linux that's a symlink. On **Windows** it's a symlink too where Windows allows one, but creating one needs a privilege an ordinary process only has with **Developer Mode** on — so Codeg falls back to a **directory junction**, which needs no privilege and behaves the same for the local absolute paths it links. If both fail you'll be told to turn on Developer Mode or run Codeg as administrator.
+
+Each linked folder appears under the name of its own directory, marked in the file tree as a **linked folder**. If that name is already taken in the root, Codeg disambiguates to `api-2` rather than overwriting anything — case-insensitively, since macOS and Windows treat `API` and `api` as the same entry.
+
+### Manage them later
+
+Reopen **Linked folders** on the same menu and each link shows its current state:
+
+| State | What happened | What to do |
+| ----- | ------------- | ---------- |
+| **Linked** | Working normally | — |
+| The link is gone from this folder | Something deleted the symlink | **Recreate link** |
+| Another entry now uses this name | A real file or folder took the name | **Rename**, then recreate |
+| The linked folder no longer exists | The target moved or was deleted | Re-link it at its new path |
+
+**Rename** changes only how it appears inside the workspace — the directory it points at keeps its own name. **Remove link** deletes the symlink and nothing else; the linked folder itself is never touched.
+
+A switch on that screen — on by default — **keeps links out of `git status`** by writing the link name into the repository's `.git/info/exclude`. That file is local to your clone and never committed, so nobody else's checkout learns about your linking habits.
+
+It applies when the workspace folder is a git repository, and it's best-effort: if the rule can't be written, the only consequence is a noisier `git status`, never a failed link. Two gaps worth knowing — a workspace that isn't a repository has nowhere to put the rule, and **renaming a link doesn't carry its rule across**, so the new name will show up as untracked until you exclude it yourself.
+
+Some picks it simply refuses, telling you which: the workspace folder **itself**, a folder that **contains** the workspace, something **already inside** it (no link needed — it's already reachable), and something **already linked**.
+
+::: tip Only the links you made are followed
+Codeg confines every file operation to the workspace root, and that guard doesn't just wave symlinks through — it consults the list of links *you* created. So a repository you cloned that happens to ship `secrets -> ~/.ssh` stays exactly as unreadable as it was before you linked anything. → [Privacy & Security](/reference/privacy)
+:::
+
+::: warning What a link doesn't extend
+Two things still follow the workspace root only. **Live file watching** — edits an agent makes inside a linked folder won't refresh the tree on their own; reopen or refresh it. And the **Changes** and **Commits** panels track the root's repository, so a linked repo's own working-tree changes and history aren't shown there. Open that repo as its own folder when you want to review and commit its changes.
+:::
 
 ## Start a session — the composer
 
@@ -79,7 +136,7 @@ Codeg has no global "auto-approve everything" switch. How freely an agent acts i
 
 ## Follow along — the conversation
 
-As the agent works, its **transcript** streams in: replies as formatted Markdown (code, math, and diagrams included), its reasoning, and a live **plan** checklist for multi-step tasks.
+As the agent works, its **transcript** streams in: replies as formatted Markdown (code, math, and diagrams included), its reasoning, and a live **plan** checklist for multi-step tasks. A plan long enough to bury the rest of the turn caps its height and offers **show more** / **show less**, the same way a long message you sent already does.
 
 - **Tool calls** appear as collapsible cards tagged with status — *Awaiting Approval*, *Running*, *Completed*, *Denied*. Shell commands stream their output live; repeated actions fold into a single summary like "Ran 3 commands."
 - **A result with no card of its own** — an MCP tool Codeg has never seen, say — renders as a **collapsible tree** rather than a wall of JSON: small payloads open fully, large ones show just their outline, and long strings fold to one line. **Show raw JSON** switches back to the plain text whenever you want it.

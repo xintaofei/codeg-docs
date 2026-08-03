@@ -17,7 +17,7 @@ description: 如何使用 Codeg——工作区与对话聚合、智能体与多�
 
 每个 Codeg 会话运行所在的界面——请先学习这些。
 
-- [**工作区**](/zh/guide/workspace)——集成的工程闭环：文件树、编辑器与差异视图、git 变更、提交，以及一个内嵌终端，全部与智能体并排呈现。
+- [**工作区**](/zh/guide/workspace)——集成的工程闭环：文件树、编辑器与差异视图、git 变更、提交，以及一个内嵌终端，全部与智能体并排呈现——当一个项目并非全貌时，还可以[同时纳入多个文件夹](/zh/guide/workspace#work-across-several-folders)。
 - [**对话聚合**](/zh/guide/aggregation)——将你在每个受支持智能体中的现有会话汇聚到一个可搜索的工作区中，并从任意会话中断处继续。
 - [**Git 与 Worktree**](/zh/guide/git)——查看差异、暂存与提交、管理远程仓库，并借助内置的 git worktree 并行开展工作。
 

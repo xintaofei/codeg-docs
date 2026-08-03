@@ -9,6 +9,18 @@ A conversation is something you sit in front of. A **task** is something you wri
 
 The Task Board is a queue of to-dos that agents work through on their own. Each task gets **its own copy of the code** — a git worktree beside your project — so several can run at once without touching each other or the tree you're working in. When one finishes it doesn't merge itself: it moves to a review column and waits for you. You read the diff, send it back for changes, or accept it — and only then does it land on your branch.
 
+<div class="light-only">
+
+![The Codeg task board, with tasks moving from To do through In progress to Done](/images/tasks-light.png)
+
+</div>
+
+<div class="dark-only">
+
+![The Codeg task board, with tasks moving from To do through In progress to Done](/images/tasks-dark.png)
+
+</div>
+
 ::: info Beta
 The board carries a **Beta** label in the app. It's usable and its data is durable, but expect the surface to keep moving between releases. New in **0.23**.
 :::
@@ -20,7 +32,7 @@ A task is a title, a description, and the composer state to run it with — an a
 It moves through a fixed pipeline:
 
 ```text
-to do → queued → running ⇄ awaiting input → to review → merging → done
+to do → queued → setting up → running ⇄ awaiting input → to review → merging → done
 ```
 
 with **failed** and **canceled** as side paths off it. Two rules hold throughout: **done means merged** — nothing else writes it, and it never rolls back — and a task never skips the review stop in between.
@@ -29,18 +41,18 @@ That's what separates a task from the two things next to it. A [conversation](/g
 
 ## Open the board
 
-**Task Board** sits in the left sidebar, under Automations. It takes over the main area the same way Automations does, and carries a small **count badge** when tasks are waiting on you — anything in *awaiting input*, *to review*, or *failed*, so you can tell from any screen that there's something to look at.
+**Task Board** sits in the left sidebar, under Automations. It takes over the main area the same way Automations does — a **back arrow** in the top-right corner returns you to your conversations, with whatever tab you had open still there — and it carries a small **count badge** when tasks are waiting on you: anything in *awaiting input*, *to review*, or *failed*, so you can tell from any screen that there's something to look at.
 
 The board is four columns:
 
 | Column | What's in it |
 | ------ | ------------ |
 | **To do** | Written down, not started — plus anything queued behind the concurrency limit |
-| **In progress** | An agent is working on it right now |
+| **In progress** | Being set up, or an agent is working on it right now |
 | **Needs you** | Blocked on a question, finished and waiting for review, mid-merge, or failed |
 | **Done** | Merged (and, if you ask for them, canceled ones) |
 
-Cards carry the status, the folder, the agent, a `+`/`−` line count once there are changes, and — while a task is live — the **latest milestone the agent reported**, so the column tells you what's happening without opening anything. Click a card for its detail sheet; the round buttons on the right are its actions.
+Cards carry the status, then a meta line reading *folder / branch · `+`/`−` line count · a relative time*. That last one is the most recent milestone the task actually reached — done or canceled, else review or failed, else started, else created. While a task is live the card also shows the **latest milestone the agent reported**, so the column tells you what's happening without opening anything. Click a card for its detail sheet; the round buttons on the right are its actions.
 
 ## Add a task
 
@@ -66,7 +78,9 @@ Nothing starts by itself unless you say so. Three ways to start one:
 - **Drag** a to-do onto the *In progress* column — it reads *Release to start* when you're over it.
 - **Process all** in the toolbar, which claims every to-do it's allowed to, in board order. With a folder selected it sweeps that folder; on *All folders* it sweeps every folder that has to-dos.
 
-Either way the **concurrency limit** applies: tasks beyond it sit in *queued* and start as slots free up. The limit is per folder, and defaults to **2**.
+Either way the **concurrency limit** applies: tasks beyond it sit in *Queued* and start as slots free up. The limit is per folder, and defaults to **2**.
+
+*Queued* means exactly that and nothing more — waiting for a free slot. Once a task has one, it moves to **Setting up** in the *In progress* column while its worktree is created and its init command runs, which is where a task installing dependencies for three minutes belongs. Cancel is available throughout, and it genuinely stops the install rather than leaving `pnpm install` to finish in the background.
 
 Turn on **Process automatically** in task settings and you don't press anything at all — to-dos claim themselves as capacity appears, and the board becomes a genuine work queue.
 
@@ -77,7 +91,7 @@ Cards in the *To do* column also **reorder by dragging**, and that order is what
 The moment a task starts, before any agent is involved:
 
 1. **A worktree is created** beside your project — directory `<project>-task-<id>`, branch `task/<id>` — pinned to the exact commit your project's HEAD was on right then, so a branch switch mid-flight can't drift it. The worktree is reused across every later run of that task.
-2. **The init command runs**, if the folder has one (`pnpm install`, say). It runs only in a *freshly created* worktree, never on a reused one, and a non-zero exit **aborts the launch** rather than letting the agent start half-installed.
+2. **The init command runs**, if the folder has one (`pnpm install`, say). It runs only in a *freshly created* worktree, never on a reused one, and a non-zero exit **aborts the launch** rather than letting the agent start half-installed. An install that gets interrupted — you cancelled, or Codeg quit — runs again next time for the same reason.
 3. **The agent launches** in that worktree with your task description, plus a standing instruction: commit to the task branch as freely as you like, but do **not** merge into, rebase onto, or push the base branch — the user lands the result after review.
 
 From there it's a real agent session, and it produces a real conversation you can find in the sidebar under the worktree folder.
@@ -106,7 +120,7 @@ A task lands in **Needs you** for four different reasons, and the status on the 
 
 Open a reviewed task and the detail sheet lays out everything you need to judge it:
 
-- **Result** — the summary the agent wrote when it called `task_complete`.
+- **Result** — the summary the agent wrote when it called `task_complete`, rendered as Markdown, so its headings, lists and code read as intended. A long one folds behind **show more**.
 - **Changed files** — every file against the task's recorded base, with `+`/`−` counts. Click one for its diff, or **View full diff** for the lot.
 - **Progress** — the task's timeline: created, status changes, the launch config actually used, init-command output, agent milestones and verdict, preflight, merge attempts, and your own actions.
 - **Details** — branch, merge commit once there is one, change totals, and the created / started / finished timestamps. Total tokens sit in the header.
@@ -140,15 +154,34 @@ The merge lands in the folder you're working in, so it checks first: the folder 
 
 The **Task settings** dialog (top of the board) has a **Scope** switch: **All folders (global defaults)**, or one folder in particular. A folder either **follows the global defaults** — changes there apply here automatically — or has **Custom** settings of its own, and switching to Custom starts from whatever applies today.
 
-| Setting | What it does |
-| ------- | ------------ |
-| **Default agent** | The agent tasks in this folder run with, unless a task overrides it |
-| **Max concurrent tasks** | How many run at once, per folder. Default **2**; `0` = unlimited |
-| **Process automatically** | To-dos start on their own, up to that limit |
-| **Default merge strategy** | Squash or full history. Read when a merge starts — the merge dialog doesn't ask |
-| **Delete worktree after merge** | Whether that checkbox starts ticked |
-| **Preflight command** | Runs in the worktree when a task reaches review — the acceptance light |
-| **Worktree init command** | Runs inside a freshly created worktree before the agent starts |
+Below that, three tabs:
+
+| Tab | Setting | What it does |
+| --- | ------- | ------------ |
+| **General** | **Default agent** | The agent tasks in this folder run with, unless a task overrides it |
+| | **Process automatically** | To-dos start on their own, up to the concurrency limit |
+| | **Max concurrent tasks** | How many run at once, per folder. Default **2**; `0` = unlimited |
+| **Workflow** | **Default merge strategy** | Squash or full history, offered as two side-by-side choices. Read when a merge starts — the merge dialog doesn't ask |
+| | **Delete the worktree after merging** | Pre-ticks that box in the merge dialog; you can still change it there |
+| | **Worktree init command** | Runs inside a freshly created worktree before the agent starts |
+| | **Preflight command** | Runs in the worktree when a task reaches review — the acceptance light |
+| **Prompts** | Per-stage instructions | See below |
+
+### Add your own instructions per stage
+
+Every launch already carries a built-in prompt — the task itself, the worktree rules, and for a merge the exact git steps. The **Prompts** tab is where you add to it: pick a stage, write what your project needs, and your text is **appended** to Codeg's own wording under an *Additional instructions* heading. It refines the built-ins; it never replaces them, so you don't need to restate any of it.
+
+Five stages, each with its own example placeholder, and a dot on the ones that already carry text:
+
+| Stage | Sent when |
+| ----- | --------- |
+| **All stages** | Every prompt the agent receives, the merge run included |
+| **Task run** | A task runs for the first time |
+| **Retry run** | An interrupted or failed task is picked up again |
+| **Rework** | You send a task back with review feedback |
+| **Merge** | The agent lands the task onto the base branch |
+
+The split earns its keep because what belongs in one stage is nothing like what belongs in another. *All stages* is the place for house rules — *"follow the conventions in AGENTS.md; keep the final summary to two sentences."* **Rework** is where you'd write *"address every point in the feedback; don't refactor anything unrelated."* **Merge** is where *"write the landing commit message in English; call out any conflict you resolved by hand"* actually applies, and nowhere else.
 
 ## Keep the board tidy
 

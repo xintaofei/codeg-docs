@@ -17,6 +17,8 @@ Everything Codeg itself stores sits under **`~/.codeg/`** on the machine running
 
 Parsing, storage, git operations, and file work all happen **on-device**. There is no server component you don't run yourself: the desktop app keeps everything on your computer, and a [self-hosted server](/getting-started/deployment) keeps everything on that box. Nothing is uploaded to Codeg — because there is nowhere to upload it *to*.
 
+**File work stays inside the workspace.** Every read and write Codeg performs is confined to the folder you opened: it resolves the real path and refuses anything that lands outside. Symlinks are where that would normally leak, so they're checked against the [folders you linked in yourself](/guide/workspace#work-across-several-folders) — those are followed, and nothing else is. A repository you cloned that happens to ship a `secrets -> ~/.ssh` entry stays exactly as unreadable as it looks.
+
 ## What leaves your machine — and only when you act
 
 Codeg reaches the network for a handful of clearly-triggered reasons, each the direct result of something you did:

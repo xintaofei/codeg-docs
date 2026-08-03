@@ -20,7 +20,7 @@ Either route opens the **Import Local Sessions** window, which:
 
 1. **Scans first.** It walks every agent's session store, showing a live count per agent as it goes. Large histories take a moment.
 2. **Shows you everything it found**, grouped by project folder. Search by title or path, filter to one agent, or flip on **Importable only** to hide what's already in. Tick individual sessions, tick a whole folder, or **Select all**.
-3. **Reports what it did.** When the import finishes you get an **Import finished** summary — how many were **Imported**, had their **Titles updated**, were **Skipped**, plus **Folders created**, **Not found**, and **Failed** — then **Continue importing** or **Close**.
+3. **Reports what it did.** When the import finishes you get an **Import finished** summary — how many were **Imported**, **Refreshed**, or **Skipped**, plus **Folders created**, **Not found**, and **Failed** — then **Continue importing** or **Close**.
 
 Two things about that list are worth knowing. Folders you haven't opened in Codeg yet are badged **New** — import from one and Codeg creates the folder for you. And sessions already imported, or whose files have since disappeared, are still listed but locked, badged **Imported** or **Deleted**, so you can see what's being skipped before you commit.
 
@@ -50,12 +50,16 @@ Sessions are filed by the directory path they ran in. If you've since renamed or
 The summary at the end of an import tells you exactly what happened:
 
 - **Imported** — brand-new sessions added to the list.
-- **Titles updated** — a session already in Codeg whose **title** caught up. Many agents name a session only after it's been running a while, so a later import picks up that name. Nothing else about the session changes.
+- **Refreshed** — a session already in Codeg that caught up with what the agent's own store now says: its **title**, and its **last-activity time**. Many agents name a session only after it's been running a while, so a later import picks up that name; and a session you've kept using in the agent's own CLI now sorts by when you actually last touched it, not by when you first imported it.
 - **Skipped** — sessions already present with nothing to update.
 - **Folders created** — projects that weren't in your workspace yet and got added.
 - **Not found** and **Failed** — sessions whose files had vanished, and anything that errored (with the details listed).
 
-Because of that split, **re-importing is always safe.** Run it again after a work session and you'll pull in what's new without disturbing what's there: Codeg won't duplicate a session, overwrite a title you set yourself, or reshuffle your list. You can even see it before you click — anything already in carries an **Imported** badge and a locked checkbox.
+Because of that split, **re-importing is always safe.** Run it again after a work session and you'll pull in what's new without disturbing what's there: Codeg won't duplicate a session, overwrite a title you set yourself, or reshuffle your list. Renames, pins, and status are yours and stay untouched. You can even see it before you click — anything already in carries an **Imported** badge and a locked checkbox.
+
+::: tip A session you named yourself keeps its name
+Rename a Claude Code session with `/rename` (or `claude -n`, or Ctrl+R in its picker) and that's the name it imports under — not the summary the model wrote for itself. **CodeBuddy** works the same way. If you renamed more than once, the most recent one wins.
+:::
 
 ## Pick up where you left off
 
