@@ -23,7 +23,7 @@ The workspace is where you actually get work done in Codeg. It puts four things 
 
 The desktop workspace is **four columns** side by side, each with its own header strip and divided by draggable hairlines that run from the top edge to the bottom:
 
-- **Conversations (far left).** Every session across every folder you've opened — your history, and where you start new ones. They're grouped by project, each with a live status dot: *In Progress*, *Review*, *Completed*. The strip on top holds **new chat**, **search**, **automations**, and view options.
+- **Conversations (far left).** Every session across every folder you've opened — your history, and where you start new ones. They're grouped by project, each with a live status dot: *In Progress*, *Review*, *Completed*. The strip on top holds **new chat**, **search**, **automations**, the **[task board](/guide/tasks)**, and view options. Automations and the task board each carry their own badge — a failed run for one, a count of tasks waiting on you for the other — so a queue that needs attention says so from wherever you are.
 - **Conversation (center-left).** The agent's transcript, with the composer docked at the bottom. Its tabs sit on top, and a slim **detail header** below shows the folder breadcrumb and the conversation's title.
 - **Files (center-right).** The editor, diffs, and live previews for the files you open — right next to the conversation, so you can watch changes land as the agent makes them. It has its own tab strip and a file-path detail header.
 - **Aux panel (far right).** A tabbed panel — **Session Details · Files · Changes · Commits** — holding session info, the project tree, your working-tree changes, and commit history. When the panel is narrow, the four tabs fold into a single dropdown.
@@ -47,6 +47,8 @@ The left sidebar is your home base: every **folder** you've opened — a project
 - **Remove from workspace.** Take the folder out of Codeg — its tabs and terminals close, but nothing on disk is touched.
 
 The folder's real name is always its on-disk directory name — that never changes — but **Set alias** gives it a friendlier label, and color and grouping help you tell projects apart at a glance.
+
+**Import local sessions** isn't only on the folder menu. Right-click the empty space *around* the list for the same entry, and on a workspace with nothing in it yet the button sits right there on the empty state — next to *Open folder* and *Project boot* — since importing what you already have is usually the fastest way to make a fresh Codeg feel populated.
 
 ### Tidy the list — view options
 
@@ -80,11 +82,15 @@ Codeg has no global "auto-approve everything" switch. How freely an agent acts i
 As the agent works, its **transcript** streams in: replies as formatted Markdown (code, math, and diagrams included), its reasoning, and a live **plan** checklist for multi-step tasks.
 
 - **Tool calls** appear as collapsible cards tagged with status — *Awaiting Approval*, *Running*, *Completed*, *Denied*. Shell commands stream their output live; repeated actions fold into a single summary like "Ran 3 commands."
+- **A result with no card of its own** — an MCP tool Codeg has never seen, say — renders as a **collapsible tree** rather than a wall of JSON: small payloads open fully, large ones show just their outline, and long strings fold to one line. **Show raw JSON** switches back to the plain text whenever you want it.
 - **What the agent touched** is summarized at the end of each reply, in two groups: **New files** (shown by default) and **Files changed** (folded up, with a count and `+`/`−` totals). Click a card to open that file in the editor, or use its **View Diff** button to see just what this reply did to it — and on the desktop, **Show in file manager** to reveal it on disk. Deleted files are listed too, marked **Remove**.
 - **File names are live.** A file the agent mentions — and any file you attached with `@` — renders as a **badge** you can click to open in the file pane. **Right-click** it for the same actions the file tree offers: reveal it in **Finder / Explorer / your file manager**, **Copy relative path**, or **Copy absolute path**. (The reveal option is hidden where it couldn't work — in the browser, or a desktop window attached to a remote workspace — and the relative form is greyed out for a file outside the current folder.)
 - **Permission prompts.** When the agent needs the go-ahead — to run a command, apply an edit, follow a plan — a card docks just above the composer: *"Agent requests permission to continue this turn."* Its buttons are the agent's own choices (Allow, Reject, and the like). A separate card handles multiple-choice questions the agent asks you.
+- **What each option grants.** Where the agent tells Codeg — **Claude Code** and **Codex** do — a panel above those buttons spells out what each choice would actually allow, and each line is tagged with how long it lasts: **This run**, **This session**, **Saved to user settings**, **Saved to project settings**, **Saved to local project settings**, or **Saved permanently**. It's the difference between waving a command through once and writing a rule into a file your teammates will inherit, said before you press anything.
+- **An empty reply says why.** If a turn ends with nothing in it, the alert doesn't just tell you to check your configuration — it names which of three things happened: the agent genuinely produced no response, it produced output Codeg couldn't parse (usually an agent/protocol version mismatch), or it sent only status updates (plan, mode, usage) and no reply. Expand the alert for the agent's own output, captured from its error stream and scrubbed of anything that looks like a credential.
 - **Delegated work.** When one agent hands off to another, a **Sub-agents** overlay tracks the delegated sessions — the heart of [Multi-Agent Collaboration](/guide/multi-agent).
 - Each turn ends with its **model, token, and duration** stats, and you can **export** a whole conversation to image, Markdown, or HTML.
+- **Turn a message into a task.** Beside the copy button — on your own messages and on finished replies alike — sits a checklist icon: **Create task from message**. It takes that text over to the [task board](/guide/tasks) as a new to-do, pre-filled with the project folder, for the follow-up you noticed but don't want to do now.
 
 ## Work with files — editor, diffs, and previews
 
@@ -123,6 +129,8 @@ Two right-panel tabs put version control a glance away:
 
 - **Changes** lists your working-tree edits — tracked and untracked, with per-file line counts. From here you can open a file's diff, discard an edit (**Rollback**), or start a commit.
 - **Commits** is your whole history, as a timeline that loads more as you scroll. Two filter pills narrow it — **Branch** (every branch by default) and **Author** — and Codeg remembers both per project. Click a commit to expand it: the full message, the files it touched with their `+`/`−` counts (click one for its diff), and which branches contain it. Right-click for **View Diff**, **New branch…**, **Reset to Here**, or **Push…**
+
+The Branch pill has a **HEAD** entry above the branch list — *follows the current branch* — which is the one to pick when you're hopping between branches. Naming a branch pins the view to that branch; **HEAD** re-resolves on every query, so the history follows you through each checkout and keeps working even on a detached HEAD.
 
 Committing opens a dedicated **Commit** window: tick the files you want, write a message, and choose **Commit** or **Commit and Push**. The **branch chip** below the composer covers the rest — pull, fetch, stash, worktrees, remotes, and switching or merging branches. → [Branch and run git](#branch-and-run-git)
 

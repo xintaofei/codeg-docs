@@ -25,7 +25,7 @@ Codeg 不附带自己的任何模型。每个智能体都带来自己的凭据�
 
 - **Claude Code**——选择**官方订阅**，Codeg 就会使用你现有的 `claude` 登录。无需密钥。
 - **Gemini**——选择 **Google 登录**，并先在终端中运行 `gemini` 来完成 Google 的登录。
-- **Kimi Code**、**CodeBuddy**——在终端中运行智能体自己的登录命令（`kimi login`、`codebuddy`），Codeg 会自动识别它。
+- **Kimi Code**、**CodeBuddy**——在终端中运行智能体自己的登录命令（`kimi login`、`codebuddy`），Codeg 会自动识别它。Kimi Code 走 API 密钥这条路时另有一个自己的面板。→ [Kimi Code](#kimi-code-provider-model-and-reasoning)
 - **Grok** 和 **Cursor** 各自拥有一个**认证方式**选择器：
   - **Grok**——**官网订阅**（通过 `grok login` 使用 SuperGrok 或 X Premium+；不存储任何东西）、**XAI API 密钥**（来自 xAI 控制台的密钥，用于无人值守运行），或**自定义接口**（一个带有自己的基础 URL 和密钥的自定义模型，它会成为 Grok 的默认模型）。
   - **Cursor**——**官方订阅**，此时 Codeg 会向你展示需要运行的 `cursor-agent login` 命令（会打开一个浏览器窗口），你刷新后它会显示**已登录**；或者使用来自 Cursor 控制台的 **Cursor API 密钥**，用于无人值守和服务器机器。请注意该密钥是一个 *Cursor 账户*密钥——`cursor-agent` 只与 Cursor 自己的后端通信，因此它并非通往第三方端点的途径。Codeg 会把两者都写入与该 CLI 共享的 `~/.cursor/cli-config.json`。
@@ -65,7 +65,7 @@ Codeg 会在智能体启动时把这些交给它。大多数智能体都接受�
 - **Codeg 会为每个智能体记住你上次的选择**，并在你下次用该智能体开启会话时预选它。
 - **没有按文件夹设置的模型默认值**——模型是在会话层面选择的。（文件夹默认值设定的是*智能体*，而非模型。）
 
-有几个智能体还提供一个**推理强度**控件——**Claude Code**、**Codex**、**Grok** 和 **Pi**。与模型不同，它位于智能体的设置面板中，而非 composer 里：一个从低到最高档的级别，每个智能体各以自己的方式命名（Codex 称为 **Extra High**，Grok 称为 **Max**）。Codeg 会把它写入智能体自己的配置。
+有几个智能体还提供一个**推理强度**控件——**Claude Code**、**Codex**、**Grok** 和 **Pi**。与模型不同，它位于智能体的设置面板中，而非 composer 里：一个从低到最高档的级别，每个智能体各以自己的方式命名（Codex 称为 **Extra High**，Grok 称为 **Max**）。Codeg 会把它写入智能体自己的配置。**Kimi Code** 则反过来——它的面板负责声明有哪些级别*存在*，再由 composer 的思考选择器把它们呈现出来。→ [Kimi Code](#kimi-code-provider-model-and-reasoning)
 
 ## Hermes：选择一个提供商 {#hermes-pick-a-provider}
 
@@ -76,6 +76,25 @@ Hermes 是一个特例——它管理着自己旗下的一批模型提供商，�
 - **AWS**（Bedrock）——使用你环境中现有的 AWS 凭据。
 
 对于面板未涵盖的任何内容，**打开配置文件夹**会显示 `~/.hermes`，而一个高级部分让你直接编辑 Hermes 的 `config.yaml`。
+
+## Kimi Code：提供商、模型与推理 {#kimi-code-provider-model-and-reasoning}
+
+Kimi Code 是另一个拥有专属面板的智能体，该面板在 **0.23** 中被重做过。原因在于这个 CLI 的一个怪癖：`kimi acp` 只接受**已存储的登录令牌**，从不接受在启动时递给它的密钥。所以 API 密钥没法简单地透传过去——Codeg 会往 `~/.kimi-code/config.toml` 里写入一个**受管提供商**，并埋下一个本地的门禁令牌，好让会话能够开启。推理依然跑在你自己的密钥上；那个令牌只负责开门。
+
+**凭据**——两条互斥的路径：
+
+- **API 密钥**——从 Kimi 接受的六种提供商形态中选一个（**Kimi / Moonshot**、**OpenAI**（Chat Completions 或 Responses 两种形态）、**Anthropic**、**Google Gemini**，或使用你的 GCP 凭据、完全不需要密钥的 **Google Vertex AI**），再在需要时填一个基础 URL。Moonshot 的两个区域——`api.moonshot.ai` 与 `api.moonshot.cn`——只有一次点击之隔。
+- **用 Kimi 账号登录**——在终端里运行 `kimi login`，Codeg 会复用那次登录，自己什么都不存。用这种方式保存会移除 Codeg 的 API 密钥门禁令牌。
+
+**模型**——写入 `config.toml` 的模型 id，外加**最大上下文长度**。第二个字段看起来可选，其实不是：Kimi 的 schema 要求它，缺了它 Kimi 会丢弃整个模型配置块，于是每一次提问的回复都是空的。它默认为 **262144**。**测试并列出模型**会用你的密钥发起调用并报告它实际能访问到什么，于是一个拼写错误会当场显示为*该模型不在列表中*，而不是在对话进行到一半时变成*模型未找到*。
+
+**推理**——只有当模型声明了推理能力时，Kimi 才会在 composer 中提供**思考**选择器，所以这一节负责替它声明一个。**提供的级别**会成为该选择器的选项，并被原样转发给提供商，因此请挑选你的模型接受的那些；一个都不选，composer 就退回到一个朴素的关 / 开切换。你可以设定一个**默认级别**（或者交给 Kimi 自己决定）；对于总是会推理的模型，还可以把*关*这一项整个去掉。更改在新会话中生效。
+
+**高级**中有**凭据写入位置**——内联的 `api_key` 还是提供商的 env 子表——以及一个 `config.toml` 的原始编辑器，它会原样覆盖整个文件，替换掉上面那些结构化字段所设置的一切。
+
+::: warning 残留的环境变量会压过配置
+`kimi acp` 读取 `KIMI_MODEL_*` 这一族变量——`KIMI_MODEL_BASE_URL`、`KIMI_MODEL_API_KEY`、`KIMI_MODEL_NAME`——而且是*先于* `config.toml` 读取的，因此智能体[环境变量](/zh/guide/agents#configure-an-agent)中残留的一个，就会悄悄覆盖掉这个面板写入的一切。只要还有任何一个存在，面板就会提醒你，而保存操作会清除它们——于是你看到的就是真正生效的。
+:::
 
 ## 凭据存储在何处 {#where-credentials-are-stored}
 

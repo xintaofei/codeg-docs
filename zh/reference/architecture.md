@@ -51,6 +51,8 @@ Codeg 并不重新实现 Claude Code、Codex、Gemini 等等 —— 它**驱动�
 
 `codeg-mcp` 是一个智能体能够将工作**交给另一个智能体**的方式。当 Codeg 启动一个智能体 CLI 时，它注入一个指向该二进制文件的 MCP 服务器条目；CLI 通过 stdio 启动它，其 LLM 便获得一小组 Codeg 工具 —— 最重要的是 **`delegate_to_agent`**，外加来自[通用设置](/zh/reference/settings/general)的可切换辅助工具：`check_user_feedback`、`ask_user_question` 和 `get_session_info`。一次 `delegate_to_agent` 调用会经由伴生程序回传到父 Codeg 进程，后者启动工作智能体并将其结果流式传回。
 
+还有两个工具走的是同一条通道，但没有属于自己的设置开关：**`task_progress`** 和 **`task_complete`**，它们让智能体为正在执行的[任务](/zh/guide/tasks)上报进展里程碑和最终结论。它们只会注入到任务引擎启动的那些进程中，因此普通对话永远看不到它们。
+
 有两个实际的后果，二者都植根于它的交付方式：
 
 - **它就住在其父进程旁边。** 安装程序、Docker 镜像和桌面捆绑包都将 `codeg-mcp` 放在 `codeg` / `codeg-server` 旁边。若源码构建采用了不寻常的布局，可以用 **`CODEG_MCP_BIN=/abs/path/codeg-mcp`** 明确指向它。

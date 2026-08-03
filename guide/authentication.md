@@ -25,7 +25,7 @@ The simplest path is to use the agent's own subscription — the plan you'd use 
 
 - **Claude Code** — choose **Official Subscription** and Codeg uses your existing `claude` login. No key required.
 - **Gemini** — choose **Google Login** and complete Google's sign-in by running `gemini` in a terminal first.
-- **Kimi Code**, **CodeBuddy** — run the agent's own login in a terminal (`kimi login`, `codebuddy`) and Codeg picks it up.
+- **Kimi Code**, **CodeBuddy** — run the agent's own login in a terminal (`kimi login`, `codebuddy`) and Codeg picks it up. Kimi Code has a pane of its own for the API-key route. → [Kimi Code](#kimi-code-provider-model-and-reasoning)
 - **Grok** and **Cursor** each have an **Authentication method** picker of their own:
   - **Grok** — **Official Subscription** (SuperGrok or X Premium+ via `grok login`; nothing stored), **XAI API key** (a key from the xAI console, for headless runs), or **Custom endpoint** (a custom model with its own base URL and key, which becomes Grok's default).
   - **Cursor** — **official subscription**, where Codeg shows you the `cursor-agent login` command to run (a browser window opens) and reports **Logged in** once you refresh, or a **Cursor API key** from the Cursor dashboard for headless and server machines. Note that key is a *Cursor account* key — `cursor-agent` only talks to Cursor's own backend, so it isn't a route to a third-party endpoint. Codeg writes both into `~/.cursor/cli-config.json`, shared with the CLI.
@@ -65,7 +65,7 @@ Which models you can pick comes from the **agent**, not Codeg. Once an agent con
 - **Codeg remembers your last pick** per agent and preselects it next time you start a session with that agent.
 - There's **no per-folder model default** — the model is chosen at the session level. (A folder default sets the *agent*, not the model.)
 
-Several agents also expose a **reasoning-effort** control — **Claude Code**, **Codex**, **Grok**, and **Pi**. Unlike the model, it lives in the agent's settings pane rather than the composer: a level from low up through a top tier that each agent names its own way (**Extra High** for Codex, **Max** for Grok). Codeg writes it into the agent's own config.
+Several agents also expose a **reasoning-effort** control — **Claude Code**, **Codex**, **Grok**, and **Pi**. Unlike the model, it lives in the agent's settings pane rather than the composer: a level from low up through a top tier that each agent names its own way (**Extra High** for Codex, **Max** for Grok). Codeg writes it into the agent's own config. **Kimi Code** works the other way round — its pane declares which levels *exist* and the composer's Thinking picker offers them. → [Kimi Code](#kimi-code-provider-model-and-reasoning)
 
 ## Hermes: pick a provider
 
@@ -76,6 +76,25 @@ Hermes is a special case — it manages its own stable of model providers, so in
 - **AWS** (Bedrock) — uses your existing AWS credentials from the environment.
 
 For anything the pane doesn't cover, **Open Config Folder** reveals `~/.hermes`, and an Advanced section lets you edit Hermes's `config.yaml` directly.
+
+## Kimi Code: provider, model, and reasoning
+
+Kimi Code is the other agent with a pane of its own, rebuilt in **0.23**. The reason is a quirk of the CLI: `kimi acp` only accepts a **stored login token**, never a key handed to it at launch. So an API key can't simply be passed through — Codeg writes a **managed provider** into `~/.kimi-code/config.toml` and seeds a local gate token so sessions can open at all. Inference still runs on your key; the token only unlocks the door.
+
+**Credential** — two mutually exclusive routes:
+
+- **API key** — pick the provider shape from six Kimi accepts (**Kimi / Moonshot**, **OpenAI** in either Chat Completions or Responses form, **Anthropic**, **Google Gemini**, or **Google Vertex AI**, which uses your GCP credentials and takes no key at all), then a base URL where one is needed. Moonshot's two regions — `api.moonshot.ai` and `api.moonshot.cn` — are one click apart.
+- **Sign in with a Kimi account** — run `kimi login` in a terminal and Codeg reuses that login, storing nothing. Saving this way removes the API-key gate token.
+
+**Model** — the model id written to `config.toml`, plus **Max context size**. That second field looks optional and isn't: Kimi's schema requires it, and without it Kimi discards the entire model block and every prompt comes back empty. It defaults to **262144**. **Test & list models** calls your key and reports what it can actually reach, so a typo shows up as *this model is not in the list* rather than as a *model not found* mid-conversation.
+
+**Reasoning** — Kimi only offers a **Thinking** picker in the composer when the model declares a reasoning capability, so this section declares one for it. **Levels offered** become the picker's rows and are forwarded to the provider verbatim, so pick ones your model accepts; choose none and the composer falls back to a plain Off / On toggle. You can set a **default level** (or let Kimi choose), and for a model that always reasons, drop the *Off* row entirely. Changes take effect on new sessions.
+
+**Advanced** holds **Credential placement** — inline `api_key` versus the provider's env sub-table — and a raw editor for `config.toml`, which overwrites the whole file verbatim and replaces everything the structured fields above set.
+
+::: warning A leftover environment variable wins
+`kimi acp` reads the `KIMI_MODEL_*` family — `KIMI_MODEL_BASE_URL`, `KIMI_MODEL_API_KEY`, `KIMI_MODEL_NAME` — *before* `config.toml`, so one left in the agent's [Environment Variables](/guide/agents#configure-an-agent) silently overrides everything this pane writes. The pane warns you while any is still set, and saving clears them — so what you can see is what's in force.
+:::
 
 ## Where credentials are stored
 

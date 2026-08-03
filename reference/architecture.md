@@ -51,6 +51,8 @@ When Codeg launches an agent, it also hands it a set of **MCP servers** to conne
 
 `codeg-mcp` is how one agent can **hand work to another**. When Codeg starts an agent CLI, it injects an MCP server entry pointing at this binary; the CLI launches it over stdio, and its LLM gains a small set of Codeg tools — above all **`delegate_to_agent`**, plus the toggleable helpers from [General settings](/reference/settings/general): `check_user_feedback`, `ask_user_question`, and `get_session_info`. A `delegate_to_agent` call travels back through the companion to the parent Codeg process, which spins up the worker agent and streams its result home.
 
+Two more ride the same channel without a settings toggle of their own: **`task_progress`** and **`task_complete`**, which let an agent report milestones and a verdict for the [task](/guide/tasks) it's executing. They're injected only into spawns the task engine started, so an ordinary conversation never sees them.
+
 Two practical consequences, both grounded in how it's shipped:
 
 - **It lives next to its parent.** Installers, the Docker image, and the desktop bundle all place `codeg-mcp` beside `codeg` / `codeg-server`. A source build in an unusual layout can point at it explicitly with **`CODEG_MCP_BIN=/abs/path/codeg-mcp`**.

@@ -1,6 +1,6 @@
 ---
 title: Guide
-description: How to use Codeg — the workspace and conversation aggregation, agents and multi-agent collaboration, chat channels, automations, and the office, research, and project workflows.
+description: How to use Codeg — the workspace and conversation aggregation, agents and multi-agent collaboration, chat channels, automations, the task board, and the office, research, and project workflows.
 ---
 
 # Guide
@@ -37,6 +37,7 @@ Drive Codeg without sitting in front of it.
 
 - [**Chat Channels**](/guide/chat-channels) — connect Telegram, Lark (Feishu), and iLink (Weixin) to create tasks, approve permissions, and get live updates — all from your chat app.
 - [**Automations**](/guide/automations) — save a fully-configured composer as a reusable automation and run it headlessly, on a cron schedule or on demand.
+- [**Task Board**](/guide/tasks) — write down what needs doing and let agents work through the list, each in its own git worktree, waiting for your review before anything merges.
 
 ## Extending Codeg
 

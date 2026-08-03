@@ -215,6 +215,8 @@ folder under src/, each reporting the files it touched.
 
 Two workers editing the same file will fight, and neither knows the other exists. Where slices might overlap, give each worker **its own [git worktree](/guide/git#work-in-parallel-with-worktrees)** — separate checkouts of the same repo — and merge afterwards. A sub-agent does *not* get an isolated worktree automatically.
 
+When the slices are big enough to want reviewing separately, the [task board](/guide/tasks) is the better shape: one task per slice, each isolated by construction, each landing on its own once you've read it. Delegation is for work that folds back into *one* answer; tasks are for work that lands as several.
+
 ### Sub-teams: let a worker build its own team
 
 Raise **Maximum delegation depth** above 1 and a sub-agent can delegate in turn: the lead splits the work by area, and each area lead splits it again. Useful when a task genuinely decomposes twice — a migration across several services, each with its own code, tests, and docs.
@@ -299,7 +301,7 @@ Doing this a lot? Bottle step 4 as a skill (above) and it becomes a one-command 
 - **`@` is the reliable trigger.** Prose works, a mention works better — Codeg tells the lead that naming an agent *is* an instruction to delegate to it.
 - **Enabling delegation reaches an agent the next time it starts.** Not just blank conversations — any conversation gains it once its agent reconnects. Only a conversation that's connected *right now* keeps the old tool set, and that's the most common reason a mention seems to be ignored.
 - **One level deep by default.** Raise **Maximum delegation depth** if you want sub-agents that delegate in turn.
-- **Sub-agents share your folder.** A worker runs in the lead's working directory unless the lead gives it another — it doesn't get its own git worktree automatically. For true isolation, run parallel work in [worktrees](/guide/git#work-in-parallel-with-worktrees) or headless [Automations](/guide/automations).
+- **Sub-agents share your folder.** A worker runs in the lead's working directory unless the lead gives it another — it doesn't get its own git worktree automatically. For true isolation, run parallel work in [worktrees](/guide/git#work-in-parallel-with-worktrees), on the [task board](/guide/tasks) (where every task gets one), or as headless [Automations](/guide/automations).
 - **Each hand-off is one shot.** A worker gets one task and returns one result; there's no resuming it for a follow-up. Ask again and you get a fresh session.
 - **Ending the turn doesn't stop the workers.** If the lead wraps up while a sub-agent is still going, that sub-agent keeps running — open its session to see how it finished. **Cancelling the lead does** stop them: the cancel cascades to every worker it started.
 - **Results live in the worker's session.** The lead keeps finished output in memory only while its own session is running. Once that ends, the full transcript is still there in the sub-agent's own conversation — reachable from the chevron on the parent conversation in the sidebar.

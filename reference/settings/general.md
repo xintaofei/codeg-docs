@@ -60,7 +60,7 @@ The tool now spells out to the agent what that badge *means*: mentioning a sessi
 
 - **Two save styles.** Terminal and rendering apply on change; each of the four tool panels needs its own **Save** button — and rendering additionally needs a restart.
 - **Tool toggles apply the next time an agent starts.** Each of the four adds or removes a tool "for agents started after this is turned on" — an agent that's connected right now won't gain or lose the capability mid-flight. It needn't be a brand-new conversation, though: any conversation picks the change up whenever its agent next launches, including an existing one you return to after its connection ended. A new conversation is simply the surest way.
-- **These are the codeg-mcp tools.** Delegation, live feedback, ask-a-question, and session lookup are all served by the [`codeg-mcp` companion](/reference/architecture); the toggles here decide which appear in each agent's catalog.
+- **These are the codeg-mcp tools.** Delegation, live feedback, ask-a-question, and session lookup are all served by the [`codeg-mcp` companion](/reference/architecture); the toggles here decide which appear in each agent's catalog. Not *every* companion tool is governed here, though — an agent running a [task](/guide/tasks) also gets `task_progress` and `task_complete`, injected by the task engine rather than by anything on this screen.
 - **Rendering is Windows-only.** The section is simply absent everywhere else.
 
 ## Related

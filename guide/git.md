@@ -53,7 +53,7 @@ The **Commits** tab in the right panel is the project's full history, not just a
 
 Two pills at the top narrow what you're looking at, and **Codeg remembers both per project**, so a repo reopens on the view you left it in:
 
-- **Branch** — every branch at once by default. Open it to search and pick one; local and remote branches are grouped, the checked-out one is tagged **Current**, and an ✕ clears the filter.
+- **Branch** — every branch at once by default. Open it to search and pick one; local and remote branches are grouped, the checked-out one is tagged **Current**, and an ✕ clears the filter. Above them sits **HEAD**, *follows the current branch* — a filter that re-resolves on every query instead of pinning a name, so the history tracks each checkout you make and still works on a detached HEAD. If a branch you'd filtered by is later deleted, the filter quietly drops back to all branches rather than showing you nothing.
 - **Author** — your own commits are one click away (your git identity is listed first, badged **you**), recent choices are kept for reuse, and typing searches every author in the repo.
 
 **Click a commit to expand it** and you get the full picture without leaving the panel: the complete hash and message (both copyable, with a **Show more** toggle when the message is long), the author and exact timestamp, every file it touched with `+`/`−` counts — click a file for its diff at that commit — and chips for the branches that contain it.
@@ -62,7 +62,7 @@ Two pills at the top narrow what you're looking at, and **Codeg remembers both p
 
 - **View Diff** — the whole commit as one diff, in an editor tab.
 - **New branch…** — branch from that commit; Codeg creates it *and* switches you to it.
-- **Reset to Here** — move the current branch to that commit, choosing the mode: **`--soft`**, **`--mixed`** *(the default)*, **`--hard`**, or **`--keep`**, each explained in the dialog. It's available only while you're viewing the current branch, and Codeg says so when it isn't.
+- **Reset to Here** — move the current branch to that commit, choosing the mode: **`--soft`**, **`--mixed`** *(the default)*, **`--hard`**, or **`--keep`**, each explained in the dialog. Reset always targets whatever branch you're actually on, so it's offered from the all-branches view, from **HEAD**, and while viewing the current branch by name — but not while you're looking at a different one, and Codeg says so when that's why.
 - **Refresh** and **Push…**
 
 ## Sign in to push — git accounts {#git-accounts}
@@ -96,10 +96,12 @@ Create one from the branch menu → **New worktree**. Codeg pre-fills a new bran
 
 In the sidebar, a repo's worktrees group under it, so a project's parallel branches stay together. Switching to a branch that lives in a worktree takes you *to* that worktree instead of checking out over your current one. The payoff: [tile a few sessions side by side](/guide/workspace#tile-several-sessions-side-by-side), each in its own worktree, and watch a fleet of agents build different features at the same time — the natural companion to [multi-agent collaboration](/guide/multi-agent).
 
-[Automations](/guide/automations) lean on the same mechanism: each run can execute in its own throwaway worktree, so a scheduled task never collides with your working tree.
+Two other features lean on the same mechanism. [Automations](/guide/automations) can execute each run in its own throwaway worktree, so a scheduled task never collides with your working tree. And every task on the [task board](/guide/tasks) gets one automatically — branch `task/<id>` in a sibling directory — which is what lets several tasks run at once and land one at a time.
 
-::: warning Worktrees are yours to clean up
+::: warning Worktrees you made are yours to clean up
 Codeg creates worktrees but doesn't delete them. Removing a worktree's folder from the workspace closes its tabs but **leaves the worktree and its branch on disk** — tidy up finished ones yourself with `git worktree remove` (and delete the branch if you no longer need it).
+
+Task worktrees are the exception: the board offers to remove one when you merge or delete its task, and tells you if that ever fails. → [Task Board](/guide/tasks#keep-the-board-tidy)
 :::
 
 ## Next steps

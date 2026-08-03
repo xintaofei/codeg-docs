@@ -90,6 +90,7 @@ Within a single session, a main agent can delegate subtasks to sub-agents of *di
 Codeg treats agents as something you *run*, not just chat with:
 
 - **[Automations](/guide/automations)** — save a fully-configured setup and run it headlessly, on a cron schedule or on demand.
+- **[Task Board](/guide/tasks)** — write down what needs doing and let agents work through the list, each in its own copy of the code, each waiting for your review before it merges.
 - **[Chat Channels](/guide/chat-channels)** — drive sessions from Telegram, Lark (Feishu), or iLink (Weixin): create tasks, approve permissions, and get real-time replies without opening a browser.
 - **[Anywhere you need it](/getting-started/installation)** — run agents in the desktop app, on a standalone server, or in Docker, then stay connected through the native iOS and Android clients or any browser.
 - **[Extensible](/guide/mcp)** — MCP servers and [Skills](/guide/skills) add tools and expertise, while bundled [Office](/guide/office) and [Scientific Research](/guide/research) toolsets give agents real-world capabilities. New projects start from [Project Boot](/guide/project-boot).

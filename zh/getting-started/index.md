@@ -90,6 +90,7 @@ Codeg 读取每个受支持智能体的原生会话存储，并将它们汇入�
 Codeg 把智能体视为你可以*运行*的东西，而不仅仅是与之聊天的对象：
 
 - **[自动化](/zh/guide/automations)**——保存一套完整配置的设置，以无头方式按 cron 计划或按需运行。
+- **[任务看板](/zh/guide/tasks)**——把要做的事写下来，让智能体一件件做完，每个任务都在一份独立的代码副本中进行，且在你验收之前都不会合并。
 - **[聊天频道](/zh/guide/chat-channels)**——从 Telegram、Lark（飞书）或 iLink（微信）驱动会话：创建任务、批准权限，并实时获得回复，无需打开浏览器。
 - **[随处使用](/zh/getting-started/installation)**——在桌面应用、独立服务器或 Docker 中运行智能体，再通过原生 iOS、Android 客户端或任意浏览器保持连接。
 - **[可扩展](/zh/guide/mcp)**——MCP 服务器和[技能](/zh/guide/skills)可添加工具与专业能力，而内置的 [Office](/zh/guide/office) 和[科学研究](/zh/guide/research)工具集则赋予智能体真实世界的能力。新项目从[项目引导](/zh/guide/project-boot)开始。

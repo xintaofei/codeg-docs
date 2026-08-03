@@ -1,17 +1,19 @@
 ---
 title: Automations
-description: Save an agent task once and let Codeg run it for you — on a cron schedule or on demand — each run landing as a normal conversation, isolated in its own git worktree.
+description: Save an agent task once and let Codeg run it for you — on a cron schedule or on demand — each run landing as a normal conversation in its own git worktree, or as a to-do filed on the task board.
 ---
 
 # Automations
 
 An **automation** is an agent task you set up once and let Codeg run on its own — on a schedule, or at the press of a button. You compose it exactly like a normal message (a prompt, an agent, a folder, a mode), hand it a cadence, and from then on Codeg fires it **headlessly**: each run spins up the agent, does the work, and lands as an ordinary conversation you can open and read. Nobody has to be at the keyboard.
 
+Since 0.23 a fire can also **[queue a task](#choose-what-a-fire-does)** instead of starting a session — same schedule, but the work lands on the [task board](/guide/tasks) as a reviewable to-do.
+
 It's the hands-off counterpart to [Chat Channels](/guide/chat-channels): a chat channel lets you drive Codeg from your phone, while an automation runs with nobody driving at all. Reach for it for the routine agent work you'd rather not kick off by hand — a nightly code review, a weekly dependency bump, CI triage, a recurring security sweep.
 
 ## Where automations live
 
-Automations are their own view, opened from **Automations** in the left sidebar (the ⚡ item, right by your conversations). It's a two-pane screen: the list of your automations on the left, the selected one's detail on the right. If a scheduled run ever fails, the sidebar item carries a small badge so you notice — it clears when you open the view.
+Automations are their own view, opened from **Automations** in the left sidebar (the ⚡ item, right by your conversations). One toolbar runs across the top — a **folder** filter, an **enabled / disabled** filter, and **New** on the right — and below it a single panel splits into the list of your automations and the selected one's detail. If a scheduled run ever fails, the sidebar item carries a small badge so you notice — it clears when you open the view.
 
 The first time in, there's nothing to show, so you land on a gallery of **templates** to start from.
 
@@ -31,9 +33,24 @@ Hit **New automation** and either pick a template or start blank. Codeg ships se
 
 A template just seeds the editor — a suggested prompt and cadence you then tweak. The editor itself is **the same composer you use for a normal conversation**: a rich prompt box with `@`-mentions for files, agents, sessions, commits, and [skills](/guide/skills), the `/` command menu, an agent picker, and the mode-and-options bar. Whatever you'd set up for a one-off message, you capture here as a reusable launch. Give it a name, write the prompt, and the rest is *where* and *when*.
 
+## Choose what a fire does
+
+Under **Action**, decide what actually happens when the automation goes off:
+
+- **Launch session** *(default)* — the original behavior, and everything the rest of this page describes: the run spawns an agent and produces a conversation.
+- **Enqueue task** — instead of running anything, the automation **files a to-do on the folder's [task board](/guide/tasks)**, titled after the automation and carrying the same prompt and agent. The [task engine](/guide/tasks#set-it-running) owns execution from there, on the board's own settings and concurrency limit.
+
+Enqueue is the answer to a nightly job you never get around to reading. What the schedule leaves behind is a **queue on the board** rather than a pile of finished sessions to go hunting through — and since the board owns execution from there, you decide what happens to those to-dos. Leave them and they wait for you to press start; turn on the board's **Process automatically** and they'll have run overnight, each isolated in its own worktree, sitting in review with a diff to read by morning.
+
+Two things change when you pick it: the folder list narrows to **project roots** (a task board belongs to a project, never a worktree), and the isolation controls below stop applying — a task always gets a worktree of its own.
+
+::: tip Automations you already saved are unchanged
+An automation from before 0.23 keeps launching sessions. Nothing is migrated, and nothing needs to be.
+:::
+
 ## Point it at a folder — and isolate the run
 
-Under **Target**, pick the workspace folder the automation runs in, and choose how it isolates its work:
+Under **Target**, pick the workspace folder the automation runs in, and — for a **Launch session** automation — choose how it isolates its work:
 
 - **New worktree per run** *(default)* — every run mints a fresh [git worktree](/guide/git#work-in-parallel-with-worktrees), so it never touches your working tree and repeated runs never collide with each other. This is what you want for anything that writes files.
 - **Run in the folder** — the run works directly in the folder's tree, optionally on a **branch** you choose. It shares your uncommitted changes, so it can collide with work in progress — Codeg says as much right there. (A remote-only branch needs the worktree option; the shared mode can't track one.)
@@ -62,11 +79,13 @@ If you do write cron by hand, it's the standard five fields:
 
 ## What a run actually does
 
-Whether it fires on schedule or you hit **Run now**, a run is a real, live session:
+Whether it fires on schedule or you hit **Run now**, a **Launch session** run is a real, live session:
 
 - It spawns the agent headlessly and **produces a normal conversation** that appears in your sidebar the moment it starts. Open it to watch the work stream in, or to step in.
 - It **replays the mode you saved**, so how far it goes on its own is exactly the mode you picked in the editor. A run is a genuine agent session: if the agent stops to ask permission or a question, that surfaces in the produced conversation. For a truly unattended cadence, pick a mode that doesn't pause for approvals, or keep the task read-only — the analysis templates are deliberately written to *not* change files.
 - **One run at a time, per automation.** If a run is still going when the next one comes due, the new one is recorded as **Skipped** rather than piling on top.
+
+An **Enqueue task** run is the opposite — it never touches any of that. There's no worktree and no agent: it writes one to-do onto the board and settles as **Succeeded** immediately, its summary naming the task it queued. Because a run is never still going when the next one comes due, an enqueue automation is never **Skipped**. The *tasks* do accumulate, though — an hourly schedule with **Process automatically** off hands you a very long to-do column, so pick a cadence you'll actually work through.
 
 The detail pane's **Run history** is a timeline of every run — its status (**Running**, **Succeeded**, **Failed**, **Cancelled**, or **Skipped**), when it started and how long it took, a one-line summary or the error, a **View conversation** link to jump into what it produced, and a **Cancel** button while it's still going.
 
@@ -76,16 +95,17 @@ The scheduler lives inside Codeg — desktop app or [server](/getting-started/de
 
 ## Manage them
 
-Each row — via the **⋯** menu or a right-click — gives you **Run now**, **Enable/Disable**, **Edit**, and **Delete**; the same actions sit on the detail pane. **Disabling** pauses an automation's schedule without deleting it. When you have more than a couple, filter the list by folder or by enabled state.
+Each row — via the **⋯** menu or a right-click — gives you **Run now**, **Enable/Disable**, **Edit**, and **Delete**. On the detail side, the enable switch sits in the header and **Run now** / **Edit** sit directly under the title, above the schedule facts, the prompt, and the run history. When you have more than a couple, the toolbar's two filters narrow the list by **folder** or by **enabled state**; a folder filter left pointing at a folder that no longer holds any automations quietly falls back to *all*.
 
 ## Good to know
 
 - **It works the same on a server.** The engine runs in both the desktop app and the standalone server, so automations fire wherever Codeg is running. (If a desktop app and a server ever share one data directory, only one of them drives the automations — they won't double-fire.)
-- **Every run is a full agent session** — its own token cost, its own entry in your history. A frequent schedule multiplies both.
+- **Every session run is a full agent session** — its own token cost, its own entry in your history. A frequent schedule multiplies both. A task run costs nothing until the board starts the task.
 - **Worktree runs leave folders behind.** Each per-run worktree is a real folder Codeg tracks; the same [worktree tools](/guide/git#work-in-parallel-with-worktrees) clean them up. Older run history is pruned automatically over time.
 
 ## Next steps
 
+- [**Task Board**](/guide/tasks) — where an *Enqueue task* automation files its work, and how you review and merge it.
 - [**Chat Channels**](/guide/chat-channels) — the other way to run Codeg hands-off: drive it from Telegram, Lark, or WeChat.
 - [**Git & Worktrees**](/guide/git#work-in-parallel-with-worktrees) — how per-run isolation works, and how to manage the worktrees runs create.
 - [**Working with Agents**](/guide/agents) — the agents and modes an automation replays.

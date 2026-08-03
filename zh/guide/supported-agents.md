@@ -49,6 +49,8 @@ Codeg 与智能体之间只说一种语言：**ACP**。十二个里有十个不�
 
 这张表回答的，正是本页最常见的那句困惑：**"我终端里明明有 `claude`，Codeg 却说没装。"** 这句话的两半其实都没错。Codeg 找的是 `claude-agent-acp` 而不是 `claude`，是 `codex-acp` 而不是 `codex`。它们不是同一个东西的两种叫法，而是两个不同的包、两个不同的可执行命令——有没有其中一个，说明不了另一个的情况。
 
+从 **0.23** 起，应用会在你真正撞上这件事的地方把它讲清楚，而不再全靠本页：这两个智能体在**设置 → 智能体**中的名称旁带有一个 **ACP adapter** 徽章，其预检的第一行会解释这个区别——包括它是否找到了你自己的 CLI、在哪里找到的——并带有一个直接跳到这里的**了解更多**链接。
+
 装适配器不会动你已有的 CLI。它是一个用着自己名字的独立包，不会覆盖、升级或卸载你的 `claude` 和 `codex`。它也并不*需要*它们：每个适配器都自带运行时，`claude-agent-acp` 依赖 `@anthropic-ai/claude-agent-sdk`，`codex-acp` 依赖 `@openai/codex`，安装时一并带下来。所以在一台从没装过厂商 CLI 的机器上，这两个智能体照样能跑。
 
 适配器真正与 CLI 共用的是配置——登录状态也在其中。Claude Code 读的是 `~/.claude`（用 `CLAUDE_CONFIG_DIR` 可以改），Codex 读的是 `~/.codex`（用 `CODEX_HOME` 可以改）：正是两个 CLI 各自使用的目录，也正是 Codeg 的设置面板所写入的那两个文件——`~/.claude/settings.json` 和 `~/.codex/config.toml`。你在终端里登录过一次，适配器就沿用那个账号，不必再登录一遍。历史记录也遵循同样的规则，仍留在厂商自己的目录里，[见下方的表格](#where-each-agent-keeps-its-sessions)。
