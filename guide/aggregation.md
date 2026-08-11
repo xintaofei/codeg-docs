@@ -94,7 +94,7 @@ Read what it tried, then take a different approach.
 - **Brief a fresh session cheaply.** Rather than re-explaining a long thread, start clean and point at the old one — useful when a conversation has grown too long to work in comfortably.
 - **Combine it with delegation.** A lead can read a referenced session and then hand the follow-up to a sub-agent. → [Multi-Agent Collaboration](/guide/multi-agent#pick-up-where-another-session-left-off)
 
-This needs **Get session info** switched on in **Settings → General** — it is by default. If a referenced session has since been deleted, the lookup simply reports that rather than failing. → [Settings → General](/reference/settings/general#get-session-info)
+This needs **Get session info** switched on in **Settings → General** — it is by default. If a referenced session has since been deleted, the lookup simply reports that rather than failing. → [Settings → General](/reference/settings/general#in-conversation-tools)
 
 ## Next steps
 

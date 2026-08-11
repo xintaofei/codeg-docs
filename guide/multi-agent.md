@@ -97,6 +97,8 @@ Delegation is visible the whole way through — never a black box:
 - **A Sub-agents panel** collects the workers from the latest reply. Collapsed, it's a small *Sub-agents 3* chip; expanded, each row shows the agent, its task, and a status badge that moves from **running** to **done** (or **failed**, with a reason like *spawn failed* or *depth limit*).
 - **Open any sub-agent** to watch its full conversation stream live — the same transcript you'd see if you'd started it yourself. It's a viewer, not a second composer: you follow along, you don't drive its turns.
 - **An agent's *own* sub-agents show their work too.** When Claude Code spins up its internal sub-agents (its own feature, not Codeg's delegation — see the note [below](#turn-a-workflow-into-a-skill)), the capsule that used to just say *Running…* now carries a **Live activity** section streaming what that sub-agent is actually doing. It's live-only: once the capsule settles, it goes back to the finished summary and its stats.
+- **Grok's sub-agents, likewise.** Grok forwards nothing a `spawn_subagent` child does over the protocol, so those used to be a genuine black box — a blocking spawn produced no output at all until it ended. Each child now gets its own **Agent card** that ticks along while it runs (tool calls, turns, context used), renders the child's report as the **Markdown it is** rather than as terminal output, and carries a **View sub-agent session** action that opens the child's own transcript read-only, live or after the fact. Those child sessions no longer show up as strays in the conversation list. Both live turns and reopened history get the same treatment.
+- **A running tool call looks running.** A delegated sub-agent that's still working no longer wears a finished green check, and opening a viewer part-way through a turn picks up a delegation that's already in flight rather than missing it.
 - **You still hold the controls that matter.** A sub-agent runs at your normal permission level for that agent, so when it wants to run a command or write a file, its **permission prompt** appears inside its view for you to allow or reject. Multiple-choice questions land there too. While a worker is waiting on you, its badge reads **awaiting approval** — the cue to open it, since nothing progresses until you answer.
 - **When the lead checks on its team**, you'll see it in the transcript as a compact status card with one row per task. Repeated checks on the same task collapse into that single card rather than stacking up.
 
@@ -215,7 +217,7 @@ folder under src/, each reporting the files it touched.
 
 Two workers editing the same file will fight, and neither knows the other exists. Where slices might overlap, give each worker **its own [git worktree](/guide/git#work-in-parallel-with-worktrees)** — separate checkouts of the same repo — and merge afterwards. A sub-agent does *not* get an isolated worktree automatically.
 
-When the slices are big enough to want reviewing separately, the [task board](/guide/tasks) is the better shape: one task per slice, each isolated by construction, each landing on its own once you've read it. Delegation is for work that folds back into *one* answer; tasks are for work that lands as several.
+When the slices are big enough to want reviewing separately, [To-dos](/guide/tasks) is the better shape: one task per slice, each isolated by construction, each landing on its own once you've read it. Delegation is for work that folds back into *one* answer; tasks are for work that lands as several.
 
 ### Sub-teams: let a worker build its own team
 
@@ -234,7 +236,7 @@ Like an `@agent` mention, this is now read as an **explicit instruction**: namin
 Read what it got done, then have @Codex finish the remaining files.
 ```
 
-This one needs **Get session info** switched on in **Settings → General** (it's on by default) — see [the settings reference](/reference/settings/general#get-session-info). It's read-only: the lead learns from the old session, it doesn't resume it.
+This one needs **Get session info** switched on in **Settings → General** (it's on by default) — see [the settings reference](/reference/settings/general#in-conversation-tools). It's read-only: the lead learns from the old session, it doesn't resume it.
 
 ### When not to delegate
 
@@ -301,7 +303,7 @@ Doing this a lot? Bottle step 4 as a skill (above) and it becomes a one-command 
 - **`@` is the reliable trigger.** Prose works, a mention works better — Codeg tells the lead that naming an agent *is* an instruction to delegate to it.
 - **Enabling delegation reaches an agent the next time it starts.** Not just blank conversations — any conversation gains it once its agent reconnects. Only a conversation that's connected *right now* keeps the old tool set, and that's the most common reason a mention seems to be ignored.
 - **One level deep by default.** Raise **Maximum delegation depth** if you want sub-agents that delegate in turn.
-- **Sub-agents share your folder.** A worker runs in the lead's working directory unless the lead gives it another — it doesn't get its own git worktree automatically. For true isolation, run parallel work in [worktrees](/guide/git#work-in-parallel-with-worktrees), on the [task board](/guide/tasks) (where every task gets one), or as headless [Automations](/guide/automations).
+- **Sub-agents share your folder.** A worker runs in the lead's working directory unless the lead gives it another — it doesn't get its own git worktree automatically. For true isolation, run parallel work in [worktrees](/guide/git#work-in-parallel-with-worktrees), as [to-dos](/guide/tasks) (where every task gets one), or as headless [Automations](/guide/automations).
 - **Each hand-off is one shot.** A worker gets one task and returns one result; there's no resuming it for a follow-up. Ask again and you get a fresh session.
 - **Ending the turn doesn't stop the workers.** If the lead wraps up while a sub-agent is still going, that sub-agent keeps running — open its session to see how it finished. **Cancelling the lead does** stop them: the cancel cascades to every worker it started.
 - **Results live in the worker's session.** The lead keeps finished output in memory only while its own session is running. Once that ends, the full transcript is still there in the sub-agent's own conversation — reachable from the chevron on the parent conversation in the sidebar.

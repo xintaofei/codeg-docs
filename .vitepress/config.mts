@@ -124,7 +124,8 @@ export default defineConfig({
               items: [
                 { text: 'The Workspace', link: '/guide/workspace' },
                 { text: 'Conversation Aggregation', link: '/guide/aggregation' },
-                { text: 'Git & Worktrees', link: '/guide/git' }
+                { text: 'Git & Worktrees', link: '/guide/git' },
+                { text: 'Token Usage', link: '/guide/token-usage' }
               ]
             },
             {
@@ -142,7 +143,7 @@ export default defineConfig({
               items: [
                 { text: 'Chat Channels', link: '/guide/chat-channels' },
                 { text: 'Automations', link: '/guide/automations' },
-                { text: 'Task Board', link: '/guide/tasks' }
+                { text: 'To-dos', link: '/guide/tasks' }
               ]
             },
             {
@@ -233,7 +234,8 @@ export default defineConfig({
               items: [
                 { text: '工作区', link: '/zh/guide/workspace' },
                 { text: '对话聚合', link: '/zh/guide/aggregation' },
-                { text: 'Git 与 Worktree', link: '/zh/guide/git' }
+                { text: 'Git 与 Worktree', link: '/zh/guide/git' },
+                { text: 'Token 用量', link: '/zh/guide/token-usage' }
               ]
             },
             {
@@ -251,7 +253,7 @@ export default defineConfig({
               items: [
                 { text: '聊天频道', link: '/zh/guide/chat-channels' },
                 { text: '自动化', link: '/zh/guide/automations' },
-                { text: '任务看板', link: '/zh/guide/tasks' }
+                { text: '待办任务', link: '/zh/guide/tasks' }
               ]
             },
             {

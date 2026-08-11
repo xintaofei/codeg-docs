@@ -80,6 +80,7 @@ Codeg writes rotating daily logs to `logs/` in the data directory and mirrors th
 | `CODEG_LOG` | *(saved level)* | A tracing filter directive — `info`, `debug`, or targeted like `codeg=debug,tower_http=warn`. Takes precedence over `RUST_LOG`, and while it's set it locks the level picker in the UI. |
 | `RUST_LOG` | *(unset)* | The standard Rust log filter. Used only when `CODEG_LOG` is empty. |
 | `CODEG_LOG_MAX_FILES` | `30` | Number of rotated daily log files to retain. |
+| `CODEG_LOG_MAX_BYTES` | `536870912` | Ceiling on a single day's log file (512 MB). Past it the file latches off for the day and the cut-off is reported in the Logs viewer. `0` disables the cap. |
 
 For day-to-day use you can change the level from the UI instead — see [Settings → Logs](/reference/settings/logs).
 

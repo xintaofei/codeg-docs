@@ -13,6 +13,7 @@ Everything Codeg itself stores sits under **`~/.codeg/`** on the machine running
 
 - the **SQLite database** — your conversations, settings, and the non-secret metadata of your accounts;
 - your **[skills](/guide/skills)** and any **uploads** you've attached to conversations;
+- the **[token-usage](/guide/token-usage)** tallies, computed from transcripts already on your disk and stored beside your conversations;
 - the diagnostic **[logs](/reference/settings/logs)**.
 
 Parsing, storage, git operations, and file work all happen **on-device**. There is no server component you don't run yourself: the desktop app keeps everything on your computer, and a [self-hosted server](/getting-started/deployment) keeps everything on that box. Nothing is uploaded to Codeg — because there is nowhere to upload it *to*.
@@ -28,6 +29,7 @@ Codeg reaches the network for a handful of clearly-triggered reasons, each the d
 - **Update checks.** [Software Update](/reference/settings/system) contacts the release source to see whether a newer version exists, and downloads it if you choose to install.
 - **Installing agents.** Adding an agent CLI downloads it from its normal distribution source.
 - **Chat channels**, if you connect any — those integrations talk to the messaging service you linked.
+- **A remote `url()` in your own custom CSS.** If you turn on the [custom-CSS editor](/reference/settings/appearance#custom-style) and paste a rule that fetches a font or an image from the web, applying it makes that request. Codeg strips `@import` outright and flags a remote `url()` in the editor, but it doesn't remove one — it's your stylesheet.
 
 That's the whole list. None of it runs on a background timer against your files; each is a response to a button you pressed or an agent you started.
 

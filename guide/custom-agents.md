@@ -127,7 +127,15 @@ Adding from the catalog leaves both declarations off, because the registry doesn
 
 Whether it can *lead* a delegation is up to the agent: the delegate tool arrives as an MCP tool over ACP, so an agent that accepts MCP servers over the protocol can delegate, and one that doesn't can only be delegated to.
 
-**MCP servers are not assignable from Settings → MCP.** That screen writes into each agent's *native* config file, and Codeg deliberately knows nothing about a custom agent's — so custom agents aren't offered as targets there. What they do get is what rides the protocol itself: Codeg's own `codeg-mcp` companion, on exactly the same terms as a built-in agent. It's attached whenever at least one of its four features is switched on in **Settings → General** — delegation, live feedback, ask-a-question, or session lookup — and each feature's tools appear only while that feature is on. So `delegate_to_agent` reaches a custom agent once you've [enabled delegation](/guide/multi-agent#turn-it-on), not before. → [MCP Servers](/guide/mcp)
+**MCP servers are not assignable from Settings → MCP.** That screen writes into each agent's *native* config file, and Codeg deliberately knows nothing about a custom agent's — so custom agents aren't offered as targets there. What they do get is what rides the protocol itself: Codeg's own `codeg-mcp` companion, on exactly the same terms as a built-in agent. It's attached whenever at least one of its features is switched on in **Settings → General** — delegation, live feedback, ask-a-question, session lookup, or creating automations and to-dos — and each feature's tools appear only while that feature is on. So `delegate_to_agent` reaches a custom agent once you've [enabled delegation](/guide/multi-agent#turn-it-on), not before. → [MCP Servers](/guide/mcp)
+
+### When an agent refuses MCP entirely
+
+Some agents reject any `mcpServers` entry outright and fail session creation when they get one — which used to mean they simply **could not be connected to from Codeg at all**, since the companion was injected for every custom agent.
+
+The **MCP support** switch on a custom agent's settings page (and in the add/edit form) is the answer. It's **on by default**, so nothing about an agent you already added changes. Turn it off and Codeg starts that agent's sessions without the companion attached, and it connects — at the cost of everything the companion carries: no delegation, no live feedback, no ask-a-question, no session lookup, and no creating automations or to-dos from the conversation. The change applies to the **next connection**, not the one in flight.
+
+You shouldn't have to guess when you need it. A `session/new` that fails on an agent that was handed MCP servers now reports itself as exactly that — the agent's own message, plus a pointer to this switch — rather than as a generic connection failure.
 
 ## Edit or remove an agent
 

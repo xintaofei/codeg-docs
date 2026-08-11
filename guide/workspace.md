@@ -23,18 +23,18 @@ The workspace is where you actually get work done in Codeg. It puts four things 
 
 The desktop workspace is **four columns** side by side, each with its own header strip and divided by draggable hairlines that run from the top edge to the bottom:
 
-- **Conversations (far left).** Every session across every folder you've opened — your history, and where you start new ones. They're grouped by project, each with a live status dot: *In Progress*, *Review*, *Completed*. The strip on top holds **new chat**, **search**, **automations**, the **[task board](/guide/tasks)**, and view options. Automations and the task board each carry their own badge — a failed run for one, a count of tasks waiting on you for the other — so a queue that needs attention says so from wherever you are.
+- **Conversations (far left).** Every session across every folder you've opened — your history, and where you start new ones. They're grouped by project, each with a live status dot: *In Progress*, *Review*, *Completed*. The strip on top holds **new chat**, **search**, **automations**, **[To-dos](/guide/tasks)**, and view options. Automations and To-dos each carry their own badge — a failed run for one, a count of tasks waiting on you for the other — so a queue that needs attention says so from wherever you are.
 - **Conversation (center-left).** The agent's transcript, with the composer docked at the bottom. Its tabs sit on top, and a slim **detail header** below shows the folder breadcrumb and the conversation's title.
 - **Files (center-right).** The editor, diffs, and live previews for the files you open — right next to the conversation, so you can watch changes land as the agent makes them. It has its own tab strip and a file-path detail header.
 - **Aux panel (far right).** A tabbed panel — **Session Details · Files · Changes · Commits** — holding session info, the project tree, your working-tree changes, and commit history. When the panel is narrow, the four tabs fold into a single dropdown.
 
-The **terminal** opens beneath the two center columns, and a **status bar** along the bottom shows your conversation count (click it for a per-agent breakdown), running background tasks, update notices, and the [command launcher](#run-a-saved-command). Attached to a remote workspace, its name shows there too.
+The **terminal** opens beneath the two center columns, and a **status bar** along the bottom shows your conversation count, running background tasks, update notices, and the [command launcher](#run-a-saved-command). Attached to a remote workspace, its name shows there too. **Click the conversation count** and it opens [Token Usage](/guide/token-usage) — the full report of what your agents have spent, by day, folder, agent and model.
 
 When a newer Codeg is out, the status bar says so itself rather than waiting to be found in Settings: a **New v…** badge appears, and clicking it opens a popover with the version, the full **What's new** release notes, and the buttons to act on it — the same **Download → Install → Restart** sequence as the settings panel, plus **Later** to wave it off. Dismissing a release quiets it in every open window, and leaves a plain grey icon behind so you can still get back to it; the next release lights the badge up again. → [Settings → System](/reference/settings/system#software-update)
 
 There's no full-width title bar — instead, the window chrome lives in two **corner clusters** that stay put as panels open and close: top-left toggles the sidebar and switches remote workspace, top-right holds **Terminal**, **Auxiliary Panel**, and **Settings**. Every panel resizes by dragging, and the side panels and terminal collapse away when you want room — **⌘B** (conversations), **⌘E** (aux panel), **⌘J** (terminal). On a phone or a narrow browser window, the side panels become slide-in sheets.
 
-The [task board](/guide/tasks) and [automations](/guide/automations) take over that whole area, so while one of them is open the top-right cluster swaps its terminal and panel toggles — which would have nothing to act on — for a **back arrow** to your conversations. It's the way out when the sidebar is collapsed and there's no conversation on screen to click, and it changes nothing else: whatever tab you were on comes back exactly as you left it.
+[To-dos](/guide/tasks), [automations](/guide/automations) and [Token Usage](/guide/token-usage) take over that whole area, so while one of them is open the top-right cluster swaps its terminal and panel toggles — which would have nothing to act on — for a **back arrow** to your conversations. It's the way out when the sidebar is collapsed and there's no conversation on screen to click, and it changes nothing else: whatever tab you were on comes back exactly as you left it. A page that has controls of its own puts them in those freed slots: To-dos, for instance, parks its view toggle and settings button there.
 
 ## Folders and the sidebar
 
@@ -53,16 +53,29 @@ The folder's real name is always its on-disk directory name — that never chang
 
 **Import local sessions** isn't only on the folder menu. Right-click the empty space *around* the list for the same entry, and on a workspace with nothing in it yet the button sits right there on the empty state — next to *Open folder* and *Project boot* — since importing what you already have is usually the fastest way to make a fresh Codeg feel populated.
 
+The number beside a folder counts **what's running in it right now** — sessions actively working, worktrees included — and disappears when nothing is. It's a live workload indicator, not a total, so a glance down the sidebar tells you where your agents actually are. The expand/collapse chevron only appears on hover; the folder icon already says whether it's open.
+
+### Three sections, in the order you want
+
+The sidebar has three top-level sections:
+
+- **Folders** — your projects, conversations nested under each.
+- **Chat** — folderless conversations, the ones you started in [Chat mode](#start-a-session-—-the-composer).
+- **Recent** — one flat list of the conversations you can currently reach, folder-bound and chat alike, in whichever order **Sort by** is set to. Nothing is nested and nothing is grouped; it's the answer to *"what was I just doing?"* without expanding anything. It follows the same view options as the rest of the sidebar — a closed folder's conversations, a completed one while *Show completed* is off, and anything already in **Pinned** stay out of it. It shows **15 rows** at a time with a **Show more** footer that reveals another page per click, while the section's own count badge reports the full total. Its header carries a new-conversation button, like Chat's.
+
+All three can be **reordered** from the view-options menu — one row per section with move-up and move-down controls (or Alt+Arrow on the focused row) — and **Recent can be switched off** entirely if you'd rather not have it.
+
 ### Tidy the list — view options
 
 Two buttons at the top of the sidebar keep a long history manageable. **Locate Active Conversation** jumps to the session you're in, expanding whatever it's hidden behind. Beside it, a funnel opens **View options**:
 
 - **Show completed conversations** — **off** by default, so finished work stays out of the way and the list is what's still live. Turn it on when you want the whole history back.
 - **Show worktree folders** — **on** by default: each [worktree](/guide/git#work-in-parallel-with-worktrees) sits under its repo as its own group, with its own count and color. Switch it off to merge them into the parent folder as a single list.
+- **Show Recent group** — **on** by default.
 - **Sort by** — **Created time** (the default) or **Updated time**.
-- **Section order** — **Folders on top** (the default) or **Chat on top**.
+- **Section order** — the reorder list described above.
 
-On the desktop the same menu also expands or collapses every group at once.
+The menu **stays open as you pick**, so flipping two settings costs one visit. On the desktop it also expands or collapses every group at once.
 
 ## Work across several folders
 
@@ -123,10 +136,10 @@ Two things still follow the workspace root only. **Live file watching** — edit
 Everything begins in the **composer**, the input at the bottom of the conversation. Choose an agent, model, and mode, point it at a working folder, type a prompt, and send.
 
 - **Agent and model.** Pick from your enabled agents and the models that agent offers. (The agent picker appears when you start a new conversation.)
-- **Mode.** The dropdown lists the modes the connected agent provides — a plan-first mode, an accept-edits mode, and so on. These come from the agent itself, so what you see depends on which one you're running.
+- **Mode, and the agent's own options.** The dropdown lists the modes the connected agent provides — a plan-first mode, an accept-edits mode, and so on. Beside it sit whatever **session options** that agent advertises: a picker where it offers a list of values, a **toggle chip** where it offers a switch (Cline's *auto approve*, for one). All of it comes from the agent itself, so what you see depends on which one you're running — and an option whose kind this build of Codeg doesn't understand is quietly left out rather than being allowed to break the session.
 - **Working folder & branch.** A row just below the box shows where the agent will work: a **folder chip** and a **branch chip**. The folder chip is switchable while the conversation is still a draft (its list shows folder aliases and searches them, and a pinned **Chat mode** row runs folderless for a quick chat); once a conversation is bound to a folder, the chip stays as a label. The branch chip is the full git menu — see [Branch and run git](#branch-and-run-git).
 - **Context and connection.** At the right of that same row, a small ring tracks how much of the model's **context window** you've used — click it for the token breakdown (input, output, cache) — and a heart icon shows the agent's **connection status**: connected, connecting, error, or disconnected.
-- **The + menu.** Attach files, insert a saved **quick message**, leave **live feedback** while the agent is working, run a **slash command**, or drop in a **skill** from the Experts, Office Work, or Scientific Research packs.
+- **The + menu.** Attach files, insert a saved **quick message**, leave **live feedback** while the agent is working, run a **slash command**, or drop in a **skill** from the Experts, Office Work, or Scientific Research packs. Where the agent supports it — Claude Code on adapter 0.65.0 or newer — live feedback reads **Insert into current turn** and lands in the work already running; elsewhere it's queued for the agent to pick up. → [Settings → General](/reference/settings/general#in-conversation-tools)
 - **Rich input.** Type **@** to mention a file, agent, past session, or commit; type **/** for slash commands — the match is fuzzy, so `rvw` finds `review`. Long messages you've sent fold up with a **show more** toggle so the transcript stays readable.
 - **Send, fork, stop.** **Enter** sends (**Shift+Enter** makes a newline); **Fork & Send** branches the conversation; while the agent runs, Send turns into a red **Cancel** button. Type ahead and your messages **queue** until it's ready for them.
 
@@ -147,7 +160,17 @@ As the agent works, its **transcript** streams in: replies as formatted Markdown
 - **An empty reply says why.** If a turn ends with nothing in it, the alert doesn't just tell you to check your configuration — it names which of three things happened: the agent genuinely produced no response, it produced output Codeg couldn't parse (usually an agent/protocol version mismatch), or it sent only status updates (plan, mode, usage) and no reply. Expand the alert for the agent's own output, captured from its error stream and scrubbed of anything that looks like a credential.
 - **Delegated work.** When one agent hands off to another, a **Sub-agents** overlay tracks the delegated sessions — the heart of [Multi-Agent Collaboration](/guide/multi-agent).
 - Each turn ends with its **model, token, and duration** stats, and you can **export** a whole conversation to image, Markdown, or HTML.
-- **Turn a message into a task.** Beside the copy button — on your own messages and on finished replies alike — sits a checklist icon: **Create task from message**. It takes that text over to the [task board](/guide/tasks) as a new to-do, pre-filled with the project folder, for the follow-up you noticed but don't want to do now.
+- **Turn a message into a task.** Beside the copy button — on your own messages and on finished replies alike — sits a checklist icon: **Create task from message**. It takes that text over to [To-dos](/guide/tasks), pre-filled with the project folder, for the follow-up you noticed but don't want to do now.
+
+### Long conversations open fast
+
+A conversation that has been going for weeks doesn't make you wait for all of it. Codeg loads the **last 120 turns** — nudged back to start on one of your own messages, so a window never opens mid-exchange — and pages in another 120 as you scroll up, **without the view jumping** under you: the position you were reading holds while the earlier turns are prepended above it. Responses from a server or a remote workspace are compressed on the wire as well.
+
+The window is a display concern only. **Exporting still takes the whole transcript**, and so does anything else that reads the conversation as a document.
+
+::: tip A session that fails to load keeps what you can see
+If loading a conversation errors, the failure now docks as a small notice above the composer with **Reload** and **New session**, instead of replacing everything with a full-page error. The transcript you already had stays on screen and stays readable.
+:::
 
 ## Work with files — editor, diffs, and previews
 
@@ -167,10 +190,12 @@ The aux panel opens on **Session Details** — an at-a-glance readout of the con
 
 ## Branch and run git
 
-The **branch chip** below the composer is the home for most git work, and there's one per conversation, so [tiled sessions](#tile-several-sessions-side-by-side) each show their own branch. Click it and a searchable menu opens with two halves:
+The **branch chip** below the composer is first of all a *branch picker*, and there's one per conversation, so [tiled sessions](#tile-several-sessions-side-by-side) each show their own branch. Click it and a searchable menu opens with two halves:
 
-- **Operations**, at the top: **Pull code**, **Fetch remote branches**, **Commit code…**, **Push…**, **New branch…**, **New worktree…**, **Stash changes…**, **Unstash…**, and **Manage Remotes…**
-- **Your branches**, below: **Local branches** and **Remote branches**, with shared prefixes (`feature/…`) folded into collapsed groups and the checked-out one marked **Current**. Click any other branch for its actions — **Switch to this branch**, **Merge** it into the current one, **Rebase** onto it, or **Delete branch**.
+- **Operations**, at the top — the short list that acts on the branch you're on: **Pull code**, **Fetch remote branches**, **Commit code…**, **Push…**, **New branch…**, and **New worktree…**
+- **Your branches**, below: **Local branches** and **Remote branches**, with shared prefixes (`feature/…`) folded into collapsed groups and the checked-out one marked **Current**. Click any other branch for its actions — **Switch to this branch**, **Merge** it into the current one, **Rebase** onto it, **Delete branch**, or **Update** / **Push** it without checking it out. A branch a worktree has checked out also offers **Delete worktree** and **Delete worktree and branch**.
+
+The long-tail operations aren't here: **stash and unstash** live in the aux panel's **Changes** tab with the rest of the working-tree actions, and **Manage Remotes** in its **Commits** tab.
 
 One search box filters both halves at once, so typing `push` finds the operation and typing part of a branch name finds the branch. In [Chat mode](#start-a-session-—-the-composer) there's no chip at all; in a folder that isn't a git repository it reads **No branch** and offers **Initialize Git repository**.
 
@@ -189,7 +214,7 @@ Two right-panel tabs put version control a glance away:
 
 The Branch pill has a **HEAD** entry above the branch list — *follows the current branch* — which is the one to pick when you're hopping between branches. Naming a branch pins the view to that branch; **HEAD** re-resolves on every query, so the history follows you through each checkout and keeps working even on a detached HEAD.
 
-Committing opens a dedicated **Commit** window: tick the files you want, write a message, and choose **Commit** or **Commit and Push**. The **branch chip** below the composer covers the rest — pull, fetch, stash, worktrees, remotes, and switching or merging branches. → [Branch and run git](#branch-and-run-git)
+The Changes tab commits directly: type a message in its toolbar and press Enter for a quick commit of the tracked files, or open the full **Commit** window to tick exactly what you want, write a message, and choose **Commit** or **Commit and Push**. Its menu also holds pull, fetch, push, stash and unstash. Branch switching, merging and worktrees are the [branch chip's](#branch-and-run-git) job.
 
 Parallel development with worktrees, remote accounts, and the full git workflow have their own page. → [Git & Worktrees](/guide/git)
 
@@ -242,6 +267,8 @@ Tiling is a great companion to [multi-agent collaboration](/guide/multi-agent): 
 
 Before a session starts, the conversation pane asks **"What would you like to do today?"** and offers **Quick Actions** in three tabs — **Code Development**, **Office Work**, and **Scientific Research**. Each card drops a ready-made skill (and, for Office and Research, a prompt template) into the composer with one click; anything not yet enabled for your chosen agent shows a lock that links to where you turn it on. Below it sit the agent picker and a rotating tip.
 
+The row of skill shortcuts under the quick actions **stops at its ends** rather than drifting on its own: an arrow at each end moves it, and each arrow is live exactly while there's somewhere left to go.
+
 ## Desktop and browser
 
 The workspace is the same whether you run the [desktop app](/getting-started/installation) or open [`codeg-server`](/getting-started/deployment) in a browser. A few things differ:
@@ -272,4 +299,5 @@ These are the defaults; several can be changed.
 - [**Working with Agents**](/guide/agents) — enable an agent and run your first session in the workspace.
 - [**Conversation Aggregation**](/guide/aggregation) — how past sessions from every agent land in the Conversations list.
 - [**Git & Worktrees**](/guide/git) — the full version-control workflow, including parallel development.
+- [**Token Usage**](/guide/token-usage) — what the conversation counter in the status bar opens.
 - [**Multi-Agent Collaboration**](/guide/multi-agent) — delegate parts of a task to other agents.

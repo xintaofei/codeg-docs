@@ -66,6 +66,14 @@ How you reach them depends on where you're running:
 - **Desktop** — the **Open folder** button in the viewer toolbar reveals `~/.codeg/logs` in Finder / Explorer / your file manager. Open the day you need directly.
 - **In a browser** *(web mode or a server)* — a **Log files** panel lists the files on the machine with their sizes and a **Download** button each, *"for history beyond the live buffer."* A single download returns at most the newest **16 MiB** of a file; anything larger comes back as a `.tail.log` slice with a heads-up, and the complete file stays on disk.
 
+### A day's log can't fill your disk
+
+`CODEG_LOG_MAX_FILES` bounds how many *days* are kept — never how large the day in progress may get. That gap was real: a field report had the desktop app write **34 GB in under nine hours** with nothing stopping it and nothing saying so.
+
+Each day's file now carries a **512 MB ceiling** (`CODEG_LOG_MAX_BYTES`; `0` disables it). Past that the file latches off for the rest of the day, and the cut-off — plus a tally of what it went on to drop — is reported **in this viewer** as well as to stderr, so a log that goes quiet is never one that went quiet silently. The boundary is UTC, matching the rotation stamp, and it resumes from what today's file already holds rather than handing out a fresh ceiling on every relaunch.
+
+The protocol chatter behind that kind of flood is also quieter by default: the ACP transport logs every JSON-RPC message several times over, so its targets carry a standing level ceiling. Ask for more specifically — `RUST_LOG=sacp::jsonrpc::transport_actor=trace` — and you still get it.
+
 ::: tip codeg-mcp is the exception
 The per-launch [`codeg-mcp` companion](/reference/architecture) logs to **stderr only** — no file, no buffer — so it never appears on this screen. What you see here is the desktop app or the server itself, not the MCP helpers they spawn.
 :::

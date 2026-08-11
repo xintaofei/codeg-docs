@@ -80,6 +80,7 @@ Codeg 会将按天轮转的日志写入数据目录中的 `logs/`，并将它们
 | `CODEG_LOG` | *（已保存的级别）* | 一个 tracing 过滤指令——`info`、`debug`，或像 `codeg=debug,tower_http=warn` 这样的定向设置。优先于 `RUST_LOG`，并且在其被设置期间，它会锁定界面中的级别选择器。 |
 | `RUST_LOG` | *（未设置）* | 标准的 Rust 日志过滤器。仅当 `CODEG_LOG` 为空时使用。 |
 | `CODEG_LOG_MAX_FILES` | `30` | 保留的按天轮转日志文件数量。 |
+| `CODEG_LOG_MAX_BYTES` | `536870912` | 单日日志文件的上限（512 MB）。触顶后当天的文件会停止写入，并在日志查看器中明确告知。设为 `0` 可取消该上限。 |
 
 对于日常使用，你可以改为从界面更改级别——参见[设置 → 日志](/zh/reference/settings/logs)。
 

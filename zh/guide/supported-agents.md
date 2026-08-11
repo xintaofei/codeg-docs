@@ -21,24 +21,29 @@ Codeg 会为你安装、固定版本并更新其中的每一个——你从不�
 | **OpenClaw** | 可自托管的个人 AI 助手 | Node.js |
 | **OpenCode** | 一个开源编程智能体 | 捆绑二进制文件 |
 | **Cline** | 一个自主编程智能体 CLI | Node.js |
-| **Hermes** | Nous Research 的自我改进智能体 | Python（uv） |
+| **Hermes** | Nous Research 的自我改进智能体 | Node.js |
 | **CodeBuddy** | 腾讯云的 AI 编程助手 | Node.js |
 | **Kimi Code** | Moonshot AI 的 CLI 编程助手 | Node.js |
 | **Pi** | 一个可自我扩展的编程智能体 | Node.js |
 | **Grok** | xAI 的编程智能体与 CLI | Node.js |
 | **Cursor** | Anysphere 的 Cursor 编程智能体 | 捆绑二进制文件 |
 
-最后一列背后有三条交付路径：
+最后一列背后有两条交付路径：
 
-- **Node.js（npm）。** 十二个中有九个以 npm 包的形式交付，Codeg 用 `npx` 运行它们，因此它们需要安装 Node.js。Codeg 会为每一个固定一个已知可用的版本，并为你升级它。
+- **Node.js（npm）。** 十二个中有十个以 npm 包的形式交付，Codeg 用 `npx` 运行它们，因此它们需要安装 Node.js。Codeg 会为每一个固定一个已知可用的版本，并为你升级它。
 - **捆绑二进制文件。** **OpenCode** 和 **Cursor** 是原生二进制文件，Codeg 会为你确切的平台下载它们——无需安装其他任何东西。Cursor 的下载体积更大，因为它自带 Node 运行时和工具，所以它同样不需要你的机器上有 Node.js。
-- **Python（uv）。** **Hermes** 通过 `uv`（Python 工具运行器）运行；Codeg 会用一个固定版本的 Python 启动它，因此你无需管理环境。
+
+::: info Hermes 在 0.24 改用 npm
+Hermes 原本是这里唯一的 Python 条目，通过 `uv` 安装。上游停用了那条渠道——PyPI 停在 **0.19.0**——因此 Codeg 的托管安装改成了一个固定在确切版本上的 npm 包：它的安装步骤会检出官方的 Hermes 发布版，并在包内部引导出**一套隔离的 Python 3.11 环境**。你依然不需要管理任何 Python 环境，只是这套环境不再位于你机器上的 `uv` 里了。配置与凭据仍然原样留在 `~/.hermes`。
+
+有两个实际影响：托管安装在下载时会遵循 **`HTTP_PROXY` / `HTTPS_PROXY`**；而如果你的 `PATH` 上已经有**官方安装程序装的 Hermes**，那一份依然优先——它会自我更新，所以 Codeg 让位给它，而不是用托管的那份把它盖住。
+:::
 
 上面的顺序是设置 → 智能体中**默认的智能体列表顺序**。它是一种偏好设置，而非排名——拖动智能体即可重新排序，而当没有其他方式为一段对话选定智能体时，第一个已启用的智能体就成为 Codeg 的后备选择。→ [使用智能体](/zh/guide/agents#start-a-session)
 
 ## ACP 适配器 {#acp-adapters}
 
-Codeg 与智能体之间只说一种语言：**ACP**。十二个里有十个不需要为此付出什么，因为 Codeg 安装的那个包*本身就是*厂商自己的 CLI——Gemini、OpenClaw、OpenCode、Cline、Hermes、CodeBuddy、Kimi Code、Pi、Grok 和 Cursor 都自带这个协议，所以你手动装过的那一份，Codeg 会直接认出来。
+Codeg 与智能体之间只说一种语言：**ACP**。十二个里有十个不需要为此付出什么，因为 Codeg 安装的东西运行的就是厂商自己的 CLI——Gemini、OpenClaw、OpenCode、Cline、Hermes、CodeBuddy、Kimi Code、Pi、Grok 和 Cursor 都自带这个协议，所以你手动装过的那一份，Codeg 会直接认出来。（Hermes 是那个差一点的例外：自从上游不再发布到 PyPI，托管的那个包就成了一层固定版本的薄壳，它的 `hermes` 命令会 exec 它装下来的那个真正的上游程序——所以 `hermes acp` 仍然是厂商自己的适配器。）
 
 **Claude Code 和 Codex 是仅有的两个例外。** Anthropic 的 `claude` CLI 和 OpenAI 的 `codex` CLI 并不会说 ACP。所以 Codeg 为这两个条目装的根本不是厂商 CLI，而是一个独立的 **ACP 适配器**：一个由 Agent Client Protocol 官方组织（该项目最初由 Zed 团队发起）维护的 npm 包，它把厂商的智能体包裹起来，翻译成这个协议。
 

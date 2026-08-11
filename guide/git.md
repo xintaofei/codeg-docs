@@ -5,7 +5,19 @@ description: Review diffs, commit and push, branch and merge, resolve conflicts,
 
 # Git & Worktrees
 
-Codeg has a full git client built into the workspace, so reviewing what an agent wrote and landing it are part of the same loop as prompting — no jumping out to a separate git tool. Everything sits in panels you already have open: the **Changes** and **Commits** tabs on the right, and the **branch menu** — the branch chip just below the composer — for everything else. The integrated [terminal](/guide/workspace#the-terminal) is always there for the odd command, but you'll rarely need it.
+Codeg has a full git client built into the workspace, so reviewing what an agent wrote and landing it are part of the same loop as prompting — no jumping out to a separate git tool. Everything sits in panels you already have open: the **Changes** tab for your working tree, the **Commits** tab for history and remotes, and the **branch chip** just below the composer for picking a branch. The integrated [terminal](/guide/workspace#the-terminal) is always there for the odd command, but you'll rarely need it.
+
+::: tip Where each operation lives
+The three surfaces used to overlap — the chip carried the whole git menu while both tabs had toolbars of their own. Each now owns a kind of work:
+
+| Surface | What it holds |
+| ------- | ------------- |
+| **Changes** tab | The working tree — quick commit, stash and unstash, add all, roll back |
+| **Commits** tab | History and remote bookkeeping — including **Manage remotes** |
+| **Branch chip** | Picking a branch, plus the operations that act on the one you're on |
+
+Pull, fetch and push appear on all three, since all three are places you'd reasonably want them.
+:::
 
 ## Review your changes
 
@@ -23,37 +35,48 @@ Right-click a file — or a folder, to act on several at once — for the rest:
 There's **no separate staging step** — Codeg doesn't make you `git add` before committing. You just tick the files you want when you commit (below). New files start untracked; **Add to VCS** begins tracking one if you'd like it in git before then.
 
 ::: tip Not a repository yet?
-If the folder isn't under git, the Changes tab says so — choose **Initialize Git repository** from the branch menu to start one.
+If the folder isn't under git, the Changes tab says so — choose **Initialize Git repository** from the branch menu to start one. (The commit toolbar below doesn't render at all outside a repository.)
 :::
 
 ## Commit
 
-When you're ready to save work, **Commit code** — from the branch menu, the Changes tab, or a file's menu — opens a dedicated **Commit** window. Tick the files to include (tracked files come pre-selected, untracked ones don't), click any name to preview its diff, write a message, and commit.
+The Changes tab leads with a toolbar, so committing what you're looking at doesn't mean opening anything: type a message in the box and press **Enter**.
 
-The commit button doubles as a menu: **Commit** records the selected files, and **Commit and Push** sends them to your remote in the same step. Codeg stamps each commit with the author identity from your [git account](#git-accounts) for that remote, so your commits are attributed correctly without you setting `user.name` and `user.email` in every project.
+That **quick commit takes the tracked changes only** — an unignored `dist/` or `node_modules/` can never ride along with a keystroke — and the draft message is dropped when you switch to another folder, so a message written for one repo can't land in the next.
+
+Beside it, one round button opens the menu with everything else: **pull**, **fetch**, **push**, **stash** and **unstash**, plus **Add all to VCS** and **Rollback all** (both routed through the file picker, so neither writes blind), and **Commit code**, which opens the full **Commit** window.
+
+That window is still there for anything more deliberate: tick the files to include (tracked files come pre-selected, untracked ones don't), click any name to preview its diff, write a message, and commit. Its commit button doubles as a menu — **Commit** records the selected files, **Commit and Push** sends them to your remote in the same step.
+
+Codeg stamps each commit with the author identity from your [git account](#git-accounts) for that remote, so your commits are attributed correctly without you setting `user.name` and `user.email` in every project.
 
 ## Branch, merge, and rebase
 
-The **branch menu** — the [branch chip below the composer](/guide/workspace#branch-and-run-git) — is your branch switcher and the home for most git operations. It lists your **local** and **remote** branches, folding shared prefixes like `feature/…` into collapsed groups and marking the checked-out one **Current**; pick a branch for its actions — **Switch to this branch**, **merge** it into the current branch, **rebase** the current branch onto it, or **delete** it. **New branch…** creates one from where you are and checks it out. A single search box at the top filters branches *and* operations together, so you can type `stash` or part of a branch name and get straight to it.
+The **branch chip below the composer** — see [The Workspace](/guide/workspace#branch-and-run-git) — is your branch switcher. It lists your **local** and **remote** branches, folding shared prefixes like `feature/…` into collapsed groups and marking the checked-out one **Current**; pick a branch for its actions — **Switch to this branch**, **merge** it into the current branch, **rebase** the current branch onto it, **delete** it, or the two that don't need it checked out at all:
+
+- **Update** fast-forwards that branch to its upstream **without touching your working tree**, so you can bring `main` current while you're still on your feature branch. It deliberately refuses rather than forcing: a non-fast-forward is rejected, and so is a branch another worktree has checked out. Nothing is ever quietly rewritten under a tree you have open. (On the branch you're actually on, it's the ordinary pull, conflict handling included.)
+- **Push** opens the push window preselected for that branch, so you review the commits before they go out. An already-open push window is retargeted rather than left aimed at whatever it was opened for.
+
+**New branch…** creates one from where you are and checks it out. A single search box at the top filters branches *and* operations together, so you can type part of a branch name and get straight to it.
 
 There's one chip per conversation, so when you [tile several sessions](/guide/workspace#tile-several-sessions-side-by-side) each one shows and switches its own branch.
 
-Switching uses a plain checkout, so Codeg won't move your uncommitted changes for you — **commit or stash first** if git would refuse. For stashing, **Stash changes** tucks your work away (optionally keeping the index staged), and **Unstash** lists your stashes to **apply** or **drop**.
+Switching uses a plain checkout, so Codeg won't move your uncommitted changes for you — **commit or stash first** if git would refuse. Stashing lives in the Changes tab's menu: **Stash changes** tucks your work away (optionally keeping the index staged), and **Unstash** lists your stashes to **apply** or **drop**.
 
 ## Push, pull, and remotes
 
 - **Pull code** fetches and merges your upstream; if the merge conflicts, Codeg opens the conflict tool (below) rather than leaving you at a half-finished merge.
 - **Fetch remote branches** refreshes everything from your remotes without touching your working tree.
 - **Push** opens a window listing the commits you haven't pushed yet, so you see exactly what's about to go out before it does. In the **Commits** tab, every commit is tagged with its push state: a cloud with a check for **Pushed to remote**, a crossed-out cloud for **Not pushed to remote**, and — once you've filtered to a local branch with no upstream — a question mark for **Push status unknown**.
-- **Manage Remotes** lets you add, edit, or remove the remotes a repo points at.
+- **Manage Remotes** lets you add, edit, or remove the remotes a repo points at. It sits in the Commits tab's menu, which is where you'll be when it matters: a repo with no refs yet is exactly when adding the first remote is the thing to do.
 
 ## Read the history — the Commits tab
 
-The **Commits** tab in the right panel is the project's full history, not just a recent page: it's a timeline that keeps loading older commits as you scroll. Each row carries its push state, the commit subject, the author, when it landed, and its short hash.
+The **Commits** tab in the right panel is the project's full history, not just a recent page: it's a timeline that keeps loading older commits as you scroll. Each row carries its push state, the commit subject, the author, when it landed, and its short hash. One actions menu beside the refresh button holds **pull**, **fetch**, **push** and **Manage remotes**.
 
 Two pills at the top narrow what you're looking at, and **Codeg remembers both per project**, so a repo reopens on the view you left it in:
 
-- **Branch** — every branch at once by default. Open it to search and pick one; local and remote branches are grouped, the checked-out one is tagged **Current**, and an ✕ clears the filter. Above them sits **HEAD**, *follows the current branch* — a filter that re-resolves on every query instead of pinning a name, so the history tracks each checkout you make and still works on a detached HEAD. If a branch you'd filtered by is later deleted, the filter quietly drops back to all branches rather than showing you nothing.
+- **Branch** — every branch at once by default. Open it to search and pick one; local and remote branches are grouped, the checked-out one is tagged **Current**, and an ✕ clears the filter. Above them sits **HEAD**, *follows the current branch* — a filter that re-resolves on every query instead of pinning a name, so the history tracks each checkout you make and still works on a detached HEAD. If a branch you'd filtered by is later deleted, the filter quietly drops back to all branches rather than showing you nothing. It renders only the rows on screen, so a repository with hundreds of remote branches opens without the pause it used to cost — search, prefix groups and keyboard navigation all still work.
 - **Author** — your own commits are one click away (your git identity is listed first, badged **you**), recent choices are kept for reuse, and typing searches every author in the repo.
 
 **Click a commit to expand it** and you get the full picture without leaving the panel: the complete hash and message (both copyable, with a **Show more** toggle when the message is long), the author and exact timestamp, every file it touched with `+`/`−` counts — click a file for its diff at that commit — and chips for the branches that contain it.
@@ -98,12 +121,19 @@ The location field there is the same one Codeg now uses everywhere it asks for a
 
 In the sidebar, a repo's worktrees group under it, so a project's parallel branches stay together. Switching to a branch that lives in a worktree takes you *to* that worktree instead of checking out over your current one. The payoff: [tile a few sessions side by side](/guide/workspace#tile-several-sessions-side-by-side), each in its own worktree, and watch a fleet of agents build different features at the same time — the natural companion to [multi-agent collaboration](/guide/multi-agent).
 
-Two other features lean on the same mechanism. [Automations](/guide/automations) can execute each run in its own throwaway worktree, so a scheduled task never collides with your working tree. And every task on the [task board](/guide/tasks) gets one automatically — branch `task/<id>` in a sibling directory — which is what lets several tasks run at once and land one at a time.
+Two other features lean on the same mechanism. [Automations](/guide/automations) can execute each run in its own throwaway worktree, so a scheduled task never collides with your working tree. And every [to-do](/guide/tasks) gets one automatically — branch `task/<id>` in a sibling directory — which is what lets several tasks run at once and land one at a time.
 
-::: warning Worktrees you made are yours to clean up
-Codeg creates worktrees but doesn't delete them. Removing a worktree's folder from the workspace closes its tabs but **leaves the worktree and its branch on disk** — tidy up finished ones yourself with `git worktree remove` (and delete the branch if you no longer need it).
+### Delete one when you're done with it
 
-Task worktrees are the exception: the board offers to remove one when you merge or delete its task, and tells you if that ever fails. → [Task Board](/guide/tasks#keep-the-board-tidy)
+A worktree branch used to be a dead end: deleting the branch could only ever report git's refusal — *"cannot delete branch 'x' used by worktree at …"* — because the checkout has to go first. Pick one in the branch chip and you get the two removals that actually work:
+
+- **Delete worktree** — drops the checkout, **keeps the branch** and its workspace folder, so the worktree can be recreated at that path later.
+- **Delete worktree and branch** — drops the checkout, the branch, and the worktree's folder. Its **sessions move to the repo folder**, stamped with where they actually ran, so no history is lost.
+
+Two are refused up front, and it's worth knowing why: the repository's **main working tree** is offered no destructive action at all (git refuses both to remove its checkout and to delete its branch), and a **to-do task that's mid-run or mid-merge blocks removal of the tree it's working in** — forcing it would delete a live agent's directory out from under it. When a worktree folder does go, every to-do referencing it is detached and its card refreshed, rather than left offering a cleanup that could only fail.
+
+::: tip Removing a folder is not deleting a worktree
+**Remove from workspace** on a folder's menu takes it out of Codeg and closes its tabs — it leaves the worktree and its branch untouched on disk. Use the branch chip's two entries above when you mean to remove the checkout itself. To-do worktrees have a third route: the board offers to remove one when you merge or delete its task, and tells you if that ever fails. → [To-dos](/guide/tasks#keep-the-board-tidy)
 :::
 
 ## Next steps

@@ -21,24 +21,29 @@ Codeg installs, pins, and updates every one of these for you — you never fetch
 | **OpenClaw** | A personal AI assistant you self-host | Node.js |
 | **OpenCode** | An open-source coding agent | Bundled binary |
 | **Cline** | An autonomous coding-agent CLI | Node.js |
-| **Hermes** | Nous Research's self-improving agent | Python (uv) |
+| **Hermes** | Nous Research's self-improving agent | Node.js |
 | **CodeBuddy** | Tencent Cloud's AI coding assistant | Node.js |
 | **Kimi Code** | Moonshot AI's CLI coding assistant | Node.js |
 | **Pi** | A self-extensible coding agent | Node.js |
 | **Grok** | xAI's coding agent and CLI | Node.js |
 | **Cursor** | Anysphere's Cursor coding agent | Bundled binary |
 
-Three delivery routes sit behind that last column:
+Two delivery routes sit behind that last column:
 
-- **Node.js (npm).** Nine of the twelve ship as npm packages that Codeg runs with `npx`, so they need Node.js installed. Codeg pins a known-good version of each and upgrades it for you.
+- **Node.js (npm).** Ten of the twelve ship as npm packages that Codeg runs with `npx`, so they need Node.js installed. Codeg pins a known-good version of each and upgrades it for you.
 - **Bundled binary.** **OpenCode** and **Cursor** are native binaries Codeg downloads for your exact platform — nothing else to install. Cursor's download is larger because it carries its own Node runtime and tools, so it doesn't need Node.js on your machine either.
-- **Python (uv).** **Hermes** runs through `uv`, the Python tool runner; Codeg launches it with a pinned Python, so you don't manage the environment.
+
+::: info Hermes moved to npm in 0.24
+Hermes used to be the one Python entry, installed through `uv`. Upstream retired that channel — PyPI stops at **0.19.0** — so Codeg's managed install is now an npm package pinned to an exact, audited version, whose install step checks out the official Hermes release and bootstraps **its own isolated Python 3.11 environment** inside the package. You still don't manage a Python environment; it just isn't `uv` on your machine any more. Config and credentials stay exactly where they were, in `~/.hermes`.
+
+Two practical consequences: the managed install honors **`HTTP_PROXY` / `HTTPS_PROXY`** for its own downloads, and if you have Hermes from the **official installer on your `PATH`**, that copy still wins — it self-updates, so Codeg defers to it rather than shadowing it with the managed one.
+:::
 
 The order above is the **default Agent List order** in Settings → Agents. It's a preference, not a ranking — drag agents to reorder them, and the first enabled one becomes Codeg's fallback when nothing else has picked the agent for a conversation. → [Working with Agents](/guide/agents#start-a-session)
 
 ## ACP adapters {#acp-adapters}
 
-Codeg speaks exactly one language to an agent: **ACP**. For ten of the twelve that costs nothing, because the package Codeg installs *is* the vendor's own CLI — Gemini, OpenClaw, OpenCode, Cline, Hermes, CodeBuddy, Kimi Code, Pi, Grok, and Cursor all ship the protocol themselves, which is why a copy you installed by hand is picked up straight away.
+Codeg speaks exactly one language to an agent: **ACP**. For ten of the twelve that costs nothing, because what Codeg installs runs the vendor's own CLI — Gemini, OpenClaw, OpenCode, Cline, Hermes, CodeBuddy, Kimi Code, Pi, Grok, and Cursor all ship the protocol themselves, which is why a copy you installed by hand is picked up straight away. (Hermes is the near-miss: since upstream stopped publishing to PyPI, the managed package is a thin pinned wrapper whose `hermes` command execs the real upstream binary it installed — so `hermes acp` is still the vendor's own adapter.)
 
 **Claude Code and Codex are the two exceptions.** Anthropic's `claude` CLI and OpenAI's `codex` CLI don't speak ACP. So what Codeg installs for those two entries isn't the vendor CLI at all — it's a separate **ACP adapter**: an npm package, maintained by the Agent Client Protocol organization (the project the Zed team originally started), that wraps the vendor's agent and translates it into the protocol.
 

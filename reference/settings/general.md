@@ -1,13 +1,13 @@
 ---
 title: General
-description: The General settings screen — default terminal shell, Windows rendering acceleration, and the four toggles that decide which codeg-mcp tools your agents get — delegation, live feedback, ask-a-question, and session lookup.
+description: The General settings screen — default terminal shell, Windows rendering acceleration, notification sounds, and the switches that decide which codeg-mcp tools your agents get — delegation, live feedback, ask-a-question, session lookup, and creating automations and to-dos from chat.
 ---
 
 # General
 
-**Settings → General** is the catch-all screen: a little app behavior — which shell new terminals open, and, on Windows, how the window is drawn — followed by four toggles that decide **which extra tools Codeg hands your agents**. The app sums it up as *"centralized preferences for the default terminal, rendering acceleration, and multi-agent delegation."*
+**Settings → General** is the catch-all screen: a little app behavior — which shell new terminals open, on Windows how the window is drawn, and whether an agent event makes a sound — followed by the switches that decide **which extra tools Codeg hands your agents**.
 
-Two save styles share this screen. **Default Terminal** and **Rendering** apply the moment you change them (rendering then asks for a restart). The four tool panels below them each carry their own **Save** button — nothing there takes effect until you press it.
+Two save styles share this screen. **Default Terminal**, **Rendering** and **Notification sounds** apply the moment you change them (rendering then asks for a restart). The two panels below them — **Multi-Agent Collaboration** and **In-conversation tools** — each carry their own **Save** button, and nothing in either takes effect until you press it.
 
 ## Default Terminal
 
@@ -27,6 +27,28 @@ A single checkbox — **Disable hardware acceleration**. Turn it on if the app s
 
 This section appears only on the **Windows desktop build** — it's hidden on macOS, on Linux, and in any browser session, where it would have no effect.
 
+## Notification sounds
+
+Off by default. Turn it on and an agent event plays a short tone, so you can leave a long turn running in another window and still know when it wants you.
+
+The five events are exactly the ones the [chat channels](/guide/chat-channels) push — the same triggers, a different sink; a channel message leaves the machine, a sound doesn't:
+
+| Event | Default tone |
+| ----- | ------------ |
+| **Turn complete** | Chime |
+| **Permission request** | Alert |
+| **Agent question** | Ding |
+| **Agent error** | Descending |
+| **Message sent** | Silent |
+
+Seven tones to choose from — *Chime, Ding, Blip, Pop, Alert, Descending*, and **Silent** to skip an event without turning the rest off — each with a **preview** button. *Message sent* starts silent because it fires on your own action, which is the least useful cue of the five.
+
+Two settings govern all of them: a **volume** slider, and **Only when the window is not focused** — stay quiet while you're actually looking at Codeg.
+
+::: info Sounds are per device
+This is the one part of the screen kept in the browser or app you set it in, not in Codeg's database. Audio output is a property of the machine you're at: a phone browser attached to the same server has no business beeping because your desktop was configured to. It also means sounds play in the **workspace window** of that device only.
+:::
+
 ## Multi-Agent Collaboration
 
 The switch that lets an active agent hand sub-tasks to other agents — Codeg's **delegation** feature. Two tabs:
@@ -40,27 +62,37 @@ Press **Save** to apply. This panel is the control surface; the how-to — writi
 `delegate_to_agent` advertises only the agents you can actually launch, re-read each time an agent starts: a built-in you've disabled in **Settings → Agents** is struck from its list of targets, an enabled custom agent is added to it, and a disabled one is simply never offered. So switching an agent off hides it from the lead as well as from the composer picker.
 :::
 
-## Live Feedback
+## In-conversation tools
 
-**Enable live feedback** (off by default) lets you send notes and corrections to an agent *while it's working*. With it on, agents can be handed a tool to check for your mid-turn feedback, and conversations show a note-input bar during a running turn.
+One card, five switches, one **Save** — *"extra tools Codeg gives an agent inside a conversation. Each is injected when the agent starts, so a change applies to agents started afterwards."*
 
-One catch worth knowing: agents usually only look for feedback when you ask them to — add something like *"check my live feedback regularly"* to your prompt so the agent knows to pull it.
+| Switch | Default | What the agent gains |
+| ------ | ------- | -------------------- |
+| **Live Feedback** | Off | Take notes and corrections from you *while it's working* — see below |
+| **Ask user question** | On | Pause and put a multiple-choice question to you, rendered as a card above the conversation input. The agent blocks until you answer or skip |
+| **Get session info** | On | Resolve a session you referenced — a badge like `codeg://session/<id>` — into its title, agent, status, workspace, token usage, and recent messages. Read-only |
+| **Create automations** | Off | Save the conversation as an [automation](/guide/automations) that runs on a schedule |
+| **Create to-do tasks** | Off | Queue a card on the [to-do board](/guide/tasks) from the conversation |
 
-## Ask user question
+The first three are read-only or ask-only. **The last two write app state**, which is why they start off and why they're checked again at the moment the tool is called, not only when the agent started: switching one off stops even a session that is already running from using it.
 
-**Enable ask user question** (on by default) lets an agent pause and put a multiple-choice question to you, rendered as a card above the conversation input. The agent blocks until you answer or skip. Turning it on adds the `ask_user_question` tool to agents.
+**Get session info** spells out to the agent what a session badge *means*: mentioning a session is you pointing at it deliberately, so the agent looks it up without being asked to, once per session mentioned. That mirrors how an `@agent` mention is treated as an instruction to delegate. → [Pick up where another session left off](/guide/multi-agent#pick-up-where-another-session-left-off)
 
-## Get session info
+### How live feedback reaches a running agent
 
-**Enable get session info** (on by default) lets an agent resolve a session you reference in the composer — a session badge like `codeg://session/<id>` — into its title, agent, status, workspace, token usage, and recent messages. It's read-only, and adds the `get_session_info` tool to agents.
+There are two channels, and which one you get depends on the agent:
 
-The tool now spells out to the agent what that badge *means*: mentioning a session is you pointing at it deliberately, so the agent looks it up without being asked to, once per session mentioned. That mirrors how an `@agent` mention is treated as an instruction to delegate. → [Pick up where another session left off](/guide/multi-agent#pick-up-where-another-session-left-off)
+- **Pushed straight into the turn.** With an agent whose adapter supports instant steering — **Claude Code on adapter 0.65.0 or newer** — your note is inserted into the work already in flight, and the agent sees it right away. The composer's **+** menu offers *Insert into current turn*, and the dialog says as much.
+- **Pulled by the agent.** Everyone else is handed a tool and has to volunteer a call to it. Those agents typically only check when you mention it, so add something like *"check my live feedback regularly"* to your prompt.
+
+A note that can't be pushed isn't lost — it's **queued instead, and sent with the next turn**, and Codeg tells you that's what happened. Attachments always take the queue; only text can be steered into a running turn.
 
 ## Good to know
 
-- **Two save styles.** Terminal and rendering apply on change; each of the four tool panels needs its own **Save** button — and rendering additionally needs a restart.
-- **Tool toggles apply the next time an agent starts.** Each of the four adds or removes a tool "for agents started after this is turned on" — an agent that's connected right now won't gain or lose the capability mid-flight. It needn't be a brand-new conversation, though: any conversation picks the change up whenever its agent next launches, including an existing one you return to after its connection ended. A new conversation is simply the surest way.
-- **These are the codeg-mcp tools.** Delegation, live feedback, ask-a-question, and session lookup are all served by the [`codeg-mcp` companion](/reference/architecture); the toggles here decide which appear in each agent's catalog. Not *every* companion tool is governed here, though — an agent running a [task](/guide/tasks) also gets `task_progress` and `task_complete`, injected by the task engine rather than by anything on this screen.
+- **Two save styles.** Terminal, rendering and notification sounds apply on change; the delegation and in-conversation-tools panels each need their own **Save** — and rendering additionally needs a restart.
+- **Tool switches apply the next time an agent starts.** Each adds or removes a tool "for agents started after this is turned on" — an agent that's connected right now won't gain or lose the capability mid-flight. It needn't be a brand-new conversation, though: any conversation picks the change up whenever its agent next launches, including an existing one you return to after its connection ended. A new conversation is simply the surest way. (The two *create* switches are the exception, and are re-checked at call time.)
+- **These are the codeg-mcp tools.** Delegation and all five in-conversation tools are served by the [`codeg-mcp` companion](/reference/architecture); the switches here decide which appear in each agent's catalog. Not *every* companion tool is governed here, though — an agent running a [to-do](/guide/tasks) also gets `task_progress` and `task_complete`, injected by the task engine rather than by anything on this screen.
+- **An agent that refuses MCP gets none of them.** A [custom agent](/guide/custom-agents) with its **MCP support** switch turned off is connected without the companion at all, so nothing on this screen reaches it.
 - **Rendering is Windows-only.** The section is simply absent everywhere else.
 
 ## Related

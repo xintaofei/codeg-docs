@@ -13,11 +13,10 @@ This page covers the essentials — enabling an agent, making sure it's ready to
 
 Each agent is a separate command-line program. When you start a session, Codeg launches that program as a background process and talks to it over the **Agent Client Protocol (ACP)** — the shared language that lets one workspace drive many different agents. That's why the experience is consistent no matter which one you pick.
 
-Codeg supports **twelve agents** out of the box, delivered three ways — and it installs and updates them for you:
+Codeg supports **twelve agents** out of the box, delivered two ways — and it installs and updates them for you:
 
 - Most run through **npx** (an npm package), so they need Node.js on your machine.
 - **OpenCode** and **Cursor** are native **binaries** Codeg downloads for your platform (Cursor bundles its own runtime, so it needs no Node.js either).
-- **Hermes** runs through **uv**, a Python tool runner.
 
 Because ACP is an open protocol, the twelve aren't a limit: you can **register any other ACP-compatible agent** yourself, from the protocol's public registry or from its distribution JSON, and Codeg drives it the same way. → [Custom Agents](/guide/custom-agents)
 
@@ -37,9 +36,8 @@ What it checks depends on how the agent is delivered:
 
 - **npx agents** — that **Node.js** and **npm** are installed and new enough (each agent sets a minimum Node version).
 - **OpenCode** and **Cursor** — that your platform is supported and the binary is downloaded (OpenCode also fetches its plugins).
-- **Hermes** — that the **uv** runtime is available.
 
-Every failing check comes with a **fix button** right beside it — *Install Node.js*, *Install uv*, *Install Plugins*, and so on — and the version row offers **Install**, **Upgrade**, or **Uninstall** as needed. Changed something outside Codeg? **Refresh check** re-runs the preflight.
+Every failing check comes with a **fix button** right beside it — *Install Node.js*, *Install Plugins*, and so on — and the version row offers **Install**, **Upgrade**, or **Uninstall** as needed. Changed something outside Codeg? **Refresh check** re-runs the preflight.
 
 **Installed an agent's CLI yourself?** Codeg counts that. Where it has no managed install of its own, it probes your system for the command — an `npx` package via `npm list -g`, a binary on your `PATH`, or the plain `--version` convention — and reports the real version instead of *Not installed*. Since a session already preferred whatever was on your `PATH`, this just means the version row now agrees with what actually runs. Claude Code and Codex are the exception — there Codeg probes for an ACP adapter with its own executable name, not the `claude` or `codex` you already have. → [ACP adapters](/guide/supported-agents#acp-adapters)
 
