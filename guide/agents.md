@@ -13,18 +13,18 @@ This page covers the essentials — enabling an agent, making sure it's ready to
 
 Each agent is a separate command-line program. When you start a session, Codeg launches that program as a background process and talks to it over the **Agent Client Protocol (ACP)** — the shared language that lets one workspace drive many different agents. That's why the experience is consistent no matter which one you pick.
 
-Codeg supports **twelve agents** out of the box, delivered two ways — and it installs and updates them for you:
+Codeg supports **thirteen agents** out of the box, delivered two ways — and it installs and updates them for you:
 
 - Most run through **npx** (an npm package), so they need Node.js on your machine.
 - **OpenCode** and **Cursor** are native **binaries** Codeg downloads for your platform (Cursor bundles its own runtime, so it needs no Node.js either).
 
-Because ACP is an open protocol, the twelve aren't a limit: you can **register any other ACP-compatible agent** yourself, from the protocol's public registry or from its distribution JSON, and Codeg drives it the same way. → [Custom Agents](/guide/custom-agents)
+Because ACP is an open protocol, the thirteen aren't a limit: you can **register any other ACP-compatible agent** yourself, from the protocol's public registry or from its distribution JSON, and Codeg drives it the same way. → [Custom Agents](/guide/custom-agents)
 
 Two things are tracked separately for each agent: whether it's **enabled** (allowed to appear in Codeg) and whether it's **installed** (actually present on your machine). They're independent — you can enable an agent before installing it, and Codeg will help you install it when the time comes.
 
 ## Enable an agent
 
-Agents are managed in **Settings → Agents** (titled *Agent SDK Management*). The **Agent List** on the left holds every supported agent; select one to see its details on the right. **All agents are enabled by default**, so there's usually nothing to switch on — but the enable toggle in each agent's header lets you hide the ones you don't use. A **+ Add custom agent** button in the top-right corner is how you extend the list beyond the built-in twelve. → [Custom Agents](/guide/custom-agents)
+Agents are managed in **Settings → Agents** (titled *Agent SDK Management*). The **Agent List** on the left holds every supported agent; select one to see its details on the right. **All agents are enabled by default**, so there's usually nothing to switch on — but the enable toggle in each agent's header lets you hide the ones you don't use. A **+ Add custom agent** button in the top-right corner is how you extend the list beyond the built-in thirteen. → [Custom Agents](/guide/custom-agents)
 
 Only **enabled** agents appear in the composer's agent picker. Disable the ones you'll never touch to keep that list short; if you ever disable everything, the composer just prompts you to *Open Agents settings* and turn one back on. The toggle reaches past the picker, too: an agent you've switched off is also dropped from the targets another agent can [delegate](/guide/multi-agent) to.
 
@@ -66,6 +66,53 @@ Most agents work the moment they're installed, but each one's detail pane has pl
 
 Change a setting while a session is open and that session keeps running on its old configuration — Codeg won't interrupt you mid-task. Instead, a bar appears at the **top of the conversation** noting it's still on the previous config; click **Reconnect to apply** and the session reloads with the new settings while **keeping its full history**. No need to close and reopen anything.
 
+::: tip When the agent turns a setting down
+Some of what the composer offers is a *request*, not a command — the agent answers with the options it actually adopted. Pick a model or a mode an agent won't take and it used to look like the dropdown springing back for no reason. Now Codeg says what was adopted instead, naming it, and **keeps your preference for next time**: a refusal is often about *this* session rather than the choice itself, and a model switch an agent declines mid-conversation frequently succeeds in a fresh one.
+:::
+
+### Let the agent handle its own files and commands
+
+Codeg normally serves an agent's file reads, file writes and terminal commands itself, over the protocol. That's convenient — but it means those operations run in **Codeg's** process, outside whatever sandbox the agent applies to *itself*. An agent configured to deny reads of `**/.env` can't enforce it against a read it delegated: its own audit log records the profile as applied, with no violation, because nothing it controls ever saw the access.
+
+A switch beside the environment editor on each agent's page — **Let the agent handle files and commands** — hands all three back. Codeg then advertises neither channel and refuses both if called anyway, and the agent does its own I/O under its own rules.
+
+It's **off by default**, and the reason is on the switch: *Codeg adds no sandbox itself, so turn this on only if the agent has one configured.* Most agents ship none, so for most of them this trades a working file channel for nothing.
+
+::: warning It also withholds delegation
+Turning it on drops the **delegation** tools for that agent, because `delegate_to_agent` is a third door into the same room — it has Codeg spawn a second agent under Codeg's policy and relay the output back, which is exactly the containment leak the switch exists to close. The [Multi-Agent Collaboration](/guide/multi-agent) panel **names the agents this applies to** rather than reading "enabled" while the tools quietly aren't there. Setting `CODEG_ACP_HOST_TOOLS=agent` in the agent's environment does the same thing. → [Configuration](/getting-started/configuration)
+:::
+
+### OpenCode: permissions without the JSON
+
+OpenCode decides what runs unattended in the `permission` block of `opencode.json`. A **Permissions** card on its settings page edits that block for you:
+
+- **Auto-accept every permission** — one switch, one allow-all rule. It also clears the other places a run could still be stopped, since a leftover per-agent or legacy block would quietly override it.
+- **Global default** — the `*` rule: **Allow**, **Ask**, or **Deny** for anything not overridden below.
+- **Per-tool permissions** — one action per tool OpenCode's published schema names: shell commands, file edits, reads, reaching outside the working directory, launching sub-agents, loading skills, search, web fetch, and the rest, each with a one-line description of what it covers.
+- **Fine-grained rules** for the tools that support pattern matching — `*` for any characters, `?` for exactly one, a leading `~` for your home directory.
+
+The catch this card exists to handle is **order**. OpenCode flattens the whole block into one list and takes the **last** match, so a `*` written *after* `bash` silently overrides it — your carefully-written rule is in the file and does nothing. Codeg always writes `*` first, and a file that arrived the other way round is **flagged with a Fix order button** rather than being rendered as though it were in force. Where two overlapping patterns have no single right order, it says so and leaves the choice to you.
+
+Every key outside the permission block survives the edit untouched, and a file Codeg can't parse **pauses the visual editor** instead of being rewritten.
+
+### Pi: project trust
+
+Pi loads a repository's own `.pi/` files — settings, skills, prompts, and **`.pi/extensions`, which are JavaScript modules that run at pi startup with your permissions**. Whether it does that for a given folder is pi's own trust decision, and since **0.25** it's yours to make.
+
+When you open a Pi session in a repo that ships those files and nothing covers the folder yet, a notice appears in the conversation. **Review…** opens a dialog that names each file it found, marks the ones that **execute code**, and states the two things that are easy to miss: the answer is **inherited by every folder inside**, and it's written to pi's own trust file, so it **applies when you run `pi` yourself in a terminal** too. Trusting a project restarts pi, since it resolves trust once at startup; declining doesn't, because the running process was already skipping those files.
+
+A **Project trust** card on pi's settings page lists every folder you've decided on, with **Revoke** on each row.
+
+::: warning If you used Pi before 0.25
+Earlier versions marked **every** folder they launched pi into as trusted, without asking — enough that creating or restoring a Pi conversation on a freshly cloned repo would run whatever `.pi/extensions` it shipped, with no prompt sent and nothing in the transcript. Dropping that behavior doesn't retract the grants it already wrote, so those folders **now block the launch until you confirm them**, and each is listed for review. They're kept rather than deleted because pi's file records no provenance — pruning them would silently revoke decisions you made inside pi yourself. Reported as [#446](https://github.com/xintaofei/codeg/issues/446). → [Privacy & Security](/reference/privacy)
+:::
+
+### Pi: reasoning on a custom provider
+
+Pi sends a reasoning effort only for a model that **declares** it can think — and an undeclared model has every level clamped to *Off*, which is why the composer's reasoning picker used to snap straight back the moment you touched it on a custom provider.
+
+A **Reasoning** card on pi's page is where you declare it: a switch, the **six levels pi accepts** as chips, and — folded away — the value each level is sent as, which is what an endpoint expecting `LOW`/`HIGH` needs. The list isn't free-form because pi's isn't; a name outside its six is refused by the adapter. The default-level select narrows to the levels you actually made available.
+
 ### Codex: sandbox and approvals
 
 Codex's pane has a **Sandbox & approvals** group — the two questions of how much it can touch and when it stops to ask:
@@ -74,6 +121,12 @@ Codex's pane has a **Sandbox & approvals** group — the two questions of how mu
 - **Sandbox mode** — what it can write: **Read-only**, **Workspace write**, or **Full access (no sandbox)**. Workspace write adds **Extra writable folders** (absolute paths, one per line), plus switches for **network access** and whether to exclude **TMPDIR** and **/tmp** — all off by default.
 
 Two things to know: these go into your global `~/.codex/config.toml`, so the `codex` CLI and its IDE sessions pick them up too; and they're **thread defaults** — they govern the turns Codex starts by itself, while ordinary prompts follow the composer's own approval preset. Restart a session to apply a change. On Windows, workspace write falls back to read-only unless you've enabled Codex's experimental Windows sandbox.
+
+::: warning Untrusted has no equivalent here
+Until **0.25** these two settings were **dead in every Codeg session** — the adapter re-sent its own policy on every turn, so an explicitly read-only sandbox could be silently widened to workspace-write. Codeg now derives the launch from your config, keyed on **sandbox mode**, because that's the axis where guessing wrong *enlarges* access: it never widens the sandbox, and never picks an approval-free preset without an exact match.
+
+**Untrusted** is the one that can't be honored — the ACP adapter has three approval presets and none of them is it, so a Codeg session falls back to **on request**, where the model decides when to ask and anything the sandbox already permits stops prompting. The panel says so rather than letting the control look effective. If Untrusted was your containment, tighten **Sandbox mode** instead. (Codeg also declines to derive anything at all when a `default_permissions` profile shadows the root keys, since Codex resolves through that profile and a derived preset would override it.)
+:::
 
 ### Claude Code: attribution and telemetry
 

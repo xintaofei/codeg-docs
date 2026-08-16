@@ -1,11 +1,11 @@
 ---
 title: Custom Agents
-description: Register any ACP-compatible coding agent beyond Codeg's built-in twelve — pick one from the public ACP registry or paste its distribution JSON, and Codeg installs it, records its history, and treats it like every other agent.
+description: Register any ACP-compatible coding agent beyond Codeg's built-in thirteen — pick one from the public ACP registry or paste its distribution JSON, and Codeg installs it, records its history, and treats it like every other agent.
 ---
 
 # Custom Agents
 
-Codeg ships with [twelve agents](/guide/supported-agents) it has adapted by hand — each one got a parser for its session files and a slot in the agent list. But the **Agent Client Protocol** is an open standard, and plenty of agents speak it without ever having crossed Codeg's path. Since **0.22**, you can add those yourself.
+Codeg ships with [thirteen agents](/guide/supported-agents) it has adapted by hand — each one got a parser for its session files and a slot in the agent list. But the **Agent Client Protocol** is an open standard, and plenty of agents speak it without ever having crossed Codeg's path. Since **0.22**, you can add those yourself.
 
 A custom agent isn't a second-class citizen. Once registered it appears in the agent list, the composer picker, the status bar, conversation search, and the delegation targets — everywhere a built-in appears. Codeg installs it, runs a preflight check on it, and, because such an agent usually keeps no history Codeg could read, **records the transcript itself** so its conversations show up in the workspace like everyone else's.
 
@@ -155,7 +155,7 @@ Two cards sit at the bottom of a custom agent's detail pane (a **Custom** badge 
 
 ## Next steps
 
-- [**Supported Agents**](/guide/supported-agents) — the twelve agents Codeg adapts by hand, and what each one needs.
+- [**Supported Agents**](/guide/supported-agents) — the thirteen agents Codeg adapts by hand, and what each one needs.
 - [**Working with Agents**](/guide/agents) — enabling, preflight, configuration, and starting a session, all of which apply here too.
 - [**Skills**](/guide/skills) — what the shared store and the skills matrices actually do.
 - [**Multi-Agent Collaboration**](/guide/multi-agent) — put your new agent on a team.

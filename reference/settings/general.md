@@ -19,7 +19,11 @@ Chooses the shell Codeg launches when you open a new terminal tab from the termi
 
 Picking a named option saves immediately; a custom path waits for the Save button beside it.
 
-The terminal this shell feeds is the one in [the workspace](/guide/workspace).
+The terminal this shell feeds is the one in [the workspace](/guide/workspace). Since **0.25** it isn't only that terminal: when an **agent** asks Codeg to run a whole command line, that runs through this shell too. Left on *System default* nothing changes from before.
+
+::: warning A non-POSIX shell may reject what agents write
+Agents emit **POSIX syntax** — `&&`, `2>&1`, `$(…)`. Your interactive shell is your business, but naming one that doesn't read POSIX means an agent's command line can fail with a syntax error rather than doing anything. **fish**, **nushell** and **Windows PowerShell 5.1** are the ones this bites; PowerShell 7 and cmd are handled with their own calling conventions.
+:::
 
 ## Rendering *(Windows desktop only)*
 
@@ -57,6 +61,8 @@ The switch that lets an active agent hand sub-tasks to other agents — Codeg's 
 - **Agent defaults** — per-agent overrides (mode and config) applied when a delegation call spawns that agent as a worker. The tabs are built from the live agent registry, so a [custom agent](/guide/custom-agents) gets one too, and the options come from a live probe of each agent — what you pick is exactly what it will accept.
 
 Press **Save** to apply. This panel is the control surface; the how-to — writing delegation prompts, watching the team, turning a workflow into a skill — lives in **[Working with Multiple Agents](/guide/multi-agent)**.
+
+One thing switched on here can still be withheld elsewhere, so the panel says so: a warning under **Enable delegation** **names any agent whose per-agent [Let the agent handle files and commands](/guide/agents#let-the-agent-handle-its-own-files-and-commands) switch is on**, because that switch takes the delegation tools away deliberately. The list is read from the policy the backend actually resolved, not guessed from the agent's environment — so it agrees with what the agent will really be handed.
 
 ::: info The target list follows your enable toggles
 `delegate_to_agent` advertises only the agents you can actually launch, re-read each time an agent starts: a built-in you've disabled in **Settings → Agents** is struck from its list of targets, an enabled custom agent is added to it, and a disabled one is simply never offered. So switching an agent off hides it from the lead as well as from the composer picker.

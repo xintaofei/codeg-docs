@@ -96,6 +96,19 @@ Kimi Code is the other agent with a pane of its own, rebuilt in **0.23**. The re
 `kimi acp` reads the `KIMI_MODEL_*` family — `KIMI_MODEL_BASE_URL`, `KIMI_MODEL_API_KEY`, `KIMI_MODEL_NAME` — *before* `config.toml`, so one left in the agent's [Environment Variables](/guide/agents#configure-an-agent) silently overrides everything this pane writes. The pane warns you while any is still set, and saving clears them — so what you can see is what's in force.
 :::
 
+## DeepSeek Harness: endpoint and key
+
+**DeepSeek Harness**'s pane is the short one, because the adapter takes both of its settings as plain environment variables:
+
+- **API endpoint** — leave it blank for DeepSeek's own `https://api.deepseek.com`. Fill it in for a proxy or a compatible endpoint; it wants a full `http(s)` URL with no query string.
+- **API key** — passed to the agent as `DEEPSEEK_API_KEY`.
+
+Model and reasoning effort are **not** here. The adapter advertises both as ordinary session options, so they live in the [composer](/guide/workspace#start-a-session-—-the-composer) and belong to a conversation rather than to the agent. The launch-default model is `DEEPSEEK_ACP_MODEL` in the agent's raw [Environment Variables](/guide/agents#configure-an-agent) — deliberately not in this pane, so a save here can never overwrite a model line you're editing there.
+
+::: tip An environment variable outranks the credentials file
+DeepSeek Harness can also be signed in from a terminal, which stores the key in `~/.dsh/.credentials.yaml`. The environment takes precedence — so if that's how you signed in, **leave the API key field empty** rather than filling it with the same value and having two places to keep in step.
+:::
+
 ## Where credentials are stored
 
 Codeg keeps agent credentials where the agents themselves do — nothing is uploaded to Codeg:

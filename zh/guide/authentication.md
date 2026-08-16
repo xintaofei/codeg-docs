@@ -96,6 +96,19 @@ Kimi Code 是另一个拥有专属面板的智能体，该面板在 **0.23** 中
 `kimi acp` 读取 `KIMI_MODEL_*` 这一族变量——`KIMI_MODEL_BASE_URL`、`KIMI_MODEL_API_KEY`、`KIMI_MODEL_NAME`——而且是*先于* `config.toml` 读取的，因此智能体[环境变量](/zh/guide/agents#configure-an-agent)中残留的一个，就会悄悄覆盖掉这个面板写入的一切。只要还有任何一个存在，面板就会提醒你，而保存操作会清除它们——于是你看到的就是真正生效的。
 :::
 
+## DeepSeek Harness：端点与密钥 {#deepseek-harness-endpoint-and-key}
+
+**DeepSeek Harness** 的面板是最短的那一个，因为适配器把它的两项设置都当作普通的环境变量来读：
+
+- **API 端点**——留空即使用 DeepSeek 自己的 `https://api.deepseek.com`。要走代理或兼容端点时再填；它要求一个完整的 `http(s)` URL，且不带查询串。
+- **API 密钥**——以 `DEEPSEEK_API_KEY` 传给智能体。
+
+模型和思考强度**不在**这里。适配器把两者都作为普通的会话选项通告出来，因此它们位于 [composer](/zh/guide/workspace#start-a-session-—-the-composer) 中，归属于一段对话而不是这个智能体。启动时的默认模型是该智能体原始[环境变量](/zh/guide/agents#configure-an-agent)里的 `DEEPSEEK_ACP_MODEL`——刻意不放进这个面板，这样这里的一次保存就永远不会覆盖掉你正在那边编辑的那一行模型配置。
+
+::: tip 环境变量的优先级高于凭据文件
+DeepSeek Harness 也可以在终端里登录，那会把密钥存进 `~/.dsh/.credentials.yaml`。环境变量优先——所以如果你是那样登录的，就**让 API 密钥这一栏留空**，而不是填上同一个值、再让自己有两处需要同步维护。
+:::
+
 ## 凭据存储在何处 {#where-credentials-are-stored}
 
 Codeg 把智能体凭据保存在智能体自己保存的地方——不会有任何内容上传到 Codeg：

@@ -13,6 +13,8 @@ Checks the configured release source for a newer Codeg and, where it can, instal
 
 ::: tip You don't have to come looking
 A new release also announces itself in the workspace: a **New v…** badge appears in the [status bar](/guide/workspace#the-layout), and its popover carries the same version, **What's new** notes, and actions. Both surfaces read one shared check — a single fetch answers both, and they never disagree. **Later** dismisses a release, per version and across every open window, leaving a plain grey icon you can still click; the next release lights the badge again.
+
+**The notes come in your language.** Codeg publishes each release as one body carrying the English notes, a separator, and the Chinese translation — so both surfaces used to show you a half you couldn't read, which in a 320-pixel popover is the half standing between you and the buttons. Since **0.25** the matching half is picked from your [interface language](#language): Chinese for 简体中文 and 繁體中文, English for the other eight. The split is read from the separator the publishing format actually writes, not guessed from where the Chinese starts — so a release with no separator renders whole rather than being truncated for both readers.
 :::
 
 What the upgrade button does depends on where you're running — this is the one screen where desktop and server genuinely differ:

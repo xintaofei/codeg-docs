@@ -82,7 +82,7 @@ curl -fsSL https://raw.githubusercontent.com/xintaofei/codeg/main/install.sh | b
 This places `codeg-server` and `codeg-mcp` in `/usr/local/bin` and the bundled web assets in `/usr/local/share/codeg/web`, using `sudo` only if the target isn't already writable. Pin a version or change the location with `--version` / `--dir`:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/xintaofei/codeg/main/install.sh | bash -s -- --version v0.24.0 --dir ~/.local/bin
+curl -fsSL https://raw.githubusercontent.com/xintaofei/codeg/main/install.sh | bash -s -- --version v0.26.0 --dir ~/.local/bin
 ```
 
 Then start it. The installer prints the exact command for you; add `--supervise` on an unattended host so a failed self-upgrade rolls back automatically:
@@ -99,7 +99,7 @@ The access token is printed to stderr on startup unless you set `CODEG_TOKEN` yo
 irm https://raw.githubusercontent.com/xintaofei/codeg/main/install.ps1 | iex
 ```
 
-This installs to `%LOCALAPPDATA%\codeg` and adds it to your PATH. Pin a version with `.\install.ps1 -Version v0.24.0`. Self-update is disabled on Windows — upgrade by re-running the installer.
+This installs to `%LOCALAPPDATA%\codeg` and adds it to your PATH. Pin a version with `.\install.ps1 -Version v0.26.0`. Self-update is disabled on Windows — upgrade by re-running the installer.
 
 ## Prebuilt binaries
 

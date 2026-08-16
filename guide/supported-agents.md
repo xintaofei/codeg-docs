@@ -1,13 +1,13 @@
 ---
 title: Supported Agents
-description: The twelve coding agents Codeg drives over ACP — what each one is, the runtime it needs, and where it keeps its sessions on disk — plus how to register one that isn't on the list.
+description: The thirteen coding agents Codeg drives over ACP — what each one is, the runtime it needs, and where it keeps its sessions on disk — plus how to register one that isn't on the list.
 ---
 
 # Supported Agents
 
-Codeg drives **twelve coding agents**, and once one is running they all feel the same — same composer, same diffs, same git and terminal — because Codeg talks to each over the **Agent Client Protocol (ACP)**. What differs is underneath: who builds the agent, what runtime it needs on your machine, and where it keeps its own history. This page is the map.
+Codeg drives **thirteen coding agents**, and once one is running they all feel the same — same composer, same diffs, same git and terminal — because Codeg talks to each over the **Agent Client Protocol (ACP)**. What differs is underneath: who builds the agent, what runtime it needs on your machine, and where it keeps its own history. This page is the map.
 
-Enabling an agent, its preflight health check, and starting a session are covered in [Working with Agents](/guide/agents); signing in and choosing a model are in [Authentication & Models](/guide/authentication). Here we stick to the roster itself — and, at the end, [how to add to it](#beyond-the-twelve).
+Enabling an agent, its preflight health check, and starting a session are covered in [Working with Agents](/guide/agents); signing in and choosing a model are in [Authentication & Models](/guide/authentication). Here we stick to the roster itself — and, at the end, [how to add to it](#beyond-the-built-in-roster).
 
 ## The roster
 
@@ -27,10 +27,11 @@ Codeg installs, pins, and updates every one of these for you — you never fetch
 | **Pi** | A self-extensible coding agent | Node.js |
 | **Grok** | xAI's coding agent and CLI | Node.js |
 | **Cursor** | Anysphere's Cursor coding agent | Bundled binary |
+| **DeepSeek Harness** | DeepSeek's own coding harness | Node.js **22+** |
 
 Two delivery routes sit behind that last column:
 
-- **Node.js (npm).** Ten of the twelve ship as npm packages that Codeg runs with `npx`, so they need Node.js installed. Codeg pins a known-good version of each and upgrades it for you.
+- **Node.js (npm).** Eleven of the thirteen ship as npm packages that Codeg runs with `npx`, so they need Node.js installed. Codeg pins a known-good version of each and upgrades it for you. Each declares its own minimum Node version, and preflight checks yours against it — several want **Node 22**, DeepSeek Harness among them.
 - **Bundled binary.** **OpenCode** and **Cursor** are native binaries Codeg downloads for your exact platform — nothing else to install. Cursor's download is larger because it carries its own Node runtime and tools, so it doesn't need Node.js on your machine either.
 
 ::: info Hermes moved to npm in 0.24
@@ -43,7 +44,7 @@ The order above is the **default Agent List order** in Settings → Agents. It's
 
 ## ACP adapters {#acp-adapters}
 
-Codeg speaks exactly one language to an agent: **ACP**. For ten of the twelve that costs nothing, because what Codeg installs runs the vendor's own CLI — Gemini, OpenClaw, OpenCode, Cline, Hermes, CodeBuddy, Kimi Code, Pi, Grok, and Cursor all ship the protocol themselves, which is why a copy you installed by hand is picked up straight away. (Hermes is the near-miss: since upstream stopped publishing to PyPI, the managed package is a thin pinned wrapper whose `hermes` command execs the real upstream binary it installed — so `hermes acp` is still the vendor's own adapter.)
+Codeg speaks exactly one language to an agent: **ACP**. For ten of the thirteen that costs nothing, because what Codeg installs runs the vendor's own CLI — Gemini, OpenClaw, OpenCode, Cline, Hermes, CodeBuddy, Kimi Code, Pi, Grok, and Cursor all ship the protocol themselves, which is why a copy you installed by hand is picked up straight away. (Hermes is the near-miss: since upstream stopped publishing to PyPI, the managed package is a thin pinned wrapper whose `hermes` command execs the real upstream binary it installed — so `hermes acp` is still the vendor's own adapter.)
 
 **Claude Code and Codex are the two exceptions.** Anthropic's `claude` CLI and OpenAI's `codex` CLI don't speak ACP. So what Codeg installs for those two entries isn't the vendor CLI at all — it's a separate **ACP adapter**: an npm package, maintained by the Agent Client Protocol organization (the project the Zed team originally started), that wraps the vendor's agent and translates it into the protocol.
 
@@ -63,6 +64,21 @@ What the adapter does share is your configuration — including being signed in.
 ::: tip Point the Codex adapter at your own binary
 Set `CODEX_PATH` in the Codex agent's **Environment Variables** and `codex-acp` runs the executable you name instead of the copy it bundles — useful if you keep a particular `codex` build around. → [Working with Agents](/guide/agents#configure-an-agent)
 :::
+
+### DeepSeek Harness takes a third route {#deepseek-harness}
+
+**DeepSeek Harness**, new in **0.26**, is neither of the two cases above. DeepSeek publishes an ACP transport of its own — `@deepseek-ai/dsh-acp` — but it's built for automation: no streaming, no tool presentation, and it refuses MCP servers outright, so a session run through it would arrive as a finished block of text with none of the workspace around it. Codeg drives the **community `deepseek-acp` bridge** instead, pinned to an exact version like every other managed install.
+
+It carries no adapter badge and no vendor-CLI confusion to explain, because there's no `deepseek` command on your machine it could be mistaken for. What you get in exchange for the extra hop is a full-fidelity session: streaming replies, tool cards, and MCP.
+
+| What | Where it lands |
+| ---- | -------------- |
+| **Sign-in** | The agent's own settings pane: **API endpoint** and **API key**. Blank endpoint means the adapter's default, `https://api.deepseek.com` |
+| **Model and reasoning effort** | The **composer**, not settings — the adapter advertises them as ordinary session options, so they're per conversation |
+| **Skills** | The upstream skills chain, including `$DSH_HOME/skills` → [Skills](/guide/skills) |
+| **MCP servers** | Delivered over the protocol itself → [MCP Servers](/guide/mcp) |
+
+The key is passed as `DEEPSEEK_API_KEY`, and an environment variable outranks the credentials file — so if you'd rather sign in through the terminal, leave the field empty. The launch-default model stays where power users expect it, as `DEEPSEEK_ACP_MODEL` in the raw environment editor, precisely so the settings pane can never overwrite a model line you're editing there.
 
 ## Where each agent keeps its sessions
 
@@ -84,8 +100,11 @@ Here's where "each agent's native store" actually lives:
 | **Pi** | `~/.pi/agent/sessions/` | JSONL | `PI_CODING_AGENT_SESSION_DIR` |
 | **Grok** | `~/.grok/sessions/` | JSONL | `GROK_HOME` |
 | **Cursor** | `~/.cursor/chats/` | SQLite (blob store) | `CURSOR_CONFIG_DIR` |
+| **DeepSeek Harness** | `~/.dsh/sessions/` | Compressed JSONL | `DSH_HOME` |
 
 Most agents write a **JSONL transcript** — a plain-text log, one event per line — while OpenCode and Hermes keep everything in a single **SQLite** database, Cursor stores each conversation as its own SQLite blob file, and Gemini and Cline use their own JSON files. Codeg reads each format natively; you never convert anything.
+
+DeepSeek is the one that's compressed: its `session.jsonl.zstd` isn't a single Zstandard archive but a **run of frames appended batch by batch**, which is what lets the harness keep writing to it. Codeg decodes the frames in sequence and keeps everything up to the last complete one, so a session **still being written** lists and opens rather than reading as corrupt.
 
 ::: tip Moved a store? Codeg follows the same variable.
 Point an agent at a non-default location with one of the environment variables above and Codeg honors it too — so a relocated history still imports — as long as Codeg sees that variable in its own environment. OpenClaw is the exception: its store isn't relocatable.
@@ -101,7 +120,7 @@ The surface is identical, but a few things vary by agent — worth knowing so no
 - **Sign-in differs too.** Some agents log in with their own subscription or OAuth, others take a provider API key or a custom endpoint. Each agent's detail pane shows only the options that apply to it. → [Authentication & Models](/guide/authentication)
 - **OpenClaw opts out of MCP.** It's the one agent that doesn't accept Model Context Protocol servers, so an MCP server you've added won't reach an OpenClaw session — Codeg forwards none to it. Most other agents receive your MCP servers normally. → [MCP Servers](/guide/mcp)
 
-## Beyond the twelve
+## Beyond the built-in roster
 
 The roster above is the set Codeg **adapts by hand** — each of those agents got a parser for its session files, its own settings pane, and whatever small accommodations its quirks demand. That work is what earns a slot in the table.
 

@@ -70,8 +70,11 @@ Each server's detail pane has an **Enabled apps** row — a checkbox per agent. 
 | **Codex** | Codex's `config.toml` (`[mcp_servers.*]`) |
 | **Gemini** | `~/.gemini/settings.json` |
 | **OpenCode**, **Cline**, **Hermes**, **CodeBuddy**, **Kimi Code**, **Grok**, **Cursor** | each agent's own MCP config |
+| **DeepSeek Harness** | `$DSH_HOME/mcp.json` — Codeg's own record, since the agent reads no config file of its own |
 
-That's **ten of the twelve agents** — every one except **OpenClaw** and **Pi**. OpenClaw doesn't accept MCP servers at all (it's the one agent that opts out), so it's not offered as a target; Pi isn't in the list either. → [How agents differ](/guide/supported-agents#how-agents-differ)
+That's **eleven of the thirteen agents** — every one except **OpenClaw** and **Pi**. OpenClaw doesn't accept MCP servers at all (it's the one agent that opts out), so it's not offered as a target; Pi isn't in the list either. → [How agents differ](/guide/supported-agents#how-agents-differ)
+
+**DeepSeek** is the odd one out in *how* a server reaches it. Every other agent reads its own config file at startup, so Codeg writes there and steps back. The `deepseek-acp` bridge reads none — servers reach it only over the protocol, at session creation — so `$DSH_HOME/mcp.json` is Codeg's record of what to send rather than something the agent consults, and the ACP connection is the delivery path. One practical consequence: it hosts **stdio and streamable HTTP** servers only, and an **SSE** entry is refused when you save it rather than failing later at launch.
 
 ::: info Custom agents aren't listed here
 This screen works by writing into each agent's **own** config file, and Codeg deliberately knows nothing about the config file of a [custom agent](/guide/custom-agents) you registered yourself — so those aren't offered as targets. What they still get is Codeg's own companion server, on the same terms as any built-in: it's attached whenever one of its [General settings](/reference/settings/general) features is on, and carries the [delegation](/guide/multi-agent) tool once delegation itself is enabled. To give a custom agent an MCP server of its own, configure it in that agent's native way.

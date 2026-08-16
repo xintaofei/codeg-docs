@@ -121,7 +121,7 @@ The location field there is the same one Codeg now uses everywhere it asks for a
 
 In the sidebar, a repo's worktrees group under it, so a project's parallel branches stay together. Switching to a branch that lives in a worktree takes you *to* that worktree instead of checking out over your current one. The payoff: [tile a few sessions side by side](/guide/workspace#tile-several-sessions-side-by-side), each in its own worktree, and watch a fleet of agents build different features at the same time — the natural companion to [multi-agent collaboration](/guide/multi-agent).
 
-Two other features lean on the same mechanism. [Automations](/guide/automations) can execute each run in its own throwaway worktree, so a scheduled task never collides with your working tree. And every [to-do](/guide/tasks) gets one automatically — branch `task/<id>` in a sibling directory — which is what lets several tasks run at once and land one at a time.
+Two other features lean on the same mechanism. [Automations](/guide/automations) can execute each run in its own throwaway worktree, so a scheduled task never collides with your working tree. And every [to-do](/guide/tasks) gets one automatically — branch `task/<id>`, in a sibling directory by default or [wherever you point them](/guide/tasks#keep-the-worktrees-somewhere-else) — which is what lets several tasks run at once and land one at a time.
 
 ### Delete one when you're done with it
 

@@ -1,13 +1,13 @@
 ---
 title: 支持的智能体
-description: Codeg 通过 ACP 驱动的十二个编程智能体——每一个是什么、需要什么运行环境，以及它把会话保存在磁盘的什么位置——以及如何注册一个不在名单上的智能体。
+description: Codeg 通过 ACP 驱动的十三个编程智能体——每一个是什么、需要什么运行环境，以及它把会话保存在磁盘的什么位置——以及如何注册一个不在名单上的智能体。
 ---
 
 # 支持的智能体
 
-Codeg 驱动**十二个编程智能体**，一旦其中一个开始运行，它们的使用感受都是一样的——同一个 composer、同样的 diff、同样的 git 和终端——因为 Codeg 通过 **Agent Client Protocol（ACP）**与每一个通信。不同之处在底层：智能体由谁构建、它在你的机器上需要什么运行时，以及它把自己的历史保存在哪里。本页就是这张地图。
+Codeg 驱动**十三个编程智能体**，一旦其中一个开始运行，它们的使用感受都是一样的——同一个 composer、同样的 diff、同样的 git 和终端——因为 Codeg 通过 **Agent Client Protocol（ACP）**与每一个通信。不同之处在底层：智能体由谁构建、它在你的机器上需要什么运行时，以及它把自己的历史保存在哪里。本页就是这张地图。
 
-启用一个智能体、它的预检健康检查，以及开启一个会话，都在[使用智能体](/zh/guide/agents)中介绍；登录和选择模型则在[认证与模型](/zh/guide/authentication)中。这里我们只专注于名单本身——以及在页面末尾，[如何为它添加新成员](#beyond-the-twelve)。
+启用一个智能体、它的预检健康检查，以及开启一个会话，都在[使用智能体](/zh/guide/agents)中介绍；登录和选择模型则在[认证与模型](/zh/guide/authentication)中。这里我们只专注于名单本身——以及在页面末尾，[如何为它添加新成员](#beyond-the-built-in-roster)。
 
 ## 名单 {#the-roster}
 
@@ -27,10 +27,11 @@ Codeg 会为你安装、固定版本并更新其中的每一个——你从不�
 | **Pi** | 一个可自我扩展的编程智能体 | Node.js |
 | **Grok** | xAI 的编程智能体与 CLI | Node.js |
 | **Cursor** | Anysphere 的 Cursor 编程智能体 | 捆绑二进制文件 |
+| **DeepSeek Harness** | DeepSeek 自家的编程 harness | Node.js **22+** |
 
 最后一列背后有两条交付路径：
 
-- **Node.js（npm）。** 十二个中有十个以 npm 包的形式交付，Codeg 用 `npx` 运行它们，因此它们需要安装 Node.js。Codeg 会为每一个固定一个已知可用的版本，并为你升级它。
+- **Node.js（npm）。** 十三个中有十一个以 npm 包的形式交付，Codeg 用 `npx` 运行它们，因此它们需要安装 Node.js。Codeg 会为每一个固定一个已知可用的版本，并为你升级它。每一个都声明了自己的最低 Node 版本，预检会拿你的版本去比对——有几个要求 **Node 22**，DeepSeek Harness 是其中之一。
 - **捆绑二进制文件。** **OpenCode** 和 **Cursor** 是原生二进制文件，Codeg 会为你确切的平台下载它们——无需安装其他任何东西。Cursor 的下载体积更大，因为它自带 Node 运行时和工具，所以它同样不需要你的机器上有 Node.js。
 
 ::: info Hermes 在 0.24 改用 npm
@@ -43,7 +44,7 @@ Hermes 原本是这里唯一的 Python 条目，通过 `uv` 安装。上游停�
 
 ## ACP 适配器 {#acp-adapters}
 
-Codeg 与智能体之间只说一种语言：**ACP**。十二个里有十个不需要为此付出什么，因为 Codeg 安装的东西运行的就是厂商自己的 CLI——Gemini、OpenClaw、OpenCode、Cline、Hermes、CodeBuddy、Kimi Code、Pi、Grok 和 Cursor 都自带这个协议，所以你手动装过的那一份，Codeg 会直接认出来。（Hermes 是那个差一点的例外：自从上游不再发布到 PyPI，托管的那个包就成了一层固定版本的薄壳，它的 `hermes` 命令会 exec 它装下来的那个真正的上游程序——所以 `hermes acp` 仍然是厂商自己的适配器。）
+Codeg 与智能体之间只说一种语言：**ACP**。十三个里有十个不需要为此付出什么，因为 Codeg 安装的东西运行的就是厂商自己的 CLI——Gemini、OpenClaw、OpenCode、Cline、Hermes、CodeBuddy、Kimi Code、Pi、Grok 和 Cursor 都自带这个协议，所以你手动装过的那一份，Codeg 会直接认出来。（Hermes 是那个差一点的例外：自从上游不再发布到 PyPI，托管的那个包就成了一层固定版本的薄壳，它的 `hermes` 命令会 exec 它装下来的那个真正的上游程序——所以 `hermes acp` 仍然是厂商自己的适配器。）
 
 **Claude Code 和 Codex 是仅有的两个例外。** Anthropic 的 `claude` CLI 和 OpenAI 的 `codex` CLI 并不会说 ACP。所以 Codeg 为这两个条目装的根本不是厂商 CLI，而是一个独立的 **ACP 适配器**：一个由 Agent Client Protocol 官方组织（该项目最初由 Zed 团队发起）维护的 npm 包，它把厂商的智能体包裹起来，翻译成这个协议。
 
@@ -63,6 +64,21 @@ Codeg 与智能体之间只说一种语言：**ACP**。十二个里有十个不�
 ::: tip 让 Codex 适配器改用你指定的可执行文件
 在 Codex 智能体的**环境变量**中设置 `CODEX_PATH`，`codex-acp` 就会运行你指定的那个可执行文件，而不是它自带的那一份——如果你手头留着某个特定的 `codex` 构建版本，这会很有用。→ [使用智能体](/zh/guide/agents#configure-an-agent)
 :::
+
+### DeepSeek Harness 走的是第三条路 {#deepseek-harness}
+
+**0.26** 新加入的 **DeepSeek Harness** 不属于上面两种情况。DeepSeek 自己也发布了一个 ACP 传输层——`@deepseek-ai/dsh-acp`——但它是为自动化场景设计的：不支持流式输出、不呈现工具调用，而且干脆拒绝 MCP 服务器，因此通过它跑起来的会话只会给你一整块写完的文本，工作区的一切都不在。Codeg 转而驱动**社区维护的 `deepseek-acp` 桥接**，并像其他每一个托管安装那样固定在确切版本上。
+
+它没有适配器角标，也没有「厂商 CLI 认错了」的问题需要解释，因为你的机器上根本没有一个叫 `deepseek` 的命令会被它混淆。多出这一跳换来的是一个完整保真的会话：流式回复、工具卡片，还有 MCP。
+
+| 什么 | 在哪里 |
+| ---- | -------------- |
+| **登录** | 该智能体自己的设置面板：**API 端点**和 **API 密钥**。端点留空即使用适配器的默认值 `https://api.deepseek.com` |
+| **模型与思考强度** | 在 **composer** 里，而不是设置里——适配器把它们作为普通的会话选项通告出来，因此它们是按对话生效的 |
+| **技能** | 上游的技能链，包括 `$DSH_HOME/skills` → [技能](/zh/guide/skills) |
+| **MCP 服务器** | 通过协议本身投送 → [MCP 服务器](/zh/guide/mcp) |
+
+密钥以 `DEEPSEEK_API_KEY` 传入，而环境变量的优先级高于凭据文件——所以如果你更愿意在终端里登录，把这个字段留空就好。启动时的默认模型仍留在老手们预期的位置，即原始环境变量编辑器里的 `DEEPSEEK_ACP_MODEL`，正是为了让设置面板永远不会覆盖掉你正在那边编辑的那一行模型配置。
 
 ## 每个智能体把会话保存在何处 {#where-each-agent-keeps-its-sessions}
 
@@ -84,8 +100,11 @@ Codeg 与智能体之间只说一种语言：**ACP**。十二个里有十个不�
 | **Pi** | `~/.pi/agent/sessions/` | JSONL | `PI_CODING_AGENT_SESSION_DIR` |
 | **Grok** | `~/.grok/sessions/` | JSONL | `GROK_HOME` |
 | **Cursor** | `~/.cursor/chats/` | SQLite（blob 存储） | `CURSOR_CONFIG_DIR` |
+| **DeepSeek Harness** | `~/.dsh/sessions/` | 压缩的 JSONL | `DSH_HOME` |
 
 大多数智能体写入一份 **JSONL 对话记录**——一种纯文本日志，每行一个事件——而 OpenCode 和 Hermes 把一切保存在单个 **SQLite** 数据库中，Cursor 把每段对话存为各自的 SQLite blob 文件，Gemini 和 Cline 则使用它们自己的 JSON 文件。Codeg 会原生读取每一种格式；你从不需要转换任何东西。
+
+被压缩的是 DeepSeek 那一份：它的 `session.jsonl.zstd` 并不是单个 Zstandard 归档，而是**一批一批追加上去的一串帧**，正是这一点让 harness 能一直往里写。Codeg 会按顺序解码这些帧，并保留到最后一个完整帧为止的全部内容——因此一个**还在被写入**的会话照样能列出、能打开，而不是读成一个损坏的文件。
 
 ::: tip 移动过存储位置？Codeg 会跟随同一个变量。
 用上面某个环境变量把智能体指向一个非默认位置，Codeg 也会遵从它——因此重定位后的历史仍能导入——只要 Codeg 在它自己的环境中能看到那个变量。OpenClaw 是例外：它的存储无法重定位。
@@ -101,7 +120,7 @@ Codeg 与智能体之间只说一种语言：**ACP**。十二个里有十个不�
 - **登录方式也不同。** 有些智能体用它们自己的订阅或 OAuth 登录，另一些则接受提供商 API 密钥或自定义端点。每个智能体的详情面板只显示适用于它的选项。→ [认证与模型](/zh/guide/authentication)
 - **OpenClaw 不参与 MCP。** 它是唯一一个不接受 Model Context Protocol 服务器的智能体，因此你添加的 MCP 服务器不会到达 OpenClaw 会话——Codeg 不会向它转发任何一个。大多数其他智能体会正常接收你的 MCP 服务器。→ [MCP 服务器](/zh/guide/mcp)
 
-## 十二个之外 {#beyond-the-twelve}
+## 内置名单之外 {#beyond-the-built-in-roster}
 
 上面的名单是 Codeg **手工适配**的那一批——其中每个智能体都获得了针对其会话文件的解析器、自己的设置面板，以及应对其种种怪癖所需的各种小改动。正是这些工作才换来表中的一席之地。
 

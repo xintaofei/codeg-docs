@@ -98,6 +98,7 @@ You'll rarely touch these — the defaults are chosen to be right for almost eve
 | `CODEG_ACP_SPAWN_HANDSHAKE_TIMEOUT_SECS` | `60` | How long to wait for an agent to launch and finish its handshake before giving up. |
 | `CODEG_ACP_BACKGROUND_KEEPALIVE_MAX_SECS` | `3600` | How long a connection with unfinished background work stays exempt from the idle sweep. `0` disables the exemption. |
 | `CODEG_OFFICE_WATCH_IDLE_TIMEOUT_SECS` | `300` | Reap an idle [Office live-preview](/guide/office) server after this many seconds. `0` disables. |
+| `CODEG_ACP_HOST_TOOLS` | *(unset)* | Set to `agent` and Codeg stops serving file access and terminal commands, so the agent runs them itself, under its own sandbox — and loses the delegation tools with them. There's a per-agent switch for this beside each agent's environment editor; setting the variable on Codeg's own process makes it the default for agents that don't set it themselves. → [Working with Agents](/guide/agents#let-the-agent-handle-its-own-files-and-commands) |
 
 Remote-workspace sync exposes a further set of concurrency knobs (`CODEG_WORKSPACE_UPLOAD_MAX_CONCURRENCY` and friends); their defaults are sensible and rarely need changing.
 

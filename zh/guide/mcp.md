@@ -70,8 +70,11 @@ Codeg 并不运行这些工具——MCP 是*智能体*的功能，服务器与�
 | **Codex** | Codex 的 `config.toml`（`[mcp_servers.*]`） |
 | **Gemini** | `~/.gemini/settings.json` |
 | **OpenCode**、**Cline**、**Hermes**、**CodeBuddy**、**Kimi Code**、**Grok**、**Cursor** | 各智能体自己的 MCP 配置 |
+| **DeepSeek Harness** | `$DSH_HOME/mcp.json`——Codeg 自己的记录，因为该智能体不读取任何属于自己的配置文件 |
 
-这就是**十二个智能体中的十个**——除 **OpenClaw** 和 **Pi** 之外的每一个。OpenClaw 根本不接受 MCP 服务器（它是唯一选择不参与的智能体），因此不会作为目标提供；Pi 也不在列表中。→ [智能体之间有何不同](/zh/guide/supported-agents#how-agents-differ)
+这就是**十三个智能体中的十一个**——除 **OpenClaw** 和 **Pi** 之外的每一个。OpenClaw 根本不接受 MCP 服务器（它是唯一选择不参与的智能体），因此不会作为目标提供；Pi 也不在列表中。→ [智能体之间有何不同](/zh/guide/supported-agents#how-agents-differ)
+
+**DeepSeek** 在服务器*如何*到达它这件事上是个例外。其他每一个智能体都会在启动时读取自己的配置文件，因此 Codeg 写进去就可以撒手不管。而 `deepseek-acp` 桥接不读取任何配置文件——服务器只在创建会话时通过协议到达它——所以 `$DSH_HOME/mcp.json` 是 Codeg 关于「要发送什么」的记录，而不是智能体会去查阅的东西，真正的投送路径是 ACP 连接。一个实际影响：它只承载 **stdio 和 streamable HTTP** 服务器，而一个 **SSE** 条目会在你保存时就被拒绝，而不是等到启动时才失败。
 
 ::: info 自定义智能体不会列在这里
 这个页面的工作方式是往每个智能体**自己的**配置文件里写内容，而对于你自己注册的[自定义智能体](/zh/guide/custom-agents)，Codeg 刻意对它的配置文件一无所知——因此它们不会作为目标出现在这里。它们仍然能得到的是 Codeg 自己的伴随服务器，条件与任何内置智能体相同：只要它在[通用设置](/zh/reference/settings/general)中的某项功能开启，它就会被挂上；而其中的[委派](/zh/guide/multi-agent)工具，要在委派本身启用后才会携带。若要给自定义智能体配置属于它自己的 MCP 服务器，请按该智能体原生的方式去配置。

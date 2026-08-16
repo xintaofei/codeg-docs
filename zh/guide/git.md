@@ -121,7 +121,7 @@ Codeg 会用你为该远程仓库设置的 [git 账户](#git-accounts) 的作者
 
 在侧边栏中，一个仓库的 worktree 会分组显示在它下方，因此一个项目的并行分支会聚在一起。切换到某个位于 worktree 中的分支，会把你带*到*那个 worktree，而不是在你当前的分支之上进行检出。回报是：[将几个会话并排平铺](/zh/guide/workspace#tile-several-sessions-side-by-side)，每个都在自己的 worktree 中，看着一支智能体舰队同时构建不同的功能——这是[多智能体协作](/zh/guide/multi-agent)的天然搭档。
 
-另有两项功能依赖同样的机制。[自动化](/zh/guide/automations)可以让每次运行在自己的一次性 worktree 中执行，因此计划任务永远不会与你的工作树发生碰撞。而每一条[待办](/zh/guide/tasks)都会自动拿到一个——项目旁边的同级目录，分支为 `task/<id>`——正是这一点让多个任务可以同时推进、再一个一个地落地。
+另有两项功能依赖同样的机制。[自动化](/zh/guide/automations)可以让每次运行在自己的一次性 worktree 中执行，因此计划任务永远不会与你的工作树发生碰撞。而每一条[待办](/zh/guide/tasks)都会自动拿到一个——分支为 `task/<id>`，默认建在项目旁边的同级目录里，也可以[由你指定放到哪儿](/zh/guide/tasks#keep-the-worktrees-somewhere-else)——正是这一点让多个任务可以同时推进、再一个一个地落地。
 
 ### 用完之后把它删掉 {#delete-one-when-you-re-done-with-it}
 

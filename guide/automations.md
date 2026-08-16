@@ -108,7 +108,7 @@ Whatever the agent saves is an ordinary automation — it shows up in this view,
 
 ## Manage them
 
-Each row — via the **⋯** menu or a right-click — gives you **Run now**, **Enable/Disable**, **Edit**, and **Delete**. On the detail side, the enable switch sits in the header and **Run now** / **Edit** sit directly under the title, above the schedule facts, the prompt, and the run history. When you have more than a couple, the toolbar's two filters narrow the list by **folder** or by **enabled state**; a folder filter left pointing at a folder that no longer holds any automations quietly falls back to *all*.
+Each row — via the **⋯** menu or a right-click — gives you **Run now**, **Enable/Disable**, **Edit**, and **Delete**. On the detail side, the enable switch sits in the header and **Run now** / **Edit** sit directly under the title, above the schedule facts, the prompt, and the run history. When you have more than a couple, the toolbar's two filters narrow the list by **folder** or by **enabled state**; a folder filter left pointing at a folder that no longer holds any automations quietly falls back to *all*. The folder control is the [searchable picker](/guide/tasks#keep-the-board-tidy) the whole workbench uses — one row per folder reading *alias [ name ]* over its path, matching on all three — and so is the workspace folder in the automation editor.
 
 ## Good to know
 

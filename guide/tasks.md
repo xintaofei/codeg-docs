@@ -21,8 +21,6 @@ A conversation is something you sit in front of. A **task** is something you wri
 
 </div>
 
-*Screenshots from 0.23 — the page was called Task Board then, and carried a Beta badge and a Process all button. Both are gone; everything else still reads the same.*
-
 ## What a task is
 
 A task is a title, a description, and the composer state to run it with — an agent, a mode, whatever options that agent takes. That's it. Codeg supplies everything else: the isolated checkout, the branch, the scheduling, and the review step at the end.
@@ -59,6 +57,8 @@ Every column orders **freshest first**, so whatever just moved, retried, or fini
 The **list** is the same tasks as one flat, freshest-first table — **Status · Task · Location · Changes · Updated** — with a **Status** filter that speaks the four column names. Its rows show every action they offer as a labelled icon button instead of hiding most of them behind an overflow menu, so the list is the faster surface once you have more tasks than fit in four columns. Your choice of view is remembered.
 
 Cards carry the status, then a meta line reading *folder / branch · `+`/`−` line count · a relative time*. That last one is the most recent milestone the task actually reached — done or canceled, else review or failed, else started, else created. While a task is live the card also shows the **latest milestone the agent reported**, so the column tells you what's happening without opening anything. Click a card for its detail sheet; the round buttons on the right are its actions.
+
+Beside each title sits the **mark of the agent that's on it** — resolved exactly the way the run itself resolves it, so a task that never picked an agent shows the one its folder's default will actually launch, not a blank. On a board where three agents are working at once, that's the difference between reading the column and opening every card.
 
 ## Add a task
 
@@ -110,7 +110,7 @@ Three edges worth knowing:
 
 The moment a task starts, before any agent is involved:
 
-1. **A worktree is created** beside your project — directory `<project>-task-<id>`, branch `task/<id>` — pinned to the exact commit your project's HEAD was on right then, so a branch switch mid-flight can't drift it. The worktree is reused across every later run of that task.
+1. **A worktree is created** — directory `<project>-task-<id>`, branch `task/<id>` — pinned to the exact commit your project's HEAD was on right then, so a branch switch mid-flight can't drift it. By default it lands beside your project, and you can [send them all somewhere else](#keep-the-worktrees-somewhere-else). The worktree is reused across every later run of that task.
 2. **The init command runs**, if the folder has one (`pnpm install`, say). It runs only in a *freshly created* worktree, never on a reused one, and a non-zero exit **aborts the launch** rather than letting the agent start half-installed. An install that gets interrupted — you cancelled, or Codeg quit — runs again next time for the same reason.
 3. **The agent launches** in that worktree with your task description, plus a standing instruction: commit to the task branch as freely as you like, but do **not** merge into, rebase onto, or push the base branch — the user lands the result after review.
 
@@ -129,9 +129,9 @@ While it works, the agent has two extra tools that exist only inside a task run:
 
 A task lands in **Needs you** for four different reasons, and the status on the card tells you which:
 
-- **Awaiting input** — the agent is blocked on a permission request, a multiple-choice question, or a plan approval. Nothing progresses until you answer.
+- **Awaiting input** — the agent is blocked on a permission request, a multiple-choice question, or a plan approval. Nothing progresses until you answer. A task whose agent [delegated](/guide/multi-agent) part of the work says this too when it's the **sub-agent** that got stuck, rather than sitting at *running* while nothing happens.
 - **To review** — it finished. See [below](#review-the-result).
-- **Merging** — the merge is in flight. This is the one state you can't cancel.
+- **Merging** — the merge is in flight. This is the one state you can't cancel. A task waiting for the slot reads **queued to merge** instead — see [below](#a-second-merge-waits-in-line).
 - **Failed** — the run errored, was interrupted by a restart, or the agent reported **blocked**. **Retry** picks up in the same worktree, told that the previous attempt was interrupted and to carry on; you can add a **note** for that next run.
 
 **View session** is how you unblock the first one. It opens a read-only live view of the task's agent session — and while it's read-only for *prompting*, it does render the permission dialog and the question card, so this is where you answer. The viewer streams live for a running task and shows the stored transcript for a settled one, split into the phases the task went through: **Task run**, **Retry run**, **Follow-up**, and **Merge**.
@@ -191,12 +191,21 @@ Then the agent commits anything uncommitted on the task branch, merges the base 
 Codeg doesn't take the agent's word for any of it. When the turn ends it checks **git truth** — did the base branch's HEAD actually move, and does it actually contain the work? If not, the task goes **back to review** with the reason, and any half-finished merge is cleaned out of your project folder.
 
 ::: warning What the merge needs from your project folder
-The merge lands in the folder you're working in, so it checks first: the folder must be **on the base branch**, with **nothing staged**. And only **one merge per project at a time** — a second one is refused until the first finishes. If any of these fails you get a plain message saying which, and nothing is touched.
+The merge lands in the folder you're working in, so it checks first: the folder must be **on the base branch**, with **nothing staged**. If either fails you get a plain message saying which, and nothing is touched.
 :::
+
+### A second merge waits in line
+
+Only **one merge per project runs at a time** — they all land on the same base branch, so they can't overlap. Accepting a second reviewed task while another is mid-merge used to be refused outright; now it **takes a place in the queue** and starts on its own the moment the slot frees.
+
+- The card and the row read **queued to merge**, with **where it sits in line**, and offer a way **out of the queue**.
+- **Submitting again updates the queued merge** — a different commit message, a different worktree choice — rather than adding a second entry, and it keeps its place.
+- **Withdrawing actually withdraws it.** A merge you took out of the queue can't be landed by a sweep still working from an older view of the board.
+- Your queue **drains ahead of automatic merges**, so a merge you asked for by hand is never stuck behind the folder's own housekeeping.
 
 ### Let a folder land them for you
 
-**Merge automatically**, in the folder's Workflow settings, does exactly what pressing **Merge** would — same agent-authored commit message, same per-stage prompts, same worktree cleanup default. A folder with it on drains its review column on its own, oldest first, one merge at a time.
+**Merge automatically**, in the folder's Merge settings, does exactly what pressing **Merge** would — same agent-authored commit message, same per-stage prompts, same worktree cleanup default. A folder with it on drains its review column on its own, oldest first, one merge at a time.
 
 What it deliberately won't do is push through a problem:
 
@@ -209,19 +218,30 @@ What it deliberately won't do is push through a problem:
 
 The **Task settings** dialog (the sliders icon in the top-right cluster) has a **Scope** switch: **All folders (global defaults)**, or one folder in particular. A folder either **follows the global defaults** — changes there apply here automatically — or has **Custom** settings of its own, and switching to Custom starts from whatever applies today.
 
-Below that, three tabs:
+Below that, four tabs — one decision each:
 
 | Tab | Setting | What it does |
 | --- | ------- | ------------ |
 | **General** | **Default agent** | The agent tasks in this folder run with, unless a task overrides it |
 | | **Process automatically** | To-dos start on their own, up to the concurrency limit |
 | | **Max concurrent tasks** | How many run at once, per folder. Default **2**; `0` = unlimited |
-| **Workflow** | **Default merge strategy** | Squash or full history, offered as two side-by-side choices. Read when a merge starts — the merge dialog doesn't ask |
+| **Merge** | **Default merge strategy** | Squash or full history, offered as two side-by-side choices. Read when a merge starts — the merge dialog doesn't ask |
 | | **Merge automatically** | Land reviewed tasks without a click — see [above](#let-a-folder-land-them-for-you) |
 | | **Delete the worktree after merging** | Pre-ticks that box in the merge dialog; you can still change it there |
+| **Worktree** | **Worktree location** | Where new task worktrees are created — see [below](#keep-the-worktrees-somewhere-else) |
 | | **Worktree init command** | Runs inside a freshly created worktree before the agent starts |
 | | **Preflight command** | Runs in the worktree when a task reaches review — the acceptance light |
 | **Prompts** | Per-stage instructions | See below |
+
+Merge and Worktree were one **Workflow** tab until 0.26 — they answer different questions (how a finished task lands, versus where its work happens) and they're separate now. Nothing moved in what's stored, and an edit **survives switching tabs**, so you can fill in three of them and save once.
+
+### Keep the worktrees somewhere else
+
+By default a task's worktree is created **right beside the project folder**, as a sibling directory. That's the least surprising place for it, but it does mean a folder full of projects grows a `myapp-task-7` next to `myapp`.
+
+**Worktree location** on the Worktree tab takes a directory to put them in instead — one `<repo>-task-<id>` per task under it, picked with the OS dialog or the in-app browser. `~` is your home directory, and a **relative path resolves against the project folder**. Set it globally to collect every project's task worktrees in one place — `~/codeg-worktrees` — or per folder for the one repo where the sibling layout is in the way.
+
+Leave it **empty** and nothing changes: worktrees keep landing beside the project. Changing it is forward-looking, too — **worktrees already on disk stay exactly where they are**, since a task reuses the checkout it was given.
 
 ### Add your own instructions per stage
 
@@ -242,6 +262,7 @@ The split earns its keep because what belongs in one stage is nothing like what 
 ## Keep the board tidy
 
 - **Filter by folder** with the dropdown, by status in list view, and by visibility with the **Filter** menu: **Show canceled** (on by default) and **Show archived** (off). The filter button badges itself when you've moved away from those defaults.
+- **The folder picker searches.** It's the same list the new-conversation composer uses — a search box, and one row per folder reading *alias [ name ]* over its full path. Typing matches the alias, the real directory name **and** the path, so two folders you've aliased alike are still tellable apart, and a folder you know only by its on-disk name is still findable. The task editor's target folder and the settings scope picker use it too.
 - **Archive** takes a task off the board without deleting it, once it's reached an end — done, failed, or canceled; **Archive all** clears everything the Done column is currently showing. An archived card offers exactly one action — **Unarchive**.
 - **Requeue** puts a canceled task back in *To do*, reusing its worktree — with an optional note about what should change this time.
 - **Delete** removes a task entirely, cancelling an active run first, with an opt-in checkbox to **also delete its worktree**.

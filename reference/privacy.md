@@ -20,6 +20,8 @@ Parsing, storage, git operations, and file work all happen **on-device**. There 
 
 **File work stays inside the workspace.** Every read and write Codeg performs is confined to the folder you opened: it resolves the real path and refuses anything that lands outside. Symlinks are where that would normally leak, so they're checked against the [folders you linked in yourself](/guide/workspace#work-across-several-folders) — those are followed, and nothing else is. A repository you cloned that happens to ship a `secrets -> ~/.ssh` entry stays exactly as unreadable as it looks.
 
+Since **0.25** that confinement covers **deleting, renaming and moving** as well. Those three used to check only that the target wasn't the workspace root itself, which a symlink walks straight around: with an `ln -s .. up` in the tree, `up/<root name>` is a second name for the root, and deleting it took the whole workspace with it. All three now resolve the entry's **parent** — the link is what they act on, not its target — and require it to land inside the workspace, linked folders included. Destroying anything through a hand-made link therefore needs the same explicit authorization the *Linked folders* dialog asks for; opening and saving through one are unchanged. → [Issue #430](https://github.com/xintaofei/codeg/issues/430)
+
 ## What leaves your machine — and only when you act
 
 Codeg reaches the network for a handful of clearly-triggered reasons, each the direct result of something you did:
@@ -32,6 +34,20 @@ Codeg reaches the network for a handful of clearly-triggered reasons, each the d
 - **A remote `url()` in your own custom CSS.** If you turn on the [custom-CSS editor](/reference/settings/appearance#custom-style) and paste a rule that fetches a font or an image from the web, applying it makes that request. Codeg strips `@import` outright and flags a remote `url()` in the editor, but it doesn't remove one — it's your stylesheet.
 
 That's the whole list. None of it runs on a background timer against your files; each is a response to a button you pressed or an agent you started.
+
+## Code a repository can run on your machine
+
+Reading a repository is safe. **Loading** one is not always — several agents read project-local configuration that can include code, and that code runs when the agent starts, with your permissions, before you've sent a single message.
+
+**Pi is the one where this went wrong.** A repository's `.pi/extensions` are JavaScript modules whose top level executes at pi startup, and pi only loads them for a folder it trusts. Up to **0.24**, Codeg marked every folder it launched pi into as trusted in pi's own trust file, right before spawning it — so creating or restoring a Pi conversation on a freshly cloned repo was enough to execute whatever it shipped, with nothing sent, no permission request, and nothing in the transcript. The seeding also wrote into pi's own file, which meant it silently suppressed the trust prompt for the standalone `pi` CLI as well.
+
+Since **0.25** trust is an explicit, per-workspace decision, prompted only when a repository actually ships gated resources; the dialog names each file and marks the ones that execute code. Grants the old behavior already wrote **block the launch until you confirm them** — they're listed for review with per-row revoke on pi's settings page rather than deleted, since pi's file records no provenance and pruning would silently discard decisions you made inside pi yourself. → [Working with Agents](/guide/agents#pi-project-trust) · [Issue #446](https://github.com/xintaofei/codeg/issues/446)
+
+::: info Where the sandbox actually is
+Codeg **adds no sandbox of its own**. What contains an agent is the agent's own configuration — Codex's `sandbox_mode`, OpenCode's permission block, and so on — and those two now take effect properly: an explicitly read-only Codex sandbox is no longer widened to workspace-write, and OpenCode's rules are [editable without hand-writing JSON](/guide/agents#opencode-permissions-without-the-json).
+
+One structural gap is worth knowing about. Codeg normally serves an agent's file reads and terminal commands itself, which means they run in **Codeg's** process — outside any sandbox the agent applies to itself. For an agent that genuinely has one, the per-agent **[Let the agent handle files and commands](/guide/agents#let-the-agent-handle-its-own-files-and-commands)** switch hands all three back so its own rules cover them again. It's off by default, because most agents ship no sandbox to restore and turning it on would only give up a working file channel.
+:::
 
 ::: tip Codeg tightens the agents' own defaults
 Codeg has no telemetry of its own, but the agents it runs are separate programs with their own habits. Where Codeg can quiet them down, it does — **Claude Code** ships here with **Disable telemetry or redundant network requests** switched **on** and its **attribution/billing identifier** header switched **off**, the opposite of that CLI's own defaults, written explicitly so the setting is real rather than implied. Both are yours to change in **Settings → Agents**. → [Working with Agents](/guide/agents#claude-code-attribution-and-telemetry)

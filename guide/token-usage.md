@@ -39,7 +39,7 @@ One toolbar row sits above the report:
 | ------- | -------------- |
 | **Time range** | **7 / 30 / 90 days** as segments, with **This month**, **This year**, **All time** and **Custom** folded behind **More** |
 | **Group by** | **Day**, **Week**, or **Month** — each range preset suggests its natural bucket until you pick one yourself |
-| **Folders · Agents · Models** | Searchable pickers, all-inclusive by default; **Reset filters** clears them together |
+| **Folders · Agents · Models** | Searchable pickers, all-inclusive by default; **Reset filters** clears them together. A folder reads *alias [ name ]*, so an alias leads its real directory name instead of replacing it |
 | **⋯** | **Refresh** (with the time it last ran), **Rebuild all**, and **Share** |
 
 **Custom** opens a two-month calendar anchored a month back, so the second pane isn't all future and greyed out. Clicking into a range you've already finished starts a new one rather than dragging whichever end you didn't mean to touch.

@@ -98,6 +98,7 @@ Codeg 会将按天轮转的日志写入数据目录中的 `logs/`，并将它们
 | `CODEG_ACP_SPAWN_HANDSHAKE_TIMEOUT_SECS` | `60` | 在放弃之前，等待智能体启动并完成其握手的时长。 |
 | `CODEG_ACP_BACKGROUND_KEEPALIVE_MAX_SECS` | `3600` | 带有未完成后台工作的连接能豁免于空闲清理多长时间。`0` 会禁用该豁免。 |
 | `CODEG_OFFICE_WATCH_IDLE_TIMEOUT_SECS` | `300` | 空闲这么多秒后回收一个空闲的 [Office 实时预览](/zh/guide/office)服务器。`0` 会禁用。 |
+| `CODEG_ACP_HOST_TOOLS` | *（未设置）* | 设为 `agent`，Codeg 就不再代为提供文件访问和终端命令，改由智能体自己执行、落在它自己的沙箱之内——同时也会连带失去委托工具。每个智能体的环境变量编辑器旁边都有一个对应的开关；把这个变量设在 Codeg 自己的进程上，则会成为那些自己没有设置它的智能体的默认值。→ [使用智能体](/zh/guide/agents#let-the-agent-handle-its-own-files-and-commands) |
 
 远程工作区同步还暴露了一组并发调节项（`CODEG_WORKSPACE_UPLOAD_MAX_CONCURRENCY` 及类似变量）；它们的默认值很合理，很少需要更改。
 
