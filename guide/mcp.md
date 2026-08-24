@@ -72,7 +72,7 @@ Each server's detail pane has an **Enabled apps** row — a checkbox per agent. 
 | **OpenCode**, **Cline**, **Hermes**, **CodeBuddy**, **Kimi Code**, **Grok**, **Cursor** | each agent's own MCP config |
 | **DeepSeek Harness** | `$DSH_HOME/mcp.json` — Codeg's own record, since the agent reads no config file of its own |
 
-That's **eleven of the thirteen agents** — every one except **OpenClaw** and **Pi**. OpenClaw doesn't accept MCP servers at all (it's the one agent that opts out), so it's not offered as a target; Pi isn't in the list either. → [How agents differ](/guide/supported-agents#how-agents-differ)
+That's **thirteen of the fifteen agents** — every one except **OpenClaw** and **Pi**. OpenClaw doesn't accept MCP servers at all (it's the one agent that opts out), so it's not offered as a target; Pi isn't in the list either. → [How agents differ](/guide/supported-agents#how-agents-differ)
 
 **DeepSeek** is the odd one out in *how* a server reaches it. Every other agent reads its own config file at startup, so Codeg writes there and steps back. The `deepseek-acp` bridge reads none — servers reach it only over the protocol, at session creation — so `$DSH_HOME/mcp.json` is Codeg's record of what to send rather than something the agent consults, and the ACP connection is the delivery path. One practical consequence: it hosts **stdio and streamable HTTP** servers only, and an **SSE** entry is refused when you save it rather than failing later at launch.
 

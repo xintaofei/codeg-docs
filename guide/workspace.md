@@ -23,18 +23,37 @@ The workspace is where you actually get work done in Codeg. It puts four things 
 
 The desktop workspace is **four columns** side by side, each with its own header strip and divided by draggable hairlines that run from the top edge to the bottom:
 
-- **Conversations (far left).** Every session across every folder you've opened — your history, and where you start new ones. They're grouped by project, each with a live status dot: *In Progress*, *Review*, *Completed*. The strip on top holds **new chat**, **search**, **automations**, **[To-dos](/guide/tasks)**, and view options. Automations and To-dos each carry their own badge — a failed run for one, a count of tasks waiting on you for the other — so a queue that needs attention says so from wherever you are.
+- **Conversations (far left).** Every session across every folder you've opened — your history, and where you start new ones. They're grouped by project, each with a live status dot: *In Progress*, *Review*, *Completed*. The strip on top holds **new chat**, collapse-all, and view options, and beneath it sit the navigation rows: **automations**, **[To-dos](/guide/tasks)**, and the **[Repository panel](/guide/repository)**. Automations and To-dos each carry their own badge — a failed run for one, a count of tasks waiting on you for the other — so a queue that needs attention says so from wherever you are.
 - **Conversation (center-left).** The agent's transcript, with the composer docked at the bottom. Its tabs sit on top, and a slim **detail header** below shows the folder breadcrumb and the conversation's title.
 - **Files (center-right).** The editor, diffs, and live previews for the files you open — right next to the conversation, so you can watch changes land as the agent makes them. It has its own tab strip and a file-path detail header.
 - **Aux panel (far right).** A tabbed panel — **Session Details · Files · Changes · Commits** — holding session info, the project tree, your working-tree changes, and commit history. When the panel is narrow, the four tabs fold into a single dropdown.
 
-The **terminal** opens beneath the two center columns, and a **status bar** along the bottom shows your conversation count, running background tasks, update notices, and the [command launcher](#run-a-saved-command). Attached to a remote workspace, its name shows there too. **Click the conversation count** and it opens [Token Usage](/guide/token-usage) — the full report of what your agents have spent, by day, folder, agent and model.
+The **terminal** opens beneath the two center columns, and a **status bar** along the bottom shows your conversation count, update notices, and the [command launcher](#run-a-saved-command). Attached to a remote workspace, its name shows there too. **Click the conversation count** and it opens [Token Usage](/guide/token-usage) — the full report of what your agents have spent, by day, folder, agent and model.
+
+The status bar's leading edge — the window's bottom-left corner — holds **Quick actions**, a menu of everything that's otherwise reachable only through something that can disappear. Four groups:
+
+| Group | What's in it |
+| ----- | ------------ |
+| **Workspace** | Open folder, clone a repository, [Project Boot](/guide/project-boot), and remote workspaces |
+| **Sessions** | Manage conversations, import local sessions |
+| **Navigation** | [Automations](/guide/automations), [To-dos](/guide/tasks), [Repository panel](/guide/repository) — with the same badges their sidebar rows carry |
+| **More** | The desktop pet |
+
+The point isn't new capability — every entry has a home elsewhere. It's that the status bar **never unmounts**, so with the sidebar collapsed this is still a way in. Remote workspaces and the pet are desktop-only; *Manage conversations* greys out without an active folder. **Search is deliberately absent**, because its own home doesn't disappear either — see below.
 
 When a newer Codeg is out, the status bar says so itself rather than waiting to be found in Settings: a **New v…** badge appears, and clicking it opens a popover with the version, the full **What's new** release notes, and the buttons to act on it — the same **Download → Install → Restart** sequence as the settings panel, plus **Later** to wave it off. Dismissing a release quiets it in every open window, and leaves a plain grey icon behind so you can still get back to it; the next release lights the badge up again. → [Settings → System](/reference/settings/system#software-update)
 
-There's no full-width title bar — instead, the window chrome lives in two **corner clusters** that stay put as panels open and close: top-left toggles the sidebar and switches remote workspace, top-right holds **Terminal**, **Auxiliary Panel**, and **Settings**. Every panel resizes by dragging, and the side panels and terminal collapse away when you want room — **⌘B** (conversations), **⌘E** (aux panel), **⌘J** (terminal). On a phone or a narrow browser window, the side panels become slide-in sheets.
+There's no full-width title bar — instead, the window chrome lives in two **corner clusters** that stay put as panels open and close: top-left toggles the sidebar and opens **Search**, top-right holds **Terminal**, **Auxiliary Panel**, and **Settings**. Search moved up here in **0.27** for exactly the reason quick actions exists: it used to be a row inside the sidebar, which unmounts when you collapse it, leaving **⌘K** as the only way in. The chrome never unmounts, and the button is tooltipped with your live ⌘K binding. (Mobile gets the same button in its title bar, where there's no shortcut at all.) The **remote-workspace picker** it displaced moved to the sidebar list's right-click menu, in a group of its own — every row above it acts on this machine; that one leaves for another host. Every panel resizes by dragging, and the side panels and terminal collapse away when you want room — **⌘B** (conversations), **⌘E** (aux panel), **⌘J** (terminal). On a phone or a narrow browser window, the side panels become slide-in sheets.
 
-[To-dos](/guide/tasks), [automations](/guide/automations) and [Token Usage](/guide/token-usage) take over that whole area, so while one of them is open the top-right cluster swaps its terminal and panel toggles — which would have nothing to act on — for a **back arrow** to your conversations. It's the way out when the sidebar is collapsed and there's no conversation on screen to click, and it changes nothing else: whatever tab you were on comes back exactly as you left it. A page that has controls of its own puts them in those freed slots: To-dos, for instance, parks its view toggle and settings button there.
+[To-dos](/guide/tasks), [automations](/guide/automations), the [Repository panel](/guide/repository) and [Token Usage](/guide/token-usage) take over that whole area, so while one of them is open the top-right cluster swaps its terminal and panel toggles — which would have nothing to act on — for a **back arrow** to your conversations. It's the way out when the sidebar is collapsed and there's no conversation on screen to click, and it changes nothing else: whatever tab you were on comes back exactly as you left it. A page that has controls of its own puts them in those freed slots: To-dos parks its view toggle and settings button there, the Repository panel its refresh and settings.
+
+### Panels slide in beside your work
+
+Since **0.28** every sliding panel — the mobile sidebar, the aux panel, the terminal, the settings navigation, a skill's details, a [task's](/guide/tasks) details, a [repository item's](/guide/repository) details — is an **inset drawer** rather than a dialog: it sits slightly in from the window edge with an edge of its own, and **nothing behind it is dimmed or frozen**. The page underneath stays live, which is the point — these are panels you consult *while* working, not modals you dismiss to get back to what you were doing. Escape, the close button, and a swipe still close one; the four mobile navigation drawers additionally close when you tap the strip of page they leave showing, because that's how you put a panel away on a phone.
+
+**Session viewers stack.** A delegated [sub-agent's](/guide/multi-agent) transcript, a to-do's session, a Grok child run — all three nest into each other, since a sub-agent's transcript carries its own delegation cards with their own *view session*. They used to be centred dialogs with no stacking relationship, so opening the second simply buried the first. Now each opens *inside* the one that spawned it, all at the same width so nothing juts out underneath.
+
+Two consequences you'd otherwise notice as bugs are gone with it: a viewer **no longer closes when the card that opened it scrolls out of view**, and one left open behind a full-page route or a backgrounded tab no longer paints over whatever replaced it — it's hidden and restored, so switching back finds it where you left it.
 
 ## Folders and the sidebar
 
@@ -51,7 +70,9 @@ The left sidebar is your home base: every **folder** you've opened — a project
 
 The folder's real name is always its on-disk directory name — that never changes — but **Set alias** gives it a friendlier label, and color and grouping help you tell projects apart at a glance.
 
-**Import local sessions** isn't only on the folder menu. Right-click the empty space *around* the list for the same entry, and on a workspace with nothing in it yet the button sits right there on the empty state — next to *Open folder* and *Project boot* — since importing what you already have is usually the fastest way to make a fresh Codeg feel populated.
+**Import local sessions** isn't only on the folder menu. Right-click the empty space *around* the list for the same entry, and on a workspace with nothing in it yet the button sits right there on the empty state — next to *Open folder* and *Project boot* — since importing what you already have is usually the fastest way to make a fresh Codeg feel populated. That same empty-space menu is where the **remote-workspace picker** lives, in a group of its own below the local entries.
+
+Right-clicking a **conversation** row offers **Add to session**, which drops it into the composer as a mention badge — the same badge the `@` panel and the file tree produce. It lands at your cursor, and clicking it twice doesn't add it twice. It's the shortest route to *"look at what happened in that session"* without going through `@` and typing the name.
 
 The number beside a folder counts **what's running in it right now** — sessions actively working, worktrees included — and disappears when nothing is. It's a live workload indicator, not a total, so a glance down the sidebar tells you where your agents actually are. The expand/collapse chevron only appears on hover; the folder icon already says whether it's open.
 
@@ -67,15 +88,24 @@ All three can be **reordered** from the view-options menu — one row per sectio
 
 ### Tidy the list — view options
 
-Two buttons at the top of the sidebar keep a long history manageable. **Locate Active Conversation** jumps to the session you're in, expanding whatever it's hidden behind. Beside it, a funnel opens **View options**:
+Three buttons at the top of the sidebar keep a long history manageable. **Locate Active Conversation** jumps to the session you're in, expanding whatever it's hidden behind. **Expand/collapse all** is its own button beside it, because it acts on the list rather than storing a preference — and it folds *everything*, the flat **Chat**, **Recent** and **Pinned** headers included, not just the folder groups inside them. Collapsed bottoms out at four header rows with nothing under them; expanding again restores the folders underneath exactly as they were, since section collapse and per-folder collapse are remembered separately.
 
-- **Show completed conversations** — **off** by default, so finished work stays out of the way and the list is what's still live. Turn it on when you want the whole history back.
-- **Show worktree folders** — **on** by default: each [worktree](/guide/git#work-in-parallel-with-worktrees) sits under its repo as its own group, with its own count and color. Its header reads the same *alias [ name ]* pair a project header does — `task/49 [ codeg-task-49 ]`, the branch checked out there in front and the directory it lives in behind — so several worktrees of one repo are tellable apart at a glance. Existing ones are labeled at startup, and a name you set yourself is never overwritten. Switch the option off to merge them into the parent folder as a single list.
-- **Show Recent group** — **on** by default.
+The third is an **eye** — not a funnel, since nothing in the menu filters the list down to matches — and it opens **View options**, in four labelled groups:
+
+- **Conversation list** *(submenu)* — **Show completed conversations**, **off** by default, so finished work stays out of the way and the list is what's still live; **Show worktree folders**, **on** by default; and **Show Recent group**, **on** by default.
+- **Navigation items** *(submenu)* — see [below](#choose-which-navigation-rows-you-see).
 - **Sort by** — **Created time** (the default) or **Updated time**.
 - **Section order** — the reorder list described above.
 
-The menu **stays open as you pick**, so flipping two settings costs one visit. On the desktop it also expands or collapses every group at once.
+The two inventories sit behind hover-opened submenus so that Sort by and Section order — the two people come back for — aren't at the bottom of a fifteen-row menu. The other two stay inline: a pair of radios and a ranked list read wrong behind another hop, and the order rows need the menu's full width. Flipping a toggle **dismisses neither the submenu nor the menu**, so changing two settings costs one visit.
+
+About **Show worktree folders**: with it on, each [worktree](/guide/git#work-in-parallel-with-worktrees) sits under its repo as its own group, with its own count and color. Its header reads the same *alias [ name ]* pair a project header does — `task/49 [ codeg-task-49 ]`, the branch checked out there in front and the directory it lives in behind — so several worktrees of one repo are tellable apart at a glance. Existing ones are labeled at startup, and a name you set yourself is never overwritten. Switch it off to merge them into the parent folder as a single list.
+
+### Choose which navigation rows you see
+
+The **Navigation items** submenu switches the sidebar's three full-page rows on and off individually: **Automations**, **To-dos**, and the **Repository panel**. If you don't use the forge integration, that row doesn't have to sit there.
+
+Hiding one costs you nothing permanent — every route stays reachable from the status bar's [quick actions](#the-layout), which is why it's safe to hide them at all. The setting is per device, and a row you've never touched is shown, so a route added in a future release arrives visible rather than silently off.
 
 ## Work across several folders
 
@@ -141,6 +171,8 @@ Everything begins in the **composer**, the input at the bottom of the conversati
 - **Context and connection.** At the right of that same row, a small ring tracks how much of the model's **context window** you've used — click it for the token breakdown (input, output, cache) — and a heart icon shows the agent's **connection status**: connected, connecting, error, or disconnected. That heart is a **button** — see [below](#when-the-connection-looks-wrong).
 - **The + menu.** Attach files, insert a saved **quick message**, leave **live feedback** while the agent is working, run a **slash command**, or drop in a **skill** from the Experts, Office Work, or Scientific Research packs. Where the agent supports it — Claude Code on adapter 0.65.0 or newer — live feedback reads **Insert into current turn** and lands in the work already running; elsewhere it's queued for the agent to pick up. → [Settings → General](/reference/settings/general#in-conversation-tools)
 - **Rich input.** Type **@** to mention a file, agent, past session, or commit; type **/** for slash commands — the match is fuzzy, so `rvw` finds `review`. Long messages you've sent fold up with a **show more** toggle so the transcript stays readable.
+- **Both panels behave like panels.** The `@` list takes the **composer's own width and edges** and opens above it, exactly as `/` does, instead of a narrow box pinned to the cursor — the extra room goes to the description, which used to be cut off. It stays with the composer it belongs to, so one left open while you switch to To-dos doesn't float over the new page. And **`/` works while the agent is still connecting**: slash commands only exist once the agent is up, so typing `/` early used to do nothing at all; now the panel opens with a loading row and fills in when they arrive, with no need to retype.
+- **`@` after CJK text, and on a phone.** The mention panel used to trigger only after an ASCII space — which Chinese, Japanese and Korean don't write — and refused to open mid-composition on a soft keyboard. Both are fixed, and it keeps clear of the on-screen keyboard.
 - **Send, fork, stop.** **Enter** sends (**Shift+Enter** makes a newline); **Fork & Send** branches the conversation; while the agent runs, Send turns into a red **Cancel** button. Type ahead and your messages **queue** until it's ready for them.
 
 ::: tip Approvals come from the agent
@@ -163,6 +195,9 @@ As the agent works, its **transcript** streams in: replies as formatted Markdown
 - **Delegated work.** When one agent hands off to another, a **Sub-agents** overlay tracks the delegated sessions — the heart of [Multi-Agent Collaboration](/guide/multi-agent).
 - Each turn ends with its **model, token, and duration** stats, and you can **export** a whole conversation to image, Markdown, or HTML. **While** a turn is running, the row above the composer adds its **output speed in tokens per second** beside the elapsed time and the file count — an estimate covering the text and the thinking. It shows on conversation tabs too, and in the read-only transcripts — a [to-do](/guide/tasks)'s session, a sub-agent's — where you're watching work you didn't start.
 - **Turn a message into a task.** Beside the copy button — on your own messages and on finished replies alike — sits a checklist icon: **Create task from message**. It takes that text over to [To-dos](/guide/tasks), pre-filled with the project folder, for the follow-up you noticed but don't want to do now.
+- **Select part of a message.** Highlight text anywhere in the transcript and a small toolbar pops up over the selection with two actions: **Copy**, and **Quote**, which appends it to your draft as a Markdown blockquote — so replying to one paragraph of a long answer doesn't mean copying, pasting, and adding the `>` yourself. Blockquotes render with a proper quote rule now, in the composer and in the agent's own replies. The bubble follows the selection as the thread scrolls and reflows, flips below it when there's no room above, and stays inside a narrow tiled column. Read-only transcripts get **Copy** alone, since there's no composer to quote into.
+- **Copy an image out.** Right-click a picture — in the transcript or in the blown-up preview — for **Copy image**. On the desktop this used to fail outright for JPEG, WebP and GIF; all three work now.
+- **A system message shows a preview.** Claude Code's post-`/compact` summary used to be a shut accordion you had to open to learn anything. It renders clamped instead, with a toggle only when there's more underneath.
 
 ### When a turn fails, it says what kind of failure
 
@@ -174,7 +209,9 @@ The buttons are the agent's suggestion, not Codeg's guess, so a strip carries on
 - **Sign in** takes you to that agent's settings page.
 - **New session** starts a fresh conversation.
 
-The distinction that matters most is between a failure and a **wobble**. When the agent is retrying on its own, the strip is **amber and carries no buttons** — there's nothing for you to do while it works through it — and once the turn ends cleanly it settles into a single muted **Recovered** line. A strip clears when you send your next message, and a problem that comes back raises itself again rather than reusing the old, settled one. In a read-only viewer — a [to-do](/guide/tasks) transcript, a sub-agent's session — you see the strips without the buttons.
+The distinction that matters most is between a failure and a **wobble**. When the agent is retrying on its own, the strip is **amber and carries no buttons** — there's nothing for you to do while it works through it — and it clears **the moment the agent produces output again**, rather than waiting for the turn to end cleanly. What's left is a single muted **Recovered** line, which takes itself off after ten seconds instead of sitting over the chat for the rest of the session announcing a hiccup that's already over.
+
+None of them stack. A long turn that reconnected three times used to leave three amber rows permanently docked above the composer; several at once now **collapse into one strip with a *+N more* count**, and **every** strip — the Recovered line included — has a close button. A strip also clears when you send your next message, and a problem that comes back raises itself again rather than reusing the old, settled one. In a read-only viewer — a [to-do](/guide/tasks) transcript, a sub-agent's session — you see the strips without the buttons.
 
 Opening an **old** session doesn't replay any of this: a dropped image or a failed compaction from last week stays history instead of surfacing as a live alert and a desktop notification.
 

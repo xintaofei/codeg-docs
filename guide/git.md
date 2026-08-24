@@ -133,7 +133,9 @@ A worktree branch used to be a dead end: deleting the branch could only ever rep
 Two are refused up front, and it's worth knowing why: the repository's **main working tree** is offered no destructive action at all (git refuses both to remove its checkout and to delete its branch), and a **to-do task that's mid-run or mid-merge blocks removal of the tree it's working in** — forcing it would delete a live agent's directory out from under it. When a worktree folder does go, every to-do referencing it is detached and its card refreshed, rather than left offering a cleanup that could only fail.
 
 ::: tip Removing a folder is not deleting a worktree
-**Remove from workspace** on a folder's menu takes it out of Codeg and closes its tabs — it leaves the worktree and its branch untouched on disk. Use the branch chip's two entries above when you mean to remove the checkout itself. To-do worktrees have a third route: the board offers to remove one when you merge or delete its task, and tells you if that ever fails. → [To-dos](/guide/tasks#keep-the-board-tidy)
+**Remove from workspace** on a folder's menu takes it out of Codeg and closes its tabs — it leaves the worktree and its branch untouched on disk. Use the branch chip's two entries above when you mean to remove the checkout itself.
+
+To-do worktrees have their own routes on the board, which is usually where you want to be: it offers to remove one when you **merge** or **delete** its task, and since **0.28** a **Delete worktree** button in the task drawer reclaims a leftover checkout — directory and work branch — **without touching the task**, for the ones where you said no at merge time. It tells you if any of that fails. → [To-dos](/guide/tasks#keep-the-board-tidy)
 :::
 
 ## Next steps

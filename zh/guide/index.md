@@ -39,6 +39,7 @@ Codeg 与具体智能体无关——用一致的界面驾驭众多编码 CLI。
 - [**聊天频道**](/zh/guide/chat-channels)——连接 Telegram、Lark (Feishu) 和 iLink (Weixin)，即可创建任务、批准权限并获取实时更新——全部在你的聊天应用中完成。
 - [**自动化**](/zh/guide/automations)——将完整配置好的 composer 保存为可复用的自动化，并以无头方式按 cron 计划或按需运行。
 - [**待办任务**](/zh/guide/tasks)——把要做的事写下来，让智能体一件件做完，每个任务都在自己的 git worktree 中进行，在你验收之前不会合并任何东西。
+- [**仓库面板**](/zh/guide/repository)——把一条 GitHub 或 GitLab 的 issue 或 pull request 直接交给智能体，再把结果作为 pull request 或一条评论送回去。
 
 ## 扩展 Codeg {#extending-codeg}
 

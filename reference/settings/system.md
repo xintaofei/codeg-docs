@@ -1,11 +1,11 @@
 ---
 title: System
-description: The System settings screen — Codeg's operations hub for software updates, the network proxy, the app language, and full backup and restore.
+description: The System settings screen — Codeg's operations hub for software updates, launching at login, the network proxy, the app language, and full backup and restore.
 ---
 
 # System
 
-**Settings → System** — labeled **System Management** in the app — is the operations screen: *"Manage network proxy, app updates and language preferences,"* plus a fourth panel for backing up and restoring everything. Four independent sections, each saving on its own; nothing here needs a page-level Save.
+**Settings → System** — labeled **System Management** in the app — is the operations screen: *"Manage app updates, launch at login, network proxy and language preferences,"* plus a fifth panel for backing up and restoring everything. Five independent sections, each saving on its own; nothing here needs a page-level Save.
 
 ## Software Update
 
@@ -29,11 +29,19 @@ A self-updating server keeps the previous binary, so after an upgrade a **Roll b
 
 If a check or install fails, the reason is shown inline — an unreachable update source, a network error, or a failed download or install — usually a connectivity issue, which the proxy panel below can address.
 
+## Launch at login
+
+One switch, added in **0.27**: *"Opens automatically after you sign in to this computer."* Desktop only, and it works on **macOS, Windows, and Linux** alike. On macOS it registers a Launch Agent, which is why turning it on doesn't trigger an Automation consent prompt.
+
+Codeg keeps **no copy of this setting** — the operating system's own startup entry is the only record, and the switch reads back from it. That matters in one specific way: what the toggle shows afterwards is **what the system actually settled on**, not what you asked for. If something outside Codeg vetoes the entry — Windows Task Manager's startup tab is the usual culprit — the switch flips back to off rather than claiming a state the machine disagrees with. If the entry can't be read at all, the panel says so instead of guessing.
+
 ## Network Proxy
 
 Routes Codeg's own network traffic through a proxy. Tick **Enable system proxy** and enter a **Proxy address**; from then on, *"subsequent network requests prefer this proxy (including ACP chat, agent installation and Git remote operations)."*
 
 The address takes an `http`, `https`, or `socks5` URL — the placeholder is `http://127.0.0.1:7890`, a typical local proxy. It's **required once the proxy is enabled** (turning it on without an address is refused), and the setting **saves as you go** — toggling the checkbox or leaving the field commits it. It applies only while *Enable system proxy* is on; untick to go direct again.
+
+**Leave the scheme off and Codeg adds it.** A bare `127.0.0.1:7890` used to pass validation and be stored verbatim — updates and binary downloads coped, but **npm refused every agent install** with a bare `ERR_INVALID_URL` and no hint as to why. Since **0.28** an address with no scheme is normalized to `http://` when it's saved and again when it's handed to a child process, and one that already names a scheme is left alone, so a `socks5://` proxy is never rewritten. A value stored by an older build is repaired when it's read. A proxy set from **outside** Codeg — `docker -e`, a shell export — is deliberately left as you wrote it; if npm then rejects it, the error names the offending variable rather than leaving you to find it.
 
 This is the proxy that carries everything Codeg reaches out for — the [Git operations](/reference/settings/version-control) your accounts authenticate, agent installs, model traffic. To set a proxy *before* the app starts, from the environment, see [Configuration](/getting-started/configuration).
 
@@ -73,7 +81,8 @@ Backup and restore operate on the data of the machine actually running Codeg. If
 
 ## Good to know
 
-- **Four panels, four independent saves.** The proxy, the language, and the update check each act on their own; there's no page-level Save, and changing one never touches another.
+- **Five panels, five independent saves.** The proxy, the language, launch at login, and the update check each act on their own; there's no page-level Save, and changing one never touches another.
+- **Launch at login has no stored copy.** The OS entry is the setting, so the switch shows what your machine actually agreed to.
 - **Desktop and server update differently.** The desktop app auto-installs and relaunches; a server updates in place with a restart (and can roll back); an old remote server just links you to the release. Same panel, three behaviors.
 - **An unencrypted backup is plaintext secrets.** API keys and tokens ride along in the clear unless you set a passphrase — encrypt it, or keep the file somewhere trusted. How Codeg handles secrets generally is under [Privacy & Security](/reference/privacy).
 - **Restore is a replace, but reversible.** It swaps in the backup's database and uploads wholesale — yet snapshots your current data first, so a mistaken restore can be walked back.

@@ -56,7 +56,7 @@ Every column orders **freshest first**, so whatever just moved, retried, or fini
 
 The **list** is the same tasks as one flat, freshest-first table — **Status · Task · Location · Changes · Updated** — with a **Status** filter that speaks the four column names. Its rows show every action they offer as a labelled icon button instead of hiding most of them behind an overflow menu, so the list is the faster surface once you have more tasks than fit in four columns. Your choice of view is remembered.
 
-Cards carry the status, then a meta line reading *folder / branch · `+`/`−` line count · a relative time*. That last one is the most recent milestone the task actually reached — done or canceled, else review or failed, else started, else created. While a task is live the card also shows the **latest milestone the agent reported**, so the column tells you what's happening without opening anything. Click a card for its detail sheet; the round buttons on the right are its actions.
+Cards carry the status, then a meta line reading *folder / branch · `+`/`−` line count · a relative time*. That last one is the most recent milestone the task actually reached — done or canceled, else review or failed, else started, else created. While a task is live the card also shows the **latest milestone the agent reported**, so the column tells you what's happening without opening anything. Click a card for its detail drawer — since **0.28** it slides in from the right rather than covering the board, so the column you were reading stays visible behind it. The round buttons on the right of a card are its actions.
 
 Beside each title sits the **mark of the agent that's on it** — resolved exactly the way the run itself resolves it, so a task that never picked an agent shows the one its folder's default will actually launch, not a blank. On a board where three agents are working at once, that's the difference between reading the column and opening every card.
 
@@ -73,10 +73,11 @@ That's not only the new-task box. **Every to-do input is the full composer** —
 
 **Templates** hold a whole task as a blueprint: **Save current as template** stores the title seed and the captured composer state under a name, and picking one from the list reseeds the editor. Saving under a name you've used before updates that template rather than piling up copies.
 
-Two other doors lead here:
+Three other doors lead here:
 
 - **From a message.** Reading a reply and spotting a follow-up? Beside the copy button on any message sits **Create task from message** — it drops that text into a new task, pre-filled with the project folder, and switches you to To-dos.
 - **From an automation, or from the agent itself.** An automation can file a task instead of starting a session, and an agent in a conversation can queue one too, if you've allowed it. → [Automations](/guide/automations#choose-what-a-fire-does)
+- **From a GitHub or GitLab item.** The [Repository panel](/guide/repository) lists your issues and pull requests and hands one straight to an agent, choosing how it should be handled — fix it, investigate it, plan it, or review it. The task that comes out is an ordinary one on this board. → [Repository Panel](/guide/repository)
 
 ## Set it running
 
@@ -134,7 +135,7 @@ A task lands in **Needs you** for four different reasons, and the status on the 
 - **Merging** — the merge is in flight. This is the one state you can't cancel. A task waiting for the slot reads **queued to merge** instead — see [below](#a-second-merge-waits-in-line).
 - **Failed** — the run errored, was interrupted by a restart, or the agent reported **blocked**. **Retry** picks up in the same worktree, told that the previous attempt was interrupted and to carry on; you can add a **note** for that next run.
 
-**View session** is how you unblock the first one. It opens a read-only live view of the task's agent session — and while it's read-only for *prompting*, it does render the permission dialog and the question card, so this is where you answer. The viewer streams live for a running task and shows the stored transcript for a settled one, split into the phases the task went through: **Task run**, **Retry run**, **Follow-up**, and **Merge**.
+**View session** is how you unblock the first one. It opens a read-only live view of the task's agent session — and while it's read-only for *prompting*, it does render the permission dialog and the question card, so this is where you answer. The viewer streams live for a running task and shows the stored transcript for a settled one, split into the phases the task went through: **Task run**, **Retry run**, **Follow-up**, and **Merge**. It opens **nested inside the task drawer** that launched it, so backing out of the transcript returns you to the task rather than to nothing.
 
 ### If its worktree went missing
 
@@ -146,7 +147,7 @@ Delete a task's checkout from disk — by hand, or from the [branch selector](/g
 
 ## Review the result
 
-Open a reviewed task and the detail sheet lays out everything you need to judge it:
+Open a reviewed task and the detail drawer lays out everything you need to judge it:
 
 - **Result** — the summary the agent wrote when it called `task_complete`, rendered as Markdown, so its headings, lists and code read as intended. A long one folds behind **show more**.
 - **Changed files** — every file against the task's recorded base, with `+`/`−` counts. Click one for its diff, or **View full diff** for the lot.
@@ -161,6 +162,8 @@ Four ways out:
 - **Follow up** — another pass. See below.
 - **Complete** — mark it done with no merge at all. Offered when the task **changed no files** — it answered a question, or verified work that was already right — so nothing has to be landed and no empty merge commit is created. You still choose whether to keep its worktree.
 - **Abandon** — drop it without merging, optionally recording **why** on the timeline. The task goes to canceled and its worktree is kept, so **Requeue** can pick it back up later.
+
+A task that came from the [Repository panel](/guide/repository) gets a fifth: **Open pull request**, or **Push to the pull request** if that's where it came from. Instead of landing the work in your own checkout, it pushes the branch to the forge — and for a task that came from a pull request it **replaces** Merge, since that work belongs on the pull request's branch rather than in your base. → [Take the result back](/guide/repository#take-the-result-back)
 
 ### Say what kind of follow-up you mean
 
@@ -179,9 +182,10 @@ Either way the work continues in the same worktree and comes back to review. Cod
 
 ## Merge it
 
-The merge is done **by the agent, in its own session** — which is what lets it resolve conflicts instead of handing them to you. The **Merge task** dialog asks only two things:
+The merge is done **by the agent, in its own session** — which is what lets it resolve conflicts instead of handing them to you. The **Merge task** dialog asks three things:
 
 - **Commit message** — **Let the agent write the commit message** is ticked by default, and the agent composes a Conventional Commits line from what actually changed. Untick it to write your own; the box is seeded with the task's title.
+- **Extra instructions** *(optional)* — the landing is performed by an agent, so you can direct it: *"prefer this branch's side on any conflict"*, *"update the changelog on the way"*. Left empty it changes nothing. What you write is parked **with the merge**, so one that [waited its turn in the queue](#a-second-merge-waits-in-line) lands under the same directions you queued it with rather than losing them. It's read before the closing rules, which is deliberate — the last word still belongs to the rules that forbid pushing or self-deletion.
 - **Delete worktree after merge** — seeded from the folder's task settings.
 
 The **strategy** isn't asked here — it's read from the folder's [task settings](#task-settings) when the merge starts. **Combine into one commit** (squash; the default) lands the whole task as a single history entry, while **Keep full history** keeps every commit the task made plus a merge entry. If you want the other one, change it there before you merge.
@@ -266,6 +270,7 @@ The split earns its keep because what belongs in one stage is nothing like what 
 - **Archive** takes a task off the board without deleting it, once it's reached an end — done, failed, or canceled; **Archive all** clears everything the Done column is currently showing. An archived card offers exactly one action — **Unarchive**.
 - **Requeue** puts a canceled task back in *To do*, reusing its worktree — with an optional note about what should change this time.
 - **Delete** removes a task entirely, cancelling an active run first, with an opt-in checkbox to **also delete its worktree**.
+- **Delete worktree** — a glyph-only button in the detail drawer's bottom bar, immediately left of delete. Merging and completing both *offer* to take the worktree along and both let you say no, so a finished task can end up holding a checkout nobody will open again. This reclaims that disk **without touching the task**: the directory and its work branch go, the card stays on the board, and its conversation is re-parented to the project folder. It's confirmed first, and it only appears when there's something to remove and no failed cleanup is already showing its own retry.
 - If a worktree can't be removed — something has it open, a lock file is held — the card says **Cleanup failed** or **Worktree kept** and offers **Retry cleanup**. Nothing is silently left behind.
 
 ## Good to know
@@ -277,9 +282,11 @@ The split earns its keep because what belongs in one stage is nothing like what 
 - **A retry starts from a clean slate.** It no longer carries the result the previous run reported about itself.
 - **Deleting a worktree doesn't delete its conversations.** They're re-parented to the project folder, and Codeg remembers where they originally ran so their history still resolves.
 - **The base is pinned at creation.** A task diffs against the commit its worktree branched from, not against wherever your branch has drifted to since — which is why the merge step brings the base *in* first.
+- **A task from a repository item never merges itself.** Its prompt carries text written by whoever opened the issue, so it's barred from the folder's unattended sweep as a **rule**, not a setting you could switch off. An issue-sourced task still merges on your click; one that came from a **pull request** can't be merged locally at all, and offers *Push to the pull request* instead. → [Repository Panel](/guide/repository#the-rules-that-do-not-bend)
 
 ## Next steps
 
+- [**Repository Panel**](/guide/repository) — turn a GitHub or GitLab issue or pull request into one of these tasks, and send the result back.
 - [**Git & Worktrees**](/guide/git#work-in-parallel-with-worktrees) — the worktree machinery a task is built on, and how to manage the ones it leaves.
 - [**Automations**](/guide/automations#choose-what-a-fire-does) — fire on a schedule and file a to-do instead of a session.
 - [**Working with Agents**](/guide/agents) — the agents, modes, and options a task replays.

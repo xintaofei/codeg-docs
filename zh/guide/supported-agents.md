@@ -1,11 +1,11 @@
 ---
 title: 支持的智能体
-description: Codeg 通过 ACP 驱动的十三个编程智能体——每一个是什么、需要什么运行环境，以及它把会话保存在磁盘的什么位置——以及如何注册一个不在名单上的智能体。
+description: Codeg 通过 ACP 驱动的十五个编程智能体——每一个是什么、需要什么运行环境，以及它把会话保存在磁盘的什么位置——以及如何注册一个不在名单上的智能体。
 ---
 
 # 支持的智能体
 
-Codeg 驱动**十三个编程智能体**，一旦其中一个开始运行，它们的使用感受都是一样的——同一个 composer、同样的 diff、同样的 git 和终端——因为 Codeg 通过 **Agent Client Protocol（ACP）**与每一个通信。不同之处在底层：智能体由谁构建、它在你的机器上需要什么运行时，以及它把自己的历史保存在哪里。本页就是这张地图。
+Codeg 驱动**十五个编程智能体**，一旦其中一个开始运行，它们的使用感受都是一样的——同一个 composer、同样的 diff、同样的 git 和终端——因为 Codeg 通过 **Agent Client Protocol（ACP）**与每一个通信。不同之处在底层：智能体由谁构建、它在你的机器上需要什么运行时，以及它把自己的历史保存在哪里。本页就是这张地图。
 
 启用一个智能体、它的预检健康检查，以及开启一个会话，都在[使用智能体](/zh/guide/agents)中介绍；登录和选择模型则在[认证与模型](/zh/guide/authentication)中。这里我们只专注于名单本身——以及在页面末尾，[如何为它添加新成员](#beyond-the-built-in-roster)。
 
@@ -28,11 +28,17 @@ Codeg 会为你安装、固定版本并更新其中的每一个——你从不�
 | **Grok** | xAI 的编程智能体与 CLI | Node.js |
 | **Cursor** | Anysphere 的 Cursor 编程智能体 | 捆绑二进制文件 |
 | **DeepSeek Harness** | DeepSeek 自家的编程 harness | Node.js **22+** |
+| **Qoder** | 阿里巴巴的 Qoder 编程智能体 CLI | Node.js |
+| **Google Antigravity** | Google 的智能体优先编程工具 | 捆绑二进制文件 |
 
 最后一列背后有两条交付路径：
 
-- **Node.js（npm）。** 十三个中有十一个以 npm 包的形式交付，Codeg 用 `npx` 运行它们，因此它们需要安装 Node.js。Codeg 会为每一个固定一个已知可用的版本，并为你升级它。每一个都声明了自己的最低 Node 版本，预检会拿你的版本去比对——有几个要求 **Node 22**，DeepSeek Harness 是其中之一。
-- **捆绑二进制文件。** **OpenCode** 和 **Cursor** 是原生二进制文件，Codeg 会为你确切的平台下载它们——无需安装其他任何东西。Cursor 的下载体积更大，因为它自带 Node 运行时和工具，所以它同样不需要你的机器上有 Node.js。
+- **Node.js（npm）。** 十五个中有十二个以 npm 包的形式交付，Codeg 用 `npx` 运行它们，因此它们需要安装 Node.js。Codeg 会为每一个固定一个已知可用的版本，并为你升级它。每一个都声明了自己的最低 Node 版本，预检会拿你的版本去比对——有几个要求 **Node 22**，DeepSeek Harness 是其中之一。
+- **捆绑二进制文件。** **OpenCode**、**Cursor** 和 **Google Antigravity** 是原生二进制文件，Codeg 会为你确切的平台下载它们——无需安装其他任何东西。Cursor 的下载体积更大，因为它自带 Node 运行时和工具，所以它同样不需要你的机器上有 Node.js。
+
+::: warning Antigravity 没有 Intel Mac 版本
+Google 只为 **Apple Silicon、Linux 和 Windows** 发布 Antigravity。在 Intel Mac 上，Codeg 会在一开始就以*平台不受支持*拒绝安装，而不是让下载走到一半再 404。名单上的其他每一个智能体，只要运行时能跑，它就能跑。
+:::
 
 ::: info Hermes 在 0.24 改用 npm
 Hermes 原本是这里唯一的 Python 条目，通过 `uv` 安装。上游停用了那条渠道——PyPI 停在 **0.19.0**——因此 Codeg 的托管安装改成了一个固定在确切版本上的 npm 包：它的安装步骤会检出官方的 Hermes 发布版，并在包内部引导出**一套隔离的 Python 3.11 环境**。你依然不需要管理任何 Python 环境，只是这套环境不再位于你机器上的 `uv` 里了。配置与凭据仍然原样留在 `~/.hermes`。
@@ -40,11 +46,15 @@ Hermes 原本是这里唯一的 Python 条目，通过 `uv` 安装。上游停�
 有两个实际影响：托管安装在下载时会遵循 **`HTTP_PROXY` / `HTTPS_PROXY`**；而如果你的 `PATH` 上已经有**官方安装程序装的 Hermes**，那一份依然优先——它会自我更新，所以 Codeg 让位给它，而不是用托管的那份把它盖住。
 :::
 
+::: info Kimi Code 是刻意停在最新版之前的
+「Codeg 固定一个已知可用的版本」偶尔意味着*不是最新的那一个*。**Kimi Code 停留在 0.36.1**：从 0.37 起，通过 ACP 连接递交过去的 MCP 服务器不再能启动起来——这会把 Codeg 自己的伴生服务器一起拖下水，随之倒下的还有[多智能体委派](/zh/guide/multi-agent)**以及**你添加的每一个 MCP 服务器。在这里，更新反而是倒退，所以这个版本固定会一直保持到上游修复为止。
+:::
+
 上面的顺序是设置 → 智能体中**默认的智能体列表顺序**。它是一种偏好设置，而非排名——拖动智能体即可重新排序，而当没有其他方式为一段对话选定智能体时，第一个已启用的智能体就成为 Codeg 的后备选择。→ [使用智能体](/zh/guide/agents#start-a-session)
 
 ## ACP 适配器 {#acp-adapters}
 
-Codeg 与智能体之间只说一种语言：**ACP**。十三个里有十个不需要为此付出什么，因为 Codeg 安装的东西运行的就是厂商自己的 CLI——Gemini、OpenClaw、OpenCode、Cline、Hermes、CodeBuddy、Kimi Code、Pi、Grok 和 Cursor 都自带这个协议，所以你手动装过的那一份，Codeg 会直接认出来。（Hermes 是那个差一点的例外：自从上游不再发布到 PyPI，托管的那个包就成了一层固定版本的薄壳，它的 `hermes` 命令会 exec 它装下来的那个真正的上游程序——所以 `hermes acp` 仍然是厂商自己的适配器。）
+Codeg 与智能体之间只说一种语言：**ACP**。十五个里有十二个不需要为此付出什么，因为 Codeg 安装的东西运行的就是厂商自己的 CLI——Gemini、OpenClaw、OpenCode、Cline、Hermes、CodeBuddy、Kimi Code、Pi、Grok、Cursor、Qoder 和 Google Antigravity 都自带这个协议，所以你手动装过的那一份，Codeg 一般会直接认出来。这里有两条脚注：**Hermes** 是那个差一点的例外——自从上游不再发布到 PyPI，托管的那个包就成了一层固定版本的薄壳，它的 `hermes` 命令会 exec 它装下来的那个真正的上游程序，所以 `hermes acp` 仍然是厂商自己的适配器；而 **Antigravity** 则是 Codeg 根本没法从你机器上认出来的那一个——它的 ACP 服务器以一整棵下载下来的目录树的形式交付，没有独立的命令名，因此你的 `PATH` 上没有任何东西可供查找。
 
 **Claude Code 和 Codex 是仅有的两个例外。** Anthropic 的 `claude` CLI 和 OpenAI 的 `codex` CLI 并不会说 ACP。所以 Codeg 为这两个条目装的根本不是厂商 CLI，而是一个独立的 **ACP 适配器**：一个由 Agent Client Protocol 官方组织（该项目最初由 Zed 团队发起）维护的 npm 包，它把厂商的智能体包裹起来，翻译成这个协议。
 
@@ -101,8 +111,14 @@ Codeg 与智能体之间只说一种语言：**ACP**。十三个里有十个不�
 | **Grok** | `~/.grok/sessions/` | JSONL | `GROK_HOME` |
 | **Cursor** | `~/.cursor/chats/` | SQLite（blob 存储） | `CURSOR_CONFIG_DIR` |
 | **DeepSeek Harness** | `~/.dsh/sessions/` | 压缩的 JSONL | `DSH_HOME` |
+| **Qoder** | `~/.qoder/projects/` | JSONL | `QODER_CONFIG_DIR` |
+| **Google Antigravity** | `~/.gemini/antigravity-acp/conversations/` | SQLite（每个会话一个文件） | `GEMINI_HOME` |
 
-大多数智能体写入一份 **JSONL 对话记录**——一种纯文本日志，每行一个事件——而 OpenCode 和 Hermes 把一切保存在单个 **SQLite** 数据库中，Cursor 把每段对话存为各自的 SQLite blob 文件，Gemini 和 Cline 则使用它们自己的 JSON 文件。Codeg 会原生读取每一种格式；你从不需要转换任何东西。
+大多数智能体写入一份 **JSONL 对话记录**——一种纯文本日志，每行一个事件——而 OpenCode 和 Hermes 把一切保存在单个 **SQLite** 数据库中，Cursor 和 Antigravity 把每段对话存为各自的 SQLite 文件，Gemini 和 Cline 则使用它们自己的 JSON 文件。Codeg 会原生读取每一种格式；你从不需要转换任何东西。
+
+::: warning `GEMINI_HOME` 和 `GEMINI_CLI_HOME` 不是同一个变量
+它们在那张表里只隔着两行，含义却不同。**`GEMINI_CLI_HOME`**（Gemini CLI）指的是*父*目录，`.gemini` 会被拼接到它后面；**`GEMINI_HOME`**（Antigravity）指的就是 `.gemini` 目录**本身**。把想设的那一个按另一个的规则去设，会把存储挪到两个工具都不会去找的地方。
+:::
 
 被压缩的是 DeepSeek 那一份：它的 `session.jsonl.zstd` 并不是单个 Zstandard 归档，而是**一批一批追加上去的一串帧**，正是这一点让 harness 能一直往里写。Codeg 会按顺序解码这些帧，并保留到最后一个完整帧为止的全部内容——因此一个**还在被写入**的会话照样能列出、能打开，而不是读成一个损坏的文件。
 

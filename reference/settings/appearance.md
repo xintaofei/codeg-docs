@@ -1,6 +1,6 @@
 ---
 title: Appearance
-description: The Appearance settings screen — theme mode and accent color, custom theme tokens and CSS, window zoom, per-surface fonts, a workspace background image, the welcome-screen shortcut cards, and the desktop pet manager.
+description: The Appearance settings screen — theme mode and accent color, custom theme tokens and CSS, window zoom, per-surface fonts, a workspace background image or GIF, the welcome-screen shortcut cards, and the desktop pet manager.
 ---
 
 # Appearance
@@ -90,7 +90,9 @@ The editor and terminal these style are the ones in [the workspace](/guide/works
 
 ## Workspace background
 
-Put a picture behind the whole workspace. Turn on **Enable background image** and pick an image (**PNG, JPEG, or WebP**, up to **16 MB**); the sidebar, panels, and tab bars turn translucent and **frosted** so the image shows through, while a mask keeps text readable. One image is shared by light and dark mode.
+Put a picture behind the whole workspace. Turn on **Enable background image** and pick an image (**PNG, JPEG, WebP, or GIF**, up to **16 MB**); the sidebar, panels, and tab bars turn translucent and **frosted** so the image shows through, while a mask keeps text readable. One image is shared by light and dark mode.
+
+**GIF joined the list in 0.28**, and an animated one **plays** — through the blur and the frosted panels, not just as a still first frame.
 
 The controls, top to bottom:
 

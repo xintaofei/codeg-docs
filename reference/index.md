@@ -24,11 +24,11 @@ Codeg gathers every preference into one **Settings** window (its sidebar is head
 | **Model Providers** | API provider credentials for agents | [Guide → Authentication & Models](/guide/authentication) |
 | **Quick Messages** | Reusable message snippets for the composer | [Quick Messages](/reference/settings/quick-messages) |
 | **Shortcuts** | Keyboard shortcuts | [Shortcuts](/reference/settings/shortcuts) |
-| **Version Control** | Git executable, GitHub and other Git accounts | [Version Control](/reference/settings/version-control) |
+| **Version Control** | Git executable, GitHub, GitLab and other Git accounts | [Version Control](/reference/settings/version-control) |
 | **Chat Channels** | IM bots for notifications and remote control | [Guide → Chat Channels](/guide/chat-channels) |
 | **Web Service** | Expose Codeg to a browser — port, token, QR *(desktop only)* | [Web Service](/reference/settings/web-service) |
 | **Runtime Logs** | Diagnostic logs — level, live viewer, files | [Runtime Logs](/reference/settings/logs) |
-| **System** | Updates, network proxy, language, backup & restore | [System](/reference/settings/system) |
+| **System** | Updates, launch at login, network proxy, language, backup & restore | [System](/reference/settings/system) |
 
 Opening Settings lands you on **Appearance**. Every screen is identical whether you run the desktop app or reach Codeg through a browser — with one exception: **Web Service** appears only in the desktop app, because it's the screen that *turns on* browser access in the first place.
 

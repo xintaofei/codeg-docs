@@ -7,10 +7,10 @@ description: Codeg 是一个多智能体编程工作区——在一个地方运�
 
 **Codeg 是一个多智能体编程工作区**——在一个地方运行、聚合并编排不断壮大的 AI 编程智能体家族。
 
-Codeg 不会将你绑定到单一助手，而是把 Claude Code、Codex CLI、DeepSeek Harness、OpenCode、Cline 以及[更多智能体](/zh/guide/supported-agents)汇聚到一个共享工作区中——然后让它们*协同*工作：一个主导智能体可以把子任务交给其他类型的智能体，每个智能体都作为独立会话运行。你负责指挥，它们负责协作。
+Codeg 不会将你绑定到单一助手，而是把 Claude Code、Codex CLI、Google Antigravity、OpenCode、Qoder 以及[更多智能体](/zh/guide/supported-agents)汇聚到一个共享工作区中——然后让它们*协同*工作：一个主导智能体可以把子任务交给其他类型的智能体，每个智能体都作为独立会话运行。你负责指挥，它们负责协作。
 
 <div class="stat-strip">
-  <div class="stat"><span class="stat__num">13</span><span class="stat__label">个编程智能体，一个工作区</span></div>
+  <div class="stat"><span class="stat__num">15</span><span class="stat__label">个编程智能体，一个工作区</span></div>
   <div class="stat"><span class="stat__num">3</span><span class="stat__label">个聊天频道来驱动它们</span></div>
   <div class="stat"><span class="stat__num">3</span><span class="stat__label">种托管方式——桌面 · 服务器 · Docker</span></div>
   <div class="stat"><span class="stat__num">0</span><span class="stat__label">遥测——默认本地优先</span></div>
@@ -59,9 +59,9 @@ Codeg 押注于一点：面对日益碎片化的智能体格局，答案不是�
 
 ### 1. 聚合——为每个智能体提供统一的归处 {#_1-aggregate-—-one-home-for-every-agent}
 
-Codeg 读取每个受支持智能体的原生会话存储，并将它们汇入一个统一、可搜索的工作区。你的 Claude Code、Codex、Gemini 和 OpenCode 历史记录不再散落在十三个独立的目录中，而是汇成一条可供你浏览、恢复和搜索的时间线——无论它们出自哪个工具。
+Codeg 读取每个受支持智能体的原生会话存储，并将它们汇入一个统一、可搜索的工作区。你的 Claude Code、Codex、Gemini 和 OpenCode 历史记录不再散落在十五个独立的目录中，而是汇成一条可供你浏览、恢复和搜索的时间线——无论它们出自哪个工具。
 
-如今已有十三个智能体接入，各有自己的模型、强项和会话格式：
+如今已有十五个智能体接入，各有自己的模型、强项和会话格式：
 
 <AgentRoster />
 
@@ -91,6 +91,7 @@ Codeg 把智能体视为你可以*运行*的东西，而不仅仅是与之聊天
 
 - **[自动化](/zh/guide/automations)**——保存一套完整配置的设置，以无头方式按 cron 计划或按需运行。
 - **[待办任务](/zh/guide/tasks)**——把要做的事写下来，让智能体一件件做完，每个任务都在一份独立的代码副本中进行，且在你验收之前都不会合并。
+- **[仓库面板](/zh/guide/repository)**——把一个项目的 GitHub 或 GitLab issue 与 pull request 列出来，把其中一条交给智能体，再把结果作为 pull request 送回去。
 - **[聊天频道](/zh/guide/chat-channels)**——从 Telegram、Lark（飞书）或 iLink（微信）驱动会话：创建任务、批准权限，并实时获得回复，无需打开浏览器。
 - **[随处使用](/zh/getting-started/installation)**——在桌面应用、独立服务器或 Docker 中运行智能体，再通过原生 iOS、Android 客户端或任意浏览器保持连接。
 - **[可扩展](/zh/guide/mcp)**——MCP 服务器和[技能](/zh/guide/skills)可添加工具与专业能力，而内置的 [Office](/zh/guide/office) 和[科学研究](/zh/guide/research)工具集则赋予智能体真实世界的能力。新项目从[项目引导](/zh/guide/project-boot)开始。

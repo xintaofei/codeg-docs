@@ -30,6 +30,7 @@ A few consequences worth knowing:
 - **It's not a bill.** There are no prices anywhere on the page. Tokens are tokens; what they cost depends on your plan, and Codeg doesn't guess at it.
 - **Dimensions are read live.** Folder, agent and deletion state are joined from the conversation itself, so moving a folder or deleting a session lands in the report without a re-sync.
 - **Hermes reports per session, not per turn.** Its per-message rows carry no input/output split, so counting only per-turn usage would report those conversations as zero — a confident wrong number. Instead the session total is written as a single entry, filed at the session's last turn. Right for every total and breakdown; coarse only on the time axis.
+- **Grok's numbers were wrong until 0.26.2.** Every Grok session read *output 0, cache read 0, cache write 0*, because Codeg was reading how full the **context window** was rather than what the session had **spent** — in one captured session, 26,827 shown against 495,523 actually used. The four buckets now come from Grok's own per-turn figures and add up to its own total. The context ring is unaffected: occupancy is what it was always measuring. Note that the fix doesn't retroactively sweep your history: a Grok session is re-read the next time it *moves*, and older ones that haven't changed keep their old numbers until you press **Rebuild all**.
 
 ## Narrow the view
 

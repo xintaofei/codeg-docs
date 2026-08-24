@@ -39,6 +39,7 @@ Drive Codeg without sitting in front of it.
 - [**Chat Channels**](/guide/chat-channels) — connect Telegram, Lark (Feishu), and iLink (Weixin) to create tasks, approve permissions, and get live updates — all from your chat app.
 - [**Automations**](/guide/automations) — save a fully-configured composer as a reusable automation and run it headlessly, on a cron schedule or on demand.
 - [**To-dos**](/guide/tasks) — write down what needs doing and let agents work through the list, each in its own git worktree, waiting for your review before anything merges.
+- [**Repository Panel**](/guide/repository) — hand a GitHub or GitLab issue or pull request straight to an agent, then send the result back as a pull request or a comment.
 
 ## Extending Codeg
 

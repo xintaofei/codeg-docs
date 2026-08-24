@@ -13,18 +13,18 @@ This page covers the essentials — enabling an agent, making sure it's ready to
 
 Each agent is a separate command-line program. When you start a session, Codeg launches that program as a background process and talks to it over the **Agent Client Protocol (ACP)** — the shared language that lets one workspace drive many different agents. That's why the experience is consistent no matter which one you pick.
 
-Codeg supports **thirteen agents** out of the box, delivered two ways — and it installs and updates them for you:
+Codeg supports **fifteen agents** out of the box, delivered two ways — and it installs and updates them for you:
 
 - Most run through **npx** (an npm package), so they need Node.js on your machine.
-- **OpenCode** and **Cursor** are native **binaries** Codeg downloads for your platform (Cursor bundles its own runtime, so it needs no Node.js either).
+- **OpenCode**, **Cursor** and **Google Antigravity** are native **binaries** Codeg downloads for your platform (Cursor bundles its own runtime, so it needs no Node.js either).
 
-Because ACP is an open protocol, the thirteen aren't a limit: you can **register any other ACP-compatible agent** yourself, from the protocol's public registry or from its distribution JSON, and Codeg drives it the same way. → [Custom Agents](/guide/custom-agents)
+Because ACP is an open protocol, the fifteen aren't a limit: you can **register any other ACP-compatible agent** yourself, from the protocol's public registry or from its distribution JSON, and Codeg drives it the same way. → [Custom Agents](/guide/custom-agents)
 
 Two things are tracked separately for each agent: whether it's **enabled** (allowed to appear in Codeg) and whether it's **installed** (actually present on your machine). They're independent — you can enable an agent before installing it, and Codeg will help you install it when the time comes.
 
 ## Enable an agent
 
-Agents are managed in **Settings → Agents** (titled *Agent SDK Management*). The **Agent List** on the left holds every supported agent; select one to see its details on the right. **All agents are enabled by default**, so there's usually nothing to switch on — but the enable toggle in each agent's header lets you hide the ones you don't use. A **+ Add custom agent** button in the top-right corner is how you extend the list beyond the built-in thirteen. → [Custom Agents](/guide/custom-agents)
+Agents are managed in **Settings → Agents** (titled *Agent SDK Management*). The **Agent List** on the left holds every supported agent; select one to see its details on the right. **All agents are enabled by default**, so there's usually nothing to switch on — but the enable toggle in each agent's header lets you hide the ones you don't use. A **+ Add custom agent** button in the top-right corner is how you extend the list beyond the built-in fifteen. → [Custom Agents](/guide/custom-agents)
 
 Only **enabled** agents appear in the composer's agent picker. Disable the ones you'll never touch to keep that list short; if you ever disable everything, the composer just prompts you to *Open Agents settings* and turn one back on. The toggle reaches past the picker, too: an agent you've switched off is also dropped from the targets another agent can [delegate](/guide/multi-agent) to.
 
@@ -136,6 +136,38 @@ Claude Code's pane carries two switches that Codeg deliberately ships opposite t
 - **Disable telemetry or redundant network requests** — **on**, so non-essential traffic stays off.
 
 Codeg writes both explicitly rather than leaving them implied, so what the pane shows is what's applied. Flip either back if your setup needs it — a managed account that bills by attribution header, say. → [Privacy](/reference/privacy)
+
+### Qoder: sign in, or hand a token to a headless box
+
+Qoder's pane opens with an **Account** row that says whether you're signed in, plus the auth method Qoder itself recorded. Signing in is Qoder's own browser flow — the pane gives you the exact **`qoder login`** command to paste into a terminal, spelled with the **full path** to the copy Codeg manages, because that one lives in Codeg's cache rather than on your `PATH` and a bare `qoder login` would just say *command not found*. Run it, then hit refresh.
+
+For a machine where no browser can open — a server, a container — there's a **Personal access token** field instead, passed as `QODER_PERSONAL_ACCESS_TOKEN`. Leave it empty to use the account login.
+
+Everything else Qoder reads lives in **one file**, `$QODER_CONFIG_DIR/settings.json` (default `~/.qoder`), shared with the `qoder` CLI — and **Advanced: raw settings.json** edits it verbatim. That's deliberate: writing the whole file back is also the only way to **delete** a key, which a field-by-field editor can't express.
+
+Model and reasoning effort aren't here. Qoder reports them over ACP, so the composer's own selectors own them, per session. → [Authentication & Models](/guide/authentication)
+
+### Antigravity: one file decides how it signs in
+
+Antigravity's ACP server takes its authentication intent from exactly one place — `auth.type` in `$GEMINI_HOME/antigravity-acp/settings.json` — and without it **every new session fails outright** with *Authentication required*. Codeg writes that file for you at launch, so you don't hit that wall: when neither the file nor this pane names a method, it writes **Sign in with Google**, which merely makes the server open a browser. A method already in the file is never overridden. The pane is where you pick something else.
+
+Four methods, each asking for what it actually needs:
+
+| Method | What it needs |
+| ------ | ------------- |
+| **Sign in with Google** | Your Google account, on any Antigravity plan including the free tier. The first new session opens a browser to finish signing in, then caches the token |
+| **Gemini Enterprise** | A GCP **project and location**, plus a browser sign-in on the first session |
+| **Gemini API key** | A Gemini Developer API key, passed as `GEMINI_API_KEY` |
+| **Gemini Enterprise Agent Platform** | Formerly Vertex AI. Either an API key on its own, or a project and location with Application Default Credentials (`gcloud auth application-default login`) |
+
+Save with a method's requirements unmet and the pane refuses, naming what's missing, rather than letting a session fail later for a reason you'd have to guess at.
+
+Two behaviours worth knowing:
+
+- **Credentials outside the method you picked are cleared at launch.** A `GEMINI_API_KEY` left in your shell can't quietly take over a session you configured for Google sign-in.
+- **If Codeg can't write that settings file** — you've made it read-only, say — it tells you so plainly instead of pretending the save took. Your choice is stored on Codeg's side, but Antigravity keeps authenticating the way the file says, so set `auth.type` yourself or move the file aside and save again.
+
+Model and session mode come over ACP, so they live in the composer rather than here.
 
 ## Start a session
 

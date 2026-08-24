@@ -143,7 +143,8 @@ export default defineConfig({
               items: [
                 { text: 'Chat Channels', link: '/guide/chat-channels' },
                 { text: 'Automations', link: '/guide/automations' },
-                { text: 'To-dos', link: '/guide/tasks' }
+                { text: 'To-dos', link: '/guide/tasks' },
+                { text: 'Repository Panel', link: '/guide/repository' }
               ]
             },
             {
@@ -253,7 +254,8 @@ export default defineConfig({
               items: [
                 { text: '聊天频道', link: '/zh/guide/chat-channels' },
                 { text: '自动化', link: '/zh/guide/automations' },
-                { text: '待办任务', link: '/zh/guide/tasks' }
+                { text: '待办任务', link: '/zh/guide/tasks' },
+                { text: '仓库面板', link: '/zh/guide/repository' }
               ]
             },
             {

@@ -24,11 +24,11 @@ Codeg 将每一项偏好都汇集到同一个**设置**窗口中（其侧边栏�
 | **Model Providers** | 智能体使用的 API 提供商凭据 | [指南 → 认证与模型](/zh/guide/authentication) |
 | **Quick Messages** | 供 composer 使用的可复用消息片段 | [快捷消息](/zh/reference/settings/quick-messages) |
 | **Shortcuts** | 键盘快捷键 | [快捷键](/zh/reference/settings/shortcuts) |
-| **Version Control** | Git 可执行文件、GitHub 及其他 Git 账户 | [版本控制](/zh/reference/settings/version-control) |
+| **Version Control** | Git 可执行文件、GitHub、GitLab 及其他 Git 账户 | [版本控制](/zh/reference/settings/version-control) |
 | **Chat Channels** | 用于通知和远程控制的 IM 机器人 | [指南 → 聊天频道](/zh/guide/chat-channels) |
 | **Web Service** | 将 Codeg 暴露给浏览器 —— 端口、令牌、二维码 *（仅桌面应用）* | [Web 服务](/zh/reference/settings/web-service) |
 | **Runtime Logs** | 诊断日志 —— 级别、实时查看器、文件 | [运行日志](/zh/reference/settings/logs) |
-| **System** | 更新、网络代理、语言、备份与恢复 | [系统](/zh/reference/settings/system) |
+| **System** | 更新、开机自启、网络代理、语言、备份与恢复 | [系统](/zh/reference/settings/system) |
 
 打开设置后，你会首先看到 **Appearance**。无论你运行桌面应用还是通过浏览器访问 Codeg，每个界面都完全相同 —— 只有一个例外：**Web Service** 仅在桌面应用中出现，因为正是这个界面*开启*了浏览器访问。
 

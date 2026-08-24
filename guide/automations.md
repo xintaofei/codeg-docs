@@ -81,7 +81,7 @@ If you do write cron by hand, it's the standard five fields:
 
 Whether it fires on schedule or you hit **Run now**, a **Launch session** run is a real, live session:
 
-- It spawns the agent headlessly and **produces a normal conversation** that appears in your sidebar the moment it starts. Open it to watch the work stream in, or to step in.
+- It spawns the agent headlessly and **produces a normal conversation** that appears in your sidebar the moment it starts. Open it to watch the work stream in, or to step in. Since **0.26.1** that conversation is **named after the automation** — not after the first eighty characters of its prompt, which is identical on every run and never said which automation a session belonged to.
 - It **replays the mode you saved**, so how far it goes on its own is exactly the mode you picked in the editor. A run is a genuine agent session: if the agent stops to ask permission or a question, that surfaces in the produced conversation. For a truly unattended cadence, pick a mode that doesn't pause for approvals, or keep the task read-only — the analysis templates are deliberately written to *not* change files.
 - **One run at a time, per automation.** If a run is still going when the next one comes due, the new one is recorded as **Skipped** rather than piling on top.
 

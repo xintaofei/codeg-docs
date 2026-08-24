@@ -51,6 +51,12 @@ The summary at the end of an import tells you exactly what happened:
 
 - **Imported** — brand-new sessions added to the list.
 - **Refreshed** — a session already in Codeg that caught up with what the agent's own store now says: its **title**, and its **last-activity time**. Many agents name a session only after it's been running a while, so a later import picks up that name; and a session you've kept using in the agent's own CLI now sorts by when you actually last touched it, not by when you first imported it.
+
+::: info Names now come from the agent, as soon as it has one
+Two fixes changed where a session's name comes from. **Codex sessions show the titles Codex gave them** — Codeg used to fall back to the first user message while Codex kept the real title in its own session index, so the same session read one way here and another there. And since **0.28** a live session **takes its title the moment the agent picks one**, rather than waiting for a reload.
+
+A name **you** set by hand still wins over both. And a session launched from a [to-do](/guide/tasks) card keeps the **card's** name — it used to be overwritten on the first detail load by whatever the agent's own file parsed to, which for an agent that writes no title of its own meant the first line of the composed prompt. Renaming the card now renames the session; sessions from earlier runs were repaired on upgrade.
+:::
 - **Skipped** — sessions already present with nothing to update.
 - **Folders created** — projects that weren't in your workspace yet and got added.
 - **Not found** and **Failed** — sessions whose files had vanished, and anything that errored (with the details listed).

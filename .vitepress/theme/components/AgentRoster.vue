@@ -1,14 +1,14 @@
 <!--
   AgentRoster — the roster of coding agents Codeg aggregates.
 
-  The 13 brand marks are ported verbatim from the codeg app's source of truth,
+  The 15 brand marks are ported verbatim from the codeg app's source of truth,
   src/components/agent-icon.tsx. Two conventions carry over:
     • Color marks (Claude Code, Codex, Gemini, OpenClaw, Kimi, Pi, DeepSeek)
       keep their baked palettes / gradients — identical in light and dark. useId() gradient
       ids are replaced with static, page-unique ids (grad-*).
-    • Mono marks (OpenCode, Cline, Hermes, CodeBuddy, Grok, Cursor) use
-      fill="currentColor" so they inherit the roster's text color and stay
-      legible in both themes.
+    • Mono marks (OpenCode, Cline, Hermes, CodeBuddy, Grok, Cursor, Qoder,
+      Google Antigravity) use fill="currentColor" so they inherit the roster's
+      text color and stay legible in both themes.
   React attribute names are converted to SVG/HTML (fillRule -> fill-rule, etc.).
 -->
 <template>
@@ -187,6 +187,26 @@
         </svg>
       </span>
       <span class="agent-chip__name">DeepSeek Harness</span>
+    </div>
+
+    <!-- Qoder -->
+    <div class="agent-chip">
+      <span class="agent-chip__icon">
+        <svg fill="currentColor" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+          <path d="M8 1C4.134 1 1 4.134 1 8s3.134 7 7 7c1.5 0 2.9-.47 4.05-1.28l1.12 1.12a.75.75 0 1 0 1.06-1.06l-1.12-1.12A6.97 6.97 0 0 0 15 8c0-3.866-3.134-7-7-7Zm0 2c2.761 0 5 2.239 5 5s-2.239 5-5 5-5-2.239-5-5 2.239-5 5-5Z" />
+        </svg>
+      </span>
+      <span class="agent-chip__name">Qoder</span>
+    </div>
+
+    <!-- Google Antigravity -->
+    <div class="agent-chip">
+      <span class="agent-chip__icon">
+        <svg fill="none" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+          <path fill="currentColor" d="M14.1452 14.6818C14.9937 15.3182 16.2664 14.894 15.0997 13.7273C11.5998 10.3333 12.3421 1 7.99366 1C3.64518 1 4.3876 10.3333 0.887603 13.7273C-0.385123 15 0.993664 15.3182 1.84215 14.6818C5.13002 12.4545 4.9179 8.5303 7.99366 8.5303C11.0694 8.5303 10.8573 12.4545 14.1452 14.6818Z" />
+        </svg>
+      </span>
+      <span class="agent-chip__name">Google Antigravity</span>
     </div>
   </div>
 </template>

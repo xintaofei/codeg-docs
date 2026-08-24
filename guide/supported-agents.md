@@ -1,11 +1,11 @@
 ---
 title: Supported Agents
-description: The thirteen coding agents Codeg drives over ACP — what each one is, the runtime it needs, and where it keeps its sessions on disk — plus how to register one that isn't on the list.
+description: The fifteen coding agents Codeg drives over ACP — what each one is, the runtime it needs, and where it keeps its sessions on disk — plus how to register one that isn't on the list.
 ---
 
 # Supported Agents
 
-Codeg drives **thirteen coding agents**, and once one is running they all feel the same — same composer, same diffs, same git and terminal — because Codeg talks to each over the **Agent Client Protocol (ACP)**. What differs is underneath: who builds the agent, what runtime it needs on your machine, and where it keeps its own history. This page is the map.
+Codeg drives **fifteen coding agents**, and once one is running they all feel the same — same composer, same diffs, same git and terminal — because Codeg talks to each over the **Agent Client Protocol (ACP)**. What differs is underneath: who builds the agent, what runtime it needs on your machine, and where it keeps its own history. This page is the map.
 
 Enabling an agent, its preflight health check, and starting a session are covered in [Working with Agents](/guide/agents); signing in and choosing a model are in [Authentication & Models](/guide/authentication). Here we stick to the roster itself — and, at the end, [how to add to it](#beyond-the-built-in-roster).
 
@@ -28,11 +28,17 @@ Codeg installs, pins, and updates every one of these for you — you never fetch
 | **Grok** | xAI's coding agent and CLI | Node.js |
 | **Cursor** | Anysphere's Cursor coding agent | Bundled binary |
 | **DeepSeek Harness** | DeepSeek's own coding harness | Node.js **22+** |
+| **Qoder** | Alibaba's Qoder coding-agent CLI | Node.js |
+| **Google Antigravity** | Google's agent-first coding tool | Bundled binary |
 
 Two delivery routes sit behind that last column:
 
-- **Node.js (npm).** Eleven of the thirteen ship as npm packages that Codeg runs with `npx`, so they need Node.js installed. Codeg pins a known-good version of each and upgrades it for you. Each declares its own minimum Node version, and preflight checks yours against it — several want **Node 22**, DeepSeek Harness among them.
-- **Bundled binary.** **OpenCode** and **Cursor** are native binaries Codeg downloads for your exact platform — nothing else to install. Cursor's download is larger because it carries its own Node runtime and tools, so it doesn't need Node.js on your machine either.
+- **Node.js (npm).** Twelve of the fifteen ship as npm packages that Codeg runs with `npx`, so they need Node.js installed. Codeg pins a known-good version of each and upgrades it for you. Each declares its own minimum Node version, and preflight checks yours against it — several want **Node 22**, DeepSeek Harness among them.
+- **Bundled binary.** **OpenCode**, **Cursor** and **Google Antigravity** are native binaries Codeg downloads for your exact platform — nothing else to install. Cursor's download is larger because it carries its own Node runtime and tools, so it doesn't need Node.js on your machine either.
+
+::: warning Antigravity has no Intel Mac build
+Google publishes Antigravity for **Apple Silicon, Linux, and Windows** only. On an Intel Mac, Codeg refuses the install up front with *platform not supported*, rather than letting a download 404 halfway through. Every other agent on the roster runs anywhere its runtime does.
+:::
 
 ::: info Hermes moved to npm in 0.24
 Hermes used to be the one Python entry, installed through `uv`. Upstream retired that channel — PyPI stops at **0.19.0** — so Codeg's managed install is now an npm package pinned to an exact, audited version, whose install step checks out the official Hermes release and bootstraps **its own isolated Python 3.11 environment** inside the package. You still don't manage a Python environment; it just isn't `uv` on your machine any more. Config and credentials stay exactly where they were, in `~/.hermes`.
@@ -40,11 +46,15 @@ Hermes used to be the one Python entry, installed through `uv`. Upstream retired
 Two practical consequences: the managed install honors **`HTTP_PROXY` / `HTTPS_PROXY`** for its own downloads, and if you have Hermes from the **official installer on your `PATH`**, that copy still wins — it self-updates, so Codeg defers to it rather than shadowing it with the managed one.
 :::
 
+::: info Kimi Code is pinned behind latest on purpose
+"Codeg pins a known-good version" occasionally means *not the newest one*. **Kimi Code stays at 0.36.1**: from 0.37 onwards, MCP servers handed over on the ACP connection stop coming up — which takes Codeg's own companion server down with them, and with it [multi-agent delegation](/guide/multi-agent) **and** every MCP server you've added. Newer is a regression here, so the pin holds until a release fixes it.
+:::
+
 The order above is the **default Agent List order** in Settings → Agents. It's a preference, not a ranking — drag agents to reorder them, and the first enabled one becomes Codeg's fallback when nothing else has picked the agent for a conversation. → [Working with Agents](/guide/agents#start-a-session)
 
 ## ACP adapters {#acp-adapters}
 
-Codeg speaks exactly one language to an agent: **ACP**. For ten of the thirteen that costs nothing, because what Codeg installs runs the vendor's own CLI — Gemini, OpenClaw, OpenCode, Cline, Hermes, CodeBuddy, Kimi Code, Pi, Grok, and Cursor all ship the protocol themselves, which is why a copy you installed by hand is picked up straight away. (Hermes is the near-miss: since upstream stopped publishing to PyPI, the managed package is a thin pinned wrapper whose `hermes` command execs the real upstream binary it installed — so `hermes acp` is still the vendor's own adapter.)
+Codeg speaks exactly one language to an agent: **ACP**. For twelve of the fifteen that costs nothing, because what Codeg installs runs the vendor's own CLI — Gemini, OpenClaw, OpenCode, Cline, Hermes, CodeBuddy, Kimi Code, Pi, Grok, Cursor, Qoder, and Google Antigravity all ship the protocol themselves, which is why a copy you installed by hand is generally picked up straight away. Two footnotes to that: **Hermes** is the near-miss — since upstream stopped publishing to PyPI, the managed package is a thin pinned wrapper whose `hermes` command execs the real upstream binary it installed, so `hermes acp` is still the vendor's own adapter. And **Antigravity** is the one Codeg can't pick up from your machine at all: its ACP server ships as a downloaded tree with no standalone command name, so there's nothing on your `PATH` to find.
 
 **Claude Code and Codex are the two exceptions.** Anthropic's `claude` CLI and OpenAI's `codex` CLI don't speak ACP. So what Codeg installs for those two entries isn't the vendor CLI at all — it's a separate **ACP adapter**: an npm package, maintained by the Agent Client Protocol organization (the project the Zed team originally started), that wraps the vendor's agent and translates it into the protocol.
 
@@ -101,8 +111,14 @@ Here's where "each agent's native store" actually lives:
 | **Grok** | `~/.grok/sessions/` | JSONL | `GROK_HOME` |
 | **Cursor** | `~/.cursor/chats/` | SQLite (blob store) | `CURSOR_CONFIG_DIR` |
 | **DeepSeek Harness** | `~/.dsh/sessions/` | Compressed JSONL | `DSH_HOME` |
+| **Qoder** | `~/.qoder/projects/` | JSONL | `QODER_CONFIG_DIR` |
+| **Google Antigravity** | `~/.gemini/antigravity-acp/conversations/` | SQLite (one file per session) | `GEMINI_HOME` |
 
-Most agents write a **JSONL transcript** — a plain-text log, one event per line — while OpenCode and Hermes keep everything in a single **SQLite** database, Cursor stores each conversation as its own SQLite blob file, and Gemini and Cline use their own JSON files. Codeg reads each format natively; you never convert anything.
+Most agents write a **JSONL transcript** — a plain-text log, one event per line — while OpenCode and Hermes keep everything in a single **SQLite** database, Cursor and Antigravity store each conversation as its own SQLite file, and Gemini and Cline use their own JSON files. Codeg reads each format natively; you never convert anything.
+
+::: warning `GEMINI_HOME` and `GEMINI_CLI_HOME` are not the same variable
+They sit two rows apart in that table and mean different things. **`GEMINI_CLI_HOME`** (Gemini CLI) names the *parent* directory, and `.gemini` is joined onto it. **`GEMINI_HOME`** (Antigravity) names the `.gemini` directory **itself**. Setting the one you meant to set the other way relocates the store somewhere neither tool looks.
+:::
 
 DeepSeek is the one that's compressed: its `session.jsonl.zstd` isn't a single Zstandard archive but a **run of frames appended batch by batch**, which is what lets the harness keep writing to it. Codeg decodes the frames in sequence and keeps everything up to the last complete one, so a session **still being written** lists and opens rather than reading as corrupt.
 
