@@ -41,6 +41,20 @@ Codeg's development is supported by the sponsors below. If what they offer fits 
       </td>
       <td>Thanks to <a href="https://onehop.ai/platform/login?ref=CODEG&amp;utm_source=github&amp;utm_medium=readme_sponsor&amp;utm_campaign=codeg&amp;utm_content=sponsor_cta" target="_blank" rel="noreferrer">OneHop</a> for sponsoring Codeg! OneHop gives Codeg users one OpenAI-compatible API key for hundreds of leading models, including GPT, Claude, Gemini, DeepSeek, Kimi, and Qwen. Switch models without managing multiple provider accounts or repeatedly changing your code, and pay only for what you use. <a href="https://onehop.ai/platform/login?ref=CODEG&amp;utm_source=github&amp;utm_medium=readme_sponsor&amp;utm_campaign=codeg&amp;utm_content=sponsor_cta" target="_blank" rel="noreferrer">Sign up through Codeg</a> to receive $1 in credit, then join the OneHop community and participate in the welcome activity for an additional $5 — up to $6 in test credit in total.</td>
     </tr>
+    <tr>
+      <td align="center" width="210">
+        <a href="https://console.lqapi.xyz/sign-up?aff=KPy9" target="_blank" rel="noreferrer"><img src="/images/lq-router.png" alt="LQ router" style="max-width: 190px; max-height: 80px;" /></a><br/>
+        <strong><a href="https://console.lqapi.xyz/sign-up?aff=KPy9" target="_blank" rel="noreferrer">LQ router</a></strong>
+      </td>
+      <td>Thanks to <a href="https://console.lqapi.xyz/sign-up?aff=KPy9" target="_blank" rel="noreferrer">LQ router</a> for sponsoring Codeg! LQ router is an enterprise-grade API aggregation gateway built for independent developers and technical teams. It reaches leading models including GPT, Claude, Grok, and Gemini, works with your existing clients and the OpenAI SDK, and routes through a dynamic account pool — one endpoint for every model call. <a href="https://console.lqapi.xyz/sign-up?aff=KPy9" target="_blank" rel="noreferrer">Sign up through the official website</a> to receive $1 in trial credit.</td>
+    </tr>
+    <tr>
+      <td align="center" width="210">
+        <a href="https://go.apimart.ai/gh-codeg" target="_blank" rel="noreferrer"><img src="/images/apimart-ai.png" alt="APIMart" style="max-width: 190px; max-height: 80px;" /></a><br/>
+        <strong><a href="https://go.apimart.ai/gh-codeg" target="_blank" rel="noreferrer">APIMart</a></strong>
+      </td>
+      <td>Thanks to <a href="https://go.apimart.ai/gh-codeg" target="_blank" rel="noreferrer">APIMart</a> for sponsoring Codeg! APIMart is a low-cost API platform for AI image and video generation — GPT-Image-2 from $0.006 an image, 160+ images per dollar. One async API covers both image and video: submit a task, take the ID, and collect the result by polling or callback. Batch tens of thousands of images without timeouts, and switch models without changing code. Pay-as-you-go with no monthly fee — <a href="https://go.apimart.ai/gh-codeg" target="_blank" rel="noreferrer">sign up here</a> to get started.</td>
+    </tr>
   </tbody>
 </table>
 

@@ -41,6 +41,20 @@ Codeg 的开发由下列赞助商支持。如果他们所提供的服务契合�
       </td>
       <td>感谢 <a href="https://onehop.ai/platform/login?ref=CODEG&amp;utm_source=github&amp;utm_medium=readme_sponsor&amp;utm_campaign=codeg&amp;utm_content=sponsor_cta" target="_blank" rel="noreferrer">OneHop</a> 赞助 Codeg！OneHop 让 Codeg 用户仅用一个 OpenAI 兼容的 API 密钥即可调用数百款领先模型，包括 GPT、Claude、Gemini、DeepSeek、Kimi 和 Qwen。无需管理多个供应商账号或反复修改代码即可切换模型，且按用量付费。<a href="https://onehop.ai/platform/login?ref=CODEG&amp;utm_source=github&amp;utm_medium=readme_sponsor&amp;utm_campaign=codeg&amp;utm_content=sponsor_cta" target="_blank" rel="noreferrer">通过 Codeg 注册</a>即可获得 1 美元额度，再加入 OneHop 社区并参与欢迎活动可额外获得 5 美元——最高共计 6 美元测试额度。</td>
     </tr>
+    <tr>
+      <td align="center" width="210">
+        <a href="https://console.lqapi.xyz/sign-up?aff=KPy9" target="_blank" rel="noreferrer"><img src="/images/lq-router.png" alt="LQ router" style="max-width: 190px; max-height: 80px;" /></a><br/>
+        <strong><a href="https://console.lqapi.xyz/sign-up?aff=KPy9" target="_blank" rel="noreferrer">LQ router</a></strong>
+      </td>
+      <td>感谢 <a href="https://console.lqapi.xyz/sign-up?aff=KPy9" target="_blank" rel="noreferrer">LQ router 中转站</a> 赞助 Codeg！LQ router 是面向独立开发者与技术团队的企业级 API 聚合网关。它接入 GPT、Claude、Grok、Gemini 等主流模型，兼容现有客户端与 OpenAI SDK，并通过动态账户池智能路由 —— 一个入口搞定多模型调用。<a href="https://console.lqapi.xyz/sign-up?aff=KPy9" target="_blank" rel="noreferrer">通过官网注册</a>即可获得 1 美元体验额度。</td>
+    </tr>
+    <tr>
+      <td align="center" width="210">
+        <a href="https://go.apimart.ai/gh-codeg" target="_blank" rel="noreferrer"><img src="/images/apimart-ai.png" alt="APIMart" style="max-width: 190px; max-height: 80px;" /></a><br/>
+        <strong><a href="https://go.apimart.ai/gh-codeg" target="_blank" rel="noreferrer">APIMart</a></strong>
+      </td>
+      <td>感谢 <a href="https://go.apimart.ai/gh-codeg" target="_blank" rel="noreferrer">APIMart</a> 赞助 Codeg！APIMart 是专注 AI 图片与视频生成的低价 API 平台，GPT-Image-2 低至 $0.006 一张，1 美元可出图 160+ 张。图片与视频共用一套异步 API：提交任务拿 ID，通过轮询或回调取结果。跑批万张不超时，换模型不改代码。按量付费、无月费 —— <a href="https://go.apimart.ai/gh-codeg" target="_blank" rel="noreferrer">通过此链接注册</a>即可开用。</td>
+    </tr>
   </tbody>
 </table>
 
