@@ -128,6 +128,11 @@ Until **0.25** these two settings were **dead in every Codeg session** — the a
 **Untrusted** is the one that can't be honored — the ACP adapter has three approval presets and none of them is it, so a Codeg session falls back to **on request**, where the model decides when to ask and anything the sandbox already permits stops prompting. The panel says so rather than letting the control look effective. If Untrusted was your containment, tighten **Sandbox mode** instead. (Codeg also declines to derive anything at all when a `default_permissions` profile shadows the root keys, since Codex resolves through that profile and a derived preset would override it.)
 :::
 
+Two more switches in the same pane are worth knowing about:
+
+- **Allow questions in Default mode.** Codex will only call its `request_user_input` tool in *Plan* mode, so in an ordinary turn its question is refused outright and **no question card ever reaches you** — the agent asks, gets told the tool is unavailable, and carries on guessing. Turning this on lets it ask in ordinary turns too. It writes `[features].default_mode_request_user_input` into your `~/.codex/config.toml` — the same key Codex's own `codex features enable` would set, and the flag is still under development upstream. Feature flags resolve when a thread is created, so it **takes effect on your next session**, not the one you have open.
+- **Custom models** can be added in one of two shapes. The default clones a native GPT entry; pick the **OpenAI-compatible** one for a third-party gateway, and Codex sends a plain Responses request — no code-mode tools, no multi-agent, no responses-lite, no custom apply-patch tool — which is all such a gateway implements. It's a preset over ordinary per-field overrides, so you can switch a model that already exists either way.
+
 ### Claude Code: attribution and telemetry
 
 Claude Code's pane carries two switches that Codeg deliberately ships opposite to Claude Code's own defaults:

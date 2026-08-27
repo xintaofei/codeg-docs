@@ -64,7 +64,7 @@ Codeg's answer is containment rather than detection, since no filter reliably te
 - **The fence can't be forged.** Any occurrence of the fence marker *inside* the content is altered before it goes out — visually near-identical, semantically inert — so the text can't close its own envelope and continue as if it were Codeg talking. Carriage returns and NUL bytes are normalized away in the same pass.
 - **It's capped.** Title, labels, and author get fixed budgets, the body takes what's left of a **12,000-character** envelope, and an over-long one is cut with a visible *body truncated* marker pointing at the item's URL. A 200-page issue can't crowd out the actual instructions.
 - **The instruction templates are Codeg's, not the caller's.** A trigger names a *scenario*; it cannot supply the text that scenario stands for. What it does send is the item snapshot — fenced as above — and your own note, each in a labelled section of its own.
-- **The scenario constrains the deliverable.** *Investigate*, *Plan first*, and *Review only* explicitly forbid committing, and that constraint is recorded on the task rather than living only in the prose — so the worktree guard has a defined answer about what this run is allowed to write.
+- **The scenario constrains the deliverable.** *Plan first* and *Review only* explicitly forbid committing, and that constraint is recorded on the task rather than living only in the prose — so the worktree guard has a defined answer about what this run is allowed to write. (A third such scenario, *Investigate only*, was [retired in 0.28.2](/guide/repository#hand-it-over) — its verification step is now a required part of both issue flows instead.)
 
 And the backstop, which is the part that matters: **a task created from a repository item can never merge unattended.** Not a setting that ships off — a rule with no switch. A folder set to [land reviewed tasks by itself](/guide/tasks#let-a-folder-land-them-for-you) skips these rows entirely, because unattended landing plus externally-authored prompt text is a path from a stranger's issue to your main branch. An issue-sourced task can still be merged by **your** click; the point is that a human has to make it. One from a *pull request* can't be merged locally even then — its work goes back to the pull request's own branch instead.
 
@@ -89,13 +89,33 @@ Either way the choice is yours, and you can revisit it anytime under **System Se
 
 ## Where secrets are kept
 
-Credentials get special handling — they're kept **out of the database and off the network**:
+Nothing you type into Codeg is uploaded to Codeg — every credential stays on the machine. *Where* on the machine depends on which credential it is, and the difference matters when you copy a data directory around.
 
-- On the **desktop**, tokens go into your operating system's **keyring** — Keychain on macOS, Credential Manager on Windows, the Secret Service on Linux. Only the non-secret metadata (server, username, scopes) sits in the app database; the secret itself never does.
-- On a **headless server**, where no desktop keyring exists, the same secrets fall back to a **`tokens.json`** file in the data directory, readable only within that deployment.
-- In the **native mobile clients**, the server access token stays in iOS Keychain or is encrypted with a key held by Android Keystore. It is sent only to the Codeg host you configure for authenticated HTTP and WebSocket requests.
+**In your OS keyring** — Keychain on macOS, Credential Manager on Windows, the Secret Service on Linux:
 
-This is the split that surfaces in a couple of places: your [Git and chat tokens](/reference/settings/version-control) live in the keyring, which is why a **desktop backup can't include them** (you re-enter them after a restore), whereas a server's `tokens.json` *is* part of its backup. The [model-provider credentials](/guide/authentication) your agents use are configured separately again.
+- Your [**Git, GitHub and GitLab account**](/reference/settings/version-control) tokens. Only the non-secret metadata (server, username, scopes) goes in the database beside them.
+- Your [**chat-channel**](/guide/chat-channels) credentials.
+- On a **headless server**, where no desktop keyring exists, these fall back to a **`tokens.json`** file in the data directory, readable only within that deployment.
+
+**In Codeg's own SQLite database**, unencrypted — the masked display in the interface is cosmetic:
+
+- [**Model Provider and Custom Endpoint keys**](/guide/authentication#where-credentials-are-stored), and any per-agent environment variables you set, which is where an agent's API key usually ends up.
+- A [**remote-workspace connection's**](/getting-started/deployment#if-your-proxy-demands-its-own-headers) access token and its custom headers.
+- The [**Web Service**](/reference/settings/web-service) access token.
+
+**In the agent's own files**, where its own CLI put them: a subscription login or key handled by the agent itself — `~/.codex/auth.json`, `~/.grok/auth.json`, and so on.
+
+The practical rule: **treat the data directory the way you'd treat an unencrypted [backup](#backups)** — anyone who can read it can read everything in that middle group. In the [native mobile clients](/getting-started/installation#mobile-apps) the server access token is the one credential involved, and it stays in iOS Keychain or is encrypted with a key held by Android Keystore.
+
+Wherever it's kept, **a connection's credentials go only to its own origin** — and since **0.28.2** that comparison includes the **scheme**, not just host and port. A remote workspace configured as `https://box:8443` will not follow a hop to `http://box:8443`, which matched on host and port alone and would have put the bearer token, and any custom headers, on the wire in plaintext.
+
+::: warning Turning the log level up used to capture connection secrets
+The WebSocket library Codeg uses traces the **entire serialized handshake** at `trace` level. For a remote-workspace connection those bytes carry the bearer token — it travels as a `Sec-WebSocket-Protocol` value — along with every custom header you configured, which is exactly where a Cloudflare Access service token would be. So the natural debugging move (raise the [log level](/reference/settings/logs), reproduce the problem, attach the log to a bug report) shipped the credentials with it.
+
+Since **0.28.2** that one line is **dropped before the level filter is even consulted** — not lowered to a level you could raise again, because there's no verbosity to trade off: every time it prints at all, it prints a token. No `CODEG_LOG` directive in any syntax brings it back. Frame-level tracing is untouched and still available if you genuinely need it. If you have older logs from diagnosing a connection, treat them as containing the token and rotate it.
+:::
+
+The split surfaces most visibly in backups: because your [Git and chat tokens](/reference/settings/version-control) live in the keyring, a **desktop backup can't include them** and you re-enter them after a restore, whereas a server's `tokens.json` *is* part of its backup. Everything in the database group travels with the archive either way — which is what the [passphrase](#backups) is for.
 
 ## Exposing Codeg to the network
 
@@ -118,7 +138,7 @@ A [backup](/reference/settings/system) is a portable copy of your data, so treat
 - **You are the only server.** Whether you run the desktop app or host your own, your data stays on hardware you control; there's no Codeg-operated backend it flows through.
 - **The model provider is the real egress.** The most significant thing that leaves your machine is what your agents send to their model provider — and that's the provider's data policy to reason about, using the keys you set under [Model Providers](/guide/authentication).
 - **Agents ask before risky actions.** Driven over ACP, an agent requests **permission** for sensitive operations rather than performing them silently — a control you can see and answer in the conversation.
-- **Secrets never ride in the database.** Tokens live in the OS keyring (or a server's `tokens.json`), not the SQLite file — so sharing or moving that database doesn't leak them.
+- **Which secrets ride in the database is worth knowing.** Git, forge and chat-channel tokens go to the OS keyring (or a server's `tokens.json`). Model-provider keys, agent environment variables, remote-workspace tokens and the Web Service token sit in the SQLite file unencrypted — [see the breakdown](#where-secrets-are-kept) before you copy a data directory anywhere.
 
 ## Related
 

@@ -48,19 +48,22 @@ Paging sits at the bottom with a **per page** selector (10 / 20 / 30 / 50, defau
 
 Click a row and its **details open in a side panel** — the description, every label, and the same **Start** action — so reading an issue doesn't cost you your filters, your page, and your scroll position. (The panel shows what the list already fetched, and a body is capped at 16,000 characters on the way in, so a genuinely enormous issue is worth opening in the browser.) **Open in browser** is there when you want the real thread.
 
+Since **0.28.2** the panel also carries the **discussion**, not just the description — because on most issues the description is the opening bid and the comments are where it was actually settled. Each one renders through the same Markdown renderer as the body, with its author, a relative timestamp, an **edited** mark where the forge really recorded an edit, and a permalink out to it. **Load more** pages through the rest.
+
+The thread is fetched **when you open the panel**, not with the list: folding it into the list would spend a request per row to draw a page whose reader opens at most one of them. On GitLab, the housekeeping events — *changed the milestone*, *assigned to* — are filtered out, so what you read is the conversation and matches the comment count on the row.
+
 A row whose item already has a task shows that instead of **Start** — a status chip that takes you to the board, plus a small **re-trigger** link where starting another run makes sense.
 
 ## Hand it over
 
-**Start** opens a dialog whose first question is the one that matters: **how should this be handled?** Five scenarios in all; which of them you're offered depends on what you clicked — three for an issue, two for a proposed change.
+**Start** opens a dialog whose first question is the one that matters: **how should this be handled?** Four scenarios, two per kind — which pair you're offered depends on what you clicked.
 
 For an **issue**:
 
 | Scenario | What the agent is told |
 | --- | --- |
-| **Fix / implement** | Implement or fix it in the worktree, and verify it the way this project would — build, tests, lint, whatever applies |
-| **Investigate only** | Reproduce, find the root cause, judge impact and scope. **Change nothing**; put the repro in the report rather than committing it |
-| **Plan first** | Deliver an implementation plan — approach, files, risks, how it'll be verified — and stop. Change no files |
+| **Fix / implement** | Confirm the problem is really there, then fix the cause you identified — and verify it the way this project would, with build, tests or lint |
+| **Plan first** | Confirm the problem is really there, then deliver an implementation plan — approach, files, risks, how it'll be verified — and stop. Change no files |
 
 For a **pull or merge request**:
 
@@ -69,11 +72,13 @@ For a **pull or merge request**:
 | **Review & fix** | Review the change against the base branch, then fix what's worth fixing in place |
 | **Review only** | Report findings with locations, severity and suggested fixes. **Commit nothing** |
 
-Two things separate these from a prompt you'd write yourself.
+Three things separate these from a prompt you'd write yourself.
+
+**Both issue scenarios have to confirm the problem before acting on it.** Not as a preamble — as a step with an outcome. The agent is told to reproduce the reported behaviour, or otherwise show from the code where and why it goes wrong, with file and line references; and for a feature request, to confirm the behaviour is genuinely missing rather than already available under another name or setting. This was a separate *Investigate only* scenario until **0.28.2**, and it was retired precisely because being a mode you could pick made verification look like something the other two could skip. → [When it turns out not to be real](#when-it-turns-out-not-to-be-real)
 
 **The review scenarios get the change already checked out.** The worktree starts at the pull request's **head commit**, so the agent reads and builds the actual proposal rather than the base branch, and its commits go *on top* — which is what makes pushing them back sensible later.
 
-**The report scenarios are told to judge the approach, not just the diff.** *Is the change warranted at all; is this the best way given the rest of this codebase; is it production-ready as it stands?* And explicitly: if the design is what's wrong, say so and propose better — don't rewrite the pull request into it, because a rewrite its author never asked for isn't a review.
+**The review scenarios are told to judge the approach, not just the diff.** *Is the change warranted at all; is this the best way given the rest of this codebase; is it production-ready as it stands?* And explicitly: if the design is what's wrong, say so and propose better — don't rewrite the pull request into it, because a rewrite its author never asked for isn't a review.
 
 The rest of the dialog:
 
@@ -83,6 +88,16 @@ The rest of the dialog:
 - **A duplicate guard.** If an active task already handles this item, the footer becomes **View the existing task** / **Create anyway** rather than silently minting a second one. Restarting a task whose item is already live warns the same way.
 
 Create it and you get an ordinary to-do, in that folder, which starts under the folder's own concurrency limit like any other.
+
+### When it turns out not to be real
+
+Sometimes the answer to "confirm the problem" is *no*. An issue may already have been fixed, work as designed, describe a version you're not on, or simply not carry enough to go on.
+
+**That ends the task successfully.** The agent is told to change nothing, and to report what it ran, what it saw instead, the most likely explanation, and what it would need to take it further. The result lands in **To review** like any other, and *"it doesn't reproduce, and here's everything I checked"* is the work product — accept it. If the report gives you what was missing, send the task back with more detail and it picks up in the same worktree.
+
+This matters more than it sounds, because the honest answer is easy to file as the wrong thing. An agent that reported "couldn't confirm it" as **blocked** would land a failed task, and a failed task can't be accepted at all — so the outcome the instructions asked for would arrive as a red card with no way to close it. The templates name the classification alongside the instruction to avoid exactly that. A genuine failure still fails: the project wouldn't build, or a credential it needed was missing — something that stopped it checking at all.
+
+A **Plan first** task behaves the same way, one step earlier: no confirmation, no plan. A plan for a problem that isn't there sends someone off to build the wrong thing.
 
 ### What the agent actually receives
 
@@ -95,6 +110,8 @@ The opening order is composed **on Codeg's side**: the trigger names a *scenario
 
 That last block is the important one. Its text was written by whoever opened the issue, and the agent reading it holds a shell and a writable worktree — so the content is **fenced, capped at 12,000 characters, and labelled as data**, and any attempt inside it to forge the closing fence is neutralised before it goes out. → [Privacy & Security](/reference/privacy#text-from-strangers-in-a-prompt)
 
+**The comment thread is not in there.** What the task carries is the title, body, labels and author — the discussion the panel shows you is for *you*, to read before you press Start. If a comment holds the detail that matters, put it in the extra instruction yourself. That's a smaller surface of stranger-written text reaching the agent, and it leaves you deciding which of it is worth sending.
+
 ## Take the result back
 
 The task runs, lands in **To review**, and you read it like any other — result, changed files, timeline. → [Review the result](/guide/tasks#review-the-result)
@@ -105,6 +122,8 @@ What's different is what *accepting* can mean. Alongside the usual **Merge** and
 - **Push to the pull request** — for a task that came *from* a pull request. It pushes the commits onto that same head branch, forks included. **Nothing new is opened**; the review that's already there receives the work.
 
 Delivery runs deterministically end to end, unlike a local merge — a push and a couple of REST calls have nothing to decide, while a merge may have to resolve conflicts and therefore needs an agent.
+
+Both dialogs offer **Delete the worktree** on the way out, the same checkbox merge and complete have, starting from [the folder's own default](/guide/tasks#task-settings). Until **0.28.2** delivery was the one acceptance that couldn't take its checkout with it. The cleanup **rides on the delivery rather than gating it**: it runs once the task has settled, and a removal that fails leaves a retry on the card instead of turning a pull request that was already pushed into a reported failure.
 
 ::: warning How a pull request is matched
 Before opening anything, delivery looks for a pull request that matches on **all four** of head commit, head ref, base ref, and head repository. One commit can legitimately have several pull requests open against different bases, so a commit hash alone would settle the task against the wrong one. Four outcomes:

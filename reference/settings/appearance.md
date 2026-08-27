@@ -69,7 +69,11 @@ While either is in effect the section says so and offers **Resume custom style**
 
 Scales the entire interface — text, controls, and spacing alike — in discrete steps:
 
-**80% · 90% · 100%** *(default)* **· 110% · 125% · 150%**
+**80% · 90% · 100%** *(default)* **· 110% · 125% · 150% · 175% · 200% · 250% · 300%**
+
+The top four rungs arrived in **0.28.2**, taking the ceiling from 150% to **300%** — enough to drive Codeg from across a room, or to read it with low vision without the OS-wide magnifier.
+
+You don't have to come here to change it: **⌘=** and **⌘−** step the same rungs, and **⌘0** returns to 100%. The one place they're declined is **inside the terminal on Windows and Linux**, where `Ctrl+−` and `Ctrl+=` carry shell meaning and belong to whatever you're running; macOS uses Cmd there, which doesn't clash, so the terminal keeps zooming. → [Shortcuts](/reference/settings/shortcuts)
 
 Zoom is stored **per device**, so a large external monitor and a laptop screen can each keep their own comfortable size.
 

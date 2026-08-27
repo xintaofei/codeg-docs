@@ -159,6 +159,18 @@ By default the server binds `0.0.0.0:3080`, so it's reachable from any device th
 
 For a load balancer or orchestrator liveness probe, an authenticated `POST /api/health` (carrying the bearer token) returns `{"status":"ok","version":"…"}`.
 
+### If your proxy demands its own headers
+
+Some gateways won't forward a request at all unless it carries something of theirs — a Cloudflare Access service token is the usual case. Since **0.28.2** a remote-workspace connection can carry **custom HTTP headers**, attached to every request the desktop client sends it.
+
+They live in the connection's manage dialog, under **Custom headers**, below the access token. The section stays folded away unless the connection already has some, and **values are masked**, since a header here almost always carries a credential. It's a list rather than a table of unique names, so a header you need to send twice works, with its two values kept in the order you typed them.
+
+The headers belong to **that connection's host** and go nowhere else — and, like the access token, only over the scheme you configured: a connection set up as `https://box:8443` will not hand its credentials to `http://box:8443`.
+
+::: warning These are stored in the database, not the keyring
+A connection's access token and its custom headers live in that connection's row in Codeg's SQLite database, unencrypted — unlike your Git and chat credentials, which go to the OS keyring. Anyone who can read the data directory can read them. → [Privacy & Security](/reference/privacy#where-secrets-are-kept)
+:::
+
 ## Keep your server up to date
 
 Like the desktop app, `codeg-server` updates itself from **Settings → Software Update**: it downloads the signed release for its platform, verifies the signature, swaps the binaries and web assets on disk, and restarts — no redeploy. The previous version is retained, so the same screen offers a **Roll back**. This is Linux/macOS only (disabled on Windows).

@@ -58,9 +58,15 @@ Click a row's shortcut button — it switches to **Press shortcut…** — then 
 | Action | Shortcut | What it does |
 | ------ | -------- | ------------ |
 | **Suspend/resume custom style** | ⌘⌥⇧S | Turn all [custom colors and CSS](/reference/settings/appearance#custom-style) off, and back on |
+| **Zoom In** | ⌘= | Step the [window zoom](/reference/settings/appearance#window-zoom) up one rung |
+| **Zoom Out** | ⌘− | Step it down one rung |
+| **Reset Zoom** | ⌘0 | Back to 100% |
+
+The three zoom keys move through the same discrete rungs the Appearance screen offers, and stop at either end rather than wrapping. **⌘=** is the unshifted key US keyboards send for *Ctrl/Cmd +*, so **⌘⇧+** and the numpad `+` work as well. Inside the **terminal**, the Ctrl forms are declined on Windows and Linux — `Ctrl+−` and `Ctrl+=` belong to whatever's running in there — while macOS keeps zooming, Cmd having no shell meaning.
 
 ## Good to know
 
+- **A new default steps aside for a binding you already made.** These three arrived in **0.28.2**, and if your saved profile had bound ⌘0 to something of your own, that binding keeps the chord and *Reset Zoom* arrives **unassigned** — bind it by hand from this screen. Before that fix, a default added after your profile was written landed on top of your binding and fired both actions at once, with nothing on screen to say so. The check compares the chords as written, so the rare case it can't see is a **layout collision**: on AZERTY, `Ctrl+−` is also the `6` key's position, so a binding you'd made on `⌘6` can still fire alongside *Zoom Out*. If two things happen on one press, rebind one of them.
 - **Some bindings are shared on purpose.** ⌘T and ⌘W each drive two actions — a *terminal* one and a *conversation/file-tab* one — and Codeg picks the right one from what's focused. That's why the default set has apparent duplicates the conflict check still allows: **⌘T** opens a new terminal when the terminal is focused, otherwise a new conversation; **⌘W** closes the focused terminal or the current tab.
 - **Only the composer keys can be modifier-free.** *Send Message* and *Newline in Message* are the two actions you can bind to a plain key — swap them (say, <kbd>⇧Enter</kbd> to send, <kbd>Enter</kbd> for a newline) if you prefer.
 - **The custom-style shortcut is an escape hatch, and is built like one.** Custom CSS can leave you with an interface you can't click, so this binding is deliberately a three-modifier combination that collides with nothing, and Codeg listens for it ahead of everything else — it still fires when the rest of the UI has been styled into uselessness. Rebind it if you like, but keep it something you can reach blind.
