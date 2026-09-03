@@ -46,8 +46,10 @@ Hermes used to be the one Python entry, installed through `uv`. Upstream retired
 Two practical consequences: the managed install honors **`HTTP_PROXY` / `HTTPS_PROXY`** for its own downloads, and if you have Hermes from the **official installer on your `PATH`**, that copy still wins — it self-updates, so Codeg defers to it rather than shadowing it with the managed one.
 :::
 
-::: info Kimi Code is pinned behind latest on purpose
-"Codeg pins a known-good version" occasionally means *not the newest one*. **Kimi Code stays at 0.36.1**: from 0.37 onwards, MCP servers handed over on the ACP connection stop coming up — which takes Codeg's own companion server down with them, and with it [multi-agent delegation](/guide/multi-agent) **and** every MCP server you've added. Newer is a regression here, so the pin holds until a release fixes it.
+::: info A pin can sit behind latest, and can be lifted again
+"Codeg pins a known-good version" occasionally means *not the newest one*. **Kimi Code** spent three releases held back at 0.36.1: from 0.37 through 0.38 it rejected any ACP session carrying a stdio MCP server, which for Kimi always includes Codeg's own companion — taking [multi-agent delegation](/guide/multi-agent) **and** every MCP server you'd added down with it. 0.39.0 restored stdio handling, so the pin is **lifted** and Kimi Code now tracks a current release again.
+
+One thing that arrived with it: if your account is on **kimi.ai** rather than kimi.com, signing in needs `kimi login --region global`. Without the flag the CLI always targets kimi.com and a kimi.ai account has no way in — Codeg's login hint names it for you. → [Kimi Code](/guide/authentication#kimi-code-provider-model-and-reasoning)
 :::
 
 The order above is the **default Agent List order** in Settings → Agents. It's a preference, not a ranking — drag agents to reorder them, and the first enabled one becomes Codeg's fallback when nothing else has picked the agent for a conversation. → [Working with Agents](/guide/agents#start-a-session)

@@ -65,7 +65,13 @@ Codeg 会在智能体启动时把这些交给它。大多数智能体都接受�
 - **Codeg 会为每个智能体记住你上次的选择**，并在你下次用该智能体开启会话时预选它。
 - **没有按文件夹设置的模型默认值**——模型是在会话层面选择的。（文件夹默认值设定的是*智能体*，而非模型。）
 
-有几个智能体还提供一个**推理强度**控件——**Claude Code**、**Codex**、**Grok** 和 **Pi**。与模型不同，它位于智能体的设置面板中，而非 composer 里：一个从低到最高档的级别，每个智能体各以自己的方式命名（Codex 称为 **Extra High**，Grok 称为 **Max**）。Codeg 会把它写入智能体自己的配置。**Kimi Code** 则反过来——它的面板负责声明有哪些级别*存在*，再由 composer 的思考选择器把它们呈现出来。→ [Kimi Code](#kimi-code-provider-model-and-reasoning)
+**推理强度**在 composer 里按会话设置——只有少数几个智能体的面板补上了 composer 表达不了的东西：
+
+- **Grok** 保留着设置面板里的下拉，从低一直到 **Max**，写进 Grok 自己的配置。
+- **Claude Code** 和 **Codex** 曾经也有，直到 **0.30.0** 把两个都删掉了。它们读起来像是决定一轮「想多深」的旋钮，而真正说了算的是 composer 里按会话的选择器，于是两者可能各说各话，屏幕上还没有任何东西说明谁赢了。已经写进配置文件的 `effortLevel` 会被**原样留着**，而不是顺手清理掉。
+- **Pi** 的做法更像 Kimi Code 而不是 Grok：因为 pi 只会为*声明*了自己会思考的模型发送强度，它的面板正是你做这个声明的地方 —— 一个开关、你的模型接受 pi 六个档位中的哪些，以及每一档实际发出去的值。→ [Pi：自定义供应商上的思考强度](/zh/guide/agents#pi-reasoning-on-a-custom-provider)
+- **Kimi Code** 则反过来：它的面板负责声明有哪些级别*存在*，再由 composer 的思考选择器把它们呈现出来。→ [Kimi Code](#kimi-code-provider-model-and-reasoning)
+- **Cursor** 把强度折进了它的模型选择器——见 [Cursor：族系加旋钮](/zh/guide/agents#cursor-families-and-knobs-not-two-hundred-ids)。
 
 ## Hermes：选择一个提供商 {#hermes-pick-a-provider}
 

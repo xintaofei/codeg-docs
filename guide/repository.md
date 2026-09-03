@@ -7,7 +7,7 @@ description: Hand a GitHub or GitLab issue or pull request straight to an agent 
 
 Most agent work starts with someone reading an issue and retyping it into a prompt. The **Repository panel** removes that step: it lists a folder's **GitHub or GitLab** issues and pull requests inside Codeg, and hands the one you pick to an agent as a [to-do task](/guide/tasks) — its own worktree, its own session, and the same review gate before anything lands.
 
-It shipped in **0.27.0** and is marked **Beta** everywhere it's named — on the page itself and on both routes to it — because it's still settling.
+It shipped in **0.27.0** behind a **Beta** mark, which came off in **0.30.0** once the panel could do the whole loop: read a change through tabs, comment on it, open and close issues, and merge — without a browser.
 
 ::: tip Where it fits
 The panel is a *front door* to To-dos, not a parallel system. Everything it creates is an ordinary task on the ordinary board, with one extra fact recorded: which item it came from. That provenance is what unlocks the delivery step at the end — and what makes the [auto-merge rule](#the-rules-that-do-not-bend) different.
@@ -23,7 +23,7 @@ Two buttons join the window's top-right cluster while it's open: **Refresh**, wh
 
 The panel reads through the same credentials git does, under [**Settings → Version Control**](/reference/settings/version-control). Pick a project folder and Codeg looks at its `origin` remote:
 
-- **No recognizable forge remote** — the folder isn't backed by GitHub or GitLab, and the panel says so.
+- **A host that is neither GitHub nor GitLab** — say a Gitee or Bitbucket remote. The panel says **only GitHub and GitLab are supported**, rather than falling back to GitHub and reporting whatever the wrong API answered, which used to come out as "no GitHub account for gitee.com" or a raw API failure. Reaching that verdict costs one probe: a host Codeg doesn't recognise is asked whether it's a GitLab before being written off, which is the same probe that lets a self-hosted GitLab on an unrevealing name be found at all. **Add an account** is still offered, because that's the other way in for such an instance.
 - **A remote, but no account for that host** — the empty state names the provider and the host and offers **Add an account**, which takes you straight to the settings screen.
 
 Which forge you're talking to is **derived from the remote on Codeg's side**, never claimed by the client — because that choice is what picks the credentials. A GitLab token is never spent on a GitHub call, and a GitHub Enterprise host on its own domain resolves by its URL rather than by its name.
@@ -34,7 +34,7 @@ GitLab has its own accounts panel since **0.27.0**; its token needs the **api** 
 
 The list is a triage surface, not a browser bookmark. Across the top:
 
-- **Issues** and **Pull requests** — or **Merge requests**, because a GitLab user doesn't have pull requests and being told they do reads like the wrong tool answered. Each tab shows a count for the state you're filtered to.
+- **Issues** and **Pull requests** — or **Merge requests**, because a GitLab user doesn't have pull requests and being told they do reads like the wrong tool answered. Each tab shows a count for the state you're filtered to, and which one you were on is **remembered across sessions**, next to the page size and for the same reason: it says which list you work in.
 - **Search** over title and description.
 - **State** — Open, Closed, or All. A pull request row additionally shows **Merged** and **Draft** where they apply.
 - **Assigned to me** — one toggle, the fastest filter in the panel.
@@ -50,9 +50,39 @@ Click a row and its **details open in a side panel** — the description, every 
 
 Since **0.28.2** the panel also carries the **discussion**, not just the description — because on most issues the description is the opening bid and the comments are where it was actually settled. Each one renders through the same Markdown renderer as the body, with its author, a relative timestamp, an **edited** mark where the forge really recorded an edit, and a permalink out to it. **Load more** pages through the rest.
 
-The thread is fetched **when you open the panel**, not with the list: folding it into the list would spend a request per row to draw a page whose reader opens at most one of them. On GitLab, the housekeeping events — *changed the milestone*, *assigned to* — are filtered out, so what you read is the conversation and matches the comment count on the row.
+The thread is fetched **when you open the panel**, not with the list: folding it into the list would spend a request per row to draw a page whose reader opens at most one of them. On GitLab, the housekeeping events — *changed the milestone*, *assigned to* — are filtered out, so what you read is the conversation and matches the comment count on the row. A thread with hundreds of comments opens quickly because only what's on screen is drawn, the rest arriving as you scroll.
 
 A row whose item already has a task shows that instead of **Start** — a status chip that takes you to the board, plus a small **re-trigger** link where starting another run makes sense.
+
+### A change opens as three tabs
+
+An issue is one scroll, because a one-tab bar says nothing. A **pull or merge request** is three, with the branch pair kept in the header where it stays readable from all of them:
+
+- **Conversation** — the description and the thread, same as an issue.
+- **Checks** — CI, with the **worst state as a glyph on the tab** so a red build is visible without opening it. Three answers are kept apart rather than blurred: green, *nothing configured*, and *this account can't look* — and on GitHub a fourth, half-readable, because check runs and commit statuses sit behind two different permissions.
+- **Files changed** — the file list, each row opening onto its own diff, with the **count on the tab** where the forge gives an exact one (GitLab reports a truncated `1000+` on very large changes, and a count that isn't a number isn't shown).
+
+Opening a file's diff **costs no extra request**: both forges already ship the hunks with the file page and Codeg was throwing them away. A row with nothing to open isn't clickable. On GitHub it says which of two reasons applies — binary content, or a diff withheld for being too large while its lines were still counted. On GitLab an empty diff is reported as binary either way, so read that as *no diff available* rather than as a statement about the file.
+
+### Act on it without leaving
+
+Reading was the whole story until **0.29.0**. The panel now writes as well:
+
+- **Comment.** A composer under the thread, posting as the account that reads the panel.
+- **Close or reopen.** One button, which **confirms first** — unlike the composer it writes to somebody else's repository on a single click with nothing typed.
+- **File a new issue.** Title and body. It opens straight away, and drops into the list without a manual refresh **when the list you're looking at could contain it** — the Issues tab, first page, sorted newest or recently-updated, no search term, not *Assigned to me*, not closed-only, and carrying every label you've filtered to. Anywhere else it opens in the detail panel and the list is left alone, rather than showing you a row that doesn't belong on the page you're on.
+
+Both writes **take the forge's answer as the truth rather than assuming their own worked**. A posted comment comes back carrying the id the thread de-duplicates on, the author your token actually resolved to, and its permalink. A state change comes back as the row the forge now serves — which is how a pull request somebody merged in the browser a minute ago lands as **merged** instead of the *closed* you asked for.
+
+### Merge it from here
+
+An open change can be merged without a browser. The merge box sits between the discussion and the composer and shows what you need to decide: **whether the branches conflict**, and **what CI says** — that last only when there's an actual verdict to report, so a repository with no checks configured, or one this account can't read, simply shows nothing there rather than a reassuring green.
+
+The button is a split button, and its menu is **the repository's own settings** — merge commit, squash, rebase, each offered only where that repository allows it. A repo that has squash-only turned on shows you squash only, rather than an option that would fail on submit. If those settings can't be read, Codeg falls back to offering a plain merge, which the forge may still refuse.
+
+::: tip This is not the same as merging a task
+The **Merge** you press on a [to-do](/guide/tasks#merge-it) lands an agent's branch in *your* checkout, and may need an agent to resolve conflicts. This one merges a pull request **on the forge**, the way the web UI would. Different button, different place, different meaning — a task sourced from a pull request still can't be merged locally at all. → [The rules that do not bend](#the-rules-that-do-not-bend)
+:::
 
 ## Hand it over
 
@@ -171,7 +201,8 @@ Standing instructions land **after** the scenario's built-in wording and **befor
 - **Nothing is cached.** The panel reads the forge's REST API directly each time — no local mirror of your issues, and nothing fetched on a background timer. Refresh is a button.
 - **It's per folder.** The panel acts on the project folder you've picked, and refuses an item whose repository doesn't match that folder's remote, naming both.
 - **The row can be hidden.** If you don't use it, switch **Repository panel** off under the sidebar's [navigation items](/guide/workspace#choose-which-navigation-rows-you-see) — quick actions still reaches it.
-- **Self-hosted works.** GitHub Enterprise and self-managed GitLab resolve by their server URL, including on a non-default port or plain `http://`, and links back to the item are built from that same origin.
+- **Self-hosted works.** GitHub Enterprise and self-managed GitLab resolve by their server URL, including on a non-default port or plain `http://`, and links back to the item are built from that same origin. Since **0.30.0** a self-hosted GitLab on a name that doesn't say *gitlab* is **asked what it is** rather than guessed at from its hostname — which is what used to fail as a bare `410`.
+- **A host you configured is always attempted, whatever it's called.** A provider-less account is ambiguous by construction — the plain-git credential dialog writes the same bytes a legacy GitHub Enterprise account does — so Codeg tries rather than refusing a panel that would have worked.
 
 ## Next steps
 

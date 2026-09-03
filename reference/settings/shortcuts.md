@@ -45,6 +45,8 @@ Click a row's shortcut button — it switches to **Press shortcut…** — then 
 | **Close All File Tabs** | ⌘⇧W | Close all open file tabs (when the file pane is active) |
 | **Next Tab** | ⌘Tab | Switch to the next conversation or file tab |
 | **Previous Tab** | ⌘⇧Tab | Switch to the previous conversation or file tab |
+| **Jump to tab 1–9** | ⌘1 … ⌘9 | Go straight to that tab by position |
+| **Reopen Closed Tab** | ⌘⇧T | Bring back the tab you just closed |
 
 ### Composer
 
@@ -67,6 +69,7 @@ The three zoom keys move through the same discrete rungs the Appearance screen o
 ## Good to know
 
 - **A new default steps aside for a binding you already made.** These three arrived in **0.28.2**, and if your saved profile had bound ⌘0 to something of your own, that binding keeps the chord and *Reset Zoom* arrives **unassigned** — bind it by hand from this screen. Before that fix, a default added after your profile was written landed on top of your binding and fired both actions at once, with nothing on screen to say so. The check compares the chords as written, so the rare case it can't see is a **layout collision**: on AZERTY, `Ctrl+−` is also the `6` key's position, so a binding you'd made on `⌘6` can still fire alongside *Zoom Out*. If two things happen on one press, rebind one of them.
+- **Reopen won't resurrect something you deleted.** ⌘⇧T brings back a tab you *closed*; a conversation you **deleted** is retracted from the reopen stack, so the shortcut can't undo a deletion by the back door.
 - **Some bindings are shared on purpose.** ⌘T and ⌘W each drive two actions — a *terminal* one and a *conversation/file-tab* one — and Codeg picks the right one from what's focused. That's why the default set has apparent duplicates the conflict check still allows: **⌘T** opens a new terminal when the terminal is focused, otherwise a new conversation; **⌘W** closes the focused terminal or the current tab.
 - **Only the composer keys can be modifier-free.** *Send Message* and *Newline in Message* are the two actions you can bind to a plain key — swap them (say, <kbd>⇧Enter</kbd> to send, <kbd>Enter</kbd> for a newline) if you prefer.
 - **The custom-style shortcut is an escape hatch, and is built like one.** Custom CSS can leave you with an interface you can't click, so this binding is deliberately a three-modifier combination that collides with nothing, and Codeg listens for it ahead of everything else — it still fires when the rest of the UI has been styled into uselessness. Rebind it if you like, but keep it something you can reach blind.

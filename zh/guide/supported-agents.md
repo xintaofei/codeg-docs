@@ -46,8 +46,10 @@ Hermes 原本是这里唯一的 Python 条目，通过 `uv` 安装。上游停�
 有两个实际影响：托管安装在下载时会遵循 **`HTTP_PROXY` / `HTTPS_PROXY`**；而如果你的 `PATH` 上已经有**官方安装程序装的 Hermes**，那一份依然优先——它会自我更新，所以 Codeg 让位给它，而不是用托管的那份把它盖住。
 :::
 
-::: info Kimi Code 是刻意停在最新版之前的
-「Codeg 固定一个已知可用的版本」偶尔意味着*不是最新的那一个*。**Kimi Code 停留在 0.36.1**：从 0.37 起，通过 ACP 连接递交过去的 MCP 服务器不再能启动起来——这会把 Codeg 自己的伴生服务器一起拖下水，随之倒下的还有[多智能体委派](/zh/guide/multi-agent)**以及**你添加的每一个 MCP 服务器。在这里，更新反而是倒退，所以这个版本固定会一直保持到上游修复为止。
+::: info 版本固定可以停在最新版之前，也可以再解开
+「Codeg 固定一个已知可用的版本」偶尔意味着*不是最新的那一个*。**Kimi Code** 曾被压在 0.36.1 上整整三个版本：从 0.37 到 0.38，它会拒绝任何带着 stdio MCP 服务器的 ACP 会话，而对 Kimi 来说那总是包含 Codeg 自己的伴生服务器 —— 于是[多智能体委派](/zh/guide/multi-agent)**以及**你添加的每一个 MCP 服务器都跟着一起倒下。0.39.0 恢复了对 stdio 的处理，所以这个固定**已经解开**，Kimi Code 重新跟上了当前版本。
+
+随之而来的还有一件事：如果你的账户在 **kimi.ai** 而不是 kimi.com，登录需要 `kimi login --region global`。少了这个参数，CLI 总是指向 kimi.com，kimi.ai 的账户根本进不去 —— Codeg 的登录提示会替你点名它。→ [Kimi Code](/zh/guide/authentication#kimi-code-provider-model-and-reasoning)
 :::
 
 上面的顺序是设置 → 智能体中**默认的智能体列表顺序**。它是一种偏好设置，而非排名——拖动智能体即可重新排序，而当没有其他方式为一段对话选定智能体时，第一个已启用的智能体就成为 Codeg 的后备选择。→ [使用智能体](/zh/guide/agents#start-a-session)

@@ -65,7 +65,13 @@ Which models you can pick comes from the **agent**, not Codeg. Once an agent con
 - **Codeg remembers your last pick** per agent and preselects it next time you start a session with that agent.
 - There's **no per-folder model default** — the model is chosen at the session level. (A folder default sets the *agent*, not the model.)
 
-Several agents also expose a **reasoning-effort** control — **Claude Code**, **Codex**, **Grok**, and **Pi**. Unlike the model, it lives in the agent's settings pane rather than the composer: a level from low up through a top tier that each agent names its own way (**Extra High** for Codex, **Max** for Grok). Codeg writes it into the agent's own config. **Kimi Code** works the other way round — its pane declares which levels *exist* and the composer's Thinking picker offers them. → [Kimi Code](#kimi-code-provider-model-and-reasoning)
+**Reasoning effort** is set in the composer, per session — with a few agent panes adding something the composer can't express:
+
+- **Grok** keeps a settings-pane dropdown, from low up to **Max**, written into Grok's own config.
+- **Claude Code** and **Codex** had one until **0.30.0**, when both were deleted. They read as the knob that decides how hard a turn thinks while the composer's per-session picker is what actually governs it, so the two could disagree with nothing on screen to say which won. An `effortLevel` already written into a config file is **left alone** rather than cleaned up.
+- **Pi** works like Kimi Code rather than like Grok: because pi only sends an effort for a model that *declares* one, its pane is where you declare it — a switch, which of pi's six levels your model accepts, and the value each is sent as. → [Pi: reasoning on a custom provider](/guide/agents#pi-reasoning-on-a-custom-provider)
+- **Kimi Code** works the other way round: its pane declares which levels *exist* and the composer's Thinking picker offers them. → [Kimi Code](#kimi-code-provider-model-and-reasoning)
+- **Cursor** folds effort into its model picker — see [Cursor's families and knobs](/guide/agents#cursor-families-and-knobs-not-two-hundred-ids).
 
 ## Hermes: pick a provider
 

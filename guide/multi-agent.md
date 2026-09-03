@@ -87,6 +87,7 @@ Some things worth knowing:
 - **Say what the work *is*, next to the mention.** A mention decides *who*; it doesn't decide *what*. `@Grok` on its own gives the lead a target and nothing to send it. Keep the task in the same breath as the name.
 - **Only enabled agents are mentionable — or reachable at all.** An agent you've toggled off in **Settings → Agents** never appears in the picker, and since 0.22 it's also struck from the list of targets the lead is offered, so the lead can't pick it on its own initiative either. (An agent that's enabled but not installed or signed in *can* still be named — and comes back as *spawn failed*.)
 - **A mention is a strong instruction, not a hard route.** Codeg puts the mention in front of the lead and tells it what a mention means; the lead is still the one that calls the tool. In practice a capable lead honours it consistently, but it isn't a mechanical guarantee — if a mention is ignored, the usual cause is delegation not being active in that session (see the warning [above](#turn-it-on)).
+- **The child runs inside Codeg, not off to one side.** Until **0.30.0** a lead handed a mention often reached for its *own* sub-agent mechanism instead — Codex's native spawn, Claude Code's Task tool — even with `delegate_to_agent` sitting right there in its tool list. The child then ran outside Codeg and never became a session you could open. The prompt now carries a block naming every agent your message links to, asking that any delegation of that work go through `delegate_to_agent` with the matching agent type. Note what that block does *not* do: it binds the **channel**, not the decision. Nothing in it tells the lead to delegate at all — that's still the mention's job, and still the lead's call.
 - **Mentioning the agent you're already talking to** asks it to spawn a *second, separate session* of itself rather than just doing the work — occasionally useful for isolation, usually not what you want.
 
 The same `@` picker is how you reference **files**, **past sessions**, and **commits** — see [the composer](/guide/workspace) — and a session mention has a collaboration use of its own, covered under [Pick up where another session left off](#pick-up-where-another-session-left-off).
@@ -111,7 +112,19 @@ That badge used to be the *only* place a stuck sub-agent showed up — so an una
 
 Sub-agent conversations don't clutter your sidebar, but they aren't lost either: a conversation that spawned workers grows a **chevron**, and expanding it reveals its sub-conversations nested underneath — recursively, if a worker built a team of its own. That's how you find a worker's transcript hours later, long after the Sub-agents panel has moved on to a newer reply.
 
-Want the whole team on one screen? [Tile the sessions side by side](/guide/workspace#tile-several-sessions-side-by-side) — the lead in one pane, its sub-agents in the others — and watch every transcript at once.
+Want the whole team on one screen? [Tile the sessions side by side](/guide/workspace#tile-several-sessions-side-by-side) — the lead in one pane, its sub-agents in the others — and watch every transcript at once. (The [Infinite Conversations board](/guide/canvas) is for laying out *root* conversations; a sub-agent isn't a card there, though a lead's card badges how many it has.)
+
+### A sub-task that was cut off can be picked up
+
+A delegated sub-task doesn't have to be written off because something interrupted it. Since **0.30.0** a lead can call **`resume_delegation`** on one that was **canceled**, or that died when a session or the app terminated unexpectedly. The child's recorded session is reloaded and continues **in the same conversation, under its original id**, so `get_delegation_status` and `cancel_delegation` keep working on the id the lead already holds — and it draws as **one** sub-agent card, live and after you reopen the conversation from history.
+
+The scope is narrow on purpose, and enforced server-side rather than trusted to the lead:
+
+- A task that is **still running**, or that already **completed or failed** on its own, is refused with *not_resumable* and its actual status. Resume revives interrupted work; it is not a retry. (That precise refusal depends on the outcome still being in memory — after a restart, an old task the broker no longer holds is reported as unknown rather than as failed. Either way it isn't resumed into a second run.)
+- It takes **no task text**. There's an optional `reason` for interruption context, and that's it — so it cannot quietly become a second `delegate_to_agent` with different instructions.
+- A task belonging to someone else is refused outright.
+
+For follow-up or genuinely new work, the lead delegates again as normal.
 
 ## Write a good delegation prompt
 

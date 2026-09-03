@@ -113,6 +113,14 @@ Pi sends a reasoning effort only for a model that **declares** it can think — 
 
 A **Reasoning** card on pi's page is where you declare it: a switch, the **six levels pi accepts** as chips, and — folded away — the value each level is sent as, which is what an endpoint expecting `LOW`/`HIGH` needs. The list isn't free-form because pi's isn't; a name outside its six is refused by the adapter. The default-level select narrows to the levels you actually made available.
 
+### Cursor: families and knobs, not two hundred ids
+
+Cursor's catalog is one id per *combination* — around two hundred of them — so reaching a thinking level or the Fast flag meant knowing a string like `claude-opus-5-thinking-max-fast` by heart. Since **0.30.0** the picker groups that catalog into **families** and puts the variations beside the family name as knobs: **Thinking**, **Effort** and **Fast**, each shown only where that family actually varies on it.
+
+Nothing is invented. Every value handed back is one Cursor's own CLI reported, because the suffix grammar is genuinely ambiguous — Cursor ships legacy aliases like `claude-4.5-opus-high` whose *name* ends in what looks like an effort token. Ask for a combination that doesn't exist and it clamps to the nearest sibling, holding the dimension you just moved.
+
+Cursor's **permission switch** shows the mode the session actually runs in, which it didn't before 0.30.0: *Run Everything* and *Ask* were written in a way that couldn't tell "the user chose Ask" from "never chose anything".
+
 ### Codex: sandbox and approvals
 
 Codex's pane has a **Sandbox & approvals** group — the two questions of how much it can touch and when it stops to ask:
@@ -173,6 +181,18 @@ Two behaviours worth knowing:
 - **If Codeg can't write that settings file** — you've made it read-only, say — it tells you so plainly instead of pretending the save took. Your choice is stored on Codeg's side, but Antigravity keeps authenticating the way the file says, so set `auth.type` yourself or move the file aside and save again.
 
 Model and session mode come over ACP, so they live in the composer rather than here.
+
+#### Signing in on a machine with no browser
+
+Antigravity runs its Google sign-in **itself**: it opens a port on `127.0.0.1`, calls the system browser, and waits five minutes for the redirect to come back. On a headless server there is no browser to call — and the call fails silently rather than raising — so the first session used to hang for those five minutes and die without ever showing a link anyone could open.
+
+Since **0.29.0** the Antigravity pane offers a browser-free sign-in. Codeg starts a short-lived agent process, catches the authorization URL it prints, and shows it to you:
+
+1. Open that URL in **whatever browser you do have** — your phone, your laptop, anywhere.
+2. Consent as normal. You'll land on a `127.0.0.1` page that **won't load**, because that port is on the server, not on the device you're holding. That's expected.
+3. Copy that failed page's **full address** and paste it back into Codeg.
+
+Codeg is running on the machine where the port *is* listening, so it performs the redirect on your behalf and the sign-in completes.
 
 ## Start a session
 

@@ -162,7 +162,7 @@ Four ways out:
 - **Merge** — accept it. See [below](#merge-it).
 - **Follow up** — another pass. See below.
 - **Complete** — mark it done with no merge at all. Offered when the task **changed no files** — it answered a question, or verified work that was already right — so nothing has to be landed and no empty merge commit is created. You still choose whether to keep its worktree.
-- **Abandon** — drop it without merging, optionally recording **why** on the timeline. The task goes to canceled and its worktree is kept, so **Requeue** can pick it back up later.
+- **Abandon** — drop it without merging, optionally recording **why** on the timeline. The task goes to canceled, and since **0.30.0** the dialog can take the worktree with it, so a stop that's really an abandon reclaims its disk in one gesture. The checkbox starts **unchecked** and is deliberately *not* seeded from the folder's delete-worktree default — that default is about landing finished work, whereas a canceled task can be **Requeued**, and this cleanup deletes the work branch along with the directory. Leave it unchecked and nothing is stranded either: the drawer offers the removal on its own afterwards.
 
 A task that came from the [Repository panel](/guide/repository) gets a fifth: **Open pull request**, or **Push to the pull request** if that's where it came from. Instead of landing the work in your own checkout, it pushes the branch to the forge — and for a task that came from a pull request it **replaces** Merge, since that work belongs on the pull request's branch rather than in your base. A push back that would carry **nothing** is refused, and points you at *Complete* instead — the honest ending for a task whose answer was that nothing needed changing. → [Take the result back](/guide/repository#take-the-result-back)
 
@@ -248,6 +248,16 @@ By default a task's worktree is created **right beside the project folder**, as 
 
 Leave it **empty** and nothing changes: worktrees keep landing beside the project. Changing it is forward-looking, too — **worktrees already on disk stay exactly where they are**, since a task reuses the checkout it was given.
 
+### Compact before a resumed round
+
+A task that comes back for a second, third and fourth round is refilling the same context window each time, and the round that finally runs out of room is the one you cared about. Since **0.30.0** a task can compact itself first.
+
+Two settings: an **auto-compact threshold** as a percentage — how full the context has to be before it's worth doing — with **0** meaning off, and an optional **compact command** if your agent's is not the obvious one.
+
+When a **retry, follow-up or merge** round resumes a session that's at or above the threshold, the engine sends the compact command, waits for that turn to finish, and only then sends the round's own message. **A fresh session is never compacted** — there is nothing there to compact. The occupancy it read going in is recorded on the task's timeline, and the figure afterwards joins it whenever the live session reports one, so you can see whether the threshold you picked is doing anything.
+
+The command is resolved per agent, most specific first: your setting, then a compaction verb the session itself advertises, then a built-in default. Setting it is only necessary for an agent whose compaction isn't discoverable.
+
 ### Add your own instructions per stage
 
 Every launch already carries a built-in prompt — the task itself, the worktree rules, and for a merge the exact git steps. The **Prompts** tab is where you add to it: pick a stage, write what your project needs, and your text is **appended** to Codeg's own wording under an *Additional instructions* heading. It refines the built-ins; it never replaces them, so you don't need to restate any of it.
@@ -273,6 +283,7 @@ The split earns its keep because what belongs in one stage is nothing like what 
 - **Delete** removes a task entirely, cancelling an active run first, with an opt-in checkbox to **also delete its worktree**.
 - **Delete worktree** — a glyph-only button in the detail drawer's bottom bar, immediately left of delete. Merging, completing and — since **0.28.2** — delivering to a pull request all *offer* to take the worktree along, and all let you say no, so a finished task can end up holding a checkout nobody will open again. This reclaims that disk **without touching the task**: the directory and its work branch go, the card stays on the board, and its conversation is re-parented to the project folder. It's confirmed first, and it only appears when there's something to remove and no failed cleanup is already showing its own retry.
 - If a worktree can't be removed — something has it open, a lock file is held — the card says **Cleanup failed** or **Worktree kept** and offers **Retry cleanup**. Nothing is silently left behind.
+- **A worktree holding uncommitted changes is not removed.** Since **0.30.0** the removal is refused outright rather than forced, because forcing it takes that work with it and there is nowhere to get it back from. Commit it, or throw it away deliberately, and then remove the worktree.
 
 ## Good to know
 
