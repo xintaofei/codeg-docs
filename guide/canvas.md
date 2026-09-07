@@ -59,7 +59,9 @@ A conversation card is a *view*: remove it and the conversation is untouched. A 
 
 This is what separates the board from a map. **Expand** a pinned card and you get a working conversation: the transcript, the composer, the model picker, and the permission, question and plan dialogs — everything you need to actually run a turn without leaving the board. A **new conversation** card additionally offers the **agent** picker, since that's the one moment the choice is still open; an existing conversation keeps the agent it was started with, exactly as it does in a tab.
 
-A few things live in the tab view and deliberately don't come along: the **message queue**, **fork-send**, **steering**, and **export**. The board is for running several conversations side by side, not for replacing the single-conversation surface where those belong.
+A few things live in the tab view and deliberately don't come along: the **message queue**, the [**mid-turn send**](/guide/workspace#talk-to-an-agent-mid-turn), and **export**. The board is for running several conversations side by side, not for replacing the single-conversation surface where those belong.
+
+**A file link in a card opens beside it.** The workspace's file column is off screen while the board covers the page, so clicking a file badge, a Markdown link or **view diff** in a card's transcript opens a read-only viewer in a side panel next to the conversation, with **Open in workspace** one click away. For a plain file it's the same workspace file tab underneath — the panel is a view of it — so nothing is lost by reading it there. Before **0.30.3** those clicks opened a tab in a column you couldn't see, which looked like nothing happening at all. The [To-dos board](/guide/tasks) does the same, for the same reason.
 
 A card inside a region has to be **moved out to the canvas first** before it can expand — a full conversation surface is far bigger than a region's member grid slot, so it gets pinned before it grows.
 

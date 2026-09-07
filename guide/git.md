@@ -25,6 +25,8 @@ Open the **Changes** tab in the right panel to see your working tree at a glance
 
 Those diffs are **read-only** — side by side, **HEAD** on the left and your **Working Tree** on the right, with Prev/Next to step through each change. They're for reading what changed, whether you or the agent made it; you decide what to keep when you commit, not by editing the diff.
 
+**An image diffs as an image.** Since **0.30.4** a changed `.png`, `.jpg`, `.jpeg`, `.gif`, `.webp`, `.bmp` or `.ico` opens as **before and after pictures** rather than as a wall of unreadable bytes, with a **swipe slider** to drag one over the other and a toggle back to plain side-by-side. **`.svg` is deliberately left as a text diff** — it *is* text, git produces a real line diff for it, and those lines say more than two pictures that may look identical. It works the same in the **Commit** window, the **push workspace** and the **unstash** dialog. A file added or deleted shows *no image at this revision* on the side that has none, and one over **8 MB a side** says so rather than pulling it into memory. A genuinely binary file — anything that isn't an image — now says **binary file, content not shown** instead of rendering as noise.
+
 Right-click a file — or a folder, to act on several at once — for the rest:
 
 - **View Diff** / **Open File** — review the change, or open the real file to edit it.

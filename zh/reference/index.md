@@ -16,7 +16,7 @@ Codeg 将每一项偏好都汇集到同一个**设置**窗口中（其侧边栏�
 | 设置界面 | 控制内容 | 文档位置 |
 | --------------- | ---------------- | ------------- |
 | **Appearance** | 主题模式与配色、窗口缩放、字体、桌面宠物 | [外观](/zh/reference/settings/appearance) |
-| **General** | 默认终端、渲染，以及协作与反馈开关 | [通用](/zh/reference/settings/general) |
+| **General** | 默认终端、渲染、桌面通知与提示音，以及协作与反馈开关 | [通用](/zh/reference/settings/general) |
 | **MCP** | Model Context Protocol 服务器 —— 添加、扫描、按智能体启用 | [指南 → MCP 服务器](/zh/guide/mcp) |
 | **Skills** | 编写和编辑你自己的智能体技能 | [指南 → 技能](/zh/guide/skills) |
 | **Skill Packs** | 精选合集 —— Experts、Science、Office | [指南 → 技能](/zh/guide/skills#enable-a-curated-skill-pack) |

@@ -1,13 +1,13 @@
 ---
 title: Repository Panel
-description: Hand a GitHub or GitLab issue or pull request straight to an agent — it works in its own worktree, you review the result on the board, and the outcome goes back to the thread it came from.
+description: Hand a GitHub, GitLab or Gitea issue or pull request straight to an agent — it works in its own worktree, you review the result on the board, and the outcome goes back to the thread it came from.
 ---
 
 # Repository Panel
 
-Most agent work starts with someone reading an issue and retyping it into a prompt. The **Repository panel** removes that step: it lists a folder's **GitHub or GitLab** issues and pull requests inside Codeg, and hands the one you pick to an agent as a [to-do task](/guide/tasks) — its own worktree, its own session, and the same review gate before anything lands.
+Most agent work starts with someone reading an issue and retyping it into a prompt. The **Repository panel** removes that step: it lists a folder's **GitHub, GitLab or Gitea** issues and pull requests inside Codeg, and hands the one you pick to an agent as a [to-do task](/guide/tasks) — its own worktree, its own session, and the same review gate before anything lands.
 
-It shipped in **0.27.0** behind a **Beta** mark, which came off in **0.30.0** once the panel could do the whole loop: read a change through tabs, comment on it, open and close issues, and merge — without a browser.
+It shipped in **0.27.0** behind a **Beta** mark, which came off in **0.30.0** once the panel could do the whole loop: read a change through tabs, comment on it, open and close issues, and merge — without a browser. **Gitea** joined in **0.30.4**, and with it **Forgejo**: Forgejo is a fork of Gitea serving the same `/api/v1`, so the client that talks to one talks to the other and there's no separate setting for it.
 
 ::: tip Where it fits
 The panel is a *front door* to To-dos, not a parallel system. Everything it creates is an ordinary task on the ordinary board, with one extra fact recorded: which item it came from. That provenance is what unlocks the delivery step at the end — and what makes the [auto-merge rule](#the-rules-that-do-not-bend) different.
@@ -23,12 +23,19 @@ Two buttons join the window's top-right cluster while it's open: **Refresh**, wh
 
 The panel reads through the same credentials git does, under [**Settings → Version Control**](/reference/settings/version-control). Pick a project folder and Codeg looks at its `origin` remote:
 
-- **A host that is neither GitHub nor GitLab** — say a Gitee or Bitbucket remote. The panel says **only GitHub and GitLab are supported**, rather than falling back to GitHub and reporting whatever the wrong API answered, which used to come out as "no GitHub account for gitee.com" or a raw API failure. Reaching that verdict costs one probe: a host Codeg doesn't recognise is asked whether it's a GitLab before being written off, which is the same probe that lets a self-hosted GitLab on an unrevealing name be found at all. **Add an account** is still offered, because that's the other way in for such an instance.
+- **A host that is none of the three** — say a Gitee or Bitbucket remote. The panel says **only GitHub, GitLab and Gitea are supported** and names the host, rather than falling back to GitHub and reporting whatever the wrong API answered, which used to come out as "no GitHub account for gitee.com" or a raw API failure. **Add an account** is still offered, because that's the other way in for a self-hosted instance.
 - **A remote, but no account for that host** — the empty state names the provider and the host and offers **Add an account**, which takes you straight to the settings screen.
+
+Reaching that verdict costs a probe rather than a guess. A host Codeg doesn't recognise by name is **asked what it is**, cheapest question first:
+
+1. **Gitea**, at `GET {origin}/api/v1/version`. It goes first because it's the only question here needing no credential *and* answering in its body — every Gitea serves that endpoint publicly and replies with a version object. A blanket gateway returning 200 to everything doesn't produce that shape, so ruling one out costs nothing extra. Neither GitHub Enterprise (`/api/v3`) nor GitLab (`/api/v4`) mounts `/api/v1` at all.
+2. **GitLab**, at `GET {origin}/api/v4/version` — which GitLab answers 200 with a token and 401 without, while GitHub Enterprise 404s. Neither answer decides anything on its own, because an authenticating gateway in front of a GitHub Enterprise can produce either one for every request. So a JSON 200 or 401 is only a *candidate*, and Codeg confirms it against a path nothing routes: real GitLab 404s there, a blanket gateway answers the same as before, and Codeg declines to conclude rather than breaking a setup that works.
+
+What gets remembered is a **conclusive** answer, for the rest of the session. A host that's unreachable, or whose server returns a transient error, leaves the question open and is asked again next time — so a Gitea that happened to be restarting doesn't get written off until Codeg has actually heard from it. (A transient answer from the Gitea probe doesn't stop the GitLab one: if that resolves conclusively, that verdict stands.)
 
 Which forge you're talking to is **derived from the remote on Codeg's side**, never claimed by the client — because that choice is what picks the credentials. A GitLab token is never spent on a GitHub call, and a GitHub Enterprise host on its own domain resolves by its URL rather than by its name.
 
-GitLab has its own accounts panel since **0.27.0**; its token needs the **api** scope. → [Version Control](/reference/settings/version-control#gitlab-accounts)
+GitLab has its own accounts panel since **0.27.0** and Gitea since **0.30.4**; a GitLab token needs the **api** scope, a Gitea one **write:repository**, **write:issue** and **read:user**. → [Version Control](/reference/settings/version-control#gitea-accounts)
 
 ## Find the item
 
@@ -149,7 +156,7 @@ The task runs, lands in **To review**, and you read it like any other — result
 What's different is what *accepting* can mean. Alongside the usual **Merge** and **Complete**, a task with forge provenance offers a delivery action:
 
 - **Open pull request** — pushes the task's branch to the repository and opens a pull request against the base. The body carries a **`Closes #N`** line pointing back at the issue, and you can open it **as a draft**. You pick the title.
-- **Push to the pull request** — for a task that came *from* a pull request. It pushes the commits onto that same head branch, forks included. **Nothing new is opened**; the review that's already there receives the work.
+- **Push to the pull request** — for a task that came *from* a pull request. It pushes the commits onto that same head branch, forks included. **Nothing new is opened**; the review that's already there receives the work. When that push fails, **git's own reason** is what you get: until **0.30.4** every failure came back as *"pushing to a fork needs its author to allow edits from maintainers"*, which sent people looking at repository permissions when git had actually said the branch was out of date.
 
 Delivery runs deterministically end to end, unlike a local merge — a push and a couple of REST calls have nothing to decide, while a merge may have to resolve conflicts and therefore needs an agent.
 
@@ -201,12 +208,12 @@ Standing instructions land **after** the scenario's built-in wording and **befor
 - **Nothing is cached.** The panel reads the forge's REST API directly each time — no local mirror of your issues, and nothing fetched on a background timer. Refresh is a button.
 - **It's per folder.** The panel acts on the project folder you've picked, and refuses an item whose repository doesn't match that folder's remote, naming both.
 - **The row can be hidden.** If you don't use it, switch **Repository panel** off under the sidebar's [navigation items](/guide/workspace#choose-which-navigation-rows-you-see) — quick actions still reaches it.
-- **Self-hosted works.** GitHub Enterprise and self-managed GitLab resolve by their server URL, including on a non-default port or plain `http://`, and links back to the item are built from that same origin. Since **0.30.0** a self-hosted GitLab on a name that doesn't say *gitlab* is **asked what it is** rather than guessed at from its hostname — which is what used to fail as a bare `410`.
+- **Self-hosted works.** GitHub Enterprise, self-managed GitLab, and a Gitea or Forgejo instance all resolve by their server URL, including on a non-default port or plain `http://`, and links back to the item are built from that same origin. Asking the instance what it is, rather than guessing from its hostname, arrived for **GitLab in 0.30.0** — which is what used to fail as a bare `410` — and the **Gitea and Forgejo** question was added in **0.30.4**.
 - **A host you configured is always attempted, whatever it's called.** A provider-less account is ambiguous by construction — the plain-git credential dialog writes the same bytes a legacy GitHub Enterprise account does — so Codeg tries rather than refusing a panel that would have worked.
 
 ## Next steps
 
 - [**To-dos**](/guide/tasks) — the board every item lands on, and everything about how a task runs, reviews and merges.
-- [**Version Control**](/reference/settings/version-control) — the GitHub and GitLab accounts this panel reads through.
+- [**Version Control**](/reference/settings/version-control) — the GitHub, GitLab and Gitea accounts this panel reads through.
 - [**Privacy & Security**](/reference/privacy#text-from-strangers-in-a-prompt) — what happens to text written by someone you've never met.
 - [**Git & Worktrees**](/guide/git) — the worktree each task gets, and how to clean up after one.

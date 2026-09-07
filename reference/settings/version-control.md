@@ -1,13 +1,13 @@
 ---
 title: Version Control
-description: The Version Control settings screen — point Codeg at the right Git executable and store GitHub, GitLab, or self-hosted credentials so clone, fetch, push, and the Repository panel just work.
+description: The Version Control settings screen — point Codeg at the right Git executable and store GitHub, GitLab, Gitea, or self-hosted credentials so clone, fetch, push, and the Repository panel just work.
 ---
 
 # Version Control
 
-**Settings → Version Control** does two jobs: it points Codeg at the **Git executable** it should run, and it holds the **accounts** — GitHub, GitLab, plus any other Git server — whose credentials let clone, fetch, and push go through without a password prompt. The app describes it as *"Configure Git executable and manage GitHub accounts."*
+**Settings → Version Control** does two jobs: it points Codeg at the **Git executable** it should run, and it holds the **accounts** — GitHub, GitLab, Gitea, plus any other Git server — whose credentials let clone, fetch, and push go through without a password prompt. The app describes it as *"Configure Git executable and manage GitHub accounts."*
 
-Since **0.27** these accounts do a second job: the [**Repository panel**](/guide/repository) reads your issues and pull requests through them, and pushes a delivered branch as the account that triggered the task. A GitHub or GitLab account here is what makes that panel work at all.
+Since **0.27** these accounts do a second job: the [**Repository panel**](/guide/repository) reads your issues and pull requests through them, and pushes a delivered branch as the account that triggered the task. A GitHub, GitLab or Gitea account here is what makes that panel work at all.
 
 Each account you add here is stored **locally on your machine**; the token or password goes into your OS keyring, never into the app's database or the network. When Codeg runs a git command on your behalf, it looks up the matching account by server and supplies the credential for you — the mechanics are in [How credentials get used](#how-credentials-get-used) below.
 
@@ -46,18 +46,24 @@ The token needs the **`api`** scope. Create one under **GitLab → Preferences �
 
 This is the panel the [Repository panel](/guide/repository) reads a GitLab project's issues and merge requests through, and the identity it pushes a delivered branch as.
 
+## Gitea accounts
+
+Added in **0.30.4**, and built the same way: a **Server URL** and a **Personal Access Token**, checked against the instance's own *who am I* endpoint before it's stored. It serves **Forgejo** as well — Forgejo is a fork of Gitea and answers the same `/api/v1`, so there's no separate panel and nothing to choose between. The URL field defaults to `https://gitea.com` but expects to be edited: a Gitea is far more often somebody's own instance than the public one.
+
+The token needs three scopes — **`write:repository`**, **`write:issue`** and **`read:user`** — created under **Gitea → Settings → Applications**. The **Generate token** link opens that page but, unlike GitHub's and GitLab's, arrives with nothing ticked: Gitea's token form takes no scopes in the query, so the panel's inline hint is what tells you which boxes to check. Test, Update token, Set Default and remove all behave as they do on the other two.
+
 ## Git accounts
 
-The same idea for **everything the two panels above don't cover** — Bitbucket, Gitea, a plain self-hosted server. The panel's own line: *"Manage credentials for non-GitHub Git servers (GitLab, Bitbucket, self-hosted, etc.)."*
+The same idea for **everything the three panels above don't cover** — Bitbucket, a plain self-hosted server. The panel's own line: *"Manage credentials for non-GitHub Git servers (GitLab, Bitbucket, self-hosted, etc.)."*
 
-The add dialog asks for three fields — **Server URL** (e.g. `https://git.example.com`), **Username** (or email), and **Password / Token**. Unlike the GitHub and GitLab panels there's no API to validate against, so the credential is stored as-is; **Test** here simply confirms a credential is present in the keyring rather than checking it against the server. Everything else — **Set Default**, remove — works the same.
+The add dialog asks for three fields — **Server URL** (e.g. `https://git.example.com`), **Username** (or email), and **Password / Token**. Unlike the three forge panels there's no API to validate against, so the credential is stored as-is; **Test** here simply confirms a credential is present in the keyring rather than checking it against the server. Everything else — **Set Default**, remove — works the same.
 
 ::: info Which panel to use, and why it matters now
-All three panels are one store, split for display. For pure git traffic — clone, fetch, push — the split makes no difference: the match is by hostname, so a credential in any of them serves its host. What the GitHub and GitLab panels add is a **declared provider**, which is what tells Codeg *which API to speak* to that host.
+All four panels are one store, split for display. For pure git traffic — clone, fetch, push — the split makes no difference: the match is by hostname, so a credential in any of them serves its host. What the GitHub, GitLab and Gitea panels add is a **declared provider**, which is what tells Codeg *which API to speak* to that host.
 
-Which panel an account lands in is decided by **the dialog you added it through**, not by its URL — which is the only way to tell a self-hosted GitLab from a GitHub Enterprise by looking at it. An account that declares nothing still serves either forge, and Codeg guesses from the host: `gitlab.com`, or any host with `gitlab` as a whole label, reads as GitLab; everything else reads as GitHub.
+Which panel an account lands in is decided by **the dialog you added it through**, not by its URL — which is the only way to tell a self-hosted GitLab from a GitHub Enterprise by looking at it. An account that declares nothing still serves any of the three, and Codeg works down three fallbacks in order: it [asks the instance](/guide/repository#before-you-start-an-account) what it is; failing that it reads the hostname, where a **whole label** `gitlab`, `github`, `gitea` or `forgejo` names a forge and `mygitlabhost.com` deliberately doesn't, being somebody's domain rather than a claim; and failing *that* it falls back to GitHub, which is what a host that can't be reached did before any of this existed.
 
-So the declaration earns its keep on the **ambiguous** hosts. A self-hosted GitLab on a domain that doesn't say *gitlab* would otherwise be talked to as though it were GitHub, and the [Repository panel](/guide/repository) would fail against it — while a generic account on `gitlab.com` or `gitlab.example.com` works fine. Adding through the right dialog removes the guess.
+So the declaration earns its keep on the **ambiguous** hosts. It saves the probe, and it's the only answer where the probe can't reach a verdict — an instance behind an authenticating gateway, say. Adding through the right dialog removes the guess entirely.
 
 Accounts stored before the provider field existed keep the rule they were filed under: `github.com` under *GitHub accounts*, everything else among the plain git credentials.
 :::
@@ -84,7 +90,7 @@ This is why the [Git & Worktrees](/guide/git) workflow — cloning a repo, pushi
 
 ## Related
 
-- [Repository Panel](/guide/repository) — the issues-and-pull-requests workbench these GitHub and GitLab accounts unlock.
+- [Repository Panel](/guide/repository) — the issues-and-pull-requests workbench these GitHub, GitLab and Gitea accounts unlock.
 - [Git & Worktrees](/guide/git) — the in-app git workflow these credentials quietly power: diffs, commits, branches, and parallel worktrees.
 - [Model Providers](/guide/authentication) — the *other* credential screen, for agent model access rather than Git servers.
 - [System](/reference/settings/system) — the network proxy that git traffic, like everything else, goes through.

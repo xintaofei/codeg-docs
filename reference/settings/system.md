@@ -64,6 +64,8 @@ Export writes a single `.codegbak` archive of your **database and uploads**. Two
 
 **Export backup** builds it — the desktop app saves a file, a browser session downloads one.
 
+Some agents keep their sessions in **SQLite**, which can't simply be copied while it's open. Since **0.30.4** the export **names the ones that needed special handling** — silence means the ordinary copy worked — and says which of three things happened to each: **recovered from a private copy** (complete), **archived without its write-ahead log** (the newest messages may be missing), or **not archived at all**, because the store kept changing underneath or couldn't be copied, which is better than archiving a torn copy. The panel lists the first eight and counts the rest. Before this, OpenCode, Hermes, Cursor and Antigravity databases could come back missing their newest messages beside a stale log, and a **custom ACP agent**'s conversations came back present but *empty* — their message text was packed by neither the backup nor the restore path.
+
 ### Restore
 
 **Select backup file** (`.codegbak` or `.zip`), and Codeg inspects it before doing anything. If it's encrypted you're asked for the passphrase; then a **Backup details** card shows when it was made, which app version made it, and whether it's **Compatible** — a backup from a *newer* Codeg than you're running can't be restored.
@@ -75,6 +77,14 @@ Two things worth knowing before you do:
 - **Desktop backups don't carry your keychain secrets.** *"Desktop GitHub/chat tokens live in your OS keychain and are not included; re-enter them after restoring."* On a **server**, those same tokens live in a file that *is* in the backup — the difference is exactly the keyring split described under [Version Control](/reference/settings/version-control).
 - **Restoring conversation content is its own choice.** If the backup included the agent CLI transcripts, you pick where they land — skip them, drop them in a **safe side folder**, or write them back to the **original CLI locations** (with a conflict scan and an optional overwrite) so the agents see their history again.
 
+#### Pre-restore snapshots
+
+The snapshot the warning mentions isn't a figure of speech — it's a listed thing you can go back to. **Pre-restore snapshots** sits under the restore controls, normally holding the **two newest**.
+
+A snapshot carrying the manifest that records what was *absent* before the restore offers **Roll back to this**; one written before that manifest existed is listed as **Inspect only**, because without that list a rollback couldn't tell *leave this alone* from *this didn't exist, remove it*. Rolling back replaces your current data with the snapshot and restarts, and — the part that makes it safe to try — **snapshots the data it's replacing on the way**, so the rollback is itself reversible.
+
+A restore also reports what it did instead of leaving you to guess: **Restore staged**, with counts for files kept because you didn't opt into overwriting, session databases that couldn't be written back, and — when agents were running and their transcripts went to a side folder instead of their original locations — which agents and which path.
+
 ::: warning Backup acts on this machine
 Backup and restore operate on the data of the machine actually running Codeg. If you're in a desktop app **connected to a remote workspace**, the panel is disabled with a note to *"manage its backups from that server directly"* — the native file dialogs here wouldn't line up with the remote server's storage.
 :::
@@ -85,7 +95,7 @@ Backup and restore operate on the data of the machine actually running Codeg. If
 - **Launch at login has no stored copy.** The OS entry is the setting, so the switch shows what your machine actually agreed to.
 - **Desktop and server update differently.** The desktop app auto-installs and relaunches; a server updates in place with a restart (and can roll back); an old remote server just links you to the release. Same panel, three behaviors.
 - **An unencrypted backup is plaintext secrets.** API keys and tokens ride along in the clear unless you set a passphrase — encrypt it, or keep the file somewhere trusted. How Codeg handles secrets generally is under [Privacy & Security](/reference/privacy).
-- **Restore is a replace, but reversible.** It swaps in the backup's database and uploads wholesale — yet snapshots your current data first, so a mistaken restore can be walked back.
+- **Restore is a replace, but reversible.** It swaps in the backup's database and uploads wholesale — yet snapshots your current data first, and that snapshot is [listed with a Roll back button](#pre-restore-snapshots), so a mistaken restore can be walked back.
 - **The proxy is app-wide.** Once on, it carries git, agent installs, and model calls alike — the one path everything Codeg reaches out through.
 
 ## Related

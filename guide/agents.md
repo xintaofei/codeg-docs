@@ -182,6 +182,8 @@ Two behaviours worth knowing:
 
 Model and session mode come over ACP, so they live in the composer rather than here.
 
+Since **0.30.3** Antigravity also takes a **custom version**, like the other downloaded agents — and asking for a version that was never published now **fails the download** instead of quietly filing the pinned build under the number you typed, which left Version Status confidently reporting a build you didn't have.
+
 #### Signing in on a machine with no browser
 
 Antigravity runs its Google sign-in **itself**: it opens a port on `127.0.0.1`, calls the system browser, and waits five minutes for the redirect to come back. On a headless server there is no browser to call — and the call fails silently rather than raising — so the first session used to hang for those five minutes and die without ever showing a link anyone could open.

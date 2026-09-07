@@ -16,7 +16,7 @@ Codeg gathers every preference into one **Settings** window (its sidebar is head
 | Settings screen | What it controls | Documented in |
 | --------------- | ---------------- | ------------- |
 | **Appearance** | Theme mode & color, window zoom, fonts, desktop pet | [Appearance](/reference/settings/appearance) |
-| **General** | Default terminal, rendering, and the collaboration & feedback toggles | [General](/reference/settings/general) |
+| **General** | Default terminal, rendering, desktop notifications & sounds, and the collaboration & feedback toggles | [General](/reference/settings/general) |
 | **MCP** | Model Context Protocol servers — add, scan, enable per agent | [Guide → MCP Servers](/guide/mcp) |
 | **Skills** | Write and edit your own agent skills | [Guide → Skills](/guide/skills) |
 | **Skill Packs** | Curated bundles — Experts, Science, Office | [Guide → Skills](/guide/skills#enable-a-curated-skill-pack) |

@@ -98,6 +98,8 @@ Put a picture behind the whole workspace. Turn on **Enable background image** an
 
 **GIF joined the list in 0.28**, and an animated one **plays** — through the blur and the frosted panels, not just as a still first frame.
 
+**Or don't bring one.** Since **0.30.4** a **Wallpaper market** button opens the public [Wallhaven](https://wallhaven.cc) gallery inside Settings — **SFW only**, filtered to **All**, **General**, **Anime** or **People**, with a search box and paging. Click a wallpaper and Codeg downloads and applies it in one step; the one you're using is marked **In use**. A picture too big to be a background — over **16 MB**, or over **40 megapixels** — is greyed as **Unavailable** with the reason on it, read straight from the gallery listing so you learn it before spending the download. Wallhaven doesn't always publish both numbers, and a card missing them stays clickable; there the limits are enforced when the download runs.
+
 The controls, top to bottom:
 
 | Control | What it does | Default |

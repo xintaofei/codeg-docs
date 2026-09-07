@@ -69,6 +69,22 @@ The full control surface — including the completed-result cache — is documen
 A sub-agent is a real session of a real agent, so the target must be **enabled, installed, and signed in** — just like one you'd start yourself. Delegate to an agent that isn't ready and that hand-off comes back as *spawn failed*; the lead keeps going without it. [Working with Agents](/guide/agents) and [Authentication & Models](/guide/authentication) cover getting each one ready.
 :::
 
+### The service, from the status bar
+
+Delegation runs through a companion process, `codeg-mcp`, and since **0.30.4** the **status bar** says how that process is doing rather than leaving you to infer it from an agent that quietly can't delegate. The indicator reads:
+
+| State | What it means |
+| ----- | ------------- |
+| **Running** | The socket answers, the companion is on disk, and at least one tool group is on — so an agent launched here gets the tools, if it's one that accepts MCP at all |
+| **Not running** | The broker socket isn't answering. **Start service** appears here when this runtime has a handle it can start with |
+| **No tools enabled** | All six groups are off, so an ordinary session gets no companion — a [to-do](/guide/tasks) run still gets its own reporting tools, which aren't switched here |
+| **Companion missing** | The `codeg-mcp` binary isn't on disk |
+| **Unknown** | The status couldn't be read at all |
+
+Open it and the popover shows how many **sessions** and **delegations** are live and the **depth cap**, plus the last error if there was one. Hover the state badge for the socket **address** and the companion **binary** path.
+
+It also carries the **tool switches themselves**: Delegation, Live feedback, Ask a question, Session lookup, Create automation and Create task, each with a one-line description, so turning a capability on doesn't mean a trip into Settings. These are **the same switches** as [Settings → General](/reference/settings/general) — not a second copy of them — and flipping one here while that page is open makes the page converge on it rather than sending its stale value back on the next Save.
+
 ## Delegate with an @ mention
 
 You can always ask for delegation in plain prose, but naming the agent with an **`@` mention** is the dependable way to get it. The mention is recognised as an *explicit instruction to delegate that work to that agent* — so a capable lead treats it as a decision you've already made, rather than a suggestion it might act on.

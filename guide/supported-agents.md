@@ -77,6 +77,22 @@ What the adapter does share is your configuration — including being signed in.
 Set `CODEX_PATH` in the Codex agent's **Environment Variables** and `codex-acp` runs the executable you name instead of the copy it bundles — useful if you keep a particular `codex` build around. → [Working with Agents](/guide/agents#configure-an-agent)
 :::
 
+### Follow the newest release instead of the pin {#adapter-version}
+
+The Kimi story above cuts both ways: a reviewed pin is what keeps a bad release out, and it's also what stands between you and a model that shipped this morning. Since **0.30.3** that trade is yours to make per agent. The agent's [detail pane](/guide/agents#configure-an-agent) in **Settings → Agents** carries an **Adapter version** dropdown with two values:
+
+- **Pinned (recommended)** — the version Codeg has reviewed. The default, and where the agents you don't think about should stay.
+- **Latest (unreviewed)** — whatever the package's newest npm release is at the moment you install. This is what makes a brand-new model reachable the day it ships, and it is genuinely unreviewed: a release can break the agent inside Codeg, and occasionally one is known broken.
+
+Three things about it are worth knowing before you flip it:
+
+- **It's read at install and upgrade time only**, and from the **saved** setting. Nothing polls npm in the background, and a launch runs whatever is on disk. So changing the dropdown does nothing on its own: press **Save**, *then* **Upgrade**. Upgrade before saving and you reinstall the pin.
+- **A failed reach for the newest retries the pin**, with a note in the install log, so an unreachable npm or a mirror that doesn't carry the tag yet degrades to the reviewed version instead of failing. If that retry fails too the install fails — and since an upgrade uninstalls before it reinstalls, that case can leave the agent uninstalled.
+- **It's for npx agents only.** A binary or uvx install has no npm dist-tag to follow, so the dropdown simply isn't there.
+- **A custom version overrides it entirely**, on either channel, and never falls back: you asked for that exact version, and quietly installing a different one would relabel your choice.
+
+**Version Status** in the same panel is the number to trust once the channel and the pin can disagree — it reports what a local probe found. On an npx agent that probe is `npm list`, which can fail for reasons of its own, and a failed one falls back to the last version recorded rather than claiming nothing is installed; so a reading that survives a failed upgrade is worth re-checking.
+
 ### DeepSeek Harness takes a third route {#deepseek-harness}
 
 **DeepSeek Harness**, new in **0.26**, is neither of the two cases above. DeepSeek publishes an ACP transport of its own — `@deepseek-ai/dsh-acp` — but it's built for automation: no streaming, no tool presentation, and it refuses MCP servers outright, so a session run through it would arrive as a finished block of text with none of the workspace around it. Codeg drives the **community `deepseek-acp` bridge** instead, pinned to an exact version like every other managed install.

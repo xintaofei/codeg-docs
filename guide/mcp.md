@@ -60,6 +60,10 @@ Know exactly what you want? On the **Local** tab, click **New MCP**, give it an 
 
 The **Local** tab doesn't only show what you added *in* Codeg — it **scans your agents' own config files** and lists every MCP server it finds. So a server you set up by hand-editing `~/.claude.json`, or one another tool installed, shows up here too, ready to edit, remove, or switch on for *more* agents. **Refresh** re-runs the scan.
 
+**One unreadable config no longer takes the page down with it.** Before **0.30.2** a single malformed or unreadable agent config failed the whole scan, so every other agent's servers vanished too. Now the healthy ones still list and the broken one gets a **warning beside them**, naming the agent and the problem — an error *next to* the list rather than instead of it. An empty config file simply reads as empty, which is what it is.
+
+While that warning is up, **saving is blocked** rather than allowed to do damage. An agent's assignments are computed from the agents this page could read, so saving with one hidden would quietly strip the server from it. Fix or remove the file, hit **Refresh**, then edit.
+
 ## Choose which agents get a server
 
 Each server's detail pane has an **Enabled apps** row — a checkbox per agent. Codeg writes the server into the native MCP config of every agent you tick, and takes it back out when you untick:

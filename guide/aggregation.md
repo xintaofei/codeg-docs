@@ -20,9 +20,19 @@ Either route opens the **Import Local Sessions** window, which:
 
 1. **Scans first.** It walks every agent's session store, showing a live count per agent as it goes. Large histories take a moment.
 2. **Shows you everything it found**, grouped by project folder. Search by title or path, filter to one agent, or flip on **Importable only** to hide what's already in. Tick individual sessions, tick a whole folder, or **Select all**.
-3. **Reports what it did.** When the import finishes you get an **Import finished** summary — how many were **Imported**, **Refreshed**, or **Skipped**, plus **Folders created**, **Not found**, and **Failed** — then **Continue importing** or **Close**.
+3. **Reports what it did.** When the import finishes you get an **Import finished** summary — how many were **Imported**, **Restored**, **Refreshed**, or **Skipped**, plus **Folders created**, **Not found**, and **Failed** — then **Continue importing** or **Close**.
 
-Two things about that list are worth knowing. Folders you haven't opened in Codeg yet are badged **New** — import from one and Codeg creates the folder for you. And sessions already imported, or whose files have since disappeared, are still listed but locked, badged **Imported** or **Deleted**, so you can see what's being skipped before you commit.
+Two things about that list are worth knowing. Folders you haven't opened in Codeg yet are badged **New** — import from one and Codeg creates the folder for you. And a session already in Codeg is still listed, locked, and badged **Imported**, so you can see what's being skipped before you commit.
+
+### Bring back a conversation you deleted
+
+Deleting a conversation in Codeg **hides** it. The conversation and its history stay in the database, which is why the import window can put one back: turn on **Include deleted** — the toggle counts how many the scan found — and deleted sessions stop being locked rows and become selectable ones. Import one and the **original conversation returns, history intact**, rather than a fresh copy of it landing beside the hole.
+
+Two deliberate frictions, because this restores rather than adds. It is **off by default**, and a deleted session is **never preselected** even when the rest of its folder is — Codeg preselects only genuinely new sessions, so opening the window can't stage a restore you never asked for. And turning the toggle back off **drops those rows from your selection** instead of leaving them staged out of sight.
+
+::: tip A delete is not a disposal
+The flip side of restorability: a conversation you deleted is still readable by anything that can read the data directory. If that matters to you, the [Privacy & Security](/reference/privacy#what-stays-local) page has the rest of the picture.
+:::
 
 - **One pass covers everything.** The scan isn't limited to the folder you started from — it's every supported agent across every project it can find, so you can catch the whole machine up in one go.
 - **It's on demand.** Codeg never sweeps in the background or watches your agents' files. Sessions appear only when you ask, so importing is always a deliberate step.
