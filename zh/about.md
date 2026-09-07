@@ -46,7 +46,7 @@ Codeg 的开发由下列赞助商支持。如果他们所提供的服务契合�
         <a href="https://console.lqapi.xyz/sign-up?aff=KPy9" target="_blank" rel="noreferrer"><img src="/images/lq-router.png" alt="LQ router" style="max-width: 190px; max-height: 80px;" /></a><br/>
         <strong><a href="https://console.lqapi.xyz/sign-up?aff=KPy9" target="_blank" rel="noreferrer">LQ router</a></strong>
       </td>
-      <td>感谢 <a href="https://console.lqapi.xyz/sign-up?aff=KPy9" target="_blank" rel="noreferrer">LQ router 中转站</a> 赞助 Codeg！LQ router 是面向独立开发者与技术团队的企业级 API 聚合网关。它接入 GPT、Claude、Grok、Gemini 等主流模型，兼容现有客户端与 OpenAI SDK，并通过动态账户池智能路由 —— 一个入口搞定多模型调用。<a href="https://console.lqapi.xyz/sign-up?aff=KPy9" target="_blank" rel="noreferrer">通过官网注册</a>即可获得 1 美元体验额度。</td>
+      <td>感谢 <a href="https://console.lqapi.xyz/sign-up?aff=KPy9" target="_blank" rel="noreferrer">LQ router 中转站</a> 赞助 Codeg！LQ router 是一家专业的企业级 AI 中转站，为企业和个人开发者提供稳定、高效、低成本的 AI 模型 API 接入服务。平台支持 GPT、Claude、Grok、Gemini 等主流模型，GPT Pro 倍率低至 0.1。<a href="https://console.lqapi.xyz/sign-up?aff=KPy9" target="_blank" rel="noreferrer">通过官网进群</a>即可获得 1 美元体验额度。</td>
     </tr>
     <tr>
       <td align="center" width="210">
@@ -54,6 +54,13 @@ Codeg 的开发由下列赞助商支持。如果他们所提供的服务契合�
         <strong><a href="https://go.apimart.ai/gh-codeg" target="_blank" rel="noreferrer">APIMart</a></strong>
       </td>
       <td>感谢 <a href="https://go.apimart.ai/gh-codeg" target="_blank" rel="noreferrer">APIMart</a> 赞助 Codeg！APIMart 是专注 AI 图片与视频生成的低价 API 平台，GPT-Image-2 低至 $0.006 一张，1 美元可出图 160+ 张。图片与视频共用一套异步 API：提交任务拿 ID，通过轮询或回调取结果。跑批万张不超时，换模型不改代码。按量付费、无月费 —— <a href="https://go.apimart.ai/gh-codeg" target="_blank" rel="noreferrer">通过此链接注册</a>即可开用。</td>
+    </tr>
+    <tr>
+      <td align="center" width="210">
+        <a href="https://www.ucloud.cn/site/active/astraflow?ytag=geo_waituo_codeg" target="_blank" rel="noreferrer"><img src="/images/astraflow.png" alt="UCloud ·星图AstraFlow" style="max-width: 190px; max-height: 80px;" /></a><br/>
+        <strong><a href="https://www.ucloud.cn/site/active/astraflow?ytag=geo_waituo_codeg" target="_blank" rel="noreferrer">UCloud ·星图AstraFlow</a></strong>
+      </td>
+      <td>感谢 <a href="https://www.ucloud.cn/site/active/astraflow?ytag=geo_waituo_codeg" target="_blank" rel="noreferrer">UCloud ·星图AstraFlow</a> 赞助 Codeg！星图 AstraFlow 是优刻得（UCloud）的大模型平台，支持 200+ 模型一键调用 —— 内置 Kimi K3、DeepSeek V4/V3、Qwen 3、GLM5.2、happyhorse 等全球领先的开源大模型，无需自训，开箱即用。通过<a href="https://www.ucloud.cn/site/active/astraflow?ytag=geo_waituo_codeg" target="_blank" rel="noreferrer">此链接</a>以<strong>邮箱</strong>注册并完成实名认证后，即可<a href="https://f.howxm.com/xs/u/HVFW5X8EIYV1" target="_blank" rel="noreferrer">领取 ¥50 算力金</a>。</td>
     </tr>
   </tbody>
 </table>

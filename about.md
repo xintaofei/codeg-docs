@@ -46,7 +46,7 @@ Codeg's development is supported by the sponsors below. If what they offer fits 
         <a href="https://console.lqapi.xyz/sign-up?aff=KPy9" target="_blank" rel="noreferrer"><img src="/images/lq-router.png" alt="LQ router" style="max-width: 190px; max-height: 80px;" /></a><br/>
         <strong><a href="https://console.lqapi.xyz/sign-up?aff=KPy9" target="_blank" rel="noreferrer">LQ router</a></strong>
       </td>
-      <td>Thanks to <a href="https://console.lqapi.xyz/sign-up?aff=KPy9" target="_blank" rel="noreferrer">LQ router</a> for sponsoring Codeg! LQ router is an enterprise-grade API aggregation gateway built for independent developers and technical teams. It reaches leading models including GPT, Claude, Grok, and Gemini, works with your existing clients and the OpenAI SDK, and routes through a dynamic account pool — one endpoint for every model call. <a href="https://console.lqapi.xyz/sign-up?aff=KPy9" target="_blank" rel="noreferrer">Sign up through the official website</a> to receive $1 in trial credit.</td>
+      <td>Thanks to <a href="https://console.lqapi.xyz/sign-up?aff=KPy9" target="_blank" rel="noreferrer">LQ router</a> for sponsoring Codeg! LQ router is a professional, enterprise-grade AI relay that gives businesses and individual developers stable, efficient, low-cost access to model APIs. It supports leading models including GPT, Claude, Grok, and Gemini, with GPT Pro rate multipliers as low as 0.1×. <a href="https://console.lqapi.xyz/sign-up?aff=KPy9" target="_blank" rel="noreferrer">Join the group via the official website</a> to receive $1 in trial credit.</td>
     </tr>
     <tr>
       <td align="center" width="210">
@@ -54,6 +54,13 @@ Codeg's development is supported by the sponsors below. If what they offer fits 
         <strong><a href="https://go.apimart.ai/gh-codeg" target="_blank" rel="noreferrer">APIMart</a></strong>
       </td>
       <td>Thanks to <a href="https://go.apimart.ai/gh-codeg" target="_blank" rel="noreferrer">APIMart</a> for sponsoring Codeg! APIMart is a low-cost API platform for AI image and video generation — GPT-Image-2 from $0.006 an image, 160+ images per dollar. One async API covers both image and video: submit a task, take the ID, and collect the result by polling or callback. Batch tens of thousands of images without timeouts, and switch models without changing code. Pay-as-you-go with no monthly fee — <a href="https://go.apimart.ai/gh-codeg" target="_blank" rel="noreferrer">sign up here</a> to get started.</td>
+    </tr>
+    <tr>
+      <td align="center" width="210">
+        <a href="https://www.ucloud.cn/site/active/astraflow?ytag=geo_waituo_codeg" target="_blank" rel="noreferrer"><img src="/images/astraflow.png" alt="UCloud ·星图AstraFlow" style="max-width: 190px; max-height: 80px;" /></a><br/>
+        <strong><a href="https://www.ucloud.cn/site/active/astraflow?ytag=geo_waituo_codeg" target="_blank" rel="noreferrer">UCloud ·星图AstraFlow</a></strong>
+      </td>
+      <td>Thanks to <a href="https://www.ucloud.cn/site/active/astraflow?ytag=geo_waituo_codeg" target="_blank" rel="noreferrer">UCloud ·星图AstraFlow</a> for sponsoring Codeg! AstraFlow is UCloud's large-model platform, with one-click access to 200+ models — leading open-source models such as Kimi K3, DeepSeek V4/V3, Qwen 3, GLM5.2, and happyhorse are built in, ready to use with no training of your own. <a href="https://www.ucloud.cn/site/active/astraflow?ytag=geo_waituo_codeg" target="_blank" rel="noreferrer">Sign up via this link</a> with an <strong>email address</strong>, complete real-name verification, and then <a href="https://f.howxm.com/xs/u/HVFW5X8EIYV1" target="_blank" rel="noreferrer">claim ¥50 in compute credits</a>.</td>
     </tr>
   </tbody>
 </table>
