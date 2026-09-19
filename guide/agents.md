@@ -113,6 +113,8 @@ Pi sends a reasoning effort only for a model that **declares** it can think — 
 
 A **Reasoning** card on pi's page is where you declare it: a switch, the **six levels pi accepts** as chips, and — folded away — the value each level is sent as, which is what an endpoint expecting `LOW`/`HIGH` needs. The list isn't free-form because pi's isn't; a name outside its six is refused by the adapter. The default-level select narrows to the levels you actually made available.
 
+Since **0.31.0** a pi model's **context window** comes from pi's own `models.json`, resolved by provider and model id and honouring pi's 128K default for a listed model that declares none. A self-hosted or proxied model therefore shows a real percentage in the context ring, instead of a raw token count or a window pi isn't actually running with.
+
 ### Cursor: families and knobs, not two hundred ids
 
 Cursor's catalog is one id per *combination* — around two hundred of them — so reaching a thinking level or the Fast flag meant knowing a string like `claude-opus-5-thinking-max-fast` by heart. Since **0.30.0** the picker groups that catalog into **families** and puts the variations beside the family name as knobs: **Thinking**, **Effort** and **Fast**, each shown only where that family actually varies on it.

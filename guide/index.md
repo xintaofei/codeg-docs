@@ -1,6 +1,6 @@
 ---
 title: Guide
-description: How to use Codeg — the workspace, conversation aggregation and token usage, agents and multi-agent collaboration, chat channels, automations, to-dos, and the office, research, and project workflows.
+description: How to use Codeg — the workspace, the built-in browser, conversation aggregation and token usage, agents and multi-agent collaboration, chat channels, automations, to-dos, and the office, research, and project workflows.
 ---
 
 # Guide
@@ -18,6 +18,8 @@ Read **[The Workspace](/guide/workspace)** to learn the surface every session ru
 The surface every Codeg session runs on — learn these first.
 
 - [**The Workspace**](/guide/workspace) — the integrated engineering loop: file tree, editor and diff, git changes, commit, and an embedded terminal, all alongside the agent — and [several folders at once](/guide/workspace#work-across-several-folders) when one project isn't the whole picture.
+- [**Built-in Browser**](/guide/browser) — web pages open as tabs beside your files: links from conversations and the terminal, dev servers, a locked-down view for local HTML — and a page you can hand to the conversation or share with an agent.
+- [**Infinite Conversations**](/guide/canvas) — the board that lays the workspace out in space: regions bound to folders, Collections you curate, and pinned cards that expand into working conversations.
 - [**Conversation Aggregation**](/guide/aggregation) — pull your existing sessions from every supported agent into one searchable workspace, and pick any of them up where you left off.
 - [**Git & Worktrees**](/guide/git) — review diffs, stage and commit, manage remotes, and run work in parallel with built-in git worktrees.
 - [**Token Usage**](/guide/token-usage) — what your agents actually spent, by day, folder, agent and model, with a cache-hit reading and a card you can share.

@@ -52,6 +52,7 @@ services:
     image: ghcr.io/xintaofei/codeg:latest
     ports:
       - "3080:3080"
+      - "3081-3090:3081-3090"   # port bridge: dev servers shown in the workbench
     volumes:
       - codeg-data:/data
       # - /path/to/projects:/projects   # optional: expose local repos
@@ -145,6 +146,8 @@ The full toolchain and platform prerequisites are in the [Development](/referenc
 | `CODEG_DATA_DIR` | `~/.local/share/codeg` | SQLite database, uploads, and assets |
 | `CODEG_STATIC_DIR` | `./web` | Web UI directory (the bundled `web/` export) |
 | `CODEG_MCP_BIN` | *(sibling)* | Path to `codeg-mcp`, if it doesn't sit next to the server |
+| `CODEG_BRIDGE_PORTS` | *(the ten ports after `CODEG_PORT`)* | Ports the [port bridge](/guide/browser#in-a-browser-session-the-port-bridge) may take to show dev servers in the workbench — a range (`3081-3090`), a list, `auto`, or `off` |
+| `CODEG_BRIDGE_PUBLIC_HOST` | *(the host the workbench was loaded from)* | Hostname browsers should use for the bridge ports when a reverse proxy gives them another name |
 
 ::: tip Always set a token in production
 Left unset, `CODEG_TOKEN` is generated randomly and printed to the logs — fine for a quick trial, but set your own for anything durable. The complete list of tunables — upload quotas, ACP timeouts, logging — lives in [Configuration](/getting-started/configuration).
@@ -156,6 +159,7 @@ By default the server binds `0.0.0.0:3080`, so it's reachable from any device th
 
 - **Put it behind HTTPS.** `codeg-server` speaks plain HTTP and has no built-in TLS. Front it with a reverse proxy — Caddy, nginx, or Traefik — that terminates TLS and forwards to `127.0.0.1:3080`. Set `CODEG_HOST=127.0.0.1` so only the proxy, not the whole network, can reach the server directly.
 - **Keep the token secret.** Every HTTP and WebSocket request must carry it; there is no anonymous access. Rotate it by restarting with a new `CODEG_TOKEN`.
+- **Publish the bridge ports the same way.** The [port bridge](/guide/browser#in-a-browser-session-the-port-bridge) binds `CODEG_BRIDGE_PORTS` on `CODEG_HOST` too. Each of those ports only answers a browser that opened the page from a signed-in workbench, but behind a TLS proxy they need TLS as well (the workbench addresses them with its own scheme), and with `CODEG_HOST=127.0.0.1` they need forwarding like the main port. Set `CODEG_BRIDGE_PORTS=off` if you would rather not run it.
 
 For a load balancer or orchestrator liveness probe, an authenticated `POST /api/health` (carrying the bearer token) returns `{"status":"ok","version":"…"}`.
 

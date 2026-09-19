@@ -64,6 +64,7 @@ Which models you can pick comes from the **agent**, not Codeg. Once an agent con
 
 - **Codeg remembers your last pick** per agent and preselects it next time you start a session with that agent.
 - There's **no per-folder model default** — the model is chosen at the session level. (A folder default sets the *agent*, not the model.)
+- **A model is captioned the way its own agent names it.** Since **0.31.0** Codeg records the id/name pairs an agent's model picker advertises, so the reply footer, the session details and the sidebar's hover chip read `Qwen3.8-Flash` where the transcript itself only records an account-internal id like `qfmodel`.
 
 **Reasoning effort** is set in the composer, per session — with a few agent panes adding something the composer can't express:
 

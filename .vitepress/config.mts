@@ -123,6 +123,7 @@ export default defineConfig({
               text: 'Essentials',
               items: [
                 { text: 'The Workspace', link: '/guide/workspace' },
+                { text: 'Built-in Browser', link: '/guide/browser' },
                 { text: 'Infinite Conversations', link: '/guide/canvas' },
                 { text: 'Conversation Aggregation', link: '/guide/aggregation' },
                 { text: 'Git & Worktrees', link: '/guide/git' },
@@ -235,6 +236,7 @@ export default defineConfig({
               text: '核心功能',
               items: [
                 { text: '工作区', link: '/zh/guide/workspace' },
+                { text: '内置浏览器', link: '/zh/guide/browser' },
                 { text: '无限对话', link: '/zh/guide/canvas' },
                 { text: '对话聚合', link: '/zh/guide/aggregation' },
                 { text: 'Git 与 Worktree', link: '/zh/guide/git' },

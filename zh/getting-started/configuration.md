@@ -32,6 +32,8 @@ Codeg 在两个地方进行配置。桌面应用和 Web 界面通过 **设置** 
 | `CODEG_DATA_DIR` | *（因操作系统而异——见下文）* | 数据库、上传文件、日志和密钥的根目录。 |
 | `CODEG_STATIC_DIR` | `./web` | 要提供服务的捆绑 Web 界面所在目录。 |
 | `CODEG_MCP_BIN` | *（自动）* | 当 `codeg-mcp` 伴生程序不在服务器二进制文件旁边时其所在路径——某些源码构建需要它。没有它，[多智能体委派](/zh/guide/multi-agent)会被静默禁用。 |
+| `CODEG_BRIDGE_PORTS` | *（`CODEG_PORT`+1 … +10）* | [端口桥](/zh/guide/browser#in-a-browser-session-the-port-bridge)绑定的端口，工作台里显示的每个开发服务器占一个：一个范围（`3081-3090`）、逗号列表、`auto`（任意空闲端口）或 `off`。解析不了的值会关闭端口桥而不是瞎猜。 |
+| `CODEG_BRIDGE_PUBLIC_HOST` | *（未设置）* | 工作台访问桥端口时应使用的主机名（代替加载工作台所用的主机）——给把它们命名成别的名字的反向代理用。 |
 
 关于 `CODEG_HOST` 和 `CODEG_TOKEN` 在网络和 TLS 方面的影响，参见[部署](/zh/getting-started/deployment#access-it-securely)。
 
@@ -122,6 +124,13 @@ Codeg 会将按天轮转的日志写入数据目录中的 `logs/`，并将它们
 ```
 
 它对应应用设置中的一个开关。只有在遇到导致窗口无法渲染的 GPU 或驱动问题需要恢复时，才手动编辑它——将其设为 `true`，重新启动，Codeg 就会在不使用硬件加速的情况下启动。`codeg-server` 从不读取此文件。
+
+桌面端还有两个环境变量作用于[内置浏览器](/zh/guide/browser)，都在启动时读取一次：
+
+| 变量 | 默认值 | 作用 |
+| ---- | ------ | ---- |
+| `CODEG_POLICY_FILE` | *（按操作系统而定——见[站点规则](/zh/guide/browser#rules-set-by-an-administrator)）* | 管理员策略文件的路径，可以钉死按站点的规则，也可以为机器上的每位用户关闭内置浏览器。 |
+| `CODEG_BROWSER_SIGN_IN_HOSTS` | *（Google 的登录主机）* | 逗号分隔的主机名（子域名也算）：标签页会对这些主机的登录页面呈现 Firefox 身份，用于像 Google 一样拒绝内嵌浏览器的登录提供方。 |
 
 ## 智能体自身的设置 {#your-agents-own-settings}
 

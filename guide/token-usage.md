@@ -49,7 +49,7 @@ Both the range and the buckets speak **your local calendar days**, end to end �
 
 ## Read the report
 
-**The headline** is total tokens for the range, with two things beside it: the change **vs. the previous period** of the same length, and a **cache-hit ring**. The ring is the one worth learning to read — it says how much of the context your agents worked with came out of cache instead of being computed fresh, and spells out what re-sending it at full price would have amounted to.
+**The headline** is total tokens for the range, with two things beside it: the change **vs. the previous period** of the same length, and a **cache-hit ring**. The ring is the one worth learning to read — it says how much of the context your agents worked with came out of cache instead of being computed fresh, and spells out what re-sending it at full price would have amounted to. Since **0.31.0** it reads to **one decimal**, here and on the share card and in the composer's own token popover, so the three surfaces print the same number instead of one of them rounding to a whole percent.
 
 Under it, four tiles, each carrying an average as its subtitle:
 

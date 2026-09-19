@@ -32,6 +32,8 @@ The variables you're most likely to set on a server:
 | `CODEG_DATA_DIR` | *(per-OS — see below)* | Root for the database, uploads, logs, and secrets. |
 | `CODEG_STATIC_DIR` | `./web` | Directory of the bundled web UI to serve. |
 | `CODEG_MCP_BIN` | *(auto)* | Path to the `codeg-mcp` companion when it doesn't sit beside the server binary — needed for some source builds. Without it, [multi-agent delegation](/guide/multi-agent) is silently disabled. |
+| `CODEG_BRIDGE_PORTS` | *(`CODEG_PORT`+1 … +10)* | Ports the [port bridge](/guide/browser#in-a-browser-session-the-port-bridge) binds, one per dev server shown in the workbench: a range (`3081-3090`), a comma list, `auto` (any free port), or `off`. A value that doesn't parse turns the bridge off rather than guessing. |
+| `CODEG_BRIDGE_PUBLIC_HOST` | *(unset)* | Hostname the workbench should use for the bridge ports instead of the one it was loaded from — for a reverse proxy that names them differently. |
 
 See [Deployment](/getting-started/deployment#access-it-securely) for the networking and TLS implications of `CODEG_HOST` and `CODEG_TOKEN`.
 
@@ -122,6 +124,13 @@ The desktop app keeps its settings in the database, managed from the Settings sc
 ```
 
 It mirrors a toggle in the app's settings. Edit it by hand only to recover from a GPU or driver problem that stops the window from rendering — set it to `true`, relaunch, and Codeg starts without hardware acceleration. `codeg-server` never reads this file.
+
+Two environment variables reach the [built-in browser](/guide/browser) on the desktop, both read once at startup:
+
+| Variable | Default | What it does |
+| -------- | ------- | ------------ |
+| `CODEG_POLICY_FILE` | *(per-OS — see [Site rules](/guide/browser#rules-set-by-an-administrator))* | Path to the administrator policy that can fix per-site rules or turn the built-in browser off for every user of the machine. |
+| `CODEG_BROWSER_SIGN_IN_HOSTS` | *(Google's sign-in hosts)* | Comma-separated hostnames — subdomains count — whose sign-in pages a tab should present a Firefox identity to, for a provider that refuses embedded browsers the way Google does. |
 
 ## Your agents' own settings
 

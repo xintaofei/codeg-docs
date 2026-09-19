@@ -56,6 +56,12 @@ Confirm, and Codeg writes the finished spec into each chosen agent's config.
 
 Know exactly what you want? On the **Local** tab, click **New MCP**, give it an id, paste the spec JSON, and choose the agents. It lands right alongside the registry-installed ones. This is the path for a server that isn't in any catalog — an internal tool, something you're developing, a one-off.
 
+**Start from a known server** fills the form for you. Since **0.31.0** that list includes Google's official **Chrome DevTools** server, which matters more than a saved keystroke: the registry carries lookalikes under the same name, and the button pins the real package (`chrome-devtools-mcp`). You still pick the agents and press Create, and `npx` downloads it on first run.
+
+::: info It is not the built-in browser
+The DevTools server drives a **separate Chrome** that Codeg doesn't supervise. You get network and performance data the [built-in browser tools](/guide/browser#let-an-agent-work-on-the-page) don't offer — and none of their safeguards: no per-tab sharing, no activity strip on the tab, no approval per snippet of code. Two different tools for two different jobs.
+:::
+
 ## Scan what's already there
 
 The **Local** tab doesn't only show what you added *in* Codeg — it **scans your agents' own config files** and lists every MCP server it finds. So a server you set up by hand-editing `~/.claude.json`, or one another tool installed, shows up here too, ready to edit, remove, or switch on for *more* agents. **Refresh** re-runs the scan.

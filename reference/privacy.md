@@ -1,6 +1,6 @@
 ---
 title: Privacy & Security
-description: Privacy & Security — Codeg is local-first with no telemetry. What stays on your machine, the few things that leave only when you act, and how your secrets are stored.
+description: Privacy & Security — Codeg is local-first with no telemetry. What stays on your machine, the few things that leave only when you act, what the built-in browser keeps and what an agent can see of it, and how your secrets are stored.
 ---
 
 # Privacy & Security
@@ -35,8 +35,21 @@ Codeg reaches the network for a handful of clearly-triggered reasons, each the d
 - **Installing agents.** Adding an agent CLI downloads it from its normal distribution source.
 - **Chat channels**, if you connect any — those integrations talk to the messaging service you linked.
 - **A remote `url()` in your own custom CSS.** If you turn on the [custom-CSS editor](/reference/settings/appearance#custom-style) and paste a rule that fetches a font or an image from the web, applying it makes that request. Codeg strips `@import` outright and flags a remote `url()` in the editor, but it doesn't remove one — it's your stylesheet.
+- **Pages you open in the [built-in browser](/guide/browser).** A browser tab talks to the site it is on, exactly as any browser would, and to nobody else — with the one thing you put there yourself: a tab goes through the [network proxy](/guide/browser#browsing-data-cookies-and-the-proxy) configured under Settings → System, as the rest of the app does (except on macOS before version 14, where browser tabs cannot be proxied at all — with a proxy configured a tab refuses to open rather than bypassing it). Nothing of Codeg's own sits in the middle on the desktop. (In a browser session the [port bridge](/guide/browser#in-a-browser-session-the-port-bridge) *is* a proxy — by design, since it is the only way your browser reaches the server's own loopback.) See the section below for what it keeps and what an agent can see.
 
 That's the whole list. None of it runs on a background timer against your files; each is a response to a button you pressed or an agent you started.
+
+## The built-in browser
+
+The browser is the one part of Codeg that renders someone else's code by design, so its boundaries are worth stating plainly. → [Built-in Browser](/guide/browser)
+
+- **Browsing data is local and per profile.** Cookies, caches and site storage sit apart from Codeg's own data — on macOS 14 and later in a store of their own — and the store is never uploaded anywhere; a cookie still goes to the site that set it, as it would in any browser. A profile's data is clearable on its own, and deleting a profile removes it. Codeg keeps **no browsing history** of its own beyond the address each open tab was on, which is what lets tabs come back after a restart. Addresses do reach the [diagnostic logs](/reference/settings/logs): a page load is logged at *debug*, and a navigation or pop-up a rule blocked at *info*, so the log file on disk can name sites you visited.
+- **An agent sees only what you share.** The [tool group is off for every agent](/reference/settings/general#in-conversation-tools) until you turn it on — that switch is the gate. A grant then covers **one tab and one origin**, and ends when the page leaves that origin. Until a tab is shared an agent can learn its **origin** — which it needs for you to be able to decide — and not its title or any of its content.
+- **What an agent did to a page is on that page's tab.** Reads, actions and refusals alike, where you can scroll back through them. The two exceptions have no tab left to record on, or no page they happened to: a *successful* tab close (a refused one is recorded), and listing which tabs are open.
+- **An agent's own JavaScript is approved one snippet at a time.** A second switch, off by default, and every snippet is shown to you before it runs. No setting makes it automatic.
+- **The standing share is on by default — be deliberate about it.** **Default sharing level** ships as *Read and act*, so once an agent has the tool group, each site a tab arrives at — including one the agent opened itself — is shared as it loads, and a cross-site navigation re-grants silently rather than raising a bar. What it does *not* do is override you: a tab remembers the level you left each site at, so a site you stopped sharing stays unshared and one you narrowed comes back narrowed — for as long as that tab lives, since the memory does not survive a restart. Set the level to *Share nothing* if you want every share to be an explicit act. → [Let an agent work on the page](/guide/browser#let-an-agent-work-on-the-page)
+- **A local HTML file is not a web page.** The [document view](/guide/browser#html-files-the-document-view) runs with no script and no network until you enable scripts for that one file, is confined to the file's own folder even then, drops back to safe mode if any file it uses changes after your approval, and is never shareable with an agent.
+- **An administrator can settle it for everyone.** A [policy file](/guide/browser#rules-set-by-an-administrator) can block hosts or turn the built-in browser off entirely, and a user's own rule cannot lift it.
 
 ## Code a repository can run on your machine
 

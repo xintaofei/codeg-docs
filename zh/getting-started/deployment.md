@@ -52,6 +52,7 @@ services:
     image: ghcr.io/xintaofei/codeg:latest
     ports:
       - "3080:3080"
+      - "3081-3090:3081-3090"   # 端口桥：在工作台里显示开发服务器
     volumes:
       - codeg-data:/data
       # - /path/to/projects:/projects   # optional: expose local repos
@@ -145,6 +146,8 @@ CODEG_STATIC_DIR=../out ./target/release/codeg-server
 | `CODEG_DATA_DIR` | `~/.local/share/codeg` | SQLite 数据库、上传文件和资源 |
 | `CODEG_STATIC_DIR` | `./web` | Web 界面目录（捆绑的 `web/` 导出） |
 | `CODEG_MCP_BIN` | *（同级目录）* | `codeg-mcp` 的路径（当它不与服务器放在一起时） |
+| `CODEG_BRIDGE_PORTS` | *（`CODEG_PORT` 之后的十个端口）* | [端口桥](/zh/guide/browser#in-a-browser-session-the-port-bridge)可占用的端口，用于在工作台里显示开发服务器——一个范围（`3081-3090`）、一个列表、`auto` 或 `off` |
+| `CODEG_BRIDGE_PUBLIC_HOST` | *（加载工作台所用的主机）* | 当反向代理给桥端口换了名字时，浏览器访问它们应使用的主机名 |
 
 ::: tip 生产环境中务必设置令牌
 若不设置，`CODEG_TOKEN` 会被随机生成并打印到日志中——用于快速试用尚可，但对于任何长期部署都应设置你自己的令牌。可调项的完整列表——上传配额、ACP 超时、日志——见[配置](/zh/getting-started/configuration)。
@@ -156,6 +159,7 @@ CODEG_STATIC_DIR=../out ./target/release/codeg-server
 
 - **将其置于 HTTPS 之后。** `codeg-server` 使用纯 HTTP 通信，没有内置的 TLS。请在其前面架设一个反向代理——Caddy、nginx 或 Traefik——由它终止 TLS 并转发到 `127.0.0.1:3080`。设置 `CODEG_HOST=127.0.0.1`，使得只有代理（而非整个网络）能够直接访问服务器。
 - **对令牌保密。** 每个 HTTP 和 WebSocket 请求都必须携带它；不存在匿名访问。通过以新的 `CODEG_TOKEN` 重启来轮换它。
+- **桥端口也照此发布。** [端口桥](/zh/guide/browser#in-a-browser-session-the-port-bridge)同样在 `CODEG_HOST` 上绑定 `CODEG_BRIDGE_PORTS`。这些端口只回应从已登录工作台打开过页面的浏览器，但放在 TLS 代理之后时它们同样需要 TLS（工作台用自己的 scheme 访问它们），而 `CODEG_HOST=127.0.0.1` 时它们和主端口一样需要转发。不想运行它就设置 `CODEG_BRIDGE_PORTS=off`。
 
 对于负载均衡器或编排器的存活探测，经过身份验证的 `POST /api/health`（携带 bearer 令牌）会返回 `{"status":"ok","version":"…"}`。
 
