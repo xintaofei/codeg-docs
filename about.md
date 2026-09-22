@@ -55,6 +55,13 @@ Codeg's development is supported by the sponsors below. If what they offer fits 
       </td>
       <td>Thanks to <a href="https://fluxionai.space/register?source=github&amp;campaign=github-codeg-202609&amp;promo=CODEG" target="_blank" rel="noreferrer">Fluxion AI</a> for sponsoring Codeg! Fluxion AI provides fast, reliable, and cost-efficient API access to GPT, Claude, Gemini, and other leading AI models through one unified API. New users can receive $3 in API credits through <a href="https://fluxionai.space/register?source=github&amp;campaign=github-codeg-202609&amp;promo=CODEG" target="_blank" rel="noreferrer">our dedicated link</a>.</td>
     </tr>
+    <tr>
+      <td align="center" width="210">
+        <a href="https://beeapi.ai/signup?aff=HIAB5JCVRNNA" target="_blank" rel="noreferrer"><img src="/images/beeapi.jpg" alt="BeeAPI" style="max-width: 190px; max-height: 80px;" /></a><br/>
+        <strong><a href="https://beeapi.ai/signup?aff=HIAB5JCVRNNA" target="_blank" rel="noreferrer">BeeAPI</a></strong>
+      </td>
+      <td>Thanks to <a href="https://beeapi.ai/signup?aff=HIAB5JCVRNNA" target="_blank" rel="noreferrer">BeeAPI</a> for sponsoring Codeg! BeeAPI is a professional multi-model AI API relay and aggregation platform that brings together many providers and a wide range of mainstream AI models. It supports cross-vendor price comparison, smart routing across groups, and unified API access and billing, helping you call AI services more flexibly, reliably, and at a lower cost.</td>
+    </tr>
   </tbody>
 </table>
 

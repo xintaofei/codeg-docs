@@ -55,6 +55,13 @@ Codeg 的开发由下列赞助商支持。如果他们所提供的服务契合�
       </td>
       <td>感谢 <a href="https://fluxionai.space/register?source=github&amp;campaign=github-codeg-202609&amp;promo=CODEG" target="_blank" rel="noreferrer">Fluxion AI</a> 赞助 Codeg！Fluxion AI 通过一个统一的 API，提供快速、可靠、高性价比的 GPT、Claude、Gemini 等领先 AI 模型接入。新用户通过<a href="https://fluxionai.space/register?source=github&amp;campaign=github-codeg-202609&amp;promo=CODEG" target="_blank" rel="noreferrer">我们的专属链接</a>注册可获得 3 美元 API 额度。</td>
     </tr>
+    <tr>
+      <td align="center" width="210">
+        <a href="https://beeapi.ai/signup?aff=HIAB5JCVRNNA" target="_blank" rel="noreferrer"><img src="/images/beeapi.jpg" alt="BeeAPI" style="max-width: 190px; max-height: 80px;" /></a><br/>
+        <strong><a href="https://beeapi.ai/signup?aff=HIAB5JCVRNNA" target="_blank" rel="noreferrer">BeeAPI</a></strong>
+      </td>
+      <td>感谢 <a href="https://beeapi.ai/signup?aff=HIAB5JCVRNNA" target="_blank" rel="noreferrer">BeeAPI</a> 对 Codeg 的赞助！BeeAPI 是专业的多模型 AI API 中转与聚合平台，汇集多家服务商及多种主流 AI 模型，支持多商家比价、多分组智能路由、统一 API 接入与计费，帮助用户更灵活、稳定、低成本地调用 AI 服务。</td>
+    </tr>
   </tbody>
 </table>
 
