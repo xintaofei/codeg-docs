@@ -146,4 +146,4 @@ Summoning the on-screen companion needs the native desktop window, so **Summon**
 
 - [The Workspace](/guide/workspace) — the editor and terminal the font settings style.
 - [System](/reference/settings/system) — updates, network proxy, language, and backup.
-- [Reference overview](/reference/) — the full 14-screen Settings map.
+- [Reference overview](/reference/) — the full 16-screen Settings map.

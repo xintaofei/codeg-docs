@@ -61,4 +61,4 @@ If the service is stopped but Codeg notices the configured port is already **hel
 - [Deployment](/getting-started/deployment) — the *other* route to browser access: run Codeg headlessly with `codeg-server` or Docker, no desktop required.
 - [Privacy & Security](/reference/privacy) — how the access token and your data are handled once the service is exposed.
 - [Architecture](/reference/architecture) — the `codeg-server` binary behind both this screen and a standalone deployment.
-- [Reference overview](/reference/) — the full 14-screen Settings map.
+- [Reference overview](/reference/) — the full 16-screen Settings map.

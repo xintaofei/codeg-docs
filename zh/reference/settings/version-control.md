@@ -94,4 +94,4 @@ description: 版本控制设置界面 —— 为 Codeg 指定正确的 Git 可�
 - [Git 与 Worktree](/zh/guide/git) —— 这些凭据在幕后默默支撑的应用内 git 工作流：差异比较、提交、分支和并行 worktree。
 - [模型提供商](/zh/guide/authentication) —— *另一个*凭据界面，用于智能体的模型访问而非 Git 服务器。
 - [系统](/zh/reference/settings/system) —— 网络代理，git 流量和其他一切都经由它。
-- [参考概览](/zh/reference/) —— 完整的 14 个设置界面地图。
+- [参考概览](/zh/reference/) —— 完整的 16 个设置界面地图。

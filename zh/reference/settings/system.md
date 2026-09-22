@@ -104,4 +104,4 @@ Codeg **不保存这个设置的任何副本** —— 操作系统自己的启�
 - [配置](/zh/getting-started/configuration) —— 在应用启动前，从环境中设置代理及其他选项。
 - [版本控制](/zh/reference/settings/version-control) —— 桌面备份刻意排除的那个操作系统钥匙串。
 - [隐私与安全](/zh/reference/privacy) —— 明文机密、加密，以及什么会离开你的机器。
-- [参考概览](/zh/reference/) —— 完整的 14 个设置界面地图。
+- [参考概览](/zh/reference/) —— 完整的 16 个设置界面地图。

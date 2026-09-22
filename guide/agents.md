@@ -123,6 +123,10 @@ Nothing is invented. Every value handed back is one Cursor's own CLI reported, b
 
 Cursor's **permission switch** shows the mode the session actually runs in, which it didn't before 0.30.0: *Run Everything* and *Ask* were written in a way that couldn't tell "the user chose Ask" from "never chose anything".
 
+Since **0.31.2** Codeg also answers Cursor's **own protocol extensions**. The CLI sends `cursor/ask_question`, `cursor/create_plan`, `cursor/update_todos`, `cursor/task` and `cursor/generate_image` as requests of its own invention; unanswered, each came back "method not found" and a live turn painted a red banner on every Task it spawned. The two that need you now land in the cards you already know — the **question card** and the **plan approval**, the same path Grok's take — and the other three are answered so the agent isn't left waiting on them.
+
+On **Linux**, Cursor also simply works again as of **0.31.2**: the compatibility patch Codeg applies to Cursor's bundle was written against the macOS build and mis-targeted on Linux, so every prompt died with a `TypeError`. Installs already carrying the bad patch are repaired in place. A `cursor-agent` you installed yourself under `/opt` is neither patched nor repaired — it's outside what Codeg manages.
+
 ### Codex: sandbox and approvals
 
 Codex's pane has a **Sandbox & approvals** group — the two questions of how much it can touch and when it stops to ask:

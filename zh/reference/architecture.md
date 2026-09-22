@@ -49,7 +49,7 @@ Codeg 并不重新实现 Claude Code、Codex、Gemini 等等 —— 它**驱动�
 
 ## 多智能体委派与 `codeg-mcp` {#multi-agent-delegation-and-codeg-mcp}
 
-`codeg-mcp` 是一个智能体能够将工作**交给另一个智能体**的方式。当 Codeg 启动一个智能体 CLI 时，它注入一个指向该二进制文件的 MCP 服务器条目；CLI 通过 stdio 启动它，其 LLM 便获得一小组 Codeg 工具 —— 最重要的是 **`delegate_to_agent`**，外加来自[通用设置](/zh/reference/settings/general)的可切换辅助工具：`check_user_feedback`、`ask_user_question` 和 `get_session_info`。一次 `delegate_to_agent` 调用会经由伴生程序回传到父 Codeg 进程，后者启动工作智能体并将其结果流式传回。
+`codeg-mcp` 是一个智能体能够将工作**交给另一个智能体**的方式。当 Codeg 启动一个智能体 CLI 时，它注入一个指向该二进制文件的 MCP 服务器条目；CLI 通过 stdio 启动它，其 LLM 便获得一小组 Codeg 工具 —— 最重要的是 **`delegate_to_agent`**，外加来自[协作设置](/zh/reference/settings/collaboration)的可切换辅助工具：`check_user_feedback`、`ask_user_question` 和 `get_session_info`。一次 `delegate_to_agent` 调用会经由伴生程序回传到父 Codeg 进程，后者启动工作智能体并将其结果流式传回。
 
 还有两个工具走的是同一条通道，但没有属于自己的设置开关：**`task_progress`** 和 **`task_complete`**，它们让智能体为正在执行的[任务](/zh/guide/tasks)上报进展里程碑和最终结论。它们只会注入到任务引擎启动的那些进程中，因此普通对话永远看不到它们。
 
@@ -80,5 +80,5 @@ Codeg 将其状态保存在**本地机器**上，默认位于 **`~/.codeg/`** �
 - [Web 服务](/zh/reference/settings/web-service) —— 桌面应用通往浏览器 UI 的自有前门。
 - [下载与安装](/zh/getting-started/installation#mobile-apps) —— 获取原生客户端，并将其连接到 Codeg 主机。
 - [使用多个智能体](/zh/guide/multi-agent) —— `codeg-mcp` 所实现的委派功能。
-- [通用](/zh/reference/settings/general) —— 决定每个智能体接收哪些 `codeg-mcp` 工具的开关。
+- [协作](/zh/reference/settings/collaboration) —— 决定每个智能体接收哪些 `codeg-mcp` 工具的开关。
 - [隐私与安全](/zh/reference/privacy) —— 哪些内容留在本地，哪些离开去往模型提供商。

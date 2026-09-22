@@ -16,12 +16,14 @@ Codeg gathers every preference into one **Settings** window (its sidebar is head
 | Settings screen | What it controls | Documented in |
 | --------------- | ---------------- | ------------- |
 | **Appearance** | Theme mode & color, window zoom, fonts, desktop pet | [Appearance](/reference/settings/appearance) |
-| **General** | Default terminal, rendering, desktop notifications & sounds, the built-in browser, and the collaboration & feedback toggles | [General](/reference/settings/general) |
+| **General** | Default terminal, command-output colour, rendering, what the close button does, desktop notifications & sounds | [General](/reference/settings/general) |
 | **MCP** | Model Context Protocol servers — add, scan, enable per agent | [Guide → MCP Servers](/guide/mcp) |
 | **Skills** | Write and edit your own agent skills | [Guide → Skills](/guide/skills) |
 | **Skill Packs** | Curated bundles — Experts, Science, Office | [Guide → Skills](/guide/skills#enable-a-curated-skill-pack) |
+| **Collaboration** | Delegation between agents, and the in-conversation tools each agent is given | [Collaboration](/reference/settings/collaboration) |
 | **Agents** | The agent CLIs — connect, configure, run preflight, and [register your own](/guide/custom-agents) | [Guide → Working with Agents](/guide/agents) |
 | **Model Providers** | API provider credentials for agents | [Guide → Authentication & Models](/guide/authentication) |
+| **Browser** | The built-in browser — where links open, site rules, what agents may see and do on a page *(desktop only)* | [Browser](/reference/settings/browser) |
 | **Quick Messages** | Reusable message snippets for the composer | [Quick Messages](/reference/settings/quick-messages) |
 | **Shortcuts** | Keyboard shortcuts | [Shortcuts](/reference/settings/shortcuts) |
 | **Version Control** | Git executable, GitHub, GitLab and other Git accounts | [Version Control](/reference/settings/version-control) |
@@ -30,10 +32,14 @@ Codeg gathers every preference into one **Settings** window (its sidebar is head
 | **Runtime Logs** | Diagnostic logs — level, live viewer, files | [Runtime Logs](/reference/settings/logs) |
 | **System** | Updates, launch at login, network proxy, language, backup & restore | [System](/reference/settings/system) |
 
-Opening Settings lands you on **Appearance**. Every screen is identical whether you run the desktop app or reach Codeg through a browser — with one exception: **Web Service** appears only in the desktop app, because it's the screen that *turns on* browser access in the first place.
+Opening Settings lands you on **Appearance**. Every screen is identical whether you run the desktop app or reach Codeg through a browser — with two exceptions, both dropped from the nav in a browser session: **Web Service**, because it's the screen that *turns on* browser access in the first place, and **Browser**, because there's no engine to embed in a browser tab and every link goes to your own browser instead.
 
 ::: tip Six screens have a full how-to in the Guide
-MCP, Skills, Skill Packs, Agents, Model Providers, and Chat Channels are features you *use*, not just settings you tweak — so they're written up as task guides. The eight remaining screens are covered here, in reference form.
+MCP, Skills, Skill Packs, Agents, Model Providers, and Chat Channels are features you *use*, not just settings you tweak — so they're written up as task guides. The ten remaining screens are covered here, in reference form.
+:::
+
+::: info The map moves when the app does
+**Collaboration** and **Browser** are new entries in **0.31.2**, split out of General — delegation and the in-conversation tools onto one page, the built-in browser onto another. [General](/reference/settings/general) is the app-behaviour screen it was always named for.
 :::
 
 ## Architecture & Security

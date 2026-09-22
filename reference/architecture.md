@@ -49,7 +49,7 @@ When Codeg launches an agent, it also hands it a set of **MCP servers** to conne
 
 ## Multi-agent delegation and `codeg-mcp`
 
-`codeg-mcp` is how one agent can **hand work to another**. When Codeg starts an agent CLI, it injects an MCP server entry pointing at this binary; the CLI launches it over stdio, and its LLM gains a small set of Codeg tools — above all **`delegate_to_agent`**, plus the toggleable helpers from [General settings](/reference/settings/general): `check_user_feedback`, `ask_user_question`, and `get_session_info`. A `delegate_to_agent` call travels back through the companion to the parent Codeg process, which spins up the worker agent and streams its result home.
+`codeg-mcp` is how one agent can **hand work to another**. When Codeg starts an agent CLI, it injects an MCP server entry pointing at this binary; the CLI launches it over stdio, and its LLM gains a small set of Codeg tools — above all **`delegate_to_agent`**, plus the toggleable helpers from [Collaboration settings](/reference/settings/collaboration): `check_user_feedback`, `ask_user_question`, and `get_session_info`. A `delegate_to_agent` call travels back through the companion to the parent Codeg process, which spins up the worker agent and streams its result home.
 
 Two more ride the same channel without a settings toggle of their own: **`task_progress`** and **`task_complete`**, which let an agent report milestones and a verdict for the [task](/guide/tasks) it's executing. They're injected only into spawns the task engine started, so an ordinary conversation never sees them.
 
@@ -80,5 +80,5 @@ There's no Codeg cloud in the middle. The desktop app and a server you run both 
 - [Web Service](/reference/settings/web-service) — the desktop app's own front door to the browser UI.
 - [Download and install](/getting-started/installation#mobile-apps) — get the native clients and connect them to a Codeg host.
 - [Working with Multiple Agents](/guide/multi-agent) — the delegation feature that `codeg-mcp` implements.
-- [General](/reference/settings/general) — the toggles that decide which `codeg-mcp` tools each agent receives.
+- [Collaboration](/reference/settings/collaboration) — the toggles that decide which `codeg-mcp` tools each agent receives.
 - [Privacy & Security](/reference/privacy) — what stays local, and what leaves for the model provider.

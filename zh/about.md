@@ -22,24 +22,10 @@ Codeg 的开发由下列赞助商支持。如果他们所提供的服务契合�
     </tr>
     <tr>
       <td align="center" width="210">
-        <a href="https://sui-xiang.com/register?aff=JPFCRHHBE8HE" target="_blank" rel="noreferrer"><img src="/images/sui-xiang.jpg" alt="随想AI中转站" style="max-width: 190px; max-height: 80px;" /></a><br/>
-        <strong><a href="https://sui-xiang.com/register?aff=JPFCRHHBE8HE" target="_blank" rel="noreferrer">随想AI中转站</a></strong>
-      </td>
-      <td>感谢 <a href="https://sui-xiang.com/register?aff=JPFCRHHBE8HE" target="_blank" rel="noreferrer">随想AI中转站</a> 赞助 Codeg！它是一家可靠、高效的 API 中转提供商，提供 Claude、Codex、Gemini 等的中转服务。<a href="https://sui-xiang.com/register?aff=JPFCRHHBE8HE" target="_blank" rel="noreferrer">注册</a>后，新账户每日签到即可获得 ¥0.5 测试额度，充值按 1:1 到账 —— 无需订阅，按量付费。多路冗余、跨地域容灾和自动故障转移，让长连接的 SSE 保持不中断。</td>
-    </tr>
-    <tr>
-      <td align="center" width="210">
         <a href="https://hezu.ink/sign-up?aff=0wVz" target="_blank" rel="noreferrer"><img src="/images/hezu-ink.jpg" alt="合租巴士" style="max-width: 190px; max-height: 80px;" /></a><br/>
         <strong><a href="https://hezu.ink/sign-up?aff=0wVz" target="_blank" rel="noreferrer">合租巴士</a></strong>
       </td>
       <td>感谢 <a href="https://hezu.ink/sign-up?aff=0wVz" target="_blank" rel="noreferrer">合租巴士</a> 赞助 Codeg！合租巴士是一个可靠、高效的 AI 中转平台，为 Codex 和 Claude Code 等主流模型提供高度稳定的中转。充值以透明的 1:1 比例到账，Codex 费率补贴低至 0.08。<a href="https://hezu.ink/sign-up?aff=0wVz" target="_blank" rel="noreferrer">通过官方网站加入</a>即可获得 $5 试用额度。</td>
-    </tr>
-    <tr>
-      <td align="center" width="210">
-        <a href="https://onehop.ai/platform/login?ref=CODEG&amp;utm_source=github&amp;utm_medium=readme_sponsor&amp;utm_campaign=codeg&amp;utm_content=sponsor_cta" target="_blank" rel="noreferrer"><img src="/images/onehop.jpg" alt="OneHop" style="max-width: 190px; max-height: 80px;" /></a><br/>
-        <strong><a href="https://onehop.ai/platform/login?ref=CODEG&amp;utm_source=github&amp;utm_medium=readme_sponsor&amp;utm_campaign=codeg&amp;utm_content=sponsor_cta" target="_blank" rel="noreferrer">OneHop</a></strong>
-      </td>
-      <td>感谢 <a href="https://onehop.ai/platform/login?ref=CODEG&amp;utm_source=github&amp;utm_medium=readme_sponsor&amp;utm_campaign=codeg&amp;utm_content=sponsor_cta" target="_blank" rel="noreferrer">OneHop</a> 赞助 Codeg！OneHop 让 Codeg 用户仅用一个 OpenAI 兼容的 API 密钥即可调用数百款领先模型，包括 GPT、Claude、Gemini、DeepSeek、Kimi 和 Qwen。无需管理多个供应商账号或反复修改代码即可切换模型，且按用量付费。<a href="https://onehop.ai/platform/login?ref=CODEG&amp;utm_source=github&amp;utm_medium=readme_sponsor&amp;utm_campaign=codeg&amp;utm_content=sponsor_cta" target="_blank" rel="noreferrer">通过 Codeg 注册</a>即可获得 1 美元额度，再加入 OneHop 社区并参与欢迎活动可额外获得 5 美元——最高共计 6 美元测试额度。</td>
     </tr>
     <tr>
       <td align="center" width="210">
@@ -61,6 +47,13 @@ Codeg 的开发由下列赞助商支持。如果他们所提供的服务契合�
         <strong><a href="https://www.ucloud.cn/site/active/astraflow?ytag=geo_waituo_codeg" target="_blank" rel="noreferrer">UCloud ·星图AstraFlow</a></strong>
       </td>
       <td>感谢 <a href="https://www.ucloud.cn/site/active/astraflow?ytag=geo_waituo_codeg" target="_blank" rel="noreferrer">UCloud ·星图AstraFlow</a> 赞助 Codeg！星图 AstraFlow 是优刻得（UCloud）的大模型平台，支持 200+ 模型一键调用 —— 内置 Kimi K3、DeepSeek V4/V3、Qwen 3、GLM5.2、happyhorse 等全球领先的开源大模型，无需自训，开箱即用。通过<a href="https://www.ucloud.cn/site/active/astraflow?ytag=geo_waituo_codeg" target="_blank" rel="noreferrer">此链接</a>以<strong>邮箱</strong>注册并完成实名认证后，即可<a href="https://f.howxm.com/xs/u/HVFW5X8EIYV1" target="_blank" rel="noreferrer">领取 ¥50 算力金</a>。</td>
+    </tr>
+    <tr>
+      <td align="center" width="210">
+        <a href="https://fluxionai.space/register?source=github&amp;campaign=github-codeg-202609&amp;promo=CODEG" target="_blank" rel="noreferrer"><img src="/images/fluxion-ai.png" alt="Fluxion AI" style="max-width: 190px; max-height: 80px;" /></a><br/>
+        <strong><a href="https://fluxionai.space/register?source=github&amp;campaign=github-codeg-202609&amp;promo=CODEG" target="_blank" rel="noreferrer">Fluxion AI</a></strong>
+      </td>
+      <td>感谢 <a href="https://fluxionai.space/register?source=github&amp;campaign=github-codeg-202609&amp;promo=CODEG" target="_blank" rel="noreferrer">Fluxion AI</a> 赞助 Codeg！Fluxion AI 通过一个统一的 API，提供快速、可靠、高性价比的 GPT、Claude、Gemini 等领先 AI 模型接入。新用户通过<a href="https://fluxionai.space/register?source=github&amp;campaign=github-codeg-202609&amp;promo=CODEG" target="_blank" rel="noreferrer">我们的专属链接</a>注册可获得 3 美元 API 额度。</td>
     </tr>
   </tbody>
 </table>

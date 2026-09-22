@@ -1,35 +1,63 @@
 ---
 title: General
-description: The General settings screen — default terminal shell, hardware-accelerated rendering, desktop notifications and notification sounds, the built-in browser (where links open, site rules, local servers, sharing, browsing data), and the switches that decide which codeg-mcp tools your agents get — delegation, live feedback, ask-a-question, session lookup, reading and driving the browser, and creating automations and to-dos from chat.
+description: The General settings screen — the shell new terminals and agent command lines use, forced colour in command output, hardware-accelerated rendering, what the window's close button does, and desktop notifications and notification sounds.
 ---
 
 # General
 
-**Settings → General** is the catch-all screen: a little app behavior — which shell new terminals open, how the window is drawn, and how Codeg gets your attention when an agent wants you — followed by the switches that decide **which extra tools Codeg hands your agents**.
+**Settings → General** is the app-behaviour screen: which shell new terminals open, how command output is coloured, how the window is drawn, what its close button does, and how Codeg gets your attention when an agent wants you.
 
-Two save styles share this screen. **Default Terminal**, **Disable hardware acceleration**, **Desktop notifications** and **Notification sounds** apply the moment you change them (rendering then asks for a restart). The two panels below them — **Multi-Agent Collaboration** and **In-conversation tools** — each carry their own **Save** button, and nothing in either takes effect until you press it.
+Everything here applies the moment you change it — rendering then asks for a restart, and a custom shell path waits for the **Save** button beside it.
+
+::: info Two panels moved out in 0.31.2
+**Multi-Agent Collaboration** and **In-conversation tools** used to sit at the bottom of this screen. They now have their own entry: **[Settings → Collaboration](/reference/settings/collaboration)**. The **Built-in browser** block, which was folded at the very bottom, became **[Settings → Browser](/reference/settings/browser)**.
+:::
 
 ## Default Terminal
 
 Chooses the shell Codeg launches when you open a new terminal tab from the terminal bar or the file tree. The **Default shell** dropdown is built by probing your machine, so it lists what you actually have:
 
-- **System default** — whatever your OS hands out. The line beneath the dropdown shows the shell this currently resolves to.
+- **System default** — whatever your OS hands out.
 - **Named shells** — on Windows, *PowerShell 7 (pwsh)*, *Windows PowerShell*, and *Command Prompt (cmd)*; a shell that isn't installed still appears, marked *not installed*.
 - **Custom path** — type an absolute path (or a name resolvable on `PATH`), then **Save**. If the path doesn't exist on this host, Codeg warns you but still lets you save it.
 
 Picking a named option saves immediately; a custom path waits for the Save button beside it.
 
+Under the dropdown, **Currently using: …** names the program your choice actually resolves to — and since **0.31.2** it answers for *the selection*, not for the host's fallback. Before that it printed the same path (`C:\WINDOWS\system32\cmd.exe` on a typical Windows box) whichever row you picked, which reads exactly like a setting that does nothing. Now *Windows PowerShell* reads back as `…\v1.0\powershell.exe`, a shell the host can't find is echoed **verbatim** rather than quietly replaced by one you didn't choose, and the *not installed* badge on the row comes from the same probe — so the two can't disagree.
+
 The terminal this shell feeds is the one in [the workspace](/guide/workspace). Since **0.25** it isn't only that terminal: when an **agent** asks Codeg to run a whole command line, that runs through this shell too. Left on *System default* nothing changes from before.
+
+What it can't reach is an agent that carries a shell of its own: **Codex** and **Claude Code** run commands inside their own process and never ask Codeg to spawn one, so this picker has no say in what they use.
 
 ::: warning A non-POSIX shell may reject what agents write
 Agents emit **POSIX syntax** — `&&`, `2>&1`, `$(…)`. Your interactive shell is your business, but naming one that doesn't read POSIX means an agent's command line can fail with a syntax error rather than doing anything. **fish**, **nushell** and **Windows PowerShell 5.1** are the ones this bites; PowerShell 7 and cmd are handled with their own calling conventions.
 :::
+
+## Colorize command output
+
+Off by default. On, Codeg sets `CLICOLOR_FORCE=1` in the agent's environment, which forces ANSI colour out of the commands it runs — so their output renders **in colour in the transcript** instead of as plain text. Takes effect on sessions started afterwards.
+
+It's opt-in for a reason worth knowing before you turn it on. Agents like Claude Code spawn their shell commands **inside their own process**, so the variable is inherited by everything downstream, and `CLICOLOR_FORCE` is by convention the one colour variable `NO_COLOR` cannot override. The output Codeg renders is the same output the agent parses: `gh … --json` emits ANSI inside the JSON, and piping that into `jq` fails. The agent also captures the escape sequences into its own context — tokens spent on colour nobody may be looking at.
+
+A per-agent `CLICOLOR_FORCE` in an agent's own [environment variables](/guide/agents) still outranks this switch, either way.
 
 ## Disable hardware acceleration
 
 A single switch, named for what it does rather than for the category it belongs to — turning it *on* is what turns acceleration *off*. Reach for it if the app shows a black screen or rendering glitches: certain AMD GPUs and Intel integrated graphics on Windows, and the proprietary NVIDIA driver on Linux. It changes how the underlying webview draws, so Codeg saves the choice and then asks you to **Restart now** for it to take hold — and since **0.30.3**, turning it back off takes effect on that restart too, instead of the setting being inherited by the new process and looking stuck.
 
 The section appears in a **local Windows or Linux desktop window**, which is where there's a knob to turn: WebView2 and WebKitGTK each expose one the app can flip at startup. macOS's WKWebView exposes none, so no switch is shown there rather than one that would do nothing; a browser session has none either; and a desktop window **attached to a remote workspace** hides it too, since the webview it would redraw is the local one and the settings you're editing are the remote host's.
+
+## Close Button Behavior
+
+What the main window's **✕** actually does, as a choice rather than a guess. Three values, added in **0.30.8**:
+
+- **Ask every time** *(default)* — a dialog with a **remember my choice** box. Ticking it pins the answer, and this setting stays editable afterwards.
+- **Minimize to tray** — the window hides and Codeg keeps running, which is what the app always did where a tray existed.
+- **Exit codeg** — the close button quits.
+
+The old behaviour was one hardcoded rule — hide to tray if there's a tray, exit otherwise — which left one group of users finding the app still running and another finding it gone, with no way to say which they meant.
+
+**Tray capability wins over the preference.** On a system with no usable tray the close button always exits, whatever is stored, and the picker is visibly disabled with that reason — hiding the main window where nothing can restore it would strand the tray-less webviews, the [desktop pet](/reference/settings/appearance) among them. Local desktop windows only: a window attached to a remote workspace would be configuring a close button on someone else's machine, so the section isn't shown there.
 
 ## Desktop notifications
 
@@ -74,85 +102,17 @@ Like desktop notifications, this section **starts folded** — the two of them t
 Notifications and sounds are the two parts of this screen kept in the browser or app you set them in, not in Codeg's database. Where an alert lands is a property of the machine you're at: a phone browser attached to the same server has no business beeping — or buzzing — because your desktop was configured to. For sounds it also means they play in the **workspace window** of that device only.
 :::
 
-## Multi-Agent Collaboration
-
-The switch that lets an active agent hand sub-tasks to other agents — Codeg's **delegation** feature. Two tabs:
-
-- **General** — **Enable delegation** (off by default; when off, the `delegate_to_agent` tool is hidden from the agent's tool catalog), **Maximum delegation depth** (1–8, default **1** — how deep a chain of agents-spawning-agents may recurse), and **Completed-result cache (MB)** (default 512 — how much finished sub-agent output is held in memory while the lead session runs; `0` = unlimited).
-- **Agent defaults** — per-agent overrides (mode and config) applied when a delegation call spawns that agent as a worker. The tabs are built from the live agent registry, so a [custom agent](/guide/custom-agents) gets one too, and the options come from a live probe of each agent — what you pick is exactly what it will accept.
-
-Press **Save** to apply. This panel is the control surface; the how-to — writing delegation prompts, watching the team, turning a workflow into a skill — lives in **[Working with Multiple Agents](/guide/multi-agent)**.
-
-One thing switched on here can still be withheld elsewhere, so the panel says so: a warning under **Enable delegation** **names any agent whose per-agent [Let the agent handle files and commands](/guide/agents#let-the-agent-handle-its-own-files-and-commands) switch is on**, because that switch takes the delegation tools away deliberately. The list is read from the policy the backend actually resolved, not guessed from the agent's environment — so it agrees with what the agent will really be handed.
-
-::: info The target list follows your enable toggles
-`delegate_to_agent` advertises only the agents you can actually launch, re-read each time an agent starts: a built-in you've disabled in **Settings → Agents** is struck from its list of targets, an enabled custom agent is added to it, and a disabled one is simply never offered. So switching an agent off hides it from the lead as well as from the composer picker.
-:::
-
-## In-conversation tools
-
-One card, seven switches, one **Save** — *"extra tools Codeg gives an agent inside a conversation. Each is injected when the agent starts, so a change applies to agents started afterwards."*
-
-| Switch | Default | What the agent gains |
-| ------ | ------- | -------------------- |
-| **Live Feedback** | Off | Take notes and corrections from you *while it's working* — see below |
-| **Ask user question** | On | Pause and put a multiple-choice question to you, rendered as a card above the conversation input. The agent blocks until you answer or skip. Since **0.31.0** the card [collapses to its header](/guide/workspace#follow-along-—-the-conversation) while the question stays pending |
-| **Get session info** | On | Resolve a session you referenced — a badge like `codeg://session/<id>` — into its title, agent, status, workspace, token usage, and recent messages. Read-only |
-| **Read and drive the built-in browser** | Off | List the pages open in the [built-in browser](/guide/browser#let-an-agent-work-on-the-page), read the ones you shared, act on the ones you shared for acting, and open, point or close tabs |
-| **Run code in the built-in browser** | Off | Run its own JavaScript on a page you shared — [one snippet at a time, each shown to you first](/guide/browser#running-its-own-code). Needs the switch above |
-| **Create automations** | Off | Save the conversation as an [automation](/guide/automations) that runs on a schedule |
-| **Create to-do tasks** | Off | Queue a card on the [to-do board](/guide/tasks) from the conversation |
-
-The first three are read-only or ask-only. **The other four reach outside the conversation** — two into a page you are looking at, two into app state — which is why they all start off and why they're checked again at the moment the tool is called, not only when the agent started: switching one off stops even a session that is already running from using it.
-
-The two browser switches only ever hand a tool to an agent in the **desktop app**; a browser session has no native tabs for an agent to reach, so the rows are inert there. Be clear about what turning the first one on does, though: with **Default sharing level** at its shipped value of *Read and act*, every page in every browser tab is shared with that agent as it loads. A tab's own control still overrides it page by page, and *Share nothing* leaves every share to that control. → [Let an agent work on the page](/guide/browser#let-an-agent-work-on-the-page)
-
-**Ask user question** no longer costs you two dialogs. Under a permission mode that consults you before *every* MCP tool call — Claude Code's default — the real question card used to be preceded by a raw "run this tool?" approval that dumped the questions as JSON. Since **0.31.0** Codeg recognises its own ask tool and answers that one for you, for that turn only.
-
-**Get session info** spells out to the agent what a session badge *means*: mentioning a session is you pointing at it deliberately, so the agent looks it up without being asked to, once per session mentioned. That mirrors how an `@agent` mention is treated as an instruction to delegate. → [Pick up where another session left off](/guide/multi-agent#pick-up-where-another-session-left-off)
-
-### How live feedback reaches a running agent
-
-There are two channels, and which one you get depends on the agent. The wording you see changes with it, deliberately, because they promise different things:
-
-- **Pushed straight into the turn** — *Insert into current turn*. With an agent whose adapter supports instant steering, your note goes into the work already in flight and the agent sees it right away. That is **Claude Code on adapter 0.65.0 or newer**, and the floor is checked against the adapter actually running rather than the version Codeg would have installed — launch prefers a copy already on your `PATH`, so the pin alone wouldn't prove it.
-- **Pulled by the agent** — *Send note for next check*. Any other session whose agent was handed the `check_user_feedback` tool **when it launched** — so not one that can't take MCP at all, and not one you switched this on for mid-session. Having the tool, the agent still has to volunteer a call to it, and those agents typically only check when you mention it: add something like *"check my live feedback regularly"* to your prompt.
-
-A pulled note simply **waits** for the agent's next check. What gets rerouted is a note that couldn't be recorded at all — the turn ended while you were submitting — which is **queued instead, and sent with the next turn**, with Codeg saying so. Attachments follow the same principle from the other side: on the push channel a draft carrying **images and file references travels whole**, and on the pull channel it travels whole too, but by taking the queue rather than being stripped down to its text.
-
-Since **0.30.3** the same two channels drive the composer's **mid-turn send** — the split Send button that appears while the agent is working — so the note doesn't have to go through the **+** menu's dialog. → [Talk to an agent mid-turn](/guide/workspace#talk-to-an-agent-mid-turn)
-
-## Built-in browser
-
-Desktop only, and folded on arrival. Everything here applies the moment you change it; a few rows say *from now on* because a tab's engine cannot change after it exists. The behaviour these switches control is described in [Built-in Browser](/guide/browser).
-
-- **Where links open** — one picker per source: *Conversation messages*, *Tool results*, *Terminal*, *Editor*, *Notifications*. Each starts as **Built-in browser**; the other value is **System browser**. ⌘/Ctrl-click always opens a link the other way, whatever the picker says.
-- **Site rules** — a table of patterns (`example.com`, `*.example.com`, `*`, each with an optional `:port`) and actions (*Built-in browser*, *System browser*, *Block*). Add a row at the bottom; change a row's action in place; remove it with the trash button. The most specific matching pattern wins, so there is nothing to order. Rows with a lock were set by an administrator's [policy file](/guide/browser#rules-set-by-an-administrator) and cannot be changed here; when that file turns the browser off, a note at the top says so and every link goes to the system browser.
-- **Terminal link menu** — off by default. On, a plain click on a link in the terminal shows a small menu (built-in browser, system browser, copy link) instead of opening it right away; ⌘/Ctrl-click still opens directly.
-- **Local servers** — what happens when a server started in a terminal prints its address: **Notify me** (the default — a toast with an **Open** button), **Open a tab** (in the background), or **Do nothing**. Addresses on this machine only, and only once something is listening. Either way the tab strip's **+** lists the local servers running right now. → [A server you start in a terminal](/guide/browser#a-server-you-start-in-a-terminal)
-- **Default sharing level** — **Read and act** by default; also *Read only* and *Share nothing*. What every site a tab arrives at is shared with agents at, with nobody asked; a tab's own control still overrides it site by site, and *Share nothing* leaves every share to that control. Inert until an agent has the [browser tool group](#in-conversation-tools). → [Let an agent work on the page](/guide/browser#let-an-agent-work-on-the-page)
-- **HTML file previews** — on by default where the [document view](/guide/browser#html-files-the-document-view) exists (macOS and Windows). Off, every `.html` file uses the inline preview, as the web app does. Inert on platforms without the document view.
-- **Web inspector** — on by default. Puts **Open inspector** in a tab's **⋯** menu and allows *Inspect Element* in the page's right-click menu; since **0.31.0** the inspector opens in a window of its own rather than docking into the tab. Applies to tabs opened from now on.
-- **Tab surface** — *Automatic*, *Embedded in the workspace* or *Separate window*. Leave it on Automatic unless embedded tabs misbehave on your system; Linux always uses separate windows. Applies to tabs opened from now on.
-- **Unload background tabs** — off by default. On, a browser tab that stays in the background for thirty minutes releases its engine and reloads when you return.
-- **Profiles** — each keeps its own cookies, site storage and sign-ins. Add one by name, clear one's browsing data, delete one (its tabs close with it), and pick which profile **new tabs open in**. Needs macOS 14 or later; on earlier macOS the section is a single **Browsing data** row instead. → [Profiles, browsing data and the proxy](/guide/browser#browsing-data-cookies-and-the-proxy)
-- **Google sign-in compatibility** — on by default. Presents a Firefox identity to Google's sign-in pages only, because Google refuses embedded browsers; everywhere else a tab identifies as the engine it runs in. `CODEG_BROWSER_SIGN_IN_HOSTS` adds another provider that refuses the same way.
-- **Network proxy** — read-only: which proxy browser tabs use right now, taken from **Settings → System → Network proxy**, and whether a change needs new tabs or a restart on this platform. Addresses on this machine are never proxied.
-- **Downloads** — read-only: the folder a page's downloads land in. Nothing is opened automatically and an existing file is never replaced.
-- **Browsing data → Clear…** — after a confirmation, removes the cookies, caches and site storage of a profile's browser tabs (you are signed out of sites). Open tabs stay open; the app's own settings are untouched.
-
 ## Good to know
 
-- **Two save styles.** Terminal, rendering, desktop notifications and notification sounds apply on change; the delegation and in-conversation-tools panels each need their own **Save** — and rendering additionally needs a restart.
-- **Tool switches apply the next time an agent starts.** Each adds or removes a tool "for agents started after this is turned on" — an agent that's connected right now won't gain or lose the capability mid-flight. It needn't be a brand-new conversation, though: any conversation picks the change up whenever its agent next launches, including an existing one you return to after its connection ended. A new conversation is simply the surest way. (The two *create* switches and the two *browser* switches are the exception, and are re-checked at call time — turning one off stops a session that is already running.)
-- **These are the codeg-mcp tools.** Delegation and all seven in-conversation tools are served by the [`codeg-mcp` companion](/reference/architecture); the switches here decide which appear in each agent's catalog. Not *every* companion tool is governed here, though — an agent running a [to-do](/guide/tasks) also gets `task_progress` and `task_complete`, injected by the task engine rather than by anything on this screen.
-- **An agent that refuses MCP gets none of them.** A [custom agent](/guide/custom-agents) with its **MCP support** switch turned off is connected without the companion at all, so nothing on this screen reaches it.
-- **The rendering switch needs a webview knob to turn.** It shows only in a **local** Windows or Linux desktop window, and is absent on macOS, in the browser, and in a desktop window attached to a remote workspace — in each case because there'd be nothing behind it.
-- **The status bar carries these same switches.** All eight of them: the [codeg-mcp popover](/guide/multi-agent#the-service-from-the-status-bar) has delegation and every in-conversation tool. Flip one there with this page open and the form converges on it rather than sending its stale value back on the next Save.
+- **Everything saves on change.** There's no Save button on this screen; only a **custom shell path** waits for one, because a half-typed path isn't a setting. Rendering additionally needs a restart.
+- **Two sections can be absent, each for a reason.** Rendering shows only in a **local** Windows or Linux desktop window, because that's where there's a webview knob to turn; the close-button picker only in a local desktop window, and it's disabled with a reason where the system has no usable tray. Both are gone in the browser and in a window attached to a remote workspace, where they'd be configuring the wrong machine.
+- **Colour here isn't the app's colour.** *Colorize command output* forces colour out of the commands **an agent** runs. It has nothing to do with the app's own theme — that's [Appearance](/reference/settings/appearance) — and nothing to do with the terminal you type in yourself.
+- **Looking for the agent tool switches?** Delegation and the in-conversation tools moved to [Collaboration](/reference/settings/collaboration) in **0.31.2**, and the built-in browser to [Browser](/reference/settings/browser).
 
 ## Related
 
-- [Working with Multiple Agents](/guide/multi-agent) — the full how-to behind the Multi-Agent Collaboration toggle.
+- [Collaboration](/reference/settings/collaboration) — delegation and the in-conversation tools, which used to live at the bottom of this screen.
+- [Browser](/reference/settings/browser) — the built-in browser's own screen, likewise.
 - [The Workspace](/guide/workspace) — the terminal the default-shell setting feeds.
-- [Architecture](/reference/architecture) — the `codeg-mcp` companion that provides these agent tools.
-- [Reference overview](/reference/) — the full 14-screen Settings map.
+- [Chat Channels](/guide/chat-channels) — the five events the notification sounds mirror.
+- [Reference overview](/reference/) — the full 16-screen Settings map.

@@ -78,4 +78,4 @@ description: 快捷键设置界面 —— Codeg 全部键盘快捷键的完整�
 ## 相关 {#related}
 
 - [工作区](/zh/guide/workspace) —— 这些快捷键所切换的侧边栏、终端和面板。
-- [参考概览](/zh/reference/) —— 完整的 14 个设置界面地图。
+- [参考概览](/zh/reference/) —— 完整的 16 个设置界面地图。

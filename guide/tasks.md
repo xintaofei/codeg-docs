@@ -122,8 +122,8 @@ While it works, the agent has two extra tools that exist only inside a task run:
 - **`task_progress`** — a one-line milestone (*"tests passing, starting cleanup"*) that lands on the card and the timeline in real time.
 - **`task_complete`** — the verdict, called once at the end: **success**, **needs_review** (it works, but look at this), or **blocked** (couldn't finish, and why). Success and needs-review send the task to review; blocked marks it failed.
 
-::: tip These two aren't tied to the General toggles
-`task_progress` and `task_complete` are injected only into task runs, so they don't depend on delegation, live feedback, or anything else in [Settings → General](/reference/settings/general). And they're advisory: if the agent never calls `task_complete`, the task still settles normally when its turn ends.
+::: tip These two aren't tied to the Collaboration toggles
+`task_progress` and `task_complete` are injected only into task runs, so they don't depend on delegation, live feedback, or anything else in [Settings → Collaboration](/reference/settings/collaboration). And they're advisory: if the agent never calls `task_complete`, the task still settles normally when its turn ends.
 :::
 
 ## When a task needs you

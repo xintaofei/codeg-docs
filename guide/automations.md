@@ -97,7 +97,7 @@ The scheduler lives inside Codeg — desktop app or [server](/getting-started/de
 
 You aren't the only one who can save an automation. An agent in a conversation can **park work instead of only doing it**: one tool saves an automation — on a cron schedule or manual — and its sibling queues a [to-do](/guide/tasks). *"This check should really run every night"* becomes a saved automation without you leaving the conversation to go build it.
 
-Both are **off by default**, under **Settings → General → In-conversation tools**. They're the two switches there that *write* app state rather than only reading it, so they're deliberately opt-in — and unlike the read-only tools, they're re-checked at the moment they're called, meaning switching one off stops a session that's already running from using it. → [Settings → General](/reference/settings/general#in-conversation-tools)
+Both are **off by default**, under **Settings → Collaboration → In-conversation tools**. They're the two switches there that *write* app state rather than only reading it, so they're deliberately opt-in — and unlike the read-only tools, they're re-checked at the moment they're called, meaning switching one off stops a session that's already running from using it. → [Settings → General](/reference/settings/collaboration#in-conversation-tools)
 
 Two details worth knowing:
 

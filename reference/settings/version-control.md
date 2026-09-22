@@ -94,4 +94,4 @@ This is why the [Git & Worktrees](/guide/git) workflow — cloning a repo, pushi
 - [Git & Worktrees](/guide/git) — the in-app git workflow these credentials quietly power: diffs, commits, branches, and parallel worktrees.
 - [Model Providers](/guide/authentication) — the *other* credential screen, for agent model access rather than Git servers.
 - [System](/reference/settings/system) — the network proxy that git traffic, like everything else, goes through.
-- [Reference overview](/reference/) — the full 14-screen Settings map.
+- [Reference overview](/reference/) — the full 16-screen Settings map.

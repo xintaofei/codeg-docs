@@ -104,4 +104,4 @@ Backup and restore operate on the data of the machine actually running Codeg. If
 - [Configuration](/getting-started/configuration) — setting the proxy, and other options, from the environment before the app starts.
 - [Version Control](/reference/settings/version-control) — the OS keychain that desktop backups deliberately exclude.
 - [Privacy & Security](/reference/privacy) — plaintext secrets, encryption, and what leaves your machine.
-- [Reference overview](/reference/) — the full 14-screen Settings map.
+- [Reference overview](/reference/) — the full 16-screen Settings map.

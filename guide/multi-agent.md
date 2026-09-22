@@ -47,7 +47,7 @@ There's one way a capable agent loses the ability: the per-agent **[Let the agen
 
 Delegation ships **off**, so the first step is enabling it:
 
-1. Open **Settings → General** and find **Multi-Agent Collaboration**.
+1. Open **Settings → Collaboration** and find **Multi-Agent Collaboration**. (It sat under *Settings → General* before **0.31.2**.)
 2. Switch on **Enable delegation**, then press **Save**. (With it off, the delegate tool simply isn't offered to any agent.)
 
 ::: warning It takes effect the next time an agent starts
@@ -63,7 +63,7 @@ Two neighbouring settings are worth knowing before you build a team:
 - **Maximum delegation depth** — how many levels deep delegation can nest. The default is **1**: the lead can delegate, but a sub-agent can't delegate further. Raise it (up to 8) only if you want sub-agents that build teams of their own — see [Sub-teams](#sub-teams-let-a-worker-build-its-own-team).
 - **Agent defaults** — per-agent overrides applied whenever Codeg spawns that agent as a **worker**, so delegated sessions start configured the way you want. Each agent gets its own tab — including any [custom agent](/guide/custom-agents) you've registered — holding a **Mode** row plus whatever options that agent advertises (Codex's approval policy and sandbox mode, for instance). The choices come from a **live probe** of the agent, so what you pick is exactly what it will accept. Leaving a row on **Default (…)** means *inherit whatever the agent's own default is*; picking the same value explicitly pins it, even if the agent later changes its default.
 
-The full control surface — including the completed-result cache — is documented in [Settings → General](/reference/settings/general#multi-agent-collaboration).
+The full control surface — including the completed-result cache — is documented in [Settings → Collaboration](/reference/settings/collaboration#multi-agent-collaboration).
 
 ::: warning Workers have to be ready
 A sub-agent is a real session of a real agent, so the target must be **enabled, installed, and signed in** — just like one you'd start yourself. Delegate to an agent that isn't ready and that hand-off comes back as *spawn failed*; the lead keeps going without it. [Working with Agents](/guide/agents) and [Authentication & Models](/guide/authentication) cover getting each one ready.
@@ -77,19 +77,19 @@ Delegation runs through a companion process, `codeg-mcp`, and since **0.30.4** t
 | ----- | ------------- |
 | **Running** | The socket answers, the companion is on disk, and at least one tool group is on — so an agent launched here gets the tools, if it's one that accepts MCP at all |
 | **Not running** | The broker socket isn't answering. **Start service** appears here when this runtime has a handle it can start with |
-| **No tools enabled** | All six groups are off, so an ordinary session gets no companion — a [to-do](/guide/tasks) run still gets its own reporting tools, which aren't switched here |
+| **No tools enabled** | All eight groups are off, so an ordinary session gets no companion — a [to-do](/guide/tasks) run still gets its own reporting tools, which aren't switched here |
 | **Companion missing** | The `codeg-mcp` binary isn't on disk |
 | **Unknown** | The status couldn't be read at all |
 
 Open it and the popover shows how many **sessions** and **delegations** are live and the **depth cap**, plus the last error if there was one. Hover the state badge for the socket **address** and the companion **binary** path.
 
-It also carries the **tool switches themselves**: Delegation, Live feedback, Ask a question, Session lookup, Create automation and Create task, each with a one-line description, so turning a capability on doesn't mean a trip into Settings. These are **the same switches** as [Settings → General](/reference/settings/general) — not a second copy of them — and flipping one here while that page is open makes the page converge on it rather than sending its stale value back on the next Save.
+It also carries the **tool switches themselves** — all eight: Delegation, Live feedback, Ask a question, Session lookup, the two built-in-browser ones, Create automation and Create task, each with a one-line description, so turning a capability on doesn't mean a trip into Settings. These are **the same switches** as [Settings → Collaboration](/reference/settings/collaboration) — not a second copy of them — and flipping one here while that page is open makes the page converge on it rather than sending its stale value back on the next Save. **Open settings**, at the foot of the popover, goes straight to that page.
 
 ## Delegate with an @ mention
 
 You can always ask for delegation in plain prose, but naming the agent with an **`@` mention** is the dependable way to get it. The mention is recognised as an *explicit instruction to delegate that work to that agent* — so a capable lead treats it as a decision you've already made, rather than a suggestion it might act on.
 
-**How to insert one.** In the composer, type **`@`**. A picker opens with four groups — **Files**, **Agents**, **Sessions**, **Commits** — and typing filters across all of them. Type a few letters of an agent's name (or its internal slug, so `claude_code` finds Claude Code) and pick it from the **Agents** group. It lands in your message as a badge.
+**How to insert one.** In the composer, type **`@`**. A picker opens with four groups — **Files**, **Agents**, **Sessions**, **Commits** — and typing filters across all of them. Type a few letters of an agent's name (or its internal slug, so `claude_code` finds Claude Code) and pick it from the **Agents** group. It lands in your message as a badge — and since **0.31.2** one **Backspace** takes it back off, rather than first eating the invisible space behind it.
 
 **What the lead receives.** The badge travels as readable text — `@Codex` — with the agent's internal slug attached, which is what tells the lead exactly which agent to target rather than leaving it to guess from a display name. Because the readable name stays in the sentence, the mention doubles as ordinary prose:
 
@@ -272,7 +272,7 @@ Like an `@agent` mention, this is now read as an **explicit instruction**: namin
 Read what it got done, then have @Codex finish the remaining files.
 ```
 
-This one needs **Get session info** switched on in **Settings → General** (it's on by default) — see [the settings reference](/reference/settings/general#in-conversation-tools). It's read-only: the lead learns from the old session, it doesn't resume it.
+This one needs **Get session info** switched on in **Settings → Collaboration** (it's on by default) — see [the settings reference](/reference/settings/collaboration#in-conversation-tools). It's read-only: the lead learns from the old session, it doesn't resume it.
 
 ### When not to delegate
 
@@ -318,7 +318,7 @@ Some agents ship their *own* sub-agent feature that spins up more copies of **th
 
 Putting it together — a small feature, implemented by one agent and reviewed by another:
 
-1. **Enable delegation.** Settings → General → **Multi-Agent Collaboration** → **Enable delegation** → **Save**.
+1. **Enable delegation.** Settings → Collaboration → **Multi-Agent Collaboration** → **Enable delegation** → **Save**.
 2. **Get both agents ready.** Make sure your lead agent and the one you'll delegate the review to are each enabled and signed in — see [Working with Agents](/guide/agents).
 3. **Start the session.** Open a conversation with your lead agent in the project folder. Use a **new** one if the conversation you had in mind is already connected — that's the surest way to pick up the delegate tool you just enabled.
 4. **Ask for the work and the review together.** For example:
@@ -351,7 +351,7 @@ Doing this a lot? Bottle step 4 as a skill (above) and it becomes a one-command 
 
 - [**Working with Agents**](/guide/agents) — enable and sign in the agents you'll put on a team.
 - [**Custom Agents**](/guide/custom-agents) — add an agent of your own to the roster you can delegate to.
-- [**Settings → General**](/reference/settings/general#multi-agent-collaboration) — the delegation switches, depth limit, and per-agent worker defaults.
+- [**Settings → Collaboration**](/reference/settings/collaboration#multi-agent-collaboration) — the delegation switches, depth limit, and per-agent worker defaults.
 - [**Skills**](/guide/skills) — bottle a delegation workflow into a reusable `/command`.
 - [**Git & Worktrees**](/guide/git#work-in-parallel-with-worktrees) — give parallel workers isolated checkouts so they don't collide.
 - [**The Workspace**](/guide/workspace#tile-several-sessions-side-by-side) — tile the lead and its sub-agents to watch them all at once.

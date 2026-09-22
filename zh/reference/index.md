@@ -16,12 +16,14 @@ Codeg 将每一项偏好都汇集到同一个**设置**窗口中（其侧边栏�
 | 设置界面 | 控制内容 | 文档位置 |
 | --------------- | ---------------- | ------------- |
 | **Appearance** | 主题模式与配色、窗口缩放、字体、桌面宠物 | [外观](/zh/reference/settings/appearance) |
-| **General** | 默认终端、渲染、桌面通知与提示音、内置浏览器，以及协作与反馈开关 | [通用](/zh/reference/settings/general) |
+| **General** | 默认终端、命令输出颜色、渲染、关闭按钮行为、桌面通知与提示音 | [常规](/zh/reference/settings/general) |
 | **MCP** | Model Context Protocol 服务器 —— 添加、扫描、按智能体启用 | [指南 → MCP 服务器](/zh/guide/mcp) |
 | **Skills** | 编写和编辑你自己的智能体技能 | [指南 → 技能](/zh/guide/skills) |
 | **Skill Packs** | 精选合集 —— Experts、Science、Office | [指南 → 技能](/zh/guide/skills#enable-a-curated-skill-pack) |
+| **Collaboration** | 智能体之间的委派，以及每个智能体拿到的会话内工具 | [协作](/zh/reference/settings/collaboration) |
 | **Agents** | 智能体 CLI —— 连接、配置、运行预检，以及[注册你自己的](/zh/guide/custom-agents) | [指南 → 使用智能体](/zh/guide/agents) |
 | **Model Providers** | 智能体使用的 API 提供商凭据 | [指南 → 认证与模型](/zh/guide/authentication) |
+| **Browser** | 内置浏览器 —— 链接在哪里打开、站点规则、智能体在页面上能看到和做什么 *（仅桌面应用）* | [浏览器](/zh/reference/settings/browser) |
 | **Quick Messages** | 供 composer 使用的可复用消息片段 | [快捷消息](/zh/reference/settings/quick-messages) |
 | **Shortcuts** | 键盘快捷键 | [快捷键](/zh/reference/settings/shortcuts) |
 | **Version Control** | Git 可执行文件、GitHub、GitLab 及其他 Git 账户 | [版本控制](/zh/reference/settings/version-control) |
@@ -30,10 +32,14 @@ Codeg 将每一项偏好都汇集到同一个**设置**窗口中（其侧边栏�
 | **Runtime Logs** | 诊断日志 —— 级别、实时查看器、文件 | [运行日志](/zh/reference/settings/logs) |
 | **System** | 更新、开机自启、网络代理、语言、备份与恢复 | [系统](/zh/reference/settings/system) |
 
-打开设置后，你会首先看到 **Appearance**。无论你运行桌面应用还是通过浏览器访问 Codeg，每个界面都完全相同 —— 只有一个例外：**Web Service** 仅在桌面应用中出现，因为正是这个界面*开启*了浏览器访问。
+打开设置后，你会首先看到 **Appearance**。无论你运行桌面应用还是通过浏览器访问 Codeg，每个界面都完全相同 —— 只有两个例外，它们在浏览器会话里都会从导航中去掉：**Web Service**，因为正是这个界面*开启*了浏览器访问；以及 **Browser**，因为浏览器标签页里没有可嵌入的引擎，所有链接都交给你自己的浏览器。
 
 ::: tip 六个界面在指南中有完整的操作教程
-MCP、Skills、Skill Packs、Agents、Model Providers 和 Chat Channels 是你要*使用*的功能，而不仅仅是你调整的设置 —— 因此它们被写成了任务型指南。其余八个界面在这里以参考形式介绍。
+MCP、Skills、Skill Packs、Agents、Model Providers 和 Chat Channels 是你要*使用*的功能，而不仅仅是你调整的设置 —— 因此它们被写成了任务型指南。其余十个界面在这里以参考形式介绍。
+:::
+
+::: info 应用一动，这张地图就跟着动
+**Collaboration** 和 **Browser** 是 **0.31.2** 从 General 拆出来的新入口 —— 委派与会话内工具一页，内置浏览器一页。[常规](/zh/reference/settings/general)则回到了它名字本来所指的那个「管应用行为」的界面。
 :::
 
 ## 架构与安全 {#architecture-security}

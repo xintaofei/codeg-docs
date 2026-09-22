@@ -74,6 +74,19 @@ Each day's file now carries a **512 MB ceiling** (`CODEG_LOG_MAX_BYTES`; `0` dis
 
 The protocol chatter behind that kind of flood is also quieter by default: the ACP transport logs every JSON-RPC message several times over, so its targets carry a standing level ceiling. Ask for more specifically — `RUST_LOG=sacp::jsonrpc::transport_actor=trace` — and you still get it.
 
+### A crash leaves a record
+
+Before **0.31.2**, a Rust panic left **nothing** behind. On Windows the runtime aborts with `STATUS_STACK_BUFFER_OVERRUN` (`0xc0000409`), so all a bug report could carry was a Windows Error Reporting bucket naming `codeg.exe` and a log that simply stops mid-file — no message, no location, no backtrace.
+
+Codeg now writes the crash down before the process dies: the **panic message**, the **thread**, the **file, line and column**, the **app version**, and a **backtrace** (captured unconditionally, not left to `RUST_BACKTRACE`, which nobody reporting a crash has set). It goes straight into the day's file **synchronously** — the ordinary path hands records to a background writer that an aborting process never gets to run — and then to stderr, the buffer and this viewer like any other error.
+
+Two things worth knowing when you go looking:
+
+- **Grep for `codeg_lib::panic`.** That's the record's target, chosen to be the string you'd search for. It's also what keeps it out of the logging stack's own silencing.
+- **It's bounded, and it's written once.** One process can spend at most **1 MiB** on panic records — a task panicking on every turn of a restart loop would otherwise become the storm the daily ceiling exists to prevent — and a line says so when the allowance is gone. Most panics don't end the process (async tasks catch theirs), so this is the common case rather than the rare one; the file records each one exactly once.
+
+All five binaries install it — desktop, `codeg-server`, `codeg-mcp`, the supervisor and the credential helper — before any of them does real work. For `codeg-mcp` the record goes to stderr only, like everything else it logs.
+
 ::: tip codeg-mcp is the exception
 The per-launch [`codeg-mcp` companion](/reference/architecture) logs to **stderr only** — no file, no buffer — so it never appears on this screen. What you see here is the desktop app or the server itself, not the MCP helpers they spawn.
 :::
@@ -91,4 +104,4 @@ The per-launch [`codeg-mcp` companion](/reference/architecture) logs to **stderr
 - [Architecture](/reference/architecture) — the three binaries (`codeg`, `codeg-server`, `codeg-mcp`) whose `codeg_lib::…` targets show up in these logs.
 - [Deployment](/getting-started/deployment) — where the server writes `codeg-server.<date>.log`, and why a browser session gets a download list instead of an Open-folder button.
 - [System](/reference/settings/system) — the other operations-facing screen: updates, network proxy, language, and backup.
-- [Reference overview](/reference/) — the full 14-screen Settings map.
+- [Reference overview](/reference/) — the full 16-screen Settings map.

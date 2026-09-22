@@ -123,6 +123,10 @@ Cursor 的目录是一个*组合*一个 id —— 大约两百个 —— 于是�
 
 Cursor 的**权限开关**如今显示的是会话实际运行的模式，这在 0.30.0 之前并非如此：*Run Everything* 和 *Ask* 的写法分不出「用户选了 Ask」和「用户从来没选过」。
 
+自 **0.31.2** 起，Codeg 也会回应 Cursor **自己的协议扩展**。它的 CLI 会发出 `cursor/ask_question`、`cursor/create_plan`、`cursor/update_todos`、`cursor/task` 和 `cursor/generate_image` 这些自定义请求；没人回应时，每一个都会返回「方法未找到」，正在跑的回合每生成一个 Task 就会亮一条红色横幅。现在需要你的那两个落进了你已经熟悉的卡片——**提问卡**和**计划审批**，和 Grok 走同一条路——另外三个也会被答复，免得智能体一直等在那里。
+
+**0.31.2** 起，**Linux 上的 Cursor** 也重新能用了：Codeg 给 Cursor bundle 打的兼容补丁是照着 macOS 构建写的，在 Linux 上打错了位置，于是每一条提示都死于一个 `TypeError`。已经带着坏补丁的安装会被就地修复。你自己装在 `/opt` 下的 `cursor-agent` 既不会被打补丁也不会被修复——它不在 Codeg 管理的范围内。
+
 ### Codex：沙箱与审批 {#codex-sandbox-and-approvals}
 
 Codex 的面板中有一个**沙箱与审批**分组——对应两个问题：它能触及多少，以及何时停下来询问：

@@ -122,8 +122,8 @@ description: 把要做的事写下来，让智能体一件件做完——每个�
 - **`task_progress`**——一行进展里程碑（*"测试通过了，开始清理"*），会实时出现在卡片和推进记录上。
 - **`task_complete`**——结论，在最后调用一次：**success**（成功）、**needs_review**（能用，但这一处请看一下）或 **blocked**（做不下去，以及为什么）。success 和 needs_review 会把任务送去验收；blocked 则把它标记为失败。
 
-::: tip 这两个工具与通用设置的开关无关
-`task_progress` 和 `task_complete` 只会注入到任务运行中，因此它们不依赖委派、实时反馈或[设置 → 通用](/zh/reference/settings/general)中的任何东西。而且它们只是建议性的：即便智能体从未调用 `task_complete`，任务仍会在其回合结束时正常落定。
+::: tip 这两个工具与协作设置的开关无关
+`task_progress` 和 `task_complete` 只会注入到任务运行中，因此它们不依赖委派、实时反馈或[设置 → 协作](/zh/reference/settings/collaboration)中的任何东西。而且它们只是建议性的：即便智能体从未调用 `task_complete`，任务仍会在其回合结束时正常落定。
 :::
 
 ## 当任务需要你时 {#when-a-task-needs-you}

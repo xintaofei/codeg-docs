@@ -78,4 +78,4 @@ The three zoom keys move through the same discrete rungs the Appearance screen o
 ## Related
 
 - [The Workspace](/guide/workspace) — the sidebar, terminal, and panels these shortcuts toggle.
-- [Reference overview](/reference/) — the full 14-screen Settings map.
+- [Reference overview](/reference/) — the full 16-screen Settings map.

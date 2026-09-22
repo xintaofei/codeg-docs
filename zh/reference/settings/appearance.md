@@ -146,4 +146,4 @@ description: 外观设置界面 —— 主题模式与强调色、自定义主�
 
 - [工作区](/zh/guide/workspace) —— 字体设置所影响的编辑器和终端。
 - [系统](/zh/reference/settings/system) —— 更新、网络代理、语言和备份。
-- [参考概览](/zh/reference/) —— 完整的 14 个设置界面地图。
+- [参考概览](/zh/reference/) —— 完整的 16 个设置界面地图。

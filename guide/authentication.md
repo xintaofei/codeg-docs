@@ -30,6 +30,12 @@ The simplest path is to use the agent's own subscription — the plan you'd use 
   - **Grok** — **Official Subscription** (SuperGrok or X Premium+ via `grok login`; nothing stored), **XAI API key** (a key from the xAI console, for headless runs), or **Custom endpoint** (a custom model with its own base URL and key, which becomes Grok's default).
   - **Cursor** — **official subscription**, where Codeg shows you the `cursor-agent login` command to run (a browser window opens) and reports **Logged in** once you refresh, or a **Cursor API key** from the Cursor dashboard for headless and server machines. Note that key is a *Cursor account* key — `cursor-agent` only talks to Cursor's own backend, so it isn't a route to a third-party endpoint. Codeg writes both into `~/.cursor/cli-config.json`, shared with the CLI.
 
+::: warning Cursor: a green light that wasn't
+`cursor-agent status` reports itself signed in from the mere **presence** of a token, expiry unread — while the protocol path refuses to open a session on a token within five minutes of expiring, and the CLI has no refresh grant. An aged-out login therefore read **Logged in** forever while every single prompt failed.
+
+Since **0.31.2** Codeg checks the credential against Cursor itself and says what it finds: **Signed in — credential not verified** when a stored login can't be used (usually an expired session — sign in again; the CLI can't refresh a browser login on its own), or the same state naming a **rejected API key** (revoked, expired or mistyped) when that's the method. The sign-in command Codeg offers also works on a **server**, where there is no browser to open: it's prefixed `NO_OPEN_BROWSER=1` so `cursor-agent` prints a URL for you to open on your own machine instead — except on a Windows host, where that POSIX prefix wouldn't run. For an unattended server, use the API key method.
+:::
+
 The integrated terminal (**⌘J**) is right there for those one-time logins.
 
 **Codex is the exception** — it signs in *inside* Codeg. Pick **Official Subscription** and click **Log in with ChatGPT**: Codeg shows a code and a verification link, you approve it in your browser, and the pane confirms with a green **Account logged in**. Click again anytime to re-login or switch accounts.

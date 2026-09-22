@@ -62,6 +62,10 @@ Open the produced `.docx`, `.xlsx`, or `.pptx` in a workspace file tab and Codeg
 
 The preview is **live**: as the agent keeps editing the file, it refreshes on its own. Under the hood Codeg runs a lightweight `officecli watch` server for the file and points the tab's preview at it, so the rendered document and the agent's edits never fight over the file on disk — you just watch the deck fill in slide by slide.
 
+You usually don't have to open it at all. **Auto-open preview** — the switch at the top of **Settings → Skill Packs → Office Tools**, **on by default** — opens the live preview by itself the first time an agent creates or edits a Word, Excel or PowerPoint file, so the document appears as it's written rather than after you go looking for it.
+
+It opens a document **once**. A preview you close stays closed: since **0.31.2** a tab you opened by hand counts as having seen the file, so closing it doesn't hand the next edit a reason to reopen it — and a document that's been **deleted** isn't reopened either, which used to happen when the agent's own cleanup was the last thing the watcher reported.
+
 ## Good to know
 
 - **The files are real and yours.** They're standard Office documents in your folder — open them in Word, Excel, or PowerPoint, email them, commit them. Nothing about them is Codeg-specific.

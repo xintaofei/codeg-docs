@@ -61,4 +61,4 @@ description: Web 服务设置界面 —— 把你的桌面 Codeg 变成网络上
 - [部署](/zh/getting-started/deployment) —— 通向浏览器访问的*另一条*路径：用 `codeg-server` 或 Docker 无头运行 Codeg，无需桌面。
 - [隐私与安全](/zh/reference/privacy) —— 服务暴露后，访问令牌和你的数据如何被处理。
 - [架构](/zh/reference/architecture) —— 支撑这个界面和独立部署两者的 `codeg-server` 二进制文件。
-- [参考概览](/zh/reference/) —— 完整的 14 个设置界面地图。
+- [参考概览](/zh/reference/) —— 完整的 16 个设置界面地图。

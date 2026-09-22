@@ -22,24 +22,10 @@ Codeg's development is supported by the sponsors below. If what they offer fits 
     </tr>
     <tr>
       <td align="center" width="210">
-        <a href="https://sui-xiang.com/register?aff=JPFCRHHBE8HE" target="_blank" rel="noreferrer"><img src="/images/sui-xiang.jpg" alt="随想AI中转站" style="max-width: 190px; max-height: 80px;" /></a><br/>
-        <strong><a href="https://sui-xiang.com/register?aff=JPFCRHHBE8HE" target="_blank" rel="noreferrer">随想AI中转站</a></strong>
-      </td>
-      <td>Thanks to <a href="https://sui-xiang.com/register?aff=JPFCRHHBE8HE" target="_blank" rel="noreferrer">随想AI中转站</a> for sponsoring Codeg! It's a reliable, efficient API relay provider with relay services for Claude, Codex, Gemini, and more. New accounts earn ¥0.5 in test credit with each daily check-in after <a href="https://sui-xiang.com/register?aff=JPFCRHHBE8HE" target="_blank" rel="noreferrer">signing up</a>, and top-ups are credited 1:1 — no subscription, pay as you go. Multi-route redundancy, cross-region disaster recovery, and automatic failover keep long-lived SSE connections uninterrupted.</td>
-    </tr>
-    <tr>
-      <td align="center" width="210">
         <a href="https://hezu.ink/sign-up?aff=0wVz" target="_blank" rel="noreferrer"><img src="/images/hezu-ink.jpg" alt="合租巴士" style="max-width: 190px; max-height: 80px;" /></a><br/>
         <strong><a href="https://hezu.ink/sign-up?aff=0wVz" target="_blank" rel="noreferrer">合租巴士</a></strong>
       </td>
       <td>Thanks to <a href="https://hezu.ink/sign-up?aff=0wVz" target="_blank" rel="noreferrer">合租巴士</a> for sponsoring Codeg! 合租巴士 is a reliable, efficient AI relay platform with highly stable relay for mainstream models such as Codex and Claude Code. Top-ups are credited at a transparent 1:1 ratio, with Codex rate subsidies as low as 0.08. <a href="https://hezu.ink/sign-up?aff=0wVz" target="_blank" rel="noreferrer">Join via the official website</a> to get $5 in trial credit.</td>
-    </tr>
-    <tr>
-      <td align="center" width="210">
-        <a href="https://onehop.ai/platform/login?ref=CODEG&amp;utm_source=github&amp;utm_medium=readme_sponsor&amp;utm_campaign=codeg&amp;utm_content=sponsor_cta" target="_blank" rel="noreferrer"><img src="/images/onehop.jpg" alt="OneHop" style="max-width: 190px; max-height: 80px;" /></a><br/>
-        <strong><a href="https://onehop.ai/platform/login?ref=CODEG&amp;utm_source=github&amp;utm_medium=readme_sponsor&amp;utm_campaign=codeg&amp;utm_content=sponsor_cta" target="_blank" rel="noreferrer">OneHop</a></strong>
-      </td>
-      <td>Thanks to <a href="https://onehop.ai/platform/login?ref=CODEG&amp;utm_source=github&amp;utm_medium=readme_sponsor&amp;utm_campaign=codeg&amp;utm_content=sponsor_cta" target="_blank" rel="noreferrer">OneHop</a> for sponsoring Codeg! OneHop gives Codeg users one OpenAI-compatible API key for hundreds of leading models, including GPT, Claude, Gemini, DeepSeek, Kimi, and Qwen. Switch models without managing multiple provider accounts or repeatedly changing your code, and pay only for what you use. <a href="https://onehop.ai/platform/login?ref=CODEG&amp;utm_source=github&amp;utm_medium=readme_sponsor&amp;utm_campaign=codeg&amp;utm_content=sponsor_cta" target="_blank" rel="noreferrer">Sign up through Codeg</a> to receive $1 in credit, then join the OneHop community and participate in the welcome activity for an additional $5 — up to $6 in test credit in total.</td>
     </tr>
     <tr>
       <td align="center" width="210">
@@ -61,6 +47,13 @@ Codeg's development is supported by the sponsors below. If what they offer fits 
         <strong><a href="https://www.ucloud.cn/site/active/astraflow?ytag=geo_waituo_codeg" target="_blank" rel="noreferrer">UCloud ·星图AstraFlow</a></strong>
       </td>
       <td>Thanks to <a href="https://www.ucloud.cn/site/active/astraflow?ytag=geo_waituo_codeg" target="_blank" rel="noreferrer">UCloud ·星图AstraFlow</a> for sponsoring Codeg! AstraFlow is UCloud's large-model platform, with one-click access to 200+ models — leading open-source models such as Kimi K3, DeepSeek V4/V3, Qwen 3, GLM5.2, and happyhorse are built in, ready to use with no training of your own. <a href="https://www.ucloud.cn/site/active/astraflow?ytag=geo_waituo_codeg" target="_blank" rel="noreferrer">Sign up via this link</a> with an <strong>email address</strong>, complete real-name verification, and then <a href="https://f.howxm.com/xs/u/HVFW5X8EIYV1" target="_blank" rel="noreferrer">claim ¥50 in compute credits</a>.</td>
+    </tr>
+    <tr>
+      <td align="center" width="210">
+        <a href="https://fluxionai.space/register?source=github&amp;campaign=github-codeg-202609&amp;promo=CODEG" target="_blank" rel="noreferrer"><img src="/images/fluxion-ai.png" alt="Fluxion AI" style="max-width: 190px; max-height: 80px;" /></a><br/>
+        <strong><a href="https://fluxionai.space/register?source=github&amp;campaign=github-codeg-202609&amp;promo=CODEG" target="_blank" rel="noreferrer">Fluxion AI</a></strong>
+      </td>
+      <td>Thanks to <a href="https://fluxionai.space/register?source=github&amp;campaign=github-codeg-202609&amp;promo=CODEG" target="_blank" rel="noreferrer">Fluxion AI</a> for sponsoring Codeg! Fluxion AI provides fast, reliable, and cost-efficient API access to GPT, Claude, Gemini, and other leading AI models through one unified API. New users can receive $3 in API credits through <a href="https://fluxionai.space/register?source=github&amp;campaign=github-codeg-202609&amp;promo=CODEG" target="_blank" rel="noreferrer">our dedicated link</a>.</td>
     </tr>
   </tbody>
 </table>

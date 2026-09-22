@@ -9,6 +9,10 @@ Agents hand you links all day: the dev server they just started, the docs page t
 
 Because the page is in the app, it is also a surface you and an agent can share: you can [hand a page, an element, a screenshot or a console error into the conversation](#hand-a-page-to-the-conversation), and you can [let an agent read and drive a page you have shared](#let-an-agent-work-on-the-page), with everything it does written on the tab where you can watch it.
 
+::: info Its settings screen moved in 0.31.2
+Everything below lives under **[Settings → Browser](/reference/settings/browser)**, an entry of its own since **0.31.2**. Before that it was a folded block at the bottom of *Settings → General*, which is where older instructions will send you.
+:::
+
 ::: tip Desktop first
 In a browser session ([`codeg-server`](/getting-started/deployment)) there is no browser engine to embed: web links open in a new tab of the browser you are already in, and the settings described here are not shown. The one exception is a **dev server running on the Codeg host** — `http://localhost:3000` as an agent printed it — which opens as a tab inside the workbench through the [port bridge](#in-a-browser-session-the-port-bridge).
 :::
@@ -18,7 +22,7 @@ In a browser session ([`codeg-server`](/getting-started/deployment)) there is no
 Every `http(s)` link in the app goes through one decision, made the moment you click:
 
 1. **A site rule** for that host wins outright (see [Site rules](#site-rules) below). A rule that says *block* stops the click with a message.
-2. Otherwise the **default for where the link came from** applies — conversation messages, tool results, the terminal, the editor and notifications each have their own default, and each starts as *Built-in browser*. Change any of them under **Settings → General → Built-in browser → Where links open**.
+2. Otherwise the **default for where the link came from** applies — conversation messages, tool results, the terminal, the editor and notifications each have their own default, and each starts as *Built-in browser*. Change any of them under **Settings → Browser → Where links open**.
 3. **⌘-click** (macOS) or **Ctrl-click** (Windows, Linux) opens the link *the other way*, just this once: in the system browser when the default is built-in, and in a built-in tab when the default is the system browser.
 
 The **right-click menu** on a link offers the same three choices explicitly — open in the built-in browser, open in the system browser, copy the link — and links that are not web pages keep their old behaviour: a file path opens the file, `mailto:` and `tel:` go to the OS, an unknown scheme is refused rather than handed to anything.
@@ -34,7 +38,8 @@ A browser tab has a small toolbar and nothing else in the way of the page:
 - **Address bar.** Type an address and press Enter. Bare hosts get `https://` (loopback and private addresses get `http://`); there is no search fallback — the address bar is an address bar.
 - **Back, forward, reload / stop, copy link, open in system browser.**
 - **Find in page** with **⌘F / Ctrl-F** — Enter and Shift+Enter step through matches, Escape closes the bar. The search is the engine's own, so the page cannot see or interfere with it. (There is no *n of m* counter: WebKit only reports whether a step matched.)
-- **Links inside the page.** A ⌘/Ctrl-click opens a background tab right next to the current one. A page that opens a window after you clicked something — an OAuth pop-up, a `target="_blank"` link — gets a tab beside its opener, and keeps `window.opener` and the referrer as it would in a browser. A pop-up nobody asked for (a timer, a script on load) is blocked and reported in a bar under the toolbar, with an **Open anyway** button that opens the address as a plain tab.
+- **Links inside the page.** A ⌘/Ctrl-click opens a background tab right next to the current one. A page that opens a window after you clicked something — an OAuth pop-up, a `target="_blank"` link — gets a tab beside its opener, and keeps `window.opener` and the referrer as it would in a browser. A pop-up nobody asked for (a timer, a script on load) is blocked and reported in a bar under the toolbar, with an **Open anyway** button that opens the address as a plain tab. Since **0.31.1** a pop-up that **closes itself** when it's finished — which is how a Google sign-in ends — takes its tab with it, instead of leaving an empty *Sign In* tab behind. Only a tab a page opened that way may close itself; an ordinary tab cannot.
+- **A blank tab is yours, not the engine's.** The empty **Browser tab** is painted in the app's own colours since **0.31.1** — dark mode no longer opens onto a white page, a theme change repaints the blank tabs already open, and an in-app toast is visible over one.
 - **Downloads.** A file the page offers lands in your **Downloads** folder under a sanitised name; an existing file is never replaced (you get `name (1).ext`), and nothing is ever opened automatically. The download bar offers **Show in folder** and nothing else.
 - **Pages that fail.** A host that cannot be found, a certificate that is not valid, a server that refuses the connection — each gets its own message, worded by the engine, the moment the engine gives up, with **Retry** and **Open in system browser** buttons. A page a site rule blocks gets a block page instead, with only *Retry* (and a pointer to the rule).
 - **Refused navigations.** When the page itself tries to go somewhere a tab must not — a `mailto:`, a custom scheme, a blocked host — the page stays where it is and a bar under the toolbar says so. For `mailto:` and `tel:` the bar offers **Open with system app**; other schemes stay refused.
@@ -45,7 +50,7 @@ Three things a browser has that this first release does not: **favicons**, **dow
 
 ## A server you start in a terminal
 
-Start a dev server in a Codeg terminal — or let an agent start one — and Codeg reads the address it prints. **Settings → General → Built-in browser → Local servers** decides what happens next:
+Start a dev server in a Codeg terminal — or let an agent start one — and Codeg reads the address it prints. **Settings → Browser → Local servers** decides what happens next:
 
 - **Notify me** (the default) — a toast says *A server is running at …*, with an **Open** button.
 - **Open a tab** — the page opens in a **background** tab, so whatever you were reading keeps the column.
@@ -64,7 +69,7 @@ An `.html` file opened in the file pane — a report an agent wrote, a generated
 - **What you approved is what runs.** Dynamic mode remembers when you enabled it. If any file the document uses is changed afterwards — the agent rewrote a script, a build replaced an asset — the view drops back to safe mode on its own, reloads, and says which file changed, with an **Enable again** button. Nothing that changed after the approval is ever served with scripts on.
 - **Links out of the document.** A link to a web page is not followed inside the view; a bar offers **Open link**, which opens it the way any link in the app opens (your defaults and site rules apply). `mailto:` and `tel:` get **Open with system app**. Downloads are not possible from a document.
 - **Edits.** The view shows the file as saved; unsaved edits in the editor are not reflected until you save, and a saved file reloads by itself.
-- **The inline preview is still there.** The view's **⋯** menu has **Use inline preview** for this file, and **Settings → General → Built-in browser → HTML file previews** turns the document view off for every file (the web app always uses the inline preview).
+- **The inline preview is still there.** The view's **⋯** menu has **Use inline preview** for this file, and **Settings → Browser → HTML file previews** turns the document view off for every file (the web app always uses the inline preview).
 
 The document view is available on macOS and Windows; Linux keeps the inline preview until its embedded surface has been verified. A document view is never [shared with an agent](#let-an-agent-work-on-the-page): it is not listed to one and cannot be granted, whatever address the platform happens to give it.
 
@@ -85,7 +90,7 @@ The other direction: an agent can list your open tabs, read the structure of a p
 
 Two things have to be true first. **One of them starts closed; the other does not:**
 
-1. **The tool group is off for every agent until you turn it on.** **Settings → General → In-conversation tools → Read and drive the built-in browser**. Unlike most of that card, it is re-read at the moment a tool is *called* rather than only when the agent started — so switching it off stops a session that is already running, not just the next one.
+1. **The tool group is off for every agent until you turn it on.** **Settings → Collaboration → In-conversation tools → Read and drive the built-in browser**. Unlike most of that card, it is re-read at the moment a tool is *called* rather than only when the agent started — so switching it off stops a session that is already running, not just the next one.
 2. **The page has to be shared — and out of the box it shares itself.** Each tab carries a control at the left of its address bar (**Read only**, **Read and act**, or nothing at all), but the **Default sharing level** setting ships as **Read and act**, and that grants each *new* site a tab arrives at as the page loads, with nobody asked. A shared tab wears a badge — *Shared*, or *Shared · can act* — in the address bar and a matching mark in the tab strip, and one press takes it back.
 
 So the switch in step 1 is the real gate: until an agent has the tool group, none of this is handed to anyone.
@@ -116,19 +121,25 @@ Two things leave no line, for the same reason — there is no tab left to read i
 | Nothing but the tool group | `browser_list_tabs`, `browser_open_tab` — there is no tab yet for a grant to be on |
 | The tab **shared** | `browser_snapshot` (the page's accessibility tree, each element with a `ref`), `browser_console_messages`, `browser_screenshot` |
 | The tab shared **for acting** | `browser_click`, `browser_hover`, `browser_type`, `browser_press_key`, `browser_select_option` — and `browser_navigate`, `browser_close_tab`, except on a tab with no page in it to protect (a blank one, or one showing an error) |
-| Shared for acting, **its own switch**, and **your approval every call** | `browser_eval` |
+| Shared for acting, **and its own switch** | `browser_eval` — which is also the one you can ask to be [shown every snippet](#running-its-own-code) |
 
 `browser_list_tabs` gives an agent each tab's **origin** — `scheme://host` with its port, not the path or the query — and whether it is shared, but **not its title** until it is: a title is text the page chose, and a page you have not shared should not get to narrate itself, while the address is what you need to see to decide at all. A refusal comes back to the agent as an *answer*, not an error, so a tab you did not share ends the tool call rather than the turn.
 
 ### Running its own code
 
-**Run code in the built-in browser** is a second switch, off by default and inert without the first. It also needs the page shared **for acting**, not merely for reading. Every snippet is then put in front of you — the code it will run, and the site it will run on — and you press **Run it once** or **Don't run it**. There is no setting that makes this automatic, and approving one snippet never approves the next.
+**Run code in the built-in browser** is a second switch, off by default and inert without the first. It also needs the page shared **for acting**, not merely for reading.
+
+With all three in place, **the code runs** — and **that switch is where you decided it would**. Until **0.31.1** every snippet was put in front of you instead, unconditionally and without the answer ever being remembered, which is the most repetitive consent in the app: somebody who has turned this switch on and shared a tab at *Read and act* has already made the decision, and the hundredth dialog is answered by reflex rather than read. So the weight moved **up** — one question while you are deciding, instead of a hundred while you are working. The switch's own text says as much now.
+
+What did not move is anything that gates it. The tool group, this switch and the tab's *Read and act* grant are all read in the backend before a call is raised at all, and an agent can reach none of them. And a silent run is not an unseen one: it is written to that tab's **agent activity** like every other act.
+
+If you want the old behaviour, it is one setting: **Settings → Browser → [Running code on a page](/reference/settings/browser#running-code-on-a-page) → Ask me every time**. Then each snippet is shown in full, with the site it would run on, and waits for **Run it once** or **Don't run it** — approving one never approves the next, and there is deliberately no *always allow* button beside the code. The window that owns the tab is the one asked. A call that is refused, or that nobody was there to answer, comes back to the agent as a decline it is told not to retry.
 
 Desktop only: a browser session has no native tabs, so none of these tools are offered to an agent there in the first place.
 
 ## Site rules
 
-**Settings → General → Built-in browser → Site rules** is a small table that decides, per site, before any default is consulted:
+**Settings → Browser → Site rules** is a small table that decides, per site, before any default is consulted:
 
 | Action | Meaning |
 | ------ | ------- |
@@ -174,7 +185,7 @@ There is also an optional **Unload background tabs** switch (off by default): a 
 
 The built-in browser keeps its own **profile**: cookies, caches and site storage live apart from Codeg's own data and, on macOS 14 and later, in a store of their own. Sign in to a site once and you stay signed in across restarts.
 
-You can have more than one profile — a second set of cookies and sign-ins, for a second account on the same site or for keeping work and personal sessions apart. **Settings → General → Built-in browser → Profiles** lists them: add one by name, clear one's browsing data (which signs you out of sites in that profile, without touching the app's own settings), delete one (its tabs are closed and its data removed), and pick which profile **new tabs open in**. A tab's profile is fixed for its life: once any profile besides the default exists, the tab's toolbar shows a chip with the profile's name, and the chip's menu opens the same page in another profile — as a new tab beside it. Pop-ups share their opener's profile; a tab you ⌘-click open from another tab lands in that tab's profile; tabs restored after a restart come back in the profile they had (in the default one if that profile was deleted meanwhile). Profiles besides the default need macOS 14 or later; on earlier macOS the section shows a single **Browsing data → Clear…** row instead.
+You can have more than one profile — a second set of cookies and sign-ins, for a second account on the same site or for keeping work and personal sessions apart. **Settings → Browser → Profiles** lists them: add one by name, clear one's browsing data (which signs you out of sites in that profile, without touching the app's own settings), delete one (its tabs are closed and its data removed), and pick which profile **new tabs open in**. A tab's profile is fixed for its life: once any profile besides the default exists, the tab's toolbar shows a chip with the profile's name, and the chip's menu opens the same page in another profile — as a new tab beside it. Pop-ups share their opener's profile; a tab you ⌘-click open from another tab lands in that tab's profile; tabs restored after a restart come back in the profile they had (in the default one if that profile was deleted meanwhile). Profiles besides the default need macOS 14 or later; on earlier macOS the section shows a single **Browsing data → Clear…** row instead.
 
 **Google sign-in compatibility** (on by default; macOS and Windows) makes browser tabs present a Firefox identity to Google's sign-in pages — `accounts.google.com` and `accounts.youtube.com`, nothing else. Google refuses to sign users in from embedded browsers it does not recognise; everywhere else the engine's own identity is kept, because bot checks reject an identity that does not match the engine that sent it. Another sign-in provider with the same refusal can be added through the `CODEG_BROWSER_SIGN_IN_HOSTS` environment variable (a comma-separated list of hostnames; subdomains count). Two limits: it works in embedded tabs, not in the separate-window surface; and on macOS, when a sign-in page redirects you to another site — the way a login provider sends you back to the app you were signing in to — the first request to that site still carries the sign-in identity, and everything after it uses the engine's own. (On Windows the identity is decided per request, so the redirect carries the engine's own identity straight away.)
 
@@ -212,5 +223,6 @@ Sharing a page with an agent, handing one to the conversation, and the local-ser
 
 - [The Workspace](/guide/workspace) — the file pane the browser tabs live in, and the keyboard shortcuts.
 - [Working with Agents](/guide/agents) — where most of those links come from.
-- [General settings](/reference/settings/general#built-in-browser) — every switch in the Built-in browser section, and the two [in-conversation tools](/reference/settings/general#in-conversation-tools) that let an agent reach a page.
+- [Browser settings](/reference/settings/browser) — every row on the screen, one by one.
+- [Collaboration settings](/reference/settings/collaboration#in-conversation-tools) — the two in-conversation tools that let an agent reach a page at all.
 - [Privacy & Security](/reference/privacy) — what stays on your machine, and what an agent can and cannot see.

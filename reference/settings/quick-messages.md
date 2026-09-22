@@ -39,4 +39,4 @@ Its content is inserted **at your cursor** — it's added to whatever you've alr
 ## Related
 
 - [Skills](/guide/skills) — the executable slash-commands that quick messages are *not*.
-- [Reference overview](/reference/) — the full 14-screen Settings map.
+- [Reference overview](/reference/) — the full 16-screen Settings map.

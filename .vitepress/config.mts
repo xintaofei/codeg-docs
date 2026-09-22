@@ -173,6 +173,8 @@ export default defineConfig({
               items: [
                 { text: 'Appearance', link: '/reference/settings/appearance' },
                 { text: 'General', link: '/reference/settings/general' },
+                { text: 'Collaboration', link: '/reference/settings/collaboration' },
+                { text: 'Browser', link: '/reference/settings/browser' },
                 { text: 'Quick Messages', link: '/reference/settings/quick-messages' },
                 { text: 'Shortcuts', link: '/reference/settings/shortcuts' },
                 { text: 'Version Control', link: '/reference/settings/version-control' },
@@ -285,7 +287,9 @@ export default defineConfig({
               text: '设置',
               items: [
                 { text: '外观', link: '/zh/reference/settings/appearance' },
-                { text: '通用', link: '/zh/reference/settings/general' },
+                { text: '常规', link: '/zh/reference/settings/general' },
+                { text: '协作', link: '/zh/reference/settings/collaboration' },
+                { text: '浏览器', link: '/zh/reference/settings/browser' },
                 { text: '快捷消息', link: '/zh/reference/settings/quick-messages' },
                 { text: '快捷键', link: '/zh/reference/settings/shortcuts' },
                 { text: '版本控制', link: '/zh/reference/settings/version-control' },
