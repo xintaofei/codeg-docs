@@ -20,7 +20,7 @@ You don't need a server for that — turn on [Web Service](/reference/settings/w
 | [**Prebuilt binary**](#prebuilt-binaries) | Manual, offline, or fully controlled installs |
 | [**Build from source**](#build-from-source) | Custom patches or unsupported platforms |
 
-Every method installs the same two binaries — `codeg-server` and its `codeg-mcp` companion — so multi-agent delegation works on the server exactly as it does on the desktop.
+Every method installs `codeg-server` and its `codeg-mcp` companion, so multi-agent delegation works on the server exactly as it does on the desktop. Since **0.33.0** the install scripts and the release archives also carry `codeg-computer-helper`, for a server that should offer [computer use](/guide/computer-use) on its own desktop; the Docker image doesn't.
 
 ## Docker
 
@@ -40,7 +40,7 @@ docker run -d -p 3080:3080 \
   ghcr.io/xintaofei/codeg:latest
 ```
 
-Images are published multi-arch (amd64 + arm64) to `ghcr.io/xintaofei/codeg` and Docker Hub `xintaofei/codeg`.
+Images are published multi-arch (amd64 + arm64) to `ghcr.io/xintaofei/codeg` and Docker Hub `xintaofei/codeg`, tagged with each release's version (`:0.33.0`). `:latest` follows **stable** releases only — a release candidate gets its own version tag, `:0.33.0-rc.1`, and never moves `latest`.
 
 ### With Compose
 
@@ -53,6 +53,7 @@ services:
     ports:
       - "3080:3080"
       - "3081-3090:3081-3090"   # port bridge: dev servers shown in the workbench
+                                  # (or set CODEG_BRIDGE_HOST_PATTERN and drop this line)
     volumes:
       - codeg-data:/data
       # - /path/to/projects:/projects   # optional: expose local repos
@@ -100,7 +101,17 @@ The access token is printed to stderr on startup unless you set `CODEG_TOKEN` yo
 irm https://raw.githubusercontent.com/xintaofei/codeg/main/install.ps1 | iex
 ```
 
-This installs to `%LOCALAPPDATA%\codeg` and adds it to your PATH. Pin a version with `.\install.ps1 -Version v0.26.0`. Self-update is disabled on Windows — upgrade by re-running the installer.
+This installs to **`%LOCALAPPDATA%\codeg-server`** and adds it to your PATH. Start it with the web files that came with it:
+
+```powershell
+$env:CODEG_STATIC_DIR="$env:LOCALAPPDATA\codeg-server\web"; codeg-server
+```
+
+Pin a version with `.\install.ps1 -Version v0.26.0`, or choose the folder with `-InstallDir`. Self-update is disabled on Windows — upgrade by re-running the installer.
+
+::: info The server has a folder of its own since 0.33.0
+It used to install into `%LOCALAPPDATA%\codeg` — the **desktop app's** folder — where the two could overwrite each other's files and stop each other's processes. Re-running the script moves a server it finds sharing that folder out into `codeg-server`, taking only `codeg-server.exe` and its PATH entry and leaving the desktop app's files alone; a server that had the old folder to itself stays where it is. The script refuses any target that holds the desktop app, and a server started from the desktop app's folder warns at startup that it should move. If a service, a scheduled task or a shortcut starts the old copy, or `CODEG_STATIC_DIR` still points at `%LOCALAPPDATA%\codeg\web`, point it at the new folder.
+:::
 
 ## Prebuilt binaries
 
@@ -127,8 +138,8 @@ CODEG_STATIC_DIR=./web ./codeg-server --supervise
 ```bash
 pnpm install && pnpm build          # build the web UI
 cd src-tauri
-cargo build --release --bin codeg-server --no-default-features
-cargo build --release --bin codeg-mcp --no-default-features   # delegation companion
+cargo build --release --bin codeg-server --no-default-features --features server-bin
+cargo build --release --bin codeg-mcp --no-default-features --features mcp-bin   # delegation companion
 CODEG_STATIC_DIR=../out ./target/release/codeg-server
 ```
 
@@ -148,6 +159,9 @@ The full toolchain and platform prerequisites are in the [Development](/referenc
 | `CODEG_MCP_BIN` | *(sibling)* | Path to `codeg-mcp`, if it doesn't sit next to the server |
 | `CODEG_BRIDGE_PORTS` | *(the ten ports after `CODEG_PORT`)* | Ports the [port bridge](/guide/browser#in-a-browser-session-the-port-bridge) may take to show dev servers in the workbench — a range (`3081-3090`), a list, `auto`, or `off` |
 | `CODEG_BRIDGE_PUBLIC_HOST` | *(the host the workbench was loaded from)* | Hostname browsers should use for the bridge ports when a reverse proxy gives them another name |
+| `CODEG_BRIDGE_HOST_PATTERN` | *(unset — bridge by port)* | Show dev servers by **hostname** on Codeg's own port instead of a port range: `auto`, or a template like `{port}.preview.example.com`. Needs wildcard DNS → [By hostname](/guide/browser#by-hostname-instead-of-by-port) |
+| `CODEG_BROWSER_TUNNEL` | `all` | What a desktop app attached as a remote workspace may reach through this server in its built-in browser: `all`, `private`, or `off` → [Remote workspace windows](/guide/browser#in-a-remote-workspace-window) |
+| `CODEG_COMPUTER_USE` | *(off)* | `1` offers [computer use](/guide/computer-use#on-a-server) on the server machine's own desktop |
 
 ::: tip Always set a token in production
 Left unset, `CODEG_TOKEN` is generated randomly and printed to the logs — fine for a quick trial, but set your own for anything durable. The complete list of tunables — upload quotas, ACP timeouts, logging — lives in [Configuration](/getting-started/configuration).
@@ -155,11 +169,14 @@ Left unset, `CODEG_TOKEN` is generated randomly and printed to the logs — fine
 
 ## Access it securely
 
-By default the server binds `0.0.0.0:3080`, so it's reachable from any device that can route to the host. That's exactly what you want for remote access — which also means the **token is your only guard**. Two things to get right on a public host:
+By default the server binds `0.0.0.0:3080`, so it's reachable from any device that can route to the host. That's exactly what you want for remote access — which also means the **token is your only guard**. A few things to get right on a public host:
 
 - **Put it behind HTTPS.** `codeg-server` speaks plain HTTP and has no built-in TLS. Front it with a reverse proxy — Caddy, nginx, or Traefik — that terminates TLS and forwards to `127.0.0.1:3080`. Set `CODEG_HOST=127.0.0.1` so only the proxy, not the whole network, can reach the server directly.
 - **Keep the token secret.** Every HTTP and WebSocket request must carry it; there is no anonymous access. Rotate it by restarting with a new `CODEG_TOKEN`.
 - **Publish the bridge ports the same way.** The [port bridge](/guide/browser#in-a-browser-session-the-port-bridge) binds `CODEG_BRIDGE_PORTS` on `CODEG_HOST` too. Each of those ports only answers a browser that opened the page from a signed-in workbench, but behind a TLS proxy they need TLS as well (the workbench addresses them with its own scheme), and with `CODEG_HOST=127.0.0.1` they need forwarding like the main port. Set `CODEG_BRIDGE_PORTS=off` if you would rather not run it.
+- **Or skip the ports.** With `CODEG_BRIDGE_HOST_PATTERN`, dev servers are reached by name on the port the workbench already uses — `3000.codeg.example.com` — so there's nothing extra to publish, as long as a wildcard DNS record and a wildcard virtual host on your proxy send those names to the server.
+- **Decide what a remote workspace's browser may reach.** A desktop app attached to this server as a [remote workspace](/guide/browser#in-a-remote-workspace-window) opens the server's own addresses in its built-in browser through a tunnel the server carries — to anything the server can reach, by default, on the reasoning that the token can already run commands there. `CODEG_BROWSER_TUNNEL=private` keeps it to loopback, private and link-local addresses — which still includes a cloud provider's metadata address — and `off` closes it.
+- **Computer use stays off unless you start it.** With `CODEG_COMPUTER_USE=1`, anyone holding the token can share that machine's windows with agents from a browser, and the only stop is the status-bar popover's — the floating stop bar and the stop shortcut are the desktop app's. → [On a server](/guide/computer-use#on-a-server)
 
 For a load balancer or orchestrator liveness probe, an authenticated `POST /api/health` (carrying the bearer token) returns `{"status":"ok","version":"…"}`.
 
@@ -177,7 +194,7 @@ A connection's access token and its custom headers live in that connection's row
 
 ## Keep your server up to date
 
-Like the desktop app, `codeg-server` updates itself from **Settings → Software Update**: it downloads the signed release for its platform, verifies the signature, swaps the binaries and web assets on disk, and restarts — no redeploy. The previous version is retained, so the same screen offers a **Roll back**. This is Linux/macOS only (disabled on Windows).
+Like the desktop app, `codeg-server` updates itself from **Settings → Software Update**: it downloads the signed release for its platform, verifies the signature, swaps the binaries and web assets on disk, and restarts — no redeploy. The previous version is retained, so the same screen offers a **Roll back**. This is Linux/macOS only (disabled on Windows). A server that can't write to its own installation — a binary or web folder it doesn't own, a full disk — says so on that screen **before** you try, since **0.32.1**, and offers the release page for a manual update instead.
 
 Run it under its supervisor to make upgrades safe:
 

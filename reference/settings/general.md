@@ -10,7 +10,7 @@ description: The General settings screen — the shell new terminals and agent c
 Everything here applies the moment you change it — rendering then asks for a restart, and a custom shell path waits for the **Save** button beside it.
 
 ::: info Two panels moved out in 0.31.2
-**Multi-Agent Collaboration** and **In-conversation tools** used to sit at the bottom of this screen. They now have their own entry: **[Settings → Collaboration](/reference/settings/collaboration)**. The **Built-in browser** block, which was folded at the very bottom, became **[Settings → Browser](/reference/settings/browser)**.
+**Multi-Agent Collaboration** and **In-conversation tools** used to sit at the bottom of this screen. They now have their own entry: **[Settings → Collaboration](/reference/settings/collaboration)**. The **Built-in browser** block, which was folded at the very bottom, became **[Settings → Browser Use](/reference/settings/browser)** — named *Browser* until **0.33.0**.
 :::
 
 ## Default Terminal
@@ -70,7 +70,9 @@ Four controls:
 - **Permission** — whether this browser or machine will actually show them, said plainly rather than assumed. **Allowed**, **Blocked** (only the browser's own site settings can undo that — a page cannot ask again), **Not requested**, with an **Allow notifications** button, or **Unavailable**, which means the page isn't in a secure context: reach the server over HTTPS or on localhost. The desktop app is the honest special case — it posts through the system notification centre, which **doesn't report back** whether Codeg is allowed, so it says *Managed by the system* and offers **Send a test** and **Open system settings** instead of a status it would be guessing at.
 - **Delivered as** — which app the system is filing these under. Normally Codeg; if its own identifier couldn't be claimed, the row names the app whose switches apply instead, and says that installing Codeg to your Applications folder restores its identity.
 - **Notify when** — **Always**, **Window is not focused**, or **Window is not visible**. The last is the default and the strictest, and is what Codeg did before this setting existed. It's also the answer to *"I never get notifications"*: a window sitting open on a second monitor is **visible**, so *not visible* never fires for it. Pick *not focused* if that's you.
-- **Hide notification contents** — replace the body with a generic line so agent output never reaches the notification centre, which keeps its payload outside the app after you've closed the conversation. The title still names the folder, so you can still tell which window to go back to.
+- **Hide notification contents** — replace the body with a generic line so agent output never reaches the notification centre, which keeps its payload outside the app after you've closed the conversation. The conversation's title is left out as well, and the notification is headed *folder - Codeg*, so you can still tell where to go back to.
+
+**A notification names its conversation.** Since **0.32.3** its title is the conversation's own title, and the body starts with **that conversation's** folder rather than whichever one the window happens to have open — for a tab you closed while its agent was still working, and for a card on the canvas, too.
 
 Then a switch per event, six of them: **Turn complete**, **Permission request**, **Agent question**, **Agent error**, **Background task** and **Work task**. Repeats of the same event within a few seconds collapse into one notification.
 
@@ -107,12 +109,12 @@ Notifications and sounds are the two parts of this screen kept in the browser or
 - **Everything saves on change.** There's no Save button on this screen; only a **custom shell path** waits for one, because a half-typed path isn't a setting. Rendering additionally needs a restart.
 - **Two sections can be absent, each for a reason.** Rendering shows only in a **local** Windows or Linux desktop window, because that's where there's a webview knob to turn; the close-button picker only in a local desktop window, and it's disabled with a reason where the system has no usable tray. Both are gone in the browser and in a window attached to a remote workspace, where they'd be configuring the wrong machine.
 - **Colour here isn't the app's colour.** *Colorize command output* forces colour out of the commands **an agent** runs. It has nothing to do with the app's own theme — that's [Appearance](/reference/settings/appearance) — and nothing to do with the terminal you type in yourself.
-- **Looking for the agent tool switches?** Delegation and the in-conversation tools moved to [Collaboration](/reference/settings/collaboration) in **0.31.2**, and the built-in browser to [Browser](/reference/settings/browser).
+- **Looking for the agent tool switches?** Delegation and the in-conversation tools moved to [Collaboration](/reference/settings/collaboration) in **0.31.2**, and the built-in browser to [Browser Use](/reference/settings/browser).
 
 ## Related
 
 - [Collaboration](/reference/settings/collaboration) — delegation and the in-conversation tools, which used to live at the bottom of this screen.
-- [Browser](/reference/settings/browser) — the built-in browser's own screen, likewise.
+- [Browser Use](/reference/settings/browser) — the built-in browser's own screen, likewise.
 - [The Workspace](/guide/workspace) — the terminal the default-shell setting feeds.
 - [Chat Channels](/guide/chat-channels) — the five events the notification sounds mirror.
-- [Reference overview](/reference/) — the full 16-screen Settings map.
+- [Reference overview](/reference/) — the full 17-screen Settings map.

@@ -27,6 +27,8 @@ What the upgrade button does depends on where you're running — this is the one
 A self-updating server keeps the previous binary, so after an upgrade a **Roll back** button appears — *"Restore the version installed before the last upgrade."* It's there for a regression that only surfaces later, once the automatic trial-window check has already passed. The desktop app updates through the OS installer and doesn't offer this. On **Docker**, an in-place upgrade is only live until the container is recreated — *"to keep it, pull or build an image at the new version and recreate."*
 :::
 
+**A server that can't write to its own installation says so before you try.** Since **0.32.1** a self-updating `codeg-server` — on Linux or macOS — checks ahead of time that it can write both where its binary lives and where its web files live. When it can't, the panel says which directory, and why if the system gave a reason such as a full disk, in amber; the upgrade button becomes **View vX release** for a manual update, and the status bar's update popover says the same while a release is on offer. It used to get as far as installing and fail with a bare *close the app and try again*. **Roll back** stays available unless the problem is a missing permission.
+
 If a check or install fails, the reason is shown inline — an unreachable update source, a network error, or a failed download or install — usually a connectivity issue, which the proxy panel below can address.
 
 ## Launch at login
@@ -42,6 +44,10 @@ Routes Codeg's own network traffic through a proxy. Tick **Enable system proxy**
 The address takes an `http`, `https`, or `socks5` URL — the placeholder is `http://127.0.0.1:7890`, a typical local proxy. It's **required once the proxy is enabled** (turning it on without an address is refused), and the setting **saves as you go** — toggling the checkbox or leaving the field commits it. It applies only while *Enable system proxy* is on; untick to go direct again.
 
 **Leave the scheme off and Codeg adds it.** A bare `127.0.0.1:7890` used to pass validation and be stored verbatim — updates and binary downloads coped, but **npm refused every agent install** with a bare `ERR_INVALID_URL` and no hint as to why. Since **0.28** an address with no scheme is normalized to `http://` when it's saved and again when it's handed to a child process, and one that already names a scheme is left alone, so a `socks5://` proxy is never rewritten. A value stored by an older build is repaired when it's read. A proxy set from **outside** Codeg — `docker -e`, a shell export — is deliberately left as you wrote it; if npm then rejects it, the error names the offending variable rather than leaving you to find it.
+
+**Bypass proxy for** lists what should connect directly instead — new in **0.32.2**. Separate entries with commas and no spaces: `example.com` matches that domain, `.example.com` every subdomain of it, and IP addresses work too. The local addresses — `localhost`, `127.0.0.1`, `::1` — always connect directly and needn't be listed. The field saves when you leave it, and while the proxy is on the list takes effect as the `NO_PROXY` environment variable, for Codeg and for every agent it launches.
+
+That local exception also applies to a proxy you set from **outside** Codeg, and it's what lets **OpenCode** and **Antigravity** work behind a proxy on another machine: both talk to a local service of their own, and until **0.32.2** those connections were sent to the proxy too, failing with *OpenCode service failure* or *Failed to connect to WebSocket*.
 
 This is the proxy that carries everything Codeg reaches out for — the [Git operations](/reference/settings/version-control) your accounts authenticate, agent installs, model traffic. To set a proxy *before* the app starts, from the environment, see [Configuration](/getting-started/configuration).
 
@@ -104,4 +110,4 @@ Backup and restore operate on the data of the machine actually running Codeg. If
 - [Configuration](/getting-started/configuration) — setting the proxy, and other options, from the environment before the app starts.
 - [Version Control](/reference/settings/version-control) — the OS keychain that desktop backups deliberately exclude.
 - [Privacy & Security](/reference/privacy) — plaintext secrets, encryption, and what leaves your machine.
-- [Reference overview](/reference/) — the full 16-screen Settings map.
+- [Reference overview](/reference/) — the full 17-screen Settings map.

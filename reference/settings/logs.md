@@ -101,7 +101,7 @@ The per-launch [`codeg-mcp` companion](/reference/architecture) logs to **stderr
 
 ## Related
 
-- [Architecture](/reference/architecture) — the three binaries (`codeg`, `codeg-server`, `codeg-mcp`) whose `codeg_lib::…` targets show up in these logs.
+- [Architecture](/reference/architecture) — the binaries (`codeg`, `codeg-server`, `codeg-mcp`) whose `codeg_lib::…` targets show up in these logs, and the computer-use helper whose output Codeg copies in.
 - [Deployment](/getting-started/deployment) — where the server writes `codeg-server.<date>.log`, and why a browser session gets a download list instead of an Open-folder button.
 - [System](/reference/settings/system) — the other operations-facing screen: updates, network proxy, language, and backup.
-- [Reference overview](/reference/) — the full 16-screen Settings map.
+- [Reference overview](/reference/) — the full 17-screen Settings map.

@@ -95,7 +95,7 @@ A custom agent goes through the same [preflight check](/guide/agents#check-it-s-
 
 The version row reads differently depending on where the definition came from:
 
-- **Registry-added** — the full comparison, *Remote: 1.4.0 · Local: 1.3.2*, with upgrade hints.
+- **Registry-added** — the full comparison, *Recommended: 1.4.0 · Local: 1.3.2*, with upgrade hints. When a release newer than the recommended one is out, an amber **Upgrade to unreviewed latest …** is offered too. → [Supported Agents](/guide/supported-agents#unreviewed-latest)
 - **Manually added** — the local version alone, *Local: 1.3.2. Installed.* Your typed version isn't a published one, so comparing against it would be noise.
 
 If the agent can't run here at all, the detail pane says why in place: *"This agent cannot launch here: …"*.

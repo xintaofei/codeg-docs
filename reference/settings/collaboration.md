@@ -1,6 +1,6 @@
 ---
 title: Collaboration
-description: The Collaboration settings screen — whether an agent may hand work to another agent, how deep the chain may go, what each worker is spawned with, and the switches that decide which codeg-mcp tools your agents get inside a conversation — live feedback, ask-a-question, session lookup, reading and driving the built-in browser, and creating automations and to-dos from chat.
+description: The Collaboration settings screen — whether an agent may hand work to another agent, how deep the chain may go, what each worker is spawned with, and the switches that decide which codeg-mcp tools your agents get inside a conversation — live feedback, ask-a-question, session lookup, reading and driving the built-in browser, seeing and using your desktop's windows, and creating automations and to-dos from chat.
 ---
 
 # Collaboration
@@ -8,12 +8,12 @@ description: The Collaboration settings screen — whether an agent may hand wor
 **Settings → Collaboration** is where you decide how much of Codeg an agent may reach **beyond its own conversation** — *"How agents work with each other, and which of Codeg's own tools they can reach from inside a conversation."* Two panels:
 
 - **Multi-Agent Collaboration** — whether an agent may hand a sub-task to another agent at all, how deep a chain may recurse, and what each agent is spawned with as a worker.
-- **In-conversation tools** — the tool groups Codeg injects when an agent starts: feedback, ask-a-question, session lookup, the built-in browser, and the create-from-chat writers.
+- **In-conversation tools** — the tool groups Codeg injects when an agent starts: feedback, ask-a-question, session lookup, the built-in browser, your desktop's windows, and the create-from-chat writers.
 
 They sit on one page because the same [`codeg-mcp` companion](/reference/architecture) injects both when an agent starts, and deciding one without seeing the other never made much sense. Each panel carries **its own Save** button, and nothing in either takes effect until you press it.
 
-::: info New in 0.31.2
-Both panels used to live at the bottom of **Settings → General**, which is how that screen grew to twice the length its name implies. They moved here, to their own entry between **Skill Packs** and **Agents**, in **0.31.2**. Nothing about what they do changed with the move.
+::: info New in 0.31.2, moved up in 0.33.0
+Both panels used to live at the bottom of **Settings → General**, which is how that screen grew to twice the length its name implies. They moved to an entry of their own in **0.31.2**, and since **0.33.0** that entry sits right after **General**. Nothing about what they do changed with either move.
 :::
 
 ## Multi-Agent Collaboration
@@ -33,7 +33,7 @@ One thing switched on here can still be withheld elsewhere, so the panel says so
 
 ## In-conversation tools
 
-One card, seven switches, one **Save** — *"extra tools Codeg gives an agent inside a conversation. Each is injected when the agent starts, so a change applies to agents started afterwards."*
+One card, eight switches, one **Save** — *"extra tools Codeg gives an agent inside a conversation. Each is injected when the agent starts, so a change applies to agents started afterwards."*
 
 | Switch | Default | What the agent gains |
 | ------ | ------- | -------------------- |
@@ -42,12 +42,15 @@ One card, seven switches, one **Save** — *"extra tools Codeg gives an agent in
 | **Get session info** | On | Resolve a session you referenced — a badge like `codeg://session/<id>` — into its title, agent, status, workspace, token usage, and recent messages. Read-only |
 | **Read and drive the built-in browser** | Off | List the pages open in the [built-in browser](/guide/browser#let-an-agent-work-on-the-page), read the ones you shared, act on the ones you shared for acting, and open, point or close tabs |
 | **Run code in the built-in browser** | Off | Run its own JavaScript on a page you shared for acting. Needs the switch above — and since **0.31.1** *this* switch is where the decision is made: with it on, snippets run **without asking** unless you set [Running code on a page](/reference/settings/browser#running-code-on-a-page) to *Ask me every time* |
+| **See and use your desktop's windows** | Off | List your apps and windows, read the ones you share, and act on the ones you share for acting — [computer use](/guide/computer-use). The same setting as **Enable computer use** on [its own page](/reference/settings/computer-use) |
 | **Create automations** | Off | Save the conversation as an [automation](/guide/automations) that runs on a schedule |
 | **Create to-do tasks** | Off | Queue a card on the [to-do board](/guide/tasks) from the conversation |
 
-The first three are read-only or ask-only. **The other four reach outside the conversation** — two into a page you are looking at, two into app state — which is why they all start off and why they're checked again at the moment the tool is called, not only when the agent started: switching one off stops even a session that is already running from using it.
+The first three are read-only or ask-only. **The other five reach outside the conversation** — two into a page you are looking at, one into the windows on your desktop, two into app state — which is why they all start off and why they're checked again at the moment the tool is called, not only when the agent started: switching one off stops even a session that is already running from using it.
 
-The two browser switches only ever hand a tool to an agent in the **desktop app**; a browser session has no native tabs for an agent to reach, so the rows are inert there. Be clear about what turning the first one on does, though: with **Default sharing level** at its shipped value of *Read and act*, every page in every browser tab is shared with that agent as it loads. A tab's own control still overrides it page by page, and *Share nothing* leaves every share to that control. → [Let an agent work on the page](/guide/browser#let-an-agent-work-on-the-page)
+The two browser switches only ever hand a tool to an agent in the **desktop app**; a browser session has no native tabs for an agent to reach, so the rows are inert there, and in a desktop window attached to a remote workspace the agents run on the remote host, out of reach of this computer's tabs. Be clear about what turning the first one on does, though: with **Default sharing level** at its shipped value of *Read and act*, every page in every browser tab is shared with that agent as it loads. A tab's own control still overrides it page by page, and *Share nothing* leaves every share to that control. → [Let an agent work on the page](/guide/browser#let-an-agent-work-on-the-page)
+
+The desktop-windows switch gives tools only where computer use is actually served — the desktop app, or a `codeg-server` started with `CODEG_COMPUTER_USE` — and nothing is readable until you share a window from the status bar. Two of its tools sit behind switches of their own on the [Computer Use](/reference/settings/computer-use) page, both off by default: opening applications and moving windows, and the clipboard. → [What an agent can do](/guide/computer-use#what-an-agent-can-do)
 
 **Ask user question** no longer costs you two dialogs. Under a permission mode that consults you before *every* MCP tool call — Claude Code's default — the real question card used to be preceded by a raw "run this tool?" approval that dumped the questions as JSON. Since **0.31.0** Codeg recognises its own ask tool and answers that one for you, for that turn only.
 
@@ -67,15 +70,16 @@ Since **0.30.3** the same two channels drive the composer's **mid-turn send** �
 ## Good to know
 
 - **Two Saves, not one.** The delegation panel and the in-conversation-tools card each apply on their own button. Nothing on this screen takes effect as you flip it.
-- **Tool switches apply the next time an agent starts.** Each adds or removes a tool "for agents started after this is turned on" — an agent that's connected right now won't gain or lose the capability mid-flight. It needn't be a brand-new conversation, though: any conversation picks the change up whenever its agent next launches, including an existing one you return to after its connection ended. A new conversation is simply the surest way. (The two *create* switches and the two *browser* switches are the exception, and are re-checked at call time — turning one off stops a session that is already running.)
-- **These are the codeg-mcp tools.** Delegation and all seven in-conversation tools are served by the [`codeg-mcp` companion](/reference/architecture); the switches here decide which appear in each agent's catalog. Not *every* companion tool is governed here, though — an agent running a [to-do](/guide/tasks) also gets `task_progress` and `task_complete`, injected by the task engine rather than by anything on this screen.
+- **Tool switches apply the next time an agent starts.** Each adds or removes a tool "for agents started after this is turned on" — an agent that's connected right now won't gain or lose the capability mid-flight. It needn't be a brand-new conversation, though: any conversation picks the change up whenever its agent next launches, including an existing one you return to after its connection ended. A new conversation is simply the surest way. (The two *create* switches, the two *browser* switches and the desktop-windows switch are the exception, and are re-checked at call time — turning one off stops a session that is already running.)
+- **These are the codeg-mcp tools.** Delegation and all eight in-conversation tools are served by the [`codeg-mcp` companion](/reference/architecture); the switches here decide which appear in each agent's catalog. Not *every* companion tool is governed here, though — an agent running a [to-do](/guide/tasks) also gets `task_progress` and `task_complete`, injected by the task engine rather than by anything on this screen.
 - **An agent that refuses MCP gets none of them.** A [custom agent](/guide/custom-agents) with its **MCP support** switch turned off is connected without the companion at all, so nothing on this screen reaches it.
-- **The status bar carries these same switches.** All eight of them: the [codeg-mcp popover](/guide/multi-agent#the-service-from-the-status-bar) has delegation and every in-conversation tool, and its **open settings** link lands on this page. Flip one there with this page open and the form converges on it rather than sending its stale value back on the next Save.
+- **The status bar carries these same switches.** All nine of them: the [codeg-mcp popover](/guide/multi-agent#the-service-from-the-status-bar) has delegation and every in-conversation tool, and its **open settings** link lands on this page. Flip one there with this page open and the form converges on it rather than sending its stale value back on the next Save.
 
 ## Related
 
 - [Working with Multiple Agents](/guide/multi-agent) — the full how-to behind the Multi-Agent Collaboration panel.
 - [Built-in Browser](/guide/browser) — what the two browser switches hand an agent, and how a page is shared with one.
-- [Browser](/reference/settings/browser) — the other half of those two switches: where links open, site rules, sharing level, and whether an agent's code is put in front of you.
+- [Computer Use](/guide/computer-use) — what the desktop-windows switch hands an agent, and how a window is shared with one.
+- [Browser Use](/reference/settings/browser) — the other half of those two switches: where links open, site rules, sharing level, and whether an agent's code is put in front of you.
 - [Architecture](/reference/architecture) — the `codeg-mcp` companion that provides these agent tools.
-- [Reference overview](/reference/) — the full 16-screen Settings map.
+- [Reference overview](/reference/) — the full 17-screen Settings map.

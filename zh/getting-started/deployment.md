@@ -20,7 +20,7 @@ description: 使用 codeg-server 或 Docker 在 Linux 或 macOS 服务器上以�
 | [**预构建二进制文件**](#prebuilt-binaries) | 手动、离线或完全受控的安装 |
 | [**从源码构建**](#build-from-source) | 自定义补丁或不受支持的平台 |
 
-每种方式都会安装相同的两个二进制文件——`codeg-server` 及其 `codeg-mcp` 伴生程序——因此多智能体委派在服务器上的运作方式与桌面端完全一致。
+每种方式都会安装 `codeg-server` 及其 `codeg-mcp` 伴生程序，因此多智能体委派在服务器上的运作方式与桌面端完全一致。自 **0.33.0** 起，安装脚本和发布压缩包还会附带 `codeg-computer-helper`，供要在自己桌面上提供[电脑操作](/zh/guide/computer-use)的服务器使用；Docker 镜像则不带。
 
 ## Docker {#docker}
 
@@ -40,7 +40,7 @@ docker run -d -p 3080:3080 \
   ghcr.io/xintaofei/codeg:latest
 ```
 
-镜像以多架构（amd64 + arm64）形式发布到 `ghcr.io/xintaofei/codeg` 和 Docker Hub 上的 `xintaofei/codeg`。
+镜像以多架构（amd64 + arm64）形式发布到 `ghcr.io/xintaofei/codeg` 和 Docker Hub 上的 `xintaofei/codeg`，并以每个版本的版本号作为标签（`:0.33.0`）。`:latest` 只跟随**稳定**版本——候选发布版有自己的版本标签 `:0.33.0-rc.1`，且永远不会移动 `latest`。
 
 ### 使用 Compose {#with-compose}
 
@@ -53,6 +53,7 @@ services:
     ports:
       - "3080:3080"
       - "3081-3090:3081-3090"   # 端口桥：在工作台里显示开发服务器
+                                  # （或设置 CODEG_BRIDGE_HOST_PATTERN 并删掉这一行）
     volumes:
       - codeg-data:/data
       # - /path/to/projects:/projects   # optional: expose local repos
@@ -100,7 +101,17 @@ CODEG_STATIC_DIR=/usr/local/share/codeg/web codeg-server --supervise
 irm https://raw.githubusercontent.com/xintaofei/codeg/main/install.ps1 | iex
 ```
 
-这会安装到 `%LOCALAPPDATA%\codeg` 并将其添加到你的 PATH。用 `.\install.ps1 -Version v0.26.0` 固定版本。Windows 上禁用了自我更新——请通过重新运行安装程序来升级。
+这会安装到 **`%LOCALAPPDATA%\codeg-server`** 并将其添加到你的 PATH。用随它一起安装的 Web 文件启动它：
+
+```powershell
+$env:CODEG_STATIC_DIR="$env:LOCALAPPDATA\codeg-server\web"; codeg-server
+```
+
+用 `.\install.ps1 -Version v0.26.0` 固定版本，或用 `-InstallDir` 选择安装文件夹。Windows 上禁用了自我更新——请通过重新运行安装程序来升级。
+
+::: info 自 0.33.0 起，服务器有了自己的文件夹
+它以前安装在 `%LOCALAPPDATA%\codeg`——也就是**桌面应用的**文件夹——两者在那里可能互相覆盖对方的文件、终止对方的进程。重新运行脚本时，如果发现服务器与桌面应用共用那个文件夹，脚本会把服务器迁到 `codeg-server`，只带走 `codeg-server.exe` 及其 PATH 条目，桌面应用的文件一概不动；独占旧文件夹的服务器则留在原处。脚本会拒绝任何装有桌面应用的目标位置，而从桌面应用文件夹启动的服务器会在启动时警告它应该搬走。如果有服务、计划任务或快捷方式仍在启动旧的那一份，或者 `CODEG_STATIC_DIR` 仍指向 `%LOCALAPPDATA%\codeg\web`，请把它们改为指向新文件夹。
+:::
 
 ## 预构建二进制文件 {#prebuilt-binaries}
 
@@ -127,8 +138,8 @@ CODEG_STATIC_DIR=./web ./codeg-server --supervise
 ```bash
 pnpm install && pnpm build          # build the web UI
 cd src-tauri
-cargo build --release --bin codeg-server --no-default-features
-cargo build --release --bin codeg-mcp --no-default-features   # delegation companion
+cargo build --release --bin codeg-server --no-default-features --features server-bin
+cargo build --release --bin codeg-mcp --no-default-features --features mcp-bin   # delegation companion
 CODEG_STATIC_DIR=../out ./target/release/codeg-server
 ```
 
@@ -148,6 +159,9 @@ CODEG_STATIC_DIR=../out ./target/release/codeg-server
 | `CODEG_MCP_BIN` | *（同级目录）* | `codeg-mcp` 的路径（当它不与服务器放在一起时） |
 | `CODEG_BRIDGE_PORTS` | *（`CODEG_PORT` 之后的十个端口）* | [端口桥](/zh/guide/browser#in-a-browser-session-the-port-bridge)可占用的端口，用于在工作台里显示开发服务器——一个范围（`3081-3090`）、一个列表、`auto` 或 `off` |
 | `CODEG_BRIDGE_PUBLIC_HOST` | *（加载工作台所用的主机）* | 当反向代理给桥端口换了名字时，浏览器访问它们应使用的主机名 |
+| `CODEG_BRIDGE_HOST_PATTERN` | *（未设置——按端口桥接）* | 在 Codeg 自己的端口上按**主机名**显示开发服务器，而不是占用一段端口：`auto`，或形如 `{port}.preview.example.com` 的模板。需要泛域名解析 → [按主机名](/zh/guide/browser#by-hostname-instead-of-by-port) |
+| `CODEG_BROWSER_TUNNEL` | `all` | 作为远端工作区连接到本服务器的桌面应用，其内置浏览器能经由本服务器访问哪些地址：`all`、`private` 或 `off` → [远端工作区窗口](/zh/guide/browser#in-a-remote-workspace-window) |
+| `CODEG_COMPUTER_USE` | *（关闭）* | 设为 `1` 时，在服务器那台机器自己的桌面上提供[电脑操作](/zh/guide/computer-use#on-a-server) |
 
 ::: tip 生产环境中务必设置令牌
 若不设置，`CODEG_TOKEN` 会被随机生成并打印到日志中——用于快速试用尚可，但对于任何长期部署都应设置你自己的令牌。可调项的完整列表——上传配额、ACP 超时、日志——见[配置](/zh/getting-started/configuration)。
@@ -155,11 +169,14 @@ CODEG_STATIC_DIR=../out ./target/release/codeg-server
 
 ## 安全访问 {#access-it-securely}
 
-默认情况下，服务器绑定 `0.0.0.0:3080`，因此任何能路由到该主机的设备都可以访问它。这正是远程访问所需要的——但这也意味着**令牌是你唯一的防线**。在公开主机上有两件事要做对：
+默认情况下，服务器绑定 `0.0.0.0:3080`，因此任何能路由到该主机的设备都可以访问它。这正是远程访问所需要的——但这也意味着**令牌是你唯一的防线**。在公开主机上有几件事要做对：
 
 - **将其置于 HTTPS 之后。** `codeg-server` 使用纯 HTTP 通信，没有内置的 TLS。请在其前面架设一个反向代理——Caddy、nginx 或 Traefik——由它终止 TLS 并转发到 `127.0.0.1:3080`。设置 `CODEG_HOST=127.0.0.1`，使得只有代理（而非整个网络）能够直接访问服务器。
 - **对令牌保密。** 每个 HTTP 和 WebSocket 请求都必须携带它；不存在匿名访问。通过以新的 `CODEG_TOKEN` 重启来轮换它。
 - **桥端口也照此发布。** [端口桥](/zh/guide/browser#in-a-browser-session-the-port-bridge)同样在 `CODEG_HOST` 上绑定 `CODEG_BRIDGE_PORTS`。这些端口只回应从已登录工作台打开过页面的浏览器，但放在 TLS 代理之后时它们同样需要 TLS（工作台用自己的 scheme 访问它们），而 `CODEG_HOST=127.0.0.1` 时它们和主端口一样需要转发。不想运行它就设置 `CODEG_BRIDGE_PORTS=off`。
+- **或者干脆不用这些端口。** 设置了 `CODEG_BRIDGE_HOST_PATTERN`，开发服务器就会在工作台已经在用的那个端口上按名字访问——`3000.codeg.example.com`——因此无需额外发布任何东西，只要有一条泛域名 DNS 记录、并在你的代理上配置一个泛域名虚拟主机，把这些名字送到服务器即可。
+- **决定远端工作区的浏览器能访问什么。** 作为[远端工作区](/zh/guide/browser#in-a-remote-workspace-window)连接到本服务器的桌面应用，会通过服务器承载的一条隧道，在其内置浏览器里打开服务器那一侧的地址——默认可以访问服务器能访问到的任何地方，理由是持有令牌本就能在那里运行命令。`CODEG_BROWSER_TUNNEL=private` 把它限定在回环、私有和链路本地地址——其中仍包括云服务商的元数据地址——而 `off` 则把它关掉。
+- **除非你主动开启，电脑操作始终是关闭的。** 设置 `CODEG_COMPUTER_USE=1` 后，任何持有令牌的人都能从浏览器把那台机器的窗口共享给智能体，而唯一的停止入口在状态栏弹层里——悬浮停止条和停止快捷键都只属于桌面应用。→ [在服务器上](/zh/guide/computer-use#on-a-server)
 
 对于负载均衡器或编排器的存活探测，经过身份验证的 `POST /api/health`（携带 bearer 令牌）会返回 `{"status":"ok","version":"…"}`。
 
@@ -177,7 +194,7 @@ CODEG_STATIC_DIR=../out ./target/release/codeg-server
 
 ## 保持服务器更新 {#keep-your-server-up-to-date}
 
-与桌面应用一样，`codeg-server` 也可从**设置 → 软件更新**自我更新：它会下载适用于其平台的、经过签名的版本，验证签名，替换磁盘上的二进制文件和 Web 资源，然后重启——无需重新部署。上一个版本会被保留，因此同一界面上还提供了**回滚**。此功能仅限 Linux/macOS（Windows 上已禁用）。
+与桌面应用一样，`codeg-server` 也可从**设置 → 软件更新**自我更新：它会下载适用于其平台的、经过签名的版本，验证签名，替换磁盘上的二进制文件和 Web 资源，然后重启——无需重新部署。上一个版本会被保留，因此同一界面上还提供了**回滚**。此功能仅限 Linux/macOS（Windows 上已禁用）。自 **0.32.1** 起，无法写入自身安装位置的服务器——比如二进制文件或 Web 文件夹不归它所有、磁盘已满——会在你尝试**之前**就在该界面上说明这一点，并改为提供发布页面，供你手动更新。
 
 在其监督进程下运行它，以确保升级安全：
 

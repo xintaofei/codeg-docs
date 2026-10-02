@@ -34,6 +34,9 @@ Codeg 在两个地方进行配置。桌面应用和 Web 界面通过 **设置** 
 | `CODEG_MCP_BIN` | *（自动）* | 当 `codeg-mcp` 伴生程序不在服务器二进制文件旁边时其所在路径——某些源码构建需要它。没有它，[多智能体委派](/zh/guide/multi-agent)会被静默禁用。 |
 | `CODEG_BRIDGE_PORTS` | *（`CODEG_PORT`+1 … +10）* | [端口桥](/zh/guide/browser#in-a-browser-session-the-port-bridge)绑定的端口，工作台里显示的每个开发服务器占一个：一个范围（`3081-3090`）、逗号列表、`auto`（任意空闲端口）或 `off`。解析不了的值会关闭端口桥而不是瞎猜。 |
 | `CODEG_BRIDGE_PUBLIC_HOST` | *（未设置）* | 工作台访问桥端口时应使用的主机名（代替加载工作台所用的主机）——给把它们命名成别的名字的反向代理用。 |
+| `CODEG_BRIDGE_HOST_PATTERN` | *（未设置）* | 在 Codeg 自己的端口上按**主机名**访问开发服务器，而不是绑定一段端口：`auto`（把端口放在工作台主机名的前面——`3000.codeg.example.com`），或一个恰好含一次 `{port}` 的模板，例如 `{port}.preview.example.com`。需要一条泛域名 DNS 记录，前面若有代理，还要在代理上配置泛域名虚拟主机。解析不了的值会关闭端口桥。→ [按主机名](/zh/guide/browser#by-hostname-instead-of-by-port) |
+| `CODEG_BROWSER_TUNNEL` | `all` | 作为[远程工作区](/zh/guide/browser#in-a-remote-workspace-window)连接到本服务器的桌面应用，能通过其内置浏览器访问什么：`all`、`private`（回环、私有和链路本地地址）或 `off`，不区分大小写。未设置或为空即 `all`；其他任何值都会将其关闭。 |
+| `CODEG_COMPUTER_USE` | *（关闭）* | 设为 `1`、`true`、`yes` 或 `on` 时，通过安装在服务器旁边的 `codeg-computer-helper`，在服务器那台机器自己的桌面上提供[电脑操作](/zh/guide/computer-use#on-a-server)。在 Linux 上，若没有 `DISPLAY` 或 `WAYLAND_DISPLAY`，它会发出警告。桌面应用不读取这个变量。 |
 
 关于 `CODEG_HOST` 和 `CODEG_TOKEN` 在网络和 TLS 方面的影响，参见[部署](/zh/getting-started/deployment#access-it-securely)。
 
@@ -88,7 +91,7 @@ Codeg 会将按天轮转的日志写入数据目录中的 `logs/`，并将它们
 
 ## 代理支持 {#proxy-support}
 
-启动时，Codeg 会对标准的 `HTTP_PROXY`、`HTTPS_PROXY` 和 `ALL_PROXY` 变量（及其小写形式）拍下快照，并将它们传播给它启动的每一个智能体进程。因此，一处代理设置就同时覆盖了 Codeg *以及*它所驱动的智能体——这正是为企业网关设计的路径。关于 Codeg 如何处理网络访问，参见[隐私与安全](/zh/reference/privacy)。
+启动时，Codeg 会对标准的 `HTTP_PROXY`、`HTTPS_PROXY` 和 `ALL_PROXY` 变量（及其小写形式）拍下快照，并将它们传播给它启动的每一个智能体进程。因此，一处代理设置就同时覆盖了 Codeg *以及*它所驱动的智能体——这正是为企业网关设计的路径。自 **0.32.2** 起，每个带着代理启动的智能体，其 `NO_PROXY` 里还会被加入本机地址——`localhost`、`127.0.0.1`、`::1`——这样智能体连向自己本地服务的连接，永远不会被送到另一台机器上的代理那里；[设置 → 系统](/zh/reference/settings/system#network-proxy)里的**不走代理的地址**列表还可以加上你自己的地址。关于 Codeg 如何处理网络访问，参见[隐私与安全](/zh/reference/privacy)。
 
 ## 高级调优 {#advanced-tuning}
 

@@ -124,7 +124,8 @@ export default defineConfig({
               items: [
                 { text: 'The Workspace', link: '/guide/workspace' },
                 { text: 'Built-in Browser', link: '/guide/browser' },
-                { text: 'Infinite Conversations', link: '/guide/canvas' },
+                { text: 'Computer Use', link: '/guide/computer-use' },
+                { text: 'Infinite Canvas', link: '/guide/canvas' },
                 { text: 'Conversation Aggregation', link: '/guide/aggregation' },
                 { text: 'Git & Worktrees', link: '/guide/git' },
                 { text: 'Token Usage', link: '/guide/token-usage' }
@@ -174,8 +175,9 @@ export default defineConfig({
                 { text: 'Appearance', link: '/reference/settings/appearance' },
                 { text: 'General', link: '/reference/settings/general' },
                 { text: 'Collaboration', link: '/reference/settings/collaboration' },
-                { text: 'Browser', link: '/reference/settings/browser' },
                 { text: 'Quick Messages', link: '/reference/settings/quick-messages' },
+                { text: 'Browser Use', link: '/reference/settings/browser' },
+                { text: 'Computer Use', link: '/reference/settings/computer-use' },
                 { text: 'Shortcuts', link: '/reference/settings/shortcuts' },
                 { text: 'Version Control', link: '/reference/settings/version-control' },
                 { text: 'Web Service', link: '/reference/settings/web-service' },
@@ -239,7 +241,8 @@ export default defineConfig({
               items: [
                 { text: '工作区', link: '/zh/guide/workspace' },
                 { text: '内置浏览器', link: '/zh/guide/browser' },
-                { text: '无限对话', link: '/zh/guide/canvas' },
+                { text: '电脑操作', link: '/zh/guide/computer-use' },
+                { text: '无限画布', link: '/zh/guide/canvas' },
                 { text: '对话聚合', link: '/zh/guide/aggregation' },
                 { text: 'Git 与 Worktree', link: '/zh/guide/git' },
                 { text: 'Token 用量', link: '/zh/guide/token-usage' }
@@ -289,8 +292,9 @@ export default defineConfig({
                 { text: '外观', link: '/zh/reference/settings/appearance' },
                 { text: '常规', link: '/zh/reference/settings/general' },
                 { text: '协作', link: '/zh/reference/settings/collaboration' },
-                { text: '浏览器', link: '/zh/reference/settings/browser' },
                 { text: '快捷消息', link: '/zh/reference/settings/quick-messages' },
+                { text: '浏览器操作', link: '/zh/reference/settings/browser' },
+                { text: '电脑操作', link: '/zh/reference/settings/computer-use' },
                 { text: '快捷键', link: '/zh/reference/settings/shortcuts' },
                 { text: '版本控制', link: '/zh/reference/settings/version-control' },
                 { text: 'Web 服务', link: '/zh/reference/settings/web-service' },

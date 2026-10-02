@@ -34,6 +34,9 @@ The variables you're most likely to set on a server:
 | `CODEG_MCP_BIN` | *(auto)* | Path to the `codeg-mcp` companion when it doesn't sit beside the server binary — needed for some source builds. Without it, [multi-agent delegation](/guide/multi-agent) is silently disabled. |
 | `CODEG_BRIDGE_PORTS` | *(`CODEG_PORT`+1 … +10)* | Ports the [port bridge](/guide/browser#in-a-browser-session-the-port-bridge) binds, one per dev server shown in the workbench: a range (`3081-3090`), a comma list, `auto` (any free port), or `off`. A value that doesn't parse turns the bridge off rather than guessing. |
 | `CODEG_BRIDGE_PUBLIC_HOST` | *(unset)* | Hostname the workbench should use for the bridge ports instead of the one it was loaded from — for a reverse proxy that names them differently. |
+| `CODEG_BRIDGE_HOST_PATTERN` | *(unset)* | Reach dev servers by **hostname** on Codeg's own port instead of binding a port range: `auto` (the port in front of the workbench's host — `3000.codeg.example.com`) or a template with `{port}` in it once, such as `{port}.preview.example.com`. Needs a wildcard DNS record, and a wildcard virtual host on any proxy in front. A value that doesn't parse turns the bridge off. → [By hostname](/guide/browser#by-hostname-instead-of-by-port) |
+| `CODEG_BROWSER_TUNNEL` | `all` | What a desktop app attached to this server as a [remote workspace](/guide/browser#in-a-remote-workspace-window) may reach through its built-in browser: `all`, `private` (loopback, private and link-local addresses), or `off`, in any case. Unset or blank means `all`; any other value turns it off. |
+| `CODEG_COMPUTER_USE` | *(off)* | `1`, `true`, `yes` or `on` offers [computer use](/guide/computer-use#on-a-server) on the server machine's own desktop, through the `codeg-computer-helper` installed beside the server. On Linux it warns when there's no `DISPLAY` or `WAYLAND_DISPLAY`. The desktop app doesn't read it. |
 
 See [Deployment](/getting-started/deployment#access-it-securely) for the networking and TLS implications of `CODEG_HOST` and `CODEG_TOKEN`.
 
@@ -88,7 +91,7 @@ For day-to-day use you can change the level from the UI instead — see [Setting
 
 ## Proxy support
 
-At startup Codeg snapshots the standard `HTTP_PROXY`, `HTTPS_PROXY`, and `ALL_PROXY` variables (and their lowercase forms) and propagates them to every agent process it launches. One proxy setting therefore covers Codeg *and* the agents it drives — the intended path for corporate gateways. See [Privacy & Security](/reference/privacy) for how Codeg handles network access.
+At startup Codeg snapshots the standard `HTTP_PROXY`, `HTTPS_PROXY`, and `ALL_PROXY` variables (and their lowercase forms) and propagates them to every agent process it launches. One proxy setting therefore covers Codeg *and* the agents it drives — the intended path for corporate gateways. Since **0.32.2** every agent launched with a proxy also gets the local addresses — `localhost`, `127.0.0.1`, `::1` — added to its `NO_PROXY`, so an agent's connections to its own local services never travel to a proxy on another machine; the **Bypass proxy for** list in [Settings → System](/reference/settings/system#network-proxy) adds addresses of your own. See [Privacy & Security](/reference/privacy) for how Codeg handles network access.
 
 ## Advanced tuning
 

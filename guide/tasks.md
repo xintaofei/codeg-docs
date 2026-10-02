@@ -67,7 +67,8 @@ Beside each title sits the **mark of the agent that's on it** — resolved exact
 - **Title** — *What needs to be done?*
 - **Task description** — the full composer, the same one you use for a conversation: `@` to reference files, `/` for commands, `$` for Codex skills, the **+** menu for skills and quick messages, and **attachments**. A bug report can be a screenshot and nothing else.
 - **Target** — the project folder it runs in. Only **project roots** are offered; a task can't be based on a worktree, since it creates one of its own. A task that has already run is pinned to its folder.
-- **Agent and mode** — these start out *inherited from task settings* and stay that way until you touch them. Override one for this task and a **Reset to inherited** control appears to give it back.
+- **Base branch** — the branch the task starts from and lands back on. Left alone it reads **HEAD**, with the branch your project folder is on beside it, and means *the current branch when the task starts*; pick a local branch from the list to pin another. It's fixed once the task has a worktree, and a task that came from a pull request doesn't ask, since it starts from the pull request.
+- **Agent and mode** — these start out *inherited from task settings* and stay that way until you touch them. Override one for this task and a **Reset to inherited** control appears to give it back. Since **0.33.0** the line under the agent says which you've got. When task settings name no agent, or name one that isn't available here, the picker still shows one you can run — and that one is **saved with the task**, so the agent you see is the agent that runs. Before, it could show an agent nothing had saved, and the task then failed to start with *no agent configured*.
 
 That's not only the new-task box. **Every to-do input is the full composer** — editing a task, following up on a reviewed one, leaving a note on a retry — so you can point at a file or paste an image wherever you're typing.
 
@@ -77,7 +78,7 @@ Three other doors lead here:
 
 - **From a message.** Reading a reply and spotting a follow-up? Beside the copy button on any message sits **Create task from message** — it drops that text into a new task, pre-filled with the project folder, and switches you to To-dos.
 - **From an automation, or from the agent itself.** An automation can file a task instead of starting a session, and an agent in a conversation can queue one too, if you've allowed it. → [Automations](/guide/automations#choose-what-a-fire-does)
-- **From a GitHub or GitLab item.** The [Repository panel](/guide/repository) lists your issues and pull requests and hands one straight to an agent, choosing how it should be handled — fix it, investigate it, plan it, or review it. The task that comes out is an ordinary one on this board. → [Repository Panel](/guide/repository)
+- **From a GitHub or GitLab item.** The [Repository panel](/guide/repository) lists your issues and pull requests and hands one straight to an agent, choosing how it should be handled — fix it, plan it first, review it and fix what it finds, or only review it. The task that comes out is an ordinary one on this board. → [Repository Panel](/guide/repository)
 
 ## Set it running
 

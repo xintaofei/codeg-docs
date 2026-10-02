@@ -30,14 +30,14 @@ Only **enabled** agents appear in the composer's agent picker. Disable the ones 
 
 ## Check it's ready — preflight
 
-Open Settings → Agents and Codeg runs a **preflight check** on each agent — a quick health report, so you know it'll actually run before you rely on it. You'll see a **Version Status** line (the latest version versus what's installed locally, or *Not installed*) followed by a short checklist, each item marked **PASS**, **WARN**, or **FAIL**.
+Open Settings → Agents and Codeg runs a **preflight check** on each agent — a quick health report, so you know it'll actually run before you rely on it. You'll see a **Version Status** line — the version Codeg recommends against the one installed locally, *Recommended: … · Local: …*, or *Not installed* — followed by a short checklist, each item marked **PASS**, **WARN**, or **FAIL**.
 
 What it checks depends on how the agent is delivered:
 
 - **npx agents** — that **Node.js** and **npm** are installed and new enough (each agent sets a minimum Node version).
 - **OpenCode** and **Cursor** — that your platform is supported and the binary is downloaded (OpenCode also fetches its plugins).
 
-Every failing check comes with a **fix button** right beside it — *Install Node.js*, *Install Plugins*, and so on — and the version row offers **Install**, **Upgrade**, or **Uninstall** as needed. Changed something outside Codeg? **Refresh check** re-runs the preflight.
+Every failing check comes with a **fix button** right beside it — *Install Node.js*, *Install Plugins*, and so on — and the version row offers **Install**, **Upgrade**, or **Uninstall** as needed, plus **Custom install** for a version of your choosing where the agent supports one. When the agent's newest release is ahead of the one Codeg recommends, an amber **Upgrade to unreviewed latest …** joins them. → [Supported Agents](/guide/supported-agents#unreviewed-latest) Changed something outside Codeg? **Refresh check** re-runs the preflight.
 
 **Installed an agent's CLI yourself?** Codeg counts that. Where it has no managed install of its own, it probes your system for the command — an `npx` package via `npm list -g`, a binary on your `PATH`, or the plain `--version` convention — and reports the real version instead of *Not installed*. Since a session already preferred whatever was on your `PATH`, this just means the version row now agrees with what actually runs. Claude Code and Codex are the exception — there Codeg probes for an ACP adapter with its own executable name, not the `claude` or `codex` you already have. → [ACP adapters](/guide/supported-agents#acp-adapters)
 
@@ -111,9 +111,18 @@ Earlier versions marked **every** folder they launched pi into as trusted, witho
 
 Pi sends a reasoning effort only for a model that **declares** it can think — and an undeclared model has every level clamped to *Off*, which is why the composer's reasoning picker used to snap straight back the moment you touched it on a custom provider.
 
-A **Reasoning** card on pi's page is where you declare it: a switch, the **six levels pi accepts** as chips, and — folded away — the value each level is sent as, which is what an endpoint expecting `LOW`/`HIGH` needs. The list isn't free-form because pi's isn't; a name outside its six is refused by the adapter. The default-level select narrows to the levels you actually made available.
+A **Reasoning** card on pi's page is where you declare it: a switch, the **levels pi accepts** as chips — seven since **0.32.3**, when **Max** joined them — and, folded away, the value each level is sent as, which is what an endpoint expecting `LOW`/`HIGH` needs. The list isn't free-form because pi's isn't; a name outside its seven is refused by the adapter. The default-level select narrows to the levels you actually made available.
 
 Since **0.31.0** a pi model's **context window** comes from pi's own `models.json`, resolved by provider and model id and honouring pi's 128K default for a listed model that declares none. A self-hosted or proxied model therefore shows a real percentage in the context ring, instead of a raw token count or a window pi isn't actually running with.
+
+### Pi: what each model can think at, and the Pi it needs {#pi-thinking-levels-and-version}
+
+Since **0.32.3** pi's thinking goes up to **Max** — on the models that offer it, and only those: the two top levels, *xhigh* and *max*, exist only for a model that names them. So the composer's thinking picker lists the levels the **current model** really has, and pi's settings page says, under the level you choose, what pi will do with the selected model — *"offers: off · low · …"*, or, in amber, that the model **doesn't offer** your level and pi will run it at the nearest one it has: the next higher, else the next lower. Models that do offer your level still get it.
+
+Two requirements arrived with it:
+
+- **Pi 0.81.0 or later.** Opening a session needs it. Pi's settings page flags an older runtime in amber, and a session opened on one fails with a notification that says so — with an **Open Agents settings** button — rather than an internal error.
+- **Paths that mean the same thing everywhere.** The **Pi command** must be an absolute path or a command name on your `PATH`, and the **agent directory** absolute or under `~/`. A relative one — a `./pi-test.sh` wrapper, say — pointed somewhere different in every workspace, so it's refused inline and nothing saves until it's fixed.
 
 ### Cursor: families and knobs, not two hundred ids
 
@@ -134,18 +143,46 @@ Codex's pane has a **Sandbox & approvals** group — the two questions of how mu
 - **Approval policy** — how readily Codex asks permission: **On request** (it decides when to ask), **Untrusted** (only known-safe read-only commands run unattended), **Never** (no prompts at all), or **Granular**, which breaks it down per prompt type — shell escalations, policy rules, skill scripts, permission requests, and MCP prompts — each of which is either shown to you or auto-rejected. Left alone it follows Codex's own default of asking on request.
 - **Sandbox mode** — what it can write: **Read-only**, **Workspace write**, or **Full access (no sandbox)**. Workspace write adds **Extra writable folders** (absolute paths, one per line), plus switches for **network access** and whether to exclude **TMPDIR** and **/tmp** — all off by default.
 
-Two things to know: these go into your global `~/.codex/config.toml`, so the `codex` CLI and its IDE sessions pick them up too; and they're **thread defaults** — they govern the turns Codex starts by itself, while ordinary prompts follow the composer's own approval preset. Restart a session to apply a change. On Windows, workspace write falls back to read-only unless you've enabled Codex's experimental Windows sandbox.
+Two things to know: these go into your global `~/.codex/config.toml`, so the `codex` CLI and its IDE sessions pick them up too; and they're **thread defaults** — they govern the turns Codex starts by itself. What an ordinary prompt runs under is the **mode** the session is in, and Codeg derives the mode a session *starts* in from these two settings; after that, the composer's mode picker decides. Restart a session to apply a change. On Windows, workspace write falls back to read-only unless you've enabled Codex's experimental Windows sandbox.
+
+#### Codex's modes {#codex-modes}
+
+The composer offers Codex's own four presets, named in English in every language. Since codex-acp **2.0** (Codeg **0.32.3**) they are:
+
+| Mode | What it may write | Who answers an escalation |
+| --- | --- | --- |
+| **Read-only** | Nothing — Codex asks before every edit | You |
+| **Workspace access** | The workspace | You, for anything beyond it |
+| **Auto review** *(default)* | The workspace | A model, which screens each request and asks you only about what looks unsafe |
+| **Full access** | Anything — no sandbox | No one: nothing is asked |
+
+*Auto review* was called *Approve for me* before 2.0. And a session you'd left on *Ask for approval* now opens on **Read-only** — which is stricter than it sounds, because on adapters 1.7 to 1.13 that preset carried a **writable** workspace: those versions shipped no read-only sandbox at all, and 2.0 restored it. Pick **Workspace access** to edit the workspace freely again while being asked about everything else.
+
+The mode a session **starts** in comes from your config:
+
+| In `~/.codex/config.toml` | The session starts in |
+| --- | --- |
+| `sandbox_mode = "read-only"` | Read-only |
+| `workspace-write`, approval `never` | Auto review |
+| `workspace-write`, any other approval | Workspace access |
+| `danger-full-access`, approval `never` | Full access |
+| `danger-full-access`, any other approval | Workspace access — the sandbox is tightened rather than the approvals dropped |
+| no `sandbox_mode` | The adapter's default, Auto review |
+
+On an adapter older than 2.0, the two *Workspace access* rows start in Auto review instead. Full access is only ever the result of an exact match on both settings — nothing is inferred into it — and a `default_permissions` profile in the file takes Codeg out of the derivation entirely, since Codex resolves through that profile and a derived mode would override it.
 
 ::: warning Untrusted has no equivalent here
-Until **0.25** these two settings were **dead in every Codeg session** — the adapter re-sent its own policy on every turn, so an explicitly read-only sandbox could be silently widened to workspace-write. Codeg now derives the launch from your config, keyed on **sandbox mode**, because that's the axis where guessing wrong *enlarges* access: it never widens the sandbox, and never picks an approval-free preset without an exact match.
+**Untrusted** is the one approval policy that can't be honored: none of the adapter's presets is it, so a Codeg session treats it as **on request**, where the model decides when to ask and anything the sandbox already permits stops prompting. The panel says so rather than letting the control look effective. If Untrusted was your containment, tighten **Sandbox mode** instead.
 
-**Untrusted** is the one that can't be honored — the ACP adapter has three approval presets and none of them is it, so a Codeg session falls back to **on request**, where the model decides when to ask and anything the sandbox already permits stops prompting. The panel says so rather than letting the control look effective. If Untrusted was your containment, tighten **Sandbox mode** instead. (Codeg also declines to derive anything at all when a `default_permissions` profile shadows the root keys, since Codex resolves through that profile and a derived preset would override it.)
+Until **0.25** neither setting reached a Codeg session at all — the adapter re-sent its own policy on every turn, so an explicitly read-only sandbox could be silently widened. Deriving the starting mode is the fix, and it's keyed on **sandbox mode** because that's the axis where guessing wrong *enlarges* access: the derivation never picks a wider sandbox than the one you set. (What it can't do is supply a sandbox the adapter lacks — hence the 1.7 to 1.13 gap above.)
 :::
 
 Two more switches in the same pane are worth knowing about:
 
 - **Allow questions in Default mode.** Codex will only call its `request_user_input` tool in *Plan* mode, so in an ordinary turn its question is refused outright and **no question card ever reaches you** — the agent asks, gets told the tool is unavailable, and carries on guessing. Turning this on lets it ask in ordinary turns too. It writes `[features].default_mode_request_user_input` into your `~/.codex/config.toml` — the same key Codex's own `codex features enable` would set, and the flag is still under development upstream. Feature flags resolve when a thread is created, so it **takes effect on your next session**, not the one you have open.
 - **Custom models** can be added in one of two shapes. The default clones a native GPT entry; pick the **OpenAI-compatible** one for a third-party gateway, and Codex sends a plain Responses request — no code-mode tools, no multi-agent, no responses-lite, no custom apply-patch tool — which is all such a gateway implements. It's a preset over ordinary per-field overrides, so you can switch a model that already exists either way.
+- **New official models arrive by themselves.** A customized list — one where you've added models or taken official ones out — used to replace Codex's own table outright, so a model OpenAI shipped later never appeared until you refreshed the list and saved it again. Since **0.32.4** Codeg tries to rebuild it whenever Codex is installed or upgraded: your own models first, then every official one in Codex's own order, minus the ones you removed — those stay removed. If the installed Codex's list can't be read, the list you have stays as it was.
+- **The default model is Codex's own.** A Codex conversation that never had a model picked runs on whatever Codex defaults to — **GPT-6.1 Sol** since **0.32.4**. If the provider you use for Codex doesn't serve it yet, pick a model in the composer or fill in the provider's **Model** field.
 
 ### Claude Code: attribution and telemetry
 
@@ -188,7 +225,7 @@ Two behaviours worth knowing:
 
 Model and session mode come over ACP, so they live in the composer rather than here.
 
-Since **0.30.3** Antigravity also takes a **custom version**, like the other downloaded agents — and asking for a version that was never published now **fails the download** instead of quietly filing the pinned build under the number you typed, which left Version Status confidently reporting a build you didn't have.
+Since **0.30.3** Antigravity also takes a **custom version**, like the other downloaded agents — and asking for a version that was never published now **fails the download** instead of quietly filing the pinned build under the number you typed, which left Version Status confidently reporting a build you didn't have. Google renamed its downloads from **1.2.0** on, so a custom version has to be **1.2.0 or later** — **1.2.1 or later** on an Intel Mac, where 1.2.1 is the first build — and an earlier one fails to download.
 
 #### Signing in on a machine with no browser
 
@@ -213,11 +250,11 @@ Start a new conversation and the composer shows an **agent picker** — a row of
 
 So a per-folder default always wins, and the list order is the fallback. → [The Workspace](/guide/workspace#folders-and-the-sidebar) covers setting a folder's default.
 
-The first time you use an agent in a session, you'll see **Connecting…** while Codeg launches the CLI and completes its handshake. If it can't connect — the agent's disabled, not installed, unsupported on your platform, or slow to respond — Codeg raises an **alert** (the bell in the status bar) that says what went wrong and points you to Settings → Agents to fix it.
+The first time you use an agent in a session, you'll see **Connecting…** while Codeg launches the CLI and completes its handshake. If it can't connect — the agent's disabled, not installed, unsupported on your platform, or slow to respond — Codeg raises an **alert**: a toast that says what went wrong, with **Retry** and, when the fix lives there, **Open Agents settings**. The alert stays in the status bar's **Alerts** list afterwards, without the Retry. The connection heart below the composer turns red and says why too.
 
 ## Connection status
 
-While you work, the **status bar** at the bottom shows the active agent and its state — *Connecting…*, *Connected*, *Responding…*, or *Disconnected* — with the agent's icon pulsing while it's busy.
+While you work, the **connection heart** below the composer shows the agent's state — connected, connecting, error, or disconnected — with *Responding…* told apart from a resting *Connected* in its popover. Click it for the details and a **Reconnect** that tries to resume the session. Where the agent can't load one — Cline is among them — or the load fails, Codeg starts a new agent session on the same conversation instead: the transcript stays, but the agent no longer has the earlier context. → [When the connection looks wrong](/guide/workspace#when-the-connection-looks-wrong)
 
 Sessions you're not looking at may disconnect after a few idle minutes to free up resources, but the tab you're actively in stays connected, and Codeg **reconnects automatically** when you come back to a session.
 

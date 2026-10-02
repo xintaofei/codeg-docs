@@ -55,10 +55,10 @@ Codeg hands these to the agent when it launches. Most agents accept this route; 
 If you switch between endpoints, or want one credential shared across sessions, save it as a **Model Provider** instead of retyping it. This is available for **Claude Code, Codex, and Gemini** — the three whose CLIs cleanly accept a base-URL-and-key override.
 
 1. Go to **Settings → Model Providers → Add Provider**.
-2. Give it a **name**, an **API URL**, an **API Key**, the **agent type** it's for, and a **model**.
+2. Give it a **name**, an **API URL**, an **API Key**, the **agent type** it's for, and a **model**. A **Claude Code** provider gets Claude Code's model slots instead of the single model — a main and a reasoning model, a default for each tier (**Haiku**, **Sonnet**, **Opus**, and since **0.32.3** **Fable**), and a custom entry for the model picker.
 3. Open that agent in **Settings → Agents**, set its auth mode to **Model Provider**, and select the one you saved.
 
-Once bound, the agent's API fields show read-only, filled from the provider. Edit a provider later and Codeg flags any running sessions that need to **reconnect** to pick up the change.
+Once bound, the agent's API fields show read-only, filled from the provider — and for Claude Code the provider speaks for every model slot: one it fills is set on the agent, one it leaves empty is cleared, so nothing from an earlier setup lingers underneath. On Claude Code, switching the auth mode away from **Model Provider** and back keeps the provider you'd picked — until **0.32.3** it rebound to your oldest one and saved its model. Edit a provider later and Codeg flags any running sessions that need to **reconnect** to pick up the change.
 
 ::: tip Custom Endpoint vs. Model Provider
 They configure the same thing — a base URL, a key, and a model — but differ in reach. **Custom Endpoint** is typed inline on one agent; a **Model Provider** is a named record you set up once and reuse. If you only ever use one endpoint for one agent, Custom Endpoint is simpler; if you juggle several, save them as providers. (An agent's type is fixed once a provider is created.)
@@ -70,13 +70,14 @@ Which models you can pick comes from the **agent**, not Codeg. Once an agent con
 
 - **Codeg remembers your last pick** per agent and preselects it next time you start a session with that agent.
 - There's **no per-folder model default** — the model is chosen at the session level. (A folder default sets the *agent*, not the model.)
+- **A Claude Code conversation saved on a *(1M context)* entry keeps working.** Since Claude Code **2.1.285**, a gateway behind a custom API address lists the plain models only — they use their 1M window by default — and some accounts lost the separate *Opus (1M context)* entry earlier. A conversation set to such an entry carries on with its plain twin rather than falling back to the default model. If your gateway stops at 200K, Claude Code's own advice is `/autocompact 200k`.
 - **A model is captioned the way its own agent names it.** Since **0.31.0** Codeg records the id/name pairs an agent's model picker advertises, so the reply footer, the session details and the sidebar's hover chip read `Qwen3.8-Flash` where the transcript itself only records an account-internal id like `qfmodel`.
 
 **Reasoning effort** is set in the composer, per session — with a few agent panes adding something the composer can't express:
 
 - **Grok** keeps a settings-pane dropdown, from low up to **Max**, written into Grok's own config.
 - **Claude Code** and **Codex** had one until **0.30.0**, when both were deleted. They read as the knob that decides how hard a turn thinks while the composer's per-session picker is what actually governs it, so the two could disagree with nothing on screen to say which won. An `effortLevel` already written into a config file is **left alone** rather than cleaned up.
-- **Pi** works like Kimi Code rather than like Grok: because pi only sends an effort for a model that *declares* one, its pane is where you declare it — a switch, which of pi's six levels your model accepts, and the value each is sent as. → [Pi: reasoning on a custom provider](/guide/agents#pi-reasoning-on-a-custom-provider)
+- **Pi** works like Kimi Code rather than like Grok: because pi only sends an effort for a model that *declares* one, its pane is where you declare it — a switch, which of pi's seven levels your model accepts, and the value each is sent as. Since **0.32.3** those levels run up to **Max**, and the pane says what pi will actually run the selected model at. → [Pi: reasoning on a custom provider](/guide/agents#pi-reasoning-on-a-custom-provider) · [What each model can think at](/guide/agents#pi-thinking-levels-and-version)
 - **Kimi Code** works the other way round: its pane declares which levels *exist* and the composer's Thinking picker offers them. → [Kimi Code](#kimi-code-provider-model-and-reasoning)
 - **Cursor** folds effort into its model picker — see [Cursor's families and knobs](/guide/agents#cursor-families-and-knobs-not-two-hundred-ids).
 

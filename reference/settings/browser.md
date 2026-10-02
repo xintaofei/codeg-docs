@@ -1,16 +1,20 @@
 ---
-title: Browser
-description: The Browser settings screen — where links open per source, site rules and the administrator policy, what agents are allowed to see and do on a page, whether their code is put in front of you, local servers, the HTML document view, the web inspector, tab surface, background unloading, profiles and browsing data, proxy and downloads.
+title: Browser Use
+description: The Browser Use settings screen — where links open per source, site rules and the administrator policy, what agents are allowed to see and do on a page, whether their code is put in front of you, local servers, the HTML document view, the web inspector, tab surface, background unloading, profiles and browsing data, proxy and downloads.
 ---
 
-# Browser
+# Browser Use
 
-**Settings → Browser** is the control surface of the [built-in browser](/guide/browser) — *"Web pages opened from conversations, tool results and the terminal can appear as tabs next to your files instead of leaving the app."* This page lists every row on it; the behaviour behind them is described in the guide.
+**Settings → Browser Use** is the control surface of the [built-in browser](/guide/browser) — its own heading reads *Built-in browser* — *"Web pages opened from conversations, tool results and the terminal can appear as tabs next to your files instead of leaving the app."* This page lists every row on it; the behaviour behind them is described in the guide.
 
 Everything here applies the moment you change it — there is no Save button — and a change is mirrored into every open window. A few rows say *from now on* because a tab's engine cannot be reconfigured after it exists.
 
-::: tip Desktop only
-The entry is **not shown in a browser session**: there is no engine to embed there, every link goes to your system browser, and there would be nothing for the page to render. That is also why the screen exists separately at all — it was a folded block at the bottom of **Settings → General** until **0.31.2**, five pickers tall, and a page of its own is what made the fold unnecessary.
+::: info Named Browser Use since 0.33.0
+The entry was **Browser** until **0.33.0**, when **Computer Use** arrived beside it. Before **0.31.2** it was a folded block at the bottom of **Settings → General**, five pickers tall — a page of its own is what made the fold unnecessary.
+:::
+
+::: tip In a browser session, three rows
+There's no browser engine to configure in a browser session — every page opens in the browser you're already in — so most of this screen isn't there. Since **0.32.0** three rows are, because they still decide something and this is the only place to set them: **Site rules** (to block), **Local servers**, and the **Terminal link menu**. Before that the whole entry was hidden, which left the notice for a server started in a terminal impossible to turn off.
 :::
 
 ## Where links open
@@ -20,6 +24,8 @@ One picker per source — **Conversation messages**, **Tool results**, **Termina
 ## Site rules
 
 A table of patterns and actions that is consulted **before** any of those defaults: a **hostname** (`wiki.example.com`), a **wildcard suffix** (`*.example.com`) or **`*`**, each with an optional `:port`, and an action of *Built-in browser*, *System browser* or **Block**. Add a row at the bottom, change a row's action in place, remove it with the trash button. The **most specific matching pattern wins**, so there is nothing to order.
+
+In a browser session the only action on offer is **Block** — where a link opens isn't a choice there — and a rule you set to one of the other two keeps showing it.
 
 Rows with a **lock** were set by an administrator's [policy file](/guide/browser#rules-set-by-an-administrator) and cannot be changed here; a user rule cannot lift a managed block however specific it is. When that file turns the browser off entirely, a note at the top of the screen says so and every link goes to the system browser.
 
@@ -38,11 +44,11 @@ New in **0.31.1**, and the point of it is where the weight sits, not how much of
 
 ## Local servers
 
-What happens when a server started in a Codeg terminal prints its address: **Notify me** (the default — a toast with an **Open** button), **Open a tab** (in the background), or **Do nothing**. Addresses on this machine only, and only once something is actually listening. Either way the tab strip's **+** lists the local servers running right now. → [A server you start in a terminal](/guide/browser#a-server-you-start-in-a-terminal)
+What happens when a server started in a Codeg terminal prints its address: **Notify me** (the default — a toast with an **Open** button), **Open a tab** (in the background), or **Do nothing**. Addresses on this machine only, and only once something is actually listening. Either way the tab strip's **+** lists the local servers running right now. In a browser session the row is there too, and *Open a tab* opens the server through the [port bridge](/guide/browser#in-a-browser-session-the-port-bridge). → [A server you start in a terminal](/guide/browser#a-server-you-start-in-a-terminal)
 
 ## Terminal link menu
 
-Off by default. On, a plain click on a link in the terminal shows a small menu — built-in browser, system browser, copy link — instead of opening it right away; ⌘/Ctrl-click still opens directly.
+Off by default. On, a plain click on a link in the terminal shows a small menu — built-in browser, system browser, copy link — instead of opening it right away; ⌘/Ctrl-click still opens directly. Shown in a browser session too.
 
 ## HTML file previews
 
@@ -87,6 +93,7 @@ Each **profile** keeps its own cookies, site storage and sign-ins. Add one by na
 
 - [Built-in Browser](/guide/browser) — the feature these switches control, end to end.
 - [Collaboration](/reference/settings/collaboration#in-conversation-tools) — the two switches that let an agent reach a page at all.
+- [Computer Use](/reference/settings/computer-use) — the screen beside this one, for desktop windows rather than web pages.
 - [Privacy & Security](/reference/privacy#the-built-in-browser) — what the browser keeps, and what an agent can and cannot see.
 - [System](/reference/settings/system) — the network proxy this screen reports.
-- [Reference overview](/reference/) — the full 16-screen Settings map.
+- [Reference overview](/reference/) — the full 17-screen Settings map.

@@ -36,8 +36,12 @@ Two delivery routes sit behind that last column:
 - **Node.js (npm).** Twelve of the fifteen ship as npm packages that Codeg runs with `npx`, so they need Node.js installed. Codeg pins a known-good version of each and upgrades it for you. Each declares its own minimum Node version, and preflight checks yours against it — several want **Node 22**, DeepSeek Harness among them.
 - **Bundled binary.** **OpenCode**, **Cursor** and **Google Antigravity** are native binaries Codeg downloads for your exact platform — nothing else to install. Cursor's download is larger because it carries its own Node runtime and tools, so it doesn't need Node.js on your machine either.
 
-::: warning Antigravity has no Intel Mac build
-Google publishes Antigravity for **Apple Silicon, Linux, and Windows** only. On an Intel Mac, Codeg refuses the install up front with *platform not supported*, rather than letting a download 404 halfway through. Every other agent on the roster runs anywhere its runtime does.
+::: info Antigravity runs on Intel Macs since 0.32.2
+Antigravity used to be the roster's one platform hole: Google published it for Apple Silicon, Linux and Windows only, and Codeg refused the install on an Intel Mac. **1.2.1** is its first release with an Intel build, and Codeg moved to it in **0.32.2** — so every agent on the roster now runs anywhere its runtime does.
+:::
+
+::: warning Cline on macOS 27
+macOS 27 kills Cline **3.0.65 and earlier** at launch, because those builds carry a broken signature — the CLI exits at once, and a session dies within a second of starting. **3.0.67**, the version Codeg pins since **0.33.0**, is signed properly; if yours is older, press **Upgrade** in Settings → Agents. OpenCode **1.18.34**, pinned in the same release, is its first properly signed build too.
 :::
 
 ::: info Hermes moved to npm in 0.24
@@ -77,21 +81,16 @@ What the adapter does share is your configuration — including being signed in.
 Set `CODEX_PATH` in the Codex agent's **Environment Variables** and `codex-acp` runs the executable you name instead of the copy it bundles — useful if you keep a particular `codex` build around. → [Working with Agents](/guide/agents#configure-an-agent)
 :::
 
-### Follow the newest release instead of the pin {#adapter-version}
+### Install the newest release instead of the recommended one {#unreviewed-latest}
 
-The Kimi story above cuts both ways: a reviewed pin is what keeps a bad release out, and it's also what stands between you and a model that shipped this morning. Since **0.30.3** that trade is yours to make per agent. The agent's [detail pane](/guide/agents#configure-an-agent) in **Settings → Agents** carries an **Adapter version** dropdown with two values:
+The Kimi story above cuts both ways: a reviewed pin is what keeps a bad release out, and it's also what stands between you and a model that shipped this morning. Since **0.32.4** that trade is a button rather than a setting. When an agent's newest release is **ahead of the version Codeg recommends**, its **Version Status** in **Settings → Agents** shows an amber **Upgrade to unreviewed latest …**. It asks before installing anything, and the dialog says what you're taking on: the release hasn't been reviewed by Codeg, it can break the agent in Codeg — occasionally a release is known broken — and going back means a **Custom install** of the recommended version, which it names. Confirm, and Codeg installs exactly that release, with no fallback to the recommended one if it fails.
 
-- **Pinned (recommended)** — the version Codeg has reviewed. The default, and where the agents you don't think about should stay.
-- **Latest (unreviewed)** — whatever the package's newest npm release is at the moment you install. This is what makes a brand-new model reachable the day it ships, and it is genuinely unreviewed: a release can break the agent inside Codeg, and occasionally one is known broken.
+- **Where "latest" comes from.** For an npx agent, the package's `latest` tag on npm. For a downloaded binary — OpenCode, Cursor, Antigravity, or a custom agent added from the registry — the ACP registry's current archive for your platform, as long as it still fits the download pattern Codeg knows. Agents installed through `uvx` get no offer, and neither do custom agents you wrote out by hand.
+- **When it looks.** Once each time you open the agent's page. Nothing polls in the background, and while the lookup runs, or after it fails, nothing is offered.
+- **After you take it**, the local version is ahead of the recommended one and the row reads *Already latest*, with no warning and no button back. **Install** and **Upgrade** always mean the recommended version, so returning to it is **Custom install** with that version number — as the dialog says.
+- **It replaced a setting.** From **0.30.3** until **0.32.4** each npx agent had an **Adapter version** dropdown — *Pinned* or *Latest (unreviewed)* — read at install time. It's gone: an agent you'd set to *Latest* went back to installing and upgrading to the recommended version, and this button is how you reach for the newest one now.
 
-Three things about it are worth knowing before you flip it:
-
-- **It's read at install and upgrade time only**, and from the **saved** setting. Nothing polls npm in the background, and a launch runs whatever is on disk. So changing the dropdown does nothing on its own: press **Save**, *then* **Upgrade**. Upgrade before saving and you reinstall the pin.
-- **A failed reach for the newest retries the pin**, with a note in the install log, so an unreachable npm or a mirror that doesn't carry the tag yet degrades to the reviewed version instead of failing. If that retry fails too the install fails — and since an upgrade uninstalls before it reinstalls, that case can leave the agent uninstalled.
-- **It's for npx agents only.** A binary or uvx install has no npm dist-tag to follow, so the dropdown simply isn't there.
-- **A custom version overrides it entirely**, on either channel, and never falls back: you asked for that exact version, and quietly installing a different one would relabel your choice.
-
-**Version Status** in the same panel is the number to trust once the channel and the pin can disagree — it reports what a local probe found. On an npx agent that probe is `npm list`, which can fail for reasons of its own, and a failed one falls back to the last version recorded rather than claiming nothing is installed; so a reading that survives a failed upgrade is worth re-checking.
+**Version Status** in the same panel is the number to trust — it reports what a local probe found, beside the version Codeg recommends. On an npx agent that probe is `npm list`, which can fail for reasons of its own, and a failed one falls back to the last version recorded rather than claiming nothing is installed; so a reading that survives a failed upgrade is worth re-checking.
 
 ### DeepSeek Harness takes a third route {#deepseek-harness}
 

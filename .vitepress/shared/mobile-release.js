@@ -43,8 +43,8 @@ export const MOBILE_FALLBACK = {
     url: IOS_APP_STORE_URL,
   },
   android: {
-    version: '1.0.0',
-    date: '2026-07-26',
-    url: `${ANDROID_SOURCE_URL}/releases/download/v1.0.0/codeg-android-v1.0.0.apk`,
+    version: '1.0.1',
+    date: '2026-07-27',
+    url: `${ANDROID_SOURCE_URL}/releases/download/v1.0.1/codeg-android-v1.0.1.apk`,
   },
 }

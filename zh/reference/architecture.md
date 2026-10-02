@@ -1,29 +1,32 @@
 ---
 title: 架构
-description: 架构 —— Codeg 如何组合在一起，从它的单一 Rust 核心和共享 Web UI，到三个二进制文件以及它们通过 ACP 驱动的智能体 CLI。
+description: 架构 —— Codeg 如何组合在一起，从它的单一 Rust 核心和共享 Web UI，到四个二进制文件以及它们通过 ACP 驱动的智能体 CLI。
 ---
 
 # 架构
 
-在底层，Codeg 由为数不多、排布简单的组件构成：**一个 Rust 核心**、**一个 Web 前端**，以及由它们构建出的**三个二进制文件** —— 桌面应用、独立服务器，以及一个小巧的按智能体伴生程序。会话所做的一切 —— 驱动智能体、打开终端、读取文件、向另一个智能体委派 —— 都流经这个共享核心。本页是地图；各个[设置界面](/zh/reference/)和[指南](/zh/guide/)才是实地。
+在底层，Codeg 由为数不多、排布简单的组件构成：**一个 Rust 核心**、**一个 Web 前端**，以及由它们构建出的**四个二进制文件** —— 桌面应用、独立服务器、一个小巧的按智能体伴生程序，以及电脑操作所依托的 helper。会话所做的一切 —— 驱动智能体、打开终端、读取文件、向另一个智能体委派 —— 都流经这个共享核心。本页是地图；各个[设置界面](/zh/reference/)和[指南](/zh/guide/)才是实地。
 
-## 三个二进制文件 {#the-three-binaries}
+## 四个二进制文件 {#the-four-binaries}
 
-Codeg 从**单个 Cargo 工作区中交付三个 Rust 二进制文件**，它们全部由同一个库 crate（`codeg_lib`）编译而来：
+Codeg 从**单个 Cargo 工作区中交付四个 Rust 二进制文件**，它们全部由同一个库 crate（`codeg_lib`）编译而来：
 
 | 二进制文件 | 角色 |
 | ------ | ---- |
 | **`codeg`** | **桌面应用** —— 一个包裹着 Web UI 的 [Tauri](https://tauri.app/) 外壳（原生窗口、系统托盘、自动更新器）。 |
 | **`codeg-server`** | **独立服务器** —— 一个 HTTP + WebSocket 服务器，向浏览器提供相同的 UI，用于无头或共享部署。 |
-| **`codeg-mcp`** | **按次启动的伴生程序** —— 一个微型的 stdio [MCP](https://modelcontextprotocol.io/) 服务器，由智能体 CLI 运行，用于访问 Codeg 自身的工具，主要是多智能体委派。 |
+| **`codeg-mcp`** | **按次启动的伴生程序** —— 一个微型的 stdio [MCP](https://modelcontextprotocol.io/) 服务器，由智能体 CLI 运行，用于访问 Codeg 自身的工具：委派，以及会话内工具。 |
+| **`codeg-computer-helper`** | **电脑操作 helper** —— 真正读取并操作桌面窗口的那个进程，服务于桌面应用，或提供[电脑操作](/zh/guide/computer-use)的服务器。 |
 
-前两个是你*运行*的；第三个则是为你自动生成的，每个智能体会话一个（更多内容见[下文](#multi-agent-delegation-and-codeg-mcp)）。由于它们共享 `codeg_lib`，桌面应用和服务器是**同一产品的两道前门** —— 区别在于 UI 如何访问核心，而不是核心做什么。
+前两个是你*运行*的；另外两个则会为你自动启动 —— 伴生程序每个智能体会话一个（更多内容见[下文](#multi-agent-delegation-and-codeg-mcp)），helper 在电脑操作首次需要它时启动（见[下文](#computer-use-and-codeg-computer-helper)）。由于它们共享 `codeg_lib`，桌面应用和服务器是**同一产品的两道前门** —— 区别在于 UI 如何访问核心，而不是核心做什么。
+
+桌面应用随附的是放在它旁边的伴生程序和 helper，**不包括**服务器。在 **0.33.0** 之前，它一直带着一份从未用过的 `codeg-server` —— 约 70 MB —— 因为打包器会收走构建产出的每一个二进制文件；如今每个独立二进制文件都有了自己的构建特性，默认关闭，桌面构建就不会再顺带把它们产出来。→ [开发](/zh/reference/development)
 
 ## 一个核心，一个前端 {#one-core-one-frontend}
 
 两个组件承担着真正的工作，且二者在每个二进制文件中都被复用：
 
-- **Rust 核心（`codeg_lib`）** —— 会话与智能体编排、数据库、git、凭据、Web 服务器、日志。它在 `codeg` 中开启 [Tauri](https://tauri.app/) 的桌面功能进行构建，而在 `codeg-server` 和 `codeg-mcp` 中则以无头（无 GUI）方式编译。
+- **Rust 核心（`codeg_lib`）** —— 会话与智能体编排、数据库、git、凭据、Web 服务器、日志。它在 `codeg` 中开启 [Tauri](https://tauri.app/) 的桌面功能进行构建，而在其余三个中则以无头（无 GUI）方式编译。
 - **Web 前端** —— 一个 [Next.js](https://nextjs.org/) / React 应用，导出为静态文件。桌面应用在其 webview 中加载它们；服务器则将完全相同的产物提供给浏览器。
 
 将前端与核心连接起来的是一个**传输层**，它是"两道前门"设计的关键：同一份 UI 代码无论哪种方式都与核心通信，并在运行时选择自己的通道。
@@ -41,15 +44,17 @@ Codeg 从**单个 Cargo 工作区中交付三个 Rust 二进制文件**，它们
 
 ## 智能体如何运行 {#how-agents-run}
 
-Codeg 并不重新实现 Claude Code、Codex、Gemini 等等 —— 它**驱动它们真正的 CLI**。每个智能体作为一个**子进程**运行，Codeg 通过 **[Agent Client Protocol](https://agentclientprotocol.com/)（ACP）**与之通信 —— 这与像 Zed 这样的编辑器和编码智能体对话所用的是同一套 JSON-RPC 协议。
+Codeg 并不重新实现 Claude Code、Codex、Gemini 等等 —— 它**驱动它们真正的 CLI**。每个智能体作为一个**子进程**运行，Codeg 通过 **[Agent Client Protocol](https://agentclientprotocol.com/)（ACP）**与之通信 —— 这与像 Zed 这样的编辑器和编码智能体对话所用的是同一套 JSON-RPC 协议。自 **0.32.0** 起，这套通信运行在该协议官方的 Rust 运行时 —— `agent-client-protocol` crate（2.2）—— 之上，取代了 Codeg 过去自带的、打过补丁的前代 crate 副本；Codeg 处理不了的某一条消息，再也不会把整个连接一起拖垮。
 
-在这一关系中，Codeg 是**客户端**，智能体是**服务器**：Codeg 打开一个会话，将模型的这一轮流式传回你的屏幕，并在智能体的请求到达时逐一响应 —— 在**终端**中运行命令、**读取或写入文件**、为有风险的操作请求**权限**。由于每个智能体都被规范化到同一套协议上，它们全都落入单一的工作区、置于同一套控制之下 —— 这正是聚合对话、在智能体之间切换得以实现的根本所在。
+在这一关系中，Codeg 是**客户端**，智能体是**服务器**：Codeg 打开一个会话，将模型的这一轮流式传回你的屏幕，并在智能体的请求到达时逐一响应 —— 在**终端**中运行命令、**读取或写入文件**、为有风险的操作请求**权限**。对于 Codeg 不处理的请求，它会回一个*不支持*的答复，这样智能体就能继续往下走，而不是干等着。由于每个智能体都被规范化到同一套协议上，它们全都落入单一的工作区、置于同一套控制之下 —— 这正是聚合对话、在智能体之间切换得以实现的根本所在。
 
 当 Codeg 启动一个智能体时，它还会给智能体一组待连接的 **MCP 服务器**。其中之一始终是 Codeg 自己的伴生程序。
 
 ## 多智能体委派与 `codeg-mcp` {#multi-agent-delegation-and-codeg-mcp}
 
-`codeg-mcp` 是一个智能体能够将工作**交给另一个智能体**的方式。当 Codeg 启动一个智能体 CLI 时，它注入一个指向该二进制文件的 MCP 服务器条目；CLI 通过 stdio 启动它，其 LLM 便获得一小组 Codeg 工具 —— 最重要的是 **`delegate_to_agent`**，外加来自[协作设置](/zh/reference/settings/collaboration)的可切换辅助工具：`check_user_feedback`、`ask_user_question` 和 `get_session_info`。一次 `delegate_to_agent` 调用会经由伴生程序回传到父 Codeg 进程，后者启动工作智能体并将其结果流式传回。
+`codeg-mcp` 是一个智能体能够将工作**交给另一个智能体**的方式 —— 也是它触及 Codeg 自身其余工具的途径。当 Codeg 启动一个智能体 CLI 时，它注入一个指向该二进制文件的 MCP 服务器条目；CLI 通过 stdio 启动它，其 LLM 便获得一组 Codeg 工具 —— 最重要的是 **`delegate_to_agent`**，外加来自[协作设置](/zh/reference/settings/collaboration)的可切换工具组：`check_user_feedback`、`ask_user_question` 和 `get_session_info`，内置浏览器的 `browser_*` 工具，电脑操作的 `computer_*` 工具，以及那两个从对话中创建内容的写入工具。一次 `delegate_to_agent` 调用会经由伴生程序回传到父 Codeg 进程，后者启动工作智能体并将其结果流式传回；其他每一次调用也走同一条路，由 Codeg 自己来应答。
+
+智能体拿到哪些工具组，是在**它启动时**决定的 —— 伴生程序的工具列表在该会话内是固定的 —— 因此打开某个工具组，只会作用于之后启动的智能体。有几个工具组还会在每次调用时重新检查，因此把其中一个*关掉*，对正在运行的会话同样生效。
 
 还有两个工具走的是同一条通道，但没有属于自己的设置开关：**`task_progress`** 和 **`task_complete`**，它们让智能体为正在执行的[任务](/zh/guide/tasks)上报进展里程碑和最终结论。它们只会注入到任务引擎启动的那些进程中，因此普通对话永远看不到它们。
 
@@ -60,6 +65,16 @@ Codeg 并不重新实现 Claude Code、Codex、Gemini 等等 —— 它**驱动�
 
 这一切面向用户的一面是[使用多个智能体](/zh/guide/multi-agent)；本页则是其底层的管道。
 
+## 电脑操作与 `codeg-computer-helper` {#computer-use-and-codeg-computer-helper}
+
+[电脑操作](/zh/guide/computer-use)需要一个能截取窗口画面、并向窗口发送输入的进程，而 Codeg 刻意不让自己的进程来做这件事。做这件事的是 **helper**：Codeg 在首次需要电脑操作时启动它，helper 再把 **cua-driver** —— 负责读取和点击的开源驱动 —— 作为自己的子进程运行，并在每次启动前核对驱动的摘要与钉住的值是否一致。Codeg 通过一条私有通道与 helper 通信，每个请求都带着当前的*停止*计数，因此在你按下停止之前发出的请求，即使在那之后才到达，也会被拒绝。
+
+- **在 macOS 上**，helper 是一个独立的应用 `codeg-computer-helper.app`，随 Codeg 的应用包一起分发，并从 Codeg 应用支持目录中的一份副本运行。辅助功能和屏幕录制权限授予的是**它**，而不是 Codeg —— 因此智能体在 Codeg 下通过 shell 运行的任何东西都不会继承这些权限 —— 而且在 Codeg 的签名发布版里，它会核实与它通信的确实是 Codeg。→ [为什么由 helper 持有权限](/zh/guide/computer-use#why-a-helper-holds-the-permissions-on-macos)
+- **在 Windows 和 Linux 上**，它是放在 `codeg` 旁边的一个普通二进制文件，也无从做这样的隔离：在这两个平台上，你运行的任何程序都能截取屏幕、注入输入。
+- **在服务器上**，`codeg-server` 使用安装在它旁边的 helper —— 发布压缩包和安装脚本都附带了一个 —— 并且只在以 `CODEG_COMPUTER_USE=1` 启动时才会使用。Docker 镜像里没有 helper。
+
+这个 helper 会随启动它的那个 Codeg 一起退出；它写到错误输出的内容 —— 包括驱动的输出 —— 都会进入 Codeg 自己的[日志](/zh/reference/settings/logs)。
+
 ## 你的数据存放在哪里 {#where-your-data-lives}
 
 Codeg 将其状态保存在**本地机器**上，默认位于 **`~/.codeg/`** 之下（用 `CODEG_HOME` 覆盖；服务器可使用 `CODEG_DATA_DIR`）。该目录存放 **SQLite 数据库**（对话、设置、账户元数据）、你的**[技能](/zh/guide/skills)**，以及**上传**和**[日志](/zh/reference/settings/logs)**目录。机密是刻意的例外：在桌面端，令牌会进入**操作系统密钥环**，而非上述任何文件 —— 这一拆分在[版本控制](/zh/reference/settings/version-control)以及[备份与恢复](/zh/reference/settings/system)中都有描述。
@@ -68,11 +83,11 @@ Codeg 将其状态保存在**本地机器**上，默认位于 **`~/.codeg/`** �
 
 ## 值得了解 {#good-to-know}
 
-- **三个二进制文件，一套代码库。** `codeg`、`codeg-server` 和 `codeg-mcp` 是同一 Rust 工作区、同一 `codeg_lib` 核心之上的构建目标 —— 而不是需要保持同步的三个独立程序。
+- **四个二进制文件，一套代码库。** `codeg`、`codeg-server`、`codeg-mcp` 和 `codeg-computer-helper` 是同一 Rust 工作区、同一 `codeg_lib` 核心之上的构建目标 —— 而不是需要保持同步的四个独立程序。
 - **桌面应用和服务器是同一个应用。** 区别在于传输方式（Tauri IPC 对 HTTP/WebSocket），而非功能集 —— [Web 服务](/zh/reference/settings/web-service)界面和[无头部署](/zh/getting-started/deployment)是访问同一份 UI 的两种途径。
 - **移动端是客户端，而不是另一套核心。** iOS 与 Android 通过经过认证的 API 连接；项目和智能体仍运行在桌面端或服务器主机上。
 - **智能体依旧是智能体。** Codeg 通过 ACP 编排官方 CLI；它不会 fork 或替换它们，因此每个智能体都保留自己的行为、认证和更新。
-- **`codeg-mcp` 是按会话且用后即弃的。** 每次智能体启动会生成一个，并随其退出；失去它只会让你损失委派功能，别无其他。
+- **`codeg-mcp` 是按会话且用后即弃的。** 每次智能体启动会生成一个，并随其退出；失去它只会让你损失它提供的工具 —— 委派和会话内工具 —— 别无其他。
 
 ## 相关内容 {#related}
 
@@ -81,4 +96,5 @@ Codeg 将其状态保存在**本地机器**上，默认位于 **`~/.codeg/`** �
 - [下载与安装](/zh/getting-started/installation#mobile-apps) —— 获取原生客户端，并将其连接到 Codeg 主机。
 - [使用多个智能体](/zh/guide/multi-agent) —— `codeg-mcp` 所实现的委派功能。
 - [协作](/zh/reference/settings/collaboration) —— 决定每个智能体接收哪些 `codeg-mcp` 工具的开关。
+- [电脑操作](/zh/guide/computer-use) —— `codeg-computer-helper` 为你做了什么。
 - [隐私与安全](/zh/reference/privacy) —— 哪些内容留在本地，哪些离开去往模型提供商。

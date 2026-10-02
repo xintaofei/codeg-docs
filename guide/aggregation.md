@@ -73,6 +73,10 @@ A name **you** set by hand still wins over both. And a session launched from a [
 
 Because of that split, **re-importing is always safe.** Run it again after a work session and you'll pull in what's new without disturbing what's there: Codeg won't duplicate a session, overwrite a title you set yourself, or reshuffle your list. Renames, pins, and status are yours and stay untouched. You can even see it before you click — anything already in carries an **Imported** badge and a locked checkbox.
 
+::: info Two stores that changed shape
+**OpenCode 2.x** keeps its conversations in new tables of the same database. Until **0.32.3** a fresh 2.x install listed none of them — *no such table: session* — and one upgraded from 1.x listed each conversation twice; now each is listed once, with its latest content. And a **Codex** conversation you edited or retried in the Codex desktop app shows its **current** history since **0.32.2** — the earlier turns followed by the new ones — listed once rather than twice. Since **0.33.0** one you started in that app also shows its attachments as links ahead of your request, and takes its title from what you wrote.
+:::
+
 ::: tip A session you named yourself keeps its name
 Rename a Claude Code session with `/rename` (or `claude -n`, or Ctrl+R in its picker) and that's the name it imports under — not the summary the model wrote for itself. **CodeBuddy** works the same way. If you renamed more than once, the most recent one wins.
 :::

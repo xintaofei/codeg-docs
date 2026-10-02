@@ -101,7 +101,7 @@ description: 运行日志设置界面 —— 设置 Codeg 记录多少内容、�
 
 ## 相关 {#related}
 
-- [架构](/zh/reference/architecture) —— 三个二进制文件（`codeg`、`codeg-server`、`codeg-mcp`），它们的 `codeg_lib::…` 目标会出现在这些日志中。
+- [架构](/zh/reference/architecture) —— 这些二进制文件（`codeg`、`codeg-server`、`codeg-mcp`），它们的 `codeg_lib::…` 目标会出现在这些日志中；还有电脑操作 helper，Codeg 会把它的输出复制进来。
 - [部署](/zh/getting-started/deployment) —— 服务器在哪里写入 `codeg-server.<date>.log`，以及为什么浏览器会话得到的是一个下载列表而非“打开文件夹”按钮。
 - [系统](/zh/reference/settings/system) —— 另一个面向运维的界面：更新、网络代理、语言和备份。
-- [参考概览](/zh/reference/) —— 完整的 16 个设置界面地图。
+- [参考概览](/zh/reference/) —— 完整的 17 个设置界面地图。

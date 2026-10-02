@@ -77,13 +77,13 @@ Delegation runs through a companion process, `codeg-mcp`, and since **0.30.4** t
 | ----- | ------------- |
 | **Running** | The socket answers, the companion is on disk, and at least one tool group is on — so an agent launched here gets the tools, if it's one that accepts MCP at all |
 | **Not running** | The broker socket isn't answering. **Start service** appears here when this runtime has a handle it can start with |
-| **No tools enabled** | All eight groups are off, so an ordinary session gets no companion — a [to-do](/guide/tasks) run still gets its own reporting tools, which aren't switched here |
+| **No tools enabled** | Every tool group is off, so an ordinary session gets no companion — a [to-do](/guide/tasks) run still gets its own reporting tools, which aren't switched here |
 | **Companion missing** | The `codeg-mcp` binary isn't on disk |
 | **Unknown** | The status couldn't be read at all |
 
 Open it and the popover shows how many **sessions** and **delegations** are live and the **depth cap**, plus the last error if there was one. Hover the state badge for the socket **address** and the companion **binary** path.
 
-It also carries the **tool switches themselves** — all eight: Delegation, Live feedback, Ask a question, Session lookup, the two built-in-browser ones, Create automation and Create task, each with a one-line description, so turning a capability on doesn't mean a trip into Settings. These are **the same switches** as [Settings → Collaboration](/reference/settings/collaboration) — not a second copy of them — and flipping one here while that page is open makes the page converge on it rather than sending its stale value back on the next Save. **Open settings**, at the foot of the popover, goes straight to that page.
+It also carries the **tool switches themselves** — all nine: Delegation, Live feedback, Ask a question, Session lookup, Create automation, Create task, the two built-in-browser ones, and since **0.33.0** [computer use](/guide/computer-use), each with a one-line description, so turning a capability on doesn't mean a trip into Settings. These are **the same switches** as [Settings → Collaboration](/reference/settings/collaboration) — not a second copy of them — and flipping one here while that page is open makes the page converge on it rather than sending its stale value back on the next Save. **Open settings**, at the foot of the popover, goes straight to that page.
 
 ## Delegate with an @ mention
 
@@ -128,7 +128,7 @@ That badge used to be the *only* place a stuck sub-agent showed up — so an una
 
 Sub-agent conversations don't clutter your sidebar, but they aren't lost either: a conversation that spawned workers grows a **chevron**, and expanding it reveals its sub-conversations nested underneath — recursively, if a worker built a team of its own. That's how you find a worker's transcript hours later, long after the Sub-agents panel has moved on to a newer reply.
 
-Want the whole team on one screen? [Tile the sessions side by side](/guide/workspace#tile-several-sessions-side-by-side) — the lead in one pane, its sub-agents in the others — and watch every transcript at once. (The [Infinite Conversations board](/guide/canvas) is for laying out *root* conversations; a sub-agent isn't a card there, though a lead's card badges how many it has.)
+Want the whole team on one screen? [Tile the sessions side by side](/guide/workspace#tile-several-sessions-side-by-side) — the lead in one pane, its sub-agents in the others — and watch every transcript at once. (The [Infinite Canvas](/guide/canvas) is for laying out *root* conversations; a sub-agent isn't a card there, though a lead's card badges how many it has.)
 
 ### A sub-task that was cut off can be picked up
 

@@ -106,7 +106,7 @@ For a **pull or merge request**:
 
 | Scenario | What the agent is told |
 | --- | --- |
-| **Review & fix** | Review the change against the base branch, then fix what's worth fixing in place |
+| **Review & fix** | Judge first whether the change's approach holds up. If it does, review it against the base branch and fix what's worth fixing in place; if it doesn't, commit nothing and hand the review back to you |
 | **Review only** | Report findings with locations, severity and suggested fixes. **Commit nothing** |
 
 Three things separate these from a prompt you'd write yourself.
@@ -116,6 +116,8 @@ Three things separate these from a prompt you'd write yourself.
 **The review scenarios get the change already checked out.** The worktree starts at the pull request's **head commit**, so the agent reads and builds the actual proposal rather than the base branch, and its commits go *on top* — which is what makes pushing them back sensible later.
 
 **The review scenarios are told to judge the approach, not just the diff.** *Is the change warranted at all; is this the best way given the rest of this codebase; is it production-ready as it stands?* And explicitly: if the design is what's wrong, say so and propose better — don't rewrite the pull request into it, because a rewrite its author never asked for isn't a review.
+
+**For Review & fix, that judgement is a gate**, since **0.32.3**. The agent has to decide *first* whether the approach holds up — whether the change should be made at all, and whether it needs a different design rather than fixes — and when it doesn't, or when the agent isn't sure, it **commits nothing**, not even the small fixes. It reports why, with file and line references, what to do instead, and the other problems it found, opening with that verdict. That ending counts as a **success**, so the to-do comes back to **Needs you** for your review like any other, rather than with fixes piled onto a design that would have to be thrown away. A design problem found halfway through the review stops the fixing too, and the report says which fixes were already committed.
 
 The rest of the dialog:
 
@@ -181,7 +183,7 @@ Leave **Comment the outcome back** on and Codeg posts a single comment on the it
 
 - **Merged locally** into a branch, with the short commit — worded that way deliberately, because it landed in *your* checkout and was never pushed. To everyone else reading the thread the branch is untouched and that hash resolves to nothing.
 - **Delivered**, with the pull request's URL.
-- **Accepted** without merging, distinguishing an empty diff from a worktree that was already gone.
+- **Completed** without landing anything. Until **0.32.3** this one said *accepted*, which on a pull request read as approving it; now it says what happened — on a pull or merge request, *it made no changes, so nothing was pushed*, or *its work was not pushed* when the worktree was already gone; on an issue, *it made no changes*, or *its work was not merged*.
 
 **No agent-written text ever reaches that thread** — not the result summary, not the commit message, not the verdict note. The comment is built from the task id, the outcome and the counters, and there is no parameter that could carry anything else. Other people read that thread; what an agent wrote about its own work isn't theirs to receive.
 

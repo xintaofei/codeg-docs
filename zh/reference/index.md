@@ -15,38 +15,39 @@ Codeg 将每一项偏好都汇集到同一个**设置**窗口中（其侧边栏�
 
 | 设置界面 | 控制内容 | 文档位置 |
 | --------------- | ---------------- | ------------- |
-| **Appearance** | 主题模式与配色、窗口缩放、字体、桌面宠物 | [外观](/zh/reference/settings/appearance) |
-| **General** | 默认终端、命令输出颜色、渲染、关闭按钮行为、桌面通知与提示音 | [常规](/zh/reference/settings/general) |
+| **外观** | 主题模式与配色、窗口缩放、字体、桌面宠物 | [外观](/zh/reference/settings/appearance) |
+| **常规** | 默认终端、命令输出颜色、渲染、关闭按钮行为、桌面通知与提示音 | [常规](/zh/reference/settings/general) |
+| **协作** | 智能体之间的委派，以及每个智能体拿到的会话内工具 | [协作](/zh/reference/settings/collaboration) |
 | **MCP** | Model Context Protocol 服务器 —— 添加、扫描、按智能体启用 | [指南 → MCP 服务器](/zh/guide/mcp) |
 | **Skills** | 编写和编辑你自己的智能体技能 | [指南 → 技能](/zh/guide/skills) |
-| **Skill Packs** | 精选合集 —— Experts、Science、Office | [指南 → 技能](/zh/guide/skills#enable-a-curated-skill-pack) |
-| **Collaboration** | 智能体之间的委派，以及每个智能体拿到的会话内工具 | [协作](/zh/reference/settings/collaboration) |
-| **Agents** | 智能体 CLI —— 连接、配置、运行预检，以及[注册你自己的](/zh/guide/custom-agents) | [指南 → 使用智能体](/zh/guide/agents) |
-| **Model Providers** | 智能体使用的 API 提供商凭据 | [指南 → 认证与模型](/zh/guide/authentication) |
-| **Browser** | 内置浏览器 —— 链接在哪里打开、站点规则、智能体在页面上能看到和做什么 *（仅桌面应用）* | [浏览器](/zh/reference/settings/browser) |
-| **Quick Messages** | 供 composer 使用的可复用消息片段 | [快捷消息](/zh/reference/settings/quick-messages) |
-| **Shortcuts** | 键盘快捷键 | [快捷键](/zh/reference/settings/shortcuts) |
-| **Version Control** | Git 可执行文件、GitHub、GitLab 及其他 Git 账户 | [版本控制](/zh/reference/settings/version-control) |
-| **Chat Channels** | 用于通知和远程控制的 IM 机器人 | [指南 → 聊天频道](/zh/guide/chat-channels) |
-| **Web Service** | 将 Codeg 暴露给浏览器 —— 端口、令牌、二维码 *（仅桌面应用）* | [Web 服务](/zh/reference/settings/web-service) |
-| **Runtime Logs** | 诊断日志 —— 级别、实时查看器、文件 | [运行日志](/zh/reference/settings/logs) |
-| **System** | 更新、开机自启、网络代理、语言、备份与恢复 | [系统](/zh/reference/settings/system) |
+| **技能包** | 精选合集 —— Experts、Science、Office | [指南 → 技能](/zh/guide/skills#enable-a-curated-skill-pack) |
+| **智能体** | 智能体 CLI —— 连接、配置、运行预检，以及[注册你自己的](/zh/guide/custom-agents) | [指南 → 使用智能体](/zh/guide/agents) |
+| **模型供应商** | 智能体使用的 API 提供商凭据 | [指南 → 认证与模型](/zh/guide/authentication) |
+| **快捷消息** | 供 composer 使用的可复用消息片段 | [快捷消息](/zh/reference/settings/quick-messages) |
+| **浏览器操作** | 内置浏览器 —— 链接在哪里打开、站点规则、智能体在页面上能看到和做什么 | [浏览器操作](/zh/reference/settings/browser) |
+| **电脑操作** | 让智能体查看并操作你共享的桌面窗口 —— 驱动、macOS 权限、永不共享名单、如何停止 | [电脑操作](/zh/reference/settings/computer-use) |
+| **快捷键** | 键盘快捷键 | [快捷键](/zh/reference/settings/shortcuts) |
+| **版本控制** | Git 可执行文件、GitHub、GitLab 及其他 Git 账户 | [版本控制](/zh/reference/settings/version-control) |
+| **消息渠道** | 用于通知和远程控制的 IM 机器人 | [指南 → 聊天频道](/zh/guide/chat-channels) |
+| **Web 服务** | 将 Codeg 暴露给浏览器 —— 端口、令牌、二维码 *（仅桌面应用）* | [Web 服务](/zh/reference/settings/web-service) |
+| **运行日志** | 诊断日志 —— 级别、实时查看器、文件 | [运行日志](/zh/reference/settings/logs) |
+| **系统** | 更新、开机自启、网络代理、语言、备份与恢复 | [系统](/zh/reference/settings/system) |
 
-打开设置后，你会首先看到 **Appearance**。无论你运行桌面应用还是通过浏览器访问 Codeg，每个界面都完全相同 —— 只有两个例外，它们在浏览器会话里都会从导航中去掉：**Web Service**，因为正是这个界面*开启*了浏览器访问；以及 **Browser**，因为浏览器标签页里没有可嵌入的引擎，所有链接都交给你自己的浏览器。
+打开设置后，你会首先看到**外观**。无论你运行桌面应用还是通过浏览器访问 Codeg，每个界面都在 —— 只有一个例外，它在浏览器会话里会从导航中去掉：**Web 服务**，因为正是这个界面*开启*了浏览器访问。另有两个界面虽然也在，但内容更少。**浏览器操作**只保留在浏览器里仍然决定着某些事的那几行 —— 站点规则（用于阻止）、终端里起的服务要怎么处理，以及终端的链接菜单。**电脑操作**作用于服务器所在机器自己的桌面，而且只有当那台服务器以 `CODEG_COMPUTER_USE=1` 启动时才可用。
 
 ::: tip 六个界面在指南中有完整的操作教程
-MCP、Skills、Skill Packs、Agents、Model Providers 和 Chat Channels 是你要*使用*的功能，而不仅仅是你调整的设置 —— 因此它们被写成了任务型指南。其余十个界面在这里以参考形式介绍。
+MCP、Skills、技能包、智能体、模型供应商和消息渠道是你要*使用*的功能，而不仅仅是你调整的设置 —— 因此它们被写成了任务型指南。其余十一个界面在这里以参考形式介绍。
 :::
 
 ::: info 应用一动，这张地图就跟着动
-**Collaboration** 和 **Browser** 是 **0.31.2** 从 General 拆出来的新入口 —— 委派与会话内工具一页，内置浏览器一页。[常规](/zh/reference/settings/general)则回到了它名字本来所指的那个「管应用行为」的界面。
+**0.33.0** 新增了**电脑操作**，把**浏览器**改名为**浏览器操作**与它并列，并重新编排了列表：**协作**现在紧跟在**常规**之后，**快捷消息**则排到了这两个「操作」界面之前。协作和浏览器这两个界面本身也是新近才有的，都是在 **0.31.2** 从常规里拆出来的。本文档里浏览器那一页的地址在改名后保持不变，所以旧链接依然能落到它上面。
 :::
 
 ## 架构与安全 {#architecture-security}
 
 Codeg 是如何构建的，以及它如何处理你所交付的内容。
 
-- [**架构**](/zh/reference/architecture) —— 一个 Rust 核心，三个二进制文件：`codeg` 桌面应用、独立的 `codeg-server`，以及驱动委派的 `codeg-mcp` 伴生程序。各部分如何组合在一起，以及它们如何通过 ACP 驱动外部智能体 CLI。
+- [**架构**](/zh/reference/architecture) —— 一个 Rust 核心，四个二进制文件：`codeg` 桌面应用、独立的 `codeg-server`、驱动委派与会话内工具的 `codeg-mcp` 伴生程序，以及支撑电脑操作的 `codeg-computer-helper`。各部分如何组合在一起，以及它们如何通过 ACP 驱动外部智能体 CLI。
 - [**隐私与安全**](/zh/reference/privacy) —— 哪些内容留在你的机器上、网络何时才真正被使用，以及智能体凭据和 Web 服务令牌如何被处理。
 
 ## 贡献 {#contributing}
