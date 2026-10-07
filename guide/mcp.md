@@ -102,6 +102,7 @@ Because a server lives in the agent's config, the agent reads it when it **start
 - **stdio servers need their command available.** `npx`, `uvx`, a binary — whatever the spec launches has to be on the PATH the agent runs with, or the server won't start.
 - **It works the same on a server.** The MCP screen is in the browser build too; a remote server just needs the machine Codeg runs on to reach the endpoint.
 - **Removing a server** takes it out of every agent it was enabled for at once — you don't have to clean up each config by hand.
+- **Claude Code answers `/mcp` in the conversation.** Since **0.34.0** (adapter 0.86.0) `/mcp` is in Claude Code's `/` menu and replies with your MCP servers and their tool counts, and `/mcp reconnect`, `/mcp enable` and `/mcp disable`, followed by a server's name or `all`, act on them. Neither the command nor its answer is shown when you open the conversation again. A reconnect can't start a server's OAuth sign-in from Codeg.
 
 ## Next steps
 

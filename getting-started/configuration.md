@@ -91,7 +91,7 @@ For day-to-day use you can change the level from the UI instead — see [Setting
 
 ## Proxy support
 
-At startup Codeg snapshots the standard `HTTP_PROXY`, `HTTPS_PROXY`, and `ALL_PROXY` variables (and their lowercase forms) and propagates them to every agent process it launches. One proxy setting therefore covers Codeg *and* the agents it drives — the intended path for corporate gateways. Since **0.32.2** every agent launched with a proxy also gets the local addresses — `localhost`, `127.0.0.1`, `::1` — added to its `NO_PROXY`, so an agent's connections to its own local services never travel to a proxy on another machine; the **Bypass proxy for** list in [Settings → System](/reference/settings/system#network-proxy) adds addresses of your own. See [Privacy & Security](/reference/privacy) for how Codeg handles network access.
+At startup Codeg snapshots the standard `HTTP_PROXY`, `HTTPS_PROXY`, and `ALL_PROXY` variables (and their lowercase forms) and propagates them to every agent process it launches. One proxy setting therefore covers Codeg *and* the agents it drives — the intended path for corporate gateways. Since **0.32.2** every agent launched with a proxy also gets the local addresses — `localhost`, `127.0.0.1`, `::1` — added to its `NO_PROXY`, so an agent's connections to its own local services never travel to a proxy on another machine; the **Bypass proxy for** list in [Settings → System](/reference/settings/system#network-proxy) adds addresses of your own. A `*` in that list, or in a `NO_PROXY` you export, is passed on alone as *bypass everything* — which Antigravity **1.3.0** no longer fully honours; the same page explains why. See [Privacy & Security](/reference/privacy) for how Codeg handles network access.
 
 ## Advanced tuning
 

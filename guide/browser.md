@@ -1,11 +1,11 @@
 ---
 title: Built-in Browser
-description: Web pages open as tabs beside your files in the desktop app — links from conversations, tool results and the terminal, dev servers, docs, OAuth pages. How links are routed, what a browser tab can do, how to hand a page to the conversation or share it with an agent, site rules, what survives a restart, and where the browsing data lives.
+description: Web pages open as tabs beside your files in the desktop app — links from conversations, tool results and the terminal, dev servers, docs, OAuth pages. How links are routed, what a browser tab can do, how to view a page as a tablet or phone, how to hand a page to the conversation or share it with an agent, site rules, what survives a restart, and where the browsing data lives.
 ---
 
 # Built-in Browser
 
-Agents hand you links all day: the dev server they just started, the docs page they quoted, the pull request they opened. In the **desktop app** those pages open **inside Codeg**, as tabs in the file pane next to your code, instead of throwing you out to another application. The page is a real browser engine — the same WebKit as Safari on macOS, WebView2 on Windows — with its own cookies, its own history and its own address bar. Nothing is emulated.
+Agents hand you links all day: the dev server they just started, the docs page they quoted, the pull request they opened. In the **desktop app** those pages open **inside Codeg**, as tabs in the file pane next to your code, instead of throwing you out to another application. The page is a real browser engine — the same WebKit as Safari on macOS, WebView2 on Windows — with its own cookies, its own history and its own address bar. Nothing about the engine is emulated: even the [tablet and phone views](#view-a-page-as-a-tablet-or-phone) change only the size the page is laid out at.
 
 Because the page is in the app, it is also a surface you and an agent can share: you can [hand a page, an element, a screenshot or a console error into the conversation](#hand-a-page-to-the-conversation), and you can [let an agent read and drive a page you have shared](#let-an-agent-work-on-the-page), with everything it does written on the tab where you can watch it.
 
@@ -39,6 +39,7 @@ A browser tab has a small toolbar and nothing else in the way of the page:
 
 - **Address bar.** Type an address and press Enter. Bare hosts get `https://` (loopback and private addresses get `http://`); there is no search fallback — the address bar is an address bar.
 - **Back, forward, reload / stop, copy link, open in system browser.**
+- **Device** — the button right after the address bar lays the page out as a tablet, a phone or a size you type. → [View a page as a tablet or phone](#view-a-page-as-a-tablet-or-phone)
 - **⌘W closes the tab, not the window.** On macOS, ⌘W pressed while focus is inside a page — a browser tab, an HTML document view, an HTML preview — closes that tab, as it does anywhere else in the workspace. Until **0.32.3** the keystroke reached the menu's *Close Window* instead and took the whole window with it.
 - **Find in page** with **⌘F / Ctrl-F** — Enter and Shift+Enter step through matches, Escape closes the bar. The search is the engine's own, so the page cannot see or interfere with it. (There is no *n of m* counter: WebKit only reports whether a step matched.)
 - **Links inside the page.** A ⌘/Ctrl-click opens a background tab right next to the current one. A page that opens a window after you clicked something — an OAuth pop-up, a `target="_blank"` link — gets a tab beside its opener, and keeps `window.opener` and the referrer as it would in a browser. A pop-up nobody asked for (a timer, a script on load) is blocked and reported in a bar under the toolbar, with an **Open anyway** button that opens the address as a plain tab. Since **0.31.1** a pop-up that **closes itself** when it's finished — which is how a Google sign-in ends — takes its tab with it, instead of leaving an empty *Sign In* tab behind. Only a tab a page opened that way may close itself; an ordinary tab cannot.
@@ -50,6 +51,30 @@ A browser tab has a small toolbar and nothing else in the way of the page:
 Menus, dialogs and drawers open **over** the page: while one is open the page shows its last frame and comes back live the moment the overlay closes.
 
 Three things a browser has that this first release does not: **favicons**, **download progress** while a file is coming down (a download reports when it finishes), and **preloading** a tab before you switch to it.
+
+## View a page as a tablet or phone
+
+Since **0.34.0** a tab can lay its page out at a device's size, so you can check a responsive layout without resizing anything. The **device button**, right after the address bar — its tooltip reads *Device: Desktop* — opens a **View as** menu:
+
+| Device | Page size |
+| ------ | --------- |
+| **Desktop** | *Full pane* — the page fills the tab, as it always has. The default |
+| **Tablet** | 768 × 1024 |
+| **Phone** | 390 × 844 |
+| **Custom** | A width and height you type |
+
+A device tab shows its page in a **frame** centred in the pane, with the size written above it. When the pane is smaller than the device, the frame shrinks and the page is **zoomed out by the same factor** — the line above it gives the scale, *· 62%* — so the page still lays out at the device's width instead of reflowing to the pane's. The engines won't zoom a page below 25%, so a device more than four times the size of the pane is laid out smaller than asked, and an amber line says what it actually got: *Pane too small: laid out at 1872 × 1052*. The presets are portrait only; for a phone on its side, use **Custom** at 844 × 390.
+
+**Custom** turns the size above the frame into two fields, with the cursor already in the width. **Enter** or clicking away keeps what you typed, **Escape** puts the old value back, and **↑** / **↓** step it by 1 — by 10 with **Shift**. Sizes are whole CSS pixels from **100 to 8192**; anything outside that range is pulled back into it. A tab you switch to Custom starts at the size you typed last, **1280 × 800** until you've typed one, and from then on each tab keeps its own.
+
+::: warning Only the size changes
+A device view changes the page's **viewport** and nothing else. The page keeps the engine's own user agent and mouse input — touch isn't emulated — so a site that picks its mobile version by browser type still serves you the desktop one. What follows the width, such as media queries and responsive grids, does see the device.
+:::
+
+- **Each tab keeps its device** — when it's unloaded in the background, across a restart, and when you reopen it with ⇧⌘T, unless that address is already open in another tab of the same profile, which is brought forward instead. A new tab starts on Desktop, whoever opened it: you, a link, a pop-up or an agent. No browser tool can change a tab's device.
+- **In the pane, the page's zoom is Codeg's while a device is on.** It's reapplied every time the frame is fitted, so a zoom you apply in the page yourself — Ctrl+wheel on Windows — is undone at the next fit; switching back to Desktop returns the page to 100% once and leaves the zoom to you again.
+- **A tab in its own window** — on Linux, or with **Tab surface** set to *Separate window* — isn't framed. The window itself is resized so the page area matches the device at full size, and going back to Desktop gives the window its earlier size. The size, or Custom's two fields, moves to the tab's card in the pane, the one reading *This page is shown in its own window*. The window's page zoom is left as you set it, so keep it at 100% when the exact size matters.
+- **In a browser session**, a [port-bridge](#in-a-browser-session-the-port-bridge) tab has the same button, ahead of **Reload**. There the frame is scaled down rather than zoomed, so the page always lays out at the full device size and the *Pane too small* line never appears.
 
 ## A server you start in a terminal
 
@@ -186,7 +211,7 @@ Both keys are optional. Managed rules show in the settings table with a lock and
 
 ## Tabs across restarts
 
-Browser tabs survive a restart the way a browser's do. Codeg remembers, per window, the page each tab was actually on and its title; on the next launch the tabs are back in the strip, **drawn faded and not loaded** — a tab loads when you first switch to it, so twenty restored tabs cost twenty small records and no memory. **⇧⌘T / Ctrl+Shift+T** reopens a browser tab you just closed, at the page it was showing. History, scroll position and form contents are not kept across restarts.
+Browser tabs survive a restart the way a browser's do. Codeg remembers, per window, the page each tab was actually on, its title and its [device](#view-a-page-as-a-tablet-or-phone); on the next launch the tabs are back in the strip, **drawn faded and not loaded** — a tab loads when you first switch to it, so twenty restored tabs cost twenty small records and no memory. **⇧⌘T / Ctrl+Shift+T** reopens a browser tab you just closed, at the page it was showing and on the same device — unless that address is already open in another tab of the same profile, which is brought forward instead. History, scroll position and form contents are not kept across restarts.
 
 There is also an optional **Unload background tabs** switch (off by default): a browser tab that stays in the background for thirty minutes releases its engine and loads again when you come back, faded in the strip meanwhile.
 
@@ -207,7 +232,7 @@ The **Web inspector** switch in the same settings section is **on by default**: 
 When you use Codeg through `codeg-server`, `localhost` in a link means the *server's* loopback, which your browser cannot reach. For those links the server steps in: it binds one extra port per dev server (from the ten ports after its own, or `CODEG_BRIDGE_PORTS`) and forwards it to the dev server, and the workbench shows the page in a tab on that port. Nothing is rewritten — the page is served at `/` exactly as it would be on the host, so module imports, client-side routers and hot reload all work.
 
 - Only plain `http://` addresses on the server's loopback are bridged (`localhost`, `127.0.0.1`, `[::1]`, `0.0.0.0`). Public addresses still open in a new browser tab; private-network hosts are not the server's to forward.
-- The tab's toolbar has **Reload**, **Open in a new tab** (a full browser tab on the same bridge port, for anything the frame cannot show) and **Copy address**. Switching away from the tab and back reloads the page.
+- The tab's toolbar has the [**device** button](#view-a-page-as-a-tablet-or-phone), **Reload**, **Open in a new tab** (a full browser tab on the same bridge port, for anything the frame cannot show) and **Copy address**. Switching away from the tab and back reloads the page.
 - Access is per session: opening the page mints a short credential that the tab exchanges for a cookie on the bridge port. A bridge port closes a minute after its last tab is closed, or after two hours without a request. Nobody reaches the dev server through the bridge without having opened it from a signed-in workbench first.
 - If the frame says the **bridge port can't be reached**, the port is bound on the server but not published to your browser: expose the range (Docker: publish `3081-3090` alongside `3080`, or whatever `CODEG_BRIDGE_PORTS` says), or set `CODEG_BRIDGE_PUBLIC_HOST` when a reverse proxy gives the bridge a different hostname. A workbench served over HTTPS needs the bridge ports behind HTTPS too.
 
@@ -251,6 +276,7 @@ Remote tabs have no profile menu and no *Open in system browser*. → [Privacy &
 | Google sign-in identity | yes (embedded tabs) | yes (embedded tabs) | not yet |
 | Proxy changes apply | to open tabs | after a restart | to new tabs |
 | Remote-workspace tabs | macOS 14 and later | yes | yes |
+| Tablet, phone and custom views | framed in the pane | framed in the pane | the tab's window is resized |
 
 Sharing a page with an agent, handing one to the conversation, and the local-server menu work the same on all three.
 

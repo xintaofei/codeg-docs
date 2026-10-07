@@ -39,7 +39,7 @@ Or install a specific version:
 docker compose up -d
 
 # Or run directly with Docker
-docker run -d -p 3080:3080 -v codeg-data:/data ghcr.io/xintaofei/codeg:latest
+docker run -d -p 3080:3080 -v codeg-data:/data ghcr.io/spacering-net/codeg:latest
 ```
 
 By default the server listens on port `3080` and prints an auth token to stderr on start.

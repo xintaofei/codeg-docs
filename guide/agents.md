@@ -223,7 +223,7 @@ Two behaviours worth knowing:
 - **Credentials outside the method you picked are cleared at launch.** A `GEMINI_API_KEY` left in your shell can't quietly take over a session you configured for Google sign-in.
 - **If Codeg can't write that settings file** — you've made it read-only, say — it tells you so plainly instead of pretending the save took. Your choice is stored on Codeg's side, but Antigravity keeps authenticating the way the file says, so set `auth.type` yourself or move the file aside and save again.
 
-Model and session mode come over ACP, so they live in the composer rather than here.
+Model and session mode come over ACP, so they live in the composer rather than here. Since **0.34.0**, Antigravity **1.3.0** also reports how full its context window is, so the ring beside the composer follows an Antigravity session live.
 
 Since **0.30.3** Antigravity also takes a **custom version**, like the other downloaded agents — and asking for a version that was never published now **fails the download** instead of quietly filing the pinned build under the number you typed, which left Version Status confidently reporting a build you didn't have. Google renamed its downloads from **1.2.0** on, so a custom version has to be **1.2.0 or later** — **1.2.1 or later** on an Intel Mac, where 1.2.1 is the first build — and an earlier one fails to download.
 

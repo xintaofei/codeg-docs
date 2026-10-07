@@ -27,7 +27,7 @@ Every method installs `codeg-server` and its `codeg-mcp` companion, so multi-age
 The fastest durable deployment is one command:
 
 ```bash
-docker run -d -p 3080:3080 -v codeg-data:/data ghcr.io/xintaofei/codeg:latest
+docker run -d -p 3080:3080 -v codeg-data:/data ghcr.io/spacering-net/codeg:latest
 ```
 
 That's a complete install: the image bundles the web UI, `git`, and `ssh`, runs under its own supervisor as PID 1, and persists everything to the `codeg-data` volume. On first start it generates a random access token and writes it to the logs — read it with `docker logs`, or set your own and mount a project directory to work on local repos:
@@ -37,10 +37,14 @@ docker run -d -p 3080:3080 \
   -v codeg-data:/data \
   -v /path/to/projects:/projects \
   -e CODEG_TOKEN=your-secret-token \
-  ghcr.io/xintaofei/codeg:latest
+  ghcr.io/spacering-net/codeg:latest
 ```
 
-Images are published multi-arch (amd64 + arm64) to `ghcr.io/xintaofei/codeg` and Docker Hub `xintaofei/codeg`, tagged with each release's version (`:0.33.0`). `:latest` follows **stable** releases only — a release candidate gets its own version tag, `:0.33.0-rc.1`, and never moves `latest`.
+Images are published multi-arch (amd64 + arm64) to `ghcr.io/spacering-net/codeg` and Docker Hub `xintaofei/codeg`, tagged with each release's version (`:0.34.0`). `:latest` follows **stable** releases only — a release candidate gets a version tag of its own, ending in `-rc.N`, and never moves `latest`.
+
+::: warning Pulling from `ghcr.io/xintaofei/codeg`? Switch names
+Codeg's repository moved to `spacering-net/codeg`, and since **0.34.0** GitHub's registry publishes under the new name. **`ghcr.io/xintaofei/codeg` stays at 0.33.0** — a container or Compose file that still names it keeps pulling that release and never updates again. Change the image to `ghcr.io/spacering-net/codeg`; the `codeg-data` volume isn't tied to the image name, so your data comes along. Docker Hub's `xintaofei/codeg` carries on as before.
+:::
 
 ### With Compose
 
@@ -49,7 +53,7 @@ For anything long-lived, use Compose. Save this as `docker-compose.yml`:
 ```yaml
 services:
   codeg:
-    image: ghcr.io/xintaofei/codeg:latest
+    image: ghcr.io/spacering-net/codeg:latest
     ports:
       - "3080:3080"
       - "3081-3090:3081-3090"   # port bridge: dev servers shown in the workbench

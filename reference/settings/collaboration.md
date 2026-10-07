@@ -65,7 +65,7 @@ There are two channels, and which one you get depends on the agent. The wording 
 
 A pulled note simply **waits** for the agent's next check. What gets rerouted is a note that couldn't be recorded at all — the turn ended while you were submitting — which is **queued instead, and sent with the next turn**, with Codeg saying so. Attachments follow the same principle from the other side: on the push channel a draft carrying **images and file references travels whole**, and on the pull channel it travels whole too, but by taking the queue rather than being stripped down to its text.
 
-Since **0.30.3** the same two channels drive the composer's **mid-turn send** — the split Send button that appears while the agent is working — so the note doesn't have to go through the **+** menu's dialog. → [Talk to an agent mid-turn](/guide/workspace#talk-to-an-agent-mid-turn)
+Since **0.30.3** the same two channels drive the composer's **mid-turn send** — the split Send button that appears while the agent is working — so the note doesn't have to go through the **+** menu's dialog. Since **0.30.10** they also drive the insert button on each **queued message**; one whose insert misses the turn moves to the front of the queue since **0.34.0**, so it goes first. → [Talk to an agent mid-turn](/guide/workspace#talk-to-an-agent-mid-turn)
 
 ## Good to know
 

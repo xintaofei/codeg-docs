@@ -37,11 +37,11 @@ Two delivery routes sit behind that last column:
 - **Bundled binary.** **OpenCode**, **Cursor** and **Google Antigravity** are native binaries Codeg downloads for your exact platform — nothing else to install. Cursor's download is larger because it carries its own Node runtime and tools, so it doesn't need Node.js on your machine either.
 
 ::: info Antigravity runs on Intel Macs since 0.32.2
-Antigravity used to be the roster's one platform hole: Google published it for Apple Silicon, Linux and Windows only, and Codeg refused the install on an Intel Mac. **1.2.1** is its first release with an Intel build, and Codeg moved to it in **0.32.2** — so every agent on the roster now runs anywhere its runtime does.
+Antigravity used to be the roster's one platform hole: Google published it for Apple Silicon, Linux and Windows only, and Codeg refused the install on an Intel Mac. **1.2.1** is its first release with an Intel build, and Codeg moved to it in **0.32.2** — so every agent on the roster now runs anywhere its runtime does. **1.3.0**, pinned since **0.34.0**, keeps the Intel build.
 :::
 
 ::: warning Cline on macOS 27
-macOS 27 kills Cline **3.0.65 and earlier** at launch, because those builds carry a broken signature — the CLI exits at once, and a session dies within a second of starting. **3.0.67**, the version Codeg pins since **0.33.0**, is signed properly; if yours is older, press **Upgrade** in Settings → Agents. OpenCode **1.18.34**, pinned in the same release, is its first properly signed build too.
+macOS 27 kills Cline **3.0.65 and earlier** at launch, because those builds carry a broken signature — the CLI exits at once, and a session dies within a second of starting. Builds from **3.0.66** on are signed properly, **3.0.68** — the version Codeg pins since **0.34.0** — included; if yours is older, press **Upgrade** in Settings → Agents. OpenCode's first properly signed build is **1.18.34**, and **1.18.35**, pinned since 0.34.0, keeps the signature.
 :::
 
 ::: info Hermes moved to npm in 0.24

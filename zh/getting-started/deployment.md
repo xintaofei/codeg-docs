@@ -27,7 +27,7 @@ description: 使用 codeg-server 或 Docker 在 Linux 或 macOS 服务器上以�
 最快的持久化部署只需一条命令：
 
 ```bash
-docker run -d -p 3080:3080 -v codeg-data:/data ghcr.io/xintaofei/codeg:latest
+docker run -d -p 3080:3080 -v codeg-data:/data ghcr.io/spacering-net/codeg:latest
 ```
 
 这就是一次完整的安装：该镜像捆绑了 Web 界面、`git` 和 `ssh`，以自带的监督进程作为 PID 1 运行，并将所有内容持久化到 `codeg-data` 卷中。首次启动时，它会生成一个随机访问令牌并写入日志——用 `docker logs` 读取它，或者设置你自己的令牌并挂载一个项目目录以处理本地仓库：
@@ -37,10 +37,14 @@ docker run -d -p 3080:3080 \
   -v codeg-data:/data \
   -v /path/to/projects:/projects \
   -e CODEG_TOKEN=your-secret-token \
-  ghcr.io/xintaofei/codeg:latest
+  ghcr.io/spacering-net/codeg:latest
 ```
 
-镜像以多架构（amd64 + arm64）形式发布到 `ghcr.io/xintaofei/codeg` 和 Docker Hub 上的 `xintaofei/codeg`，并以每个版本的版本号作为标签（`:0.33.0`）。`:latest` 只跟随**稳定**版本——候选发布版有自己的版本标签 `:0.33.0-rc.1`，且永远不会移动 `latest`。
+镜像以多架构（amd64 + arm64）形式发布到 `ghcr.io/spacering-net/codeg` 和 Docker Hub 上的 `xintaofei/codeg`，并以每个版本的版本号作为标签（`:0.34.0`）。`:latest` 只跟随**稳定**版本——候选发布版有自己的版本标签，以 `-rc.N` 结尾，且永远不会移动 `latest`。
+
+::: warning 还在从 `ghcr.io/xintaofei/codeg` 拉取？请换成新名称
+Codeg 的仓库已迁到 `spacering-net/codeg`，自 **0.34.0** 起，GitHub 的镜像仓库改用新名称发布。**`ghcr.io/xintaofei/codeg` 停在 0.33.0**——仍写着它的容器或 Compose 文件会一直拉取那个版本，再也不会更新。把镜像改成 `ghcr.io/spacering-net/codeg` 即可；`codeg-data` 卷与镜像名称无关，数据会一并带过去。Docker Hub 上的 `xintaofei/codeg` 照常更新。
+:::
 
 ### 使用 Compose {#with-compose}
 
@@ -49,7 +53,7 @@ docker run -d -p 3080:3080 \
 ```yaml
 services:
   codeg:
-    image: ghcr.io/xintaofei/codeg:latest
+    image: ghcr.io/spacering-net/codeg:latest
     ports:
       - "3080:3080"
       - "3081-3090:3081-3090"   # 端口桥：在工作台里显示开发服务器
