@@ -78,13 +78,13 @@ volumes:
 将原生二进制文件直接安装到主机上：
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/xintaofei/codeg/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/spacering-net/codeg/main/install.sh | bash
 ```
 
 这会将 `codeg-server` 和 `codeg-mcp` 放入 `/usr/local/bin`，并将捆绑的 Web 资源放入 `/usr/local/share/codeg/web`，仅在目标位置尚不可写时才使用 `sudo`。用 `--version` / `--dir` 来固定版本或更改位置：
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/xintaofei/codeg/main/install.sh | bash -s -- --version v0.26.0 --dir ~/.local/bin
+curl -fsSL https://raw.githubusercontent.com/spacering-net/codeg/main/install.sh | bash -s -- --version v0.26.0 --dir ~/.local/bin
 ```
 
 然后启动它。安装程序会为你打印出确切的命令；在无人值守的主机上添加 `--supervise`，这样失败的自我升级就会自动回滚：
@@ -98,7 +98,7 @@ CODEG_STATIC_DIR=/usr/local/share/codeg/web codeg-server --supervise
 ### Windows {#windows}
 
 ```powershell
-irm https://raw.githubusercontent.com/xintaofei/codeg/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/spacering-net/codeg/main/install.ps1 | iex
 ```
 
 这会安装到 **`%LOCALAPPDATA%\codeg-server`** 并将其添加到你的 PATH。用随它一起安装的 Web 文件启动它：
@@ -115,7 +115,7 @@ $env:CODEG_STATIC_DIR="$env:LOCALAPPDATA\codeg-server\web"; codeg-server
 
 ## 预构建二进制文件 {#prebuilt-binaries}
 
-每个版本都会在 [Releases](https://github.com/xintaofei/codeg/releases) 页面提供一个自包含的服务器捆绑包——包含二进制文件和 Web 资源，均经过签名和校验和验证：
+每个版本都会在 [Releases](https://github.com/spacering-net/codeg/releases) 页面提供一个自包含的服务器捆绑包——包含二进制文件和 Web 资源，均经过签名和校验和验证：
 
 | 平台 | 文件 |
 | -------- | ---- |

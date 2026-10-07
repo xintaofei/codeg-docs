@@ -60,7 +60,7 @@ homeFeatures:
 <nav class="home-hero-actions" aria-label="Get started with Codeg">
   <a class="home-hero-action home-hero-action--primary" href="/getting-started/installation">Download Codeg →</a>
   <a class="home-hero-action" href="/getting-started/">What is Codeg?</a>
-  <a class="home-hero-action no-icon" href="https://github.com/xintaofei/codeg">View on GitHub</a>
+  <a class="home-hero-action no-icon" href="https://github.com/spacering-net/codeg">View on GitHub</a>
 </nav>
 
 <MobileShowcase />

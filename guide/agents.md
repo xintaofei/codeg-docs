@@ -104,7 +104,7 @@ When you open a Pi session in a repo that ships those files and nothing covers t
 A **Project trust** card on pi's settings page lists every folder you've decided on, with **Revoke** on each row.
 
 ::: warning If you used Pi before 0.25
-Earlier versions marked **every** folder they launched pi into as trusted, without asking — enough that creating or restoring a Pi conversation on a freshly cloned repo would run whatever `.pi/extensions` it shipped, with no prompt sent and nothing in the transcript. Dropping that behavior doesn't retract the grants it already wrote, so those folders **now block the launch until you confirm them**, and each is listed for review. They're kept rather than deleted because pi's file records no provenance — pruning them would silently revoke decisions you made inside pi yourself. Reported as [#446](https://github.com/xintaofei/codeg/issues/446). → [Privacy & Security](/reference/privacy)
+Earlier versions marked **every** folder they launched pi into as trusted, without asking — enough that creating or restoring a Pi conversation on a freshly cloned repo would run whatever `.pi/extensions` it shipped, with no prompt sent and nothing in the transcript. Dropping that behavior doesn't retract the grants it already wrote, so those folders **now block the launch until you confirm them**, and each is listed for review. They're kept rather than deleted because pi's file records no provenance — pruning them would silently revoke decisions you made inside pi yourself. Reported as [#446](https://github.com/spacering-net/codeg/issues/446). → [Privacy & Security](/reference/privacy)
 :::
 
 ### Pi: reasoning on a custom provider

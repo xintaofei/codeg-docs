@@ -60,7 +60,7 @@ export default defineConfig({
   themeConfig: {
     // Shared across every locale (deep-merged into each locale's themeConfig).
     logo: '/icon.svg',
-    socialLinks: [{ icon: 'github', link: 'https://github.com/xintaofei/codeg' }],
+    socialLinks: [{ icon: 'github', link: 'https://github.com/spacering-net/codeg' }],
 
     search: {
       provider: 'local',

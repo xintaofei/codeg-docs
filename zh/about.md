@@ -74,11 +74,11 @@ Codeg 的开发由下列赞助商支持。如果他们所提供的服务契合�
 有问题、遇到 bug，或只是想关注进展？扫描二维码加入我们的微信群，参与讨论、反馈和获取更新。
 
 <div class="light-only">
-  <img src="https://raw.githubusercontent.com/xintaofei/codeg/main/docs/images/weixin-light.jpg" alt="Codeg 微信群二维码" width="240" />
+  <img src="https://raw.githubusercontent.com/spacering-net/codeg/main/docs/images/weixin-light.jpg" alt="Codeg 微信群二维码" width="240" />
 </div>
 
 <div class="dark-only">
-  <img src="https://raw.githubusercontent.com/xintaofei/codeg/main/docs/images/weixin-dark.jpg" alt="Codeg 微信群二维码" width="240" />
+  <img src="https://raw.githubusercontent.com/spacering-net/codeg/main/docs/images/weixin-dark.jpg" alt="Codeg 微信群二维码" width="240" />
 </div>
 
 同样感谢 [LinuxDO](https://linux.do) 社区的支持。
@@ -94,4 +94,4 @@ Codeg 立足于优秀的开源成果。感谢它所依赖的这些项目：
 
 ## 许可证 {#license}
 
-Codeg 以 **Apache-2.0** 许可证发布 —— 可自由使用、修改和分发，附带明确的专利授权和署名要求。完整文本参见 [LICENSE](https://github.com/xintaofei/codeg/blob/main/LICENSE) 文件。
+Codeg 以 **Apache-2.0** 许可证发布 —— 可自由使用、修改和分发，附带明确的专利授权和署名要求。完整文本参见 [LICENSE](https://github.com/spacering-net/codeg/blob/main/LICENSE) 文件。

@@ -74,11 +74,11 @@ Want to support Codeg's development? [Reach out to us by email.](mailto:itpkcn@g
 Have a question, hit a bug, or just want to follow along? Scan the QR code to join our WeChat group for discussion, feedback, and updates.
 
 <div class="light-only">
-  <img src="https://raw.githubusercontent.com/xintaofei/codeg/main/docs/images/weixin-light.jpg" alt="Codeg WeChat group QR code" width="240" />
+  <img src="https://raw.githubusercontent.com/spacering-net/codeg/main/docs/images/weixin-light.jpg" alt="Codeg WeChat group QR code" width="240" />
 </div>
 
 <div class="dark-only">
-  <img src="https://raw.githubusercontent.com/xintaofei/codeg/main/docs/images/weixin-dark.jpg" alt="Codeg WeChat group QR code" width="240" />
+  <img src="https://raw.githubusercontent.com/spacering-net/codeg/main/docs/images/weixin-dark.jpg" alt="Codeg WeChat group QR code" width="240" />
 </div>
 
 Thanks, too, to the [LinuxDO](https://linux.do) community for their support.
@@ -94,4 +94,4 @@ Codeg stands on excellent open-source work. Our thanks to the projects it builds
 
 ## License
 
-Codeg is released under the **Apache-2.0** license — free to use, modify, and distribute, with an explicit patent grant and attribution requirements. See the [LICENSE](https://github.com/xintaofei/codeg/blob/main/LICENSE) file for the full text.
+Codeg is released under the **Apache-2.0** license — free to use, modify, and distribute, with an explicit patent grant and attribution requirements. See the [LICENSE](https://github.com/spacering-net/codeg/blob/main/LICENSE) file for the full text.

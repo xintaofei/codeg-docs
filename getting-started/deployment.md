@@ -78,13 +78,13 @@ The server can upgrade itself (see [Keep your server up to date](#keep-your-serv
 Install the native binary straight onto a host:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/xintaofei/codeg/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/spacering-net/codeg/main/install.sh | bash
 ```
 
 This places `codeg-server` and `codeg-mcp` in `/usr/local/bin` and the bundled web assets in `/usr/local/share/codeg/web`, using `sudo` only if the target isn't already writable. Pin a version or change the location with `--version` / `--dir`:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/xintaofei/codeg/main/install.sh | bash -s -- --version v0.26.0 --dir ~/.local/bin
+curl -fsSL https://raw.githubusercontent.com/spacering-net/codeg/main/install.sh | bash -s -- --version v0.26.0 --dir ~/.local/bin
 ```
 
 Then start it. The installer prints the exact command for you; add `--supervise` on an unattended host so a failed self-upgrade rolls back automatically:
@@ -98,7 +98,7 @@ The access token is printed to stderr on startup unless you set `CODEG_TOKEN` yo
 ### Windows
 
 ```powershell
-irm https://raw.githubusercontent.com/xintaofei/codeg/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/spacering-net/codeg/main/install.ps1 | iex
 ```
 
 This installs to **`%LOCALAPPDATA%\codeg-server`** and adds it to your PATH. Start it with the web files that came with it:
@@ -115,7 +115,7 @@ It used to install into `%LOCALAPPDATA%\codeg` — the **desktop app's** folder 
 
 ## Prebuilt binaries
 
-Every release ships a self-contained server bundle — binaries plus web assets, signed and checksummed — on the [Releases](https://github.com/xintaofei/codeg/releases) page:
+Every release ships a self-contained server bundle — binaries plus web assets, signed and checksummed — on the [Releases](https://github.com/spacering-net/codeg/releases) page:
 
 | Platform | File |
 | -------- | ---- |

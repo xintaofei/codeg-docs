@@ -5,13 +5,13 @@ Codeg can run as a standalone web server without a desktop environment. Run `cod
 ## Option 1: One-line install (Linux / macOS)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/xintaofei/codeg/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/spacering-net/codeg/main/install.sh | bash
 ```
 
 Install a specific version or to a custom directory:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/xintaofei/codeg/main/install.sh | bash -s -- --version v0.5.2 --dir ~/.local/bin
+curl -fsSL https://raw.githubusercontent.com/spacering-net/codeg/main/install.sh | bash -s -- --version v0.5.2 --dir ~/.local/bin
 ```
 
 Then run:
@@ -23,7 +23,7 @@ codeg-server
 ## Option 2: One-line install (Windows PowerShell)
 
 ```powershell
-irm https://raw.githubusercontent.com/xintaofei/codeg/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/spacering-net/codeg/main/install.ps1 | iex
 ```
 
 Or install a specific version:
@@ -34,7 +34,7 @@ Or install a specific version:
 
 ## Option 3: Download from GitHub Releases
 
-Pre-built binaries (with bundled web assets) are available on the [Releases](https://github.com/xintaofei/codeg/releases) page:
+Pre-built binaries (with bundled web assets) are available on the [Releases](https://github.com/spacering-net/codeg/releases) page:
 
 | Platform    | File                               |
 | ----------- | ---------------------------------- |

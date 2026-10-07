@@ -60,7 +60,7 @@ homeFeatures:
 <nav class="home-hero-actions" aria-label="开始使用 Codeg">
   <a class="home-hero-action home-hero-action--primary" href="/zh/getting-started/installation">下载 Codeg →</a>
   <a class="home-hero-action" href="/zh/getting-started/">什么是 Codeg？</a>
-  <a class="home-hero-action no-icon" href="https://github.com/xintaofei/codeg">在 GitHub 上查看</a>
+  <a class="home-hero-action no-icon" href="https://github.com/spacering-net/codeg">在 GitHub 上查看</a>
 </nav>
 
 <MobileShowcase />

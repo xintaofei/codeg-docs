@@ -43,4 +43,4 @@ Thanks to the [LinuxDO](https://linux.do) community for their support.
 
 ## License
 
-Apache-2.0. See the [LICENSE](https://github.com/xintaofei/codeg/blob/main/LICENSE) file.
+Apache-2.0. See the [LICENSE](https://github.com/spacering-net/codeg/blob/main/LICENSE) file.

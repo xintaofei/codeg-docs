@@ -5,7 +5,7 @@ Codeg runs as a **desktop app**, a **standalone server** you reach from any brow
 ## One-line install (Linux / macOS)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/xintaofei/codeg/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/spacering-net/codeg/main/install.sh | bash
 ```
 
 Then start the server:
@@ -17,13 +17,13 @@ codeg-server
 Install a specific version or to a custom directory:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/xintaofei/codeg/main/install.sh | bash -s -- --version v0.5.2 --dir ~/.local/bin
+curl -fsSL https://raw.githubusercontent.com/spacering-net/codeg/main/install.sh | bash -s -- --version v0.5.2 --dir ~/.local/bin
 ```
 
 ## One-line install (Windows PowerShell)
 
 ```powershell
-irm https://raw.githubusercontent.com/xintaofei/codeg/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/spacering-net/codeg/main/install.ps1 | iex
 ```
 
 Or install a specific version:

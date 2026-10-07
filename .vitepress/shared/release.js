@@ -3,7 +3,7 @@
 // Keeping the asset-matching in one place means the baked build-time data and
 // the live client refresh always agree.
 
-export const REPO = 'xintaofei/codeg'
+export const REPO = 'spacering-net/codeg'
 export const RELEASES_URL = `https://github.com/${REPO}/releases/latest`
 export const releaseNotesUrl = (v) => `https://github.com/${REPO}/releases/tag/v${v}`
 
