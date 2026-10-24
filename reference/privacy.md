@@ -174,7 +174,7 @@ Switching **Command-line access** off closes the local listener and removes the 
 By default the desktop app exposes no service to other machines. Its authenticated [CLI listener](#command-line-access) accepts connections only on this computer's loopback address. Two features make Codeg reachable across a network, and both are under your control:
 
 - **[Web Service](/reference/settings/web-service)** turns the desktop app into a browser-reachable server. It binds to **all interfaces (`0.0.0.0`)**, so anyone who can route to your machine on that port can reach the login — which is exactly why it's **gated by an access token**. Treat that token like a password: keep it strong, and stop the service when you're done on an untrusted network.
-- A **[standalone server](/getting-started/deployment)** is the same idea by design, and is likewise token-gated.
+- A **[standalone server](/getting-started/deployment)** is the same idea by design, accepts the access token by default. Since **0.39.0**, it can also verify a signed assertion from an [identity-aware proxy](/getting-started/configuration#sign-in-through-an-identity-aware-proxy). The proxy policy then decides who can access the workspace; it does not create separate per-user workspaces.
 
 The [native mobile clients](/getting-started/installation#mobile-apps) connect through one of those two doors. Use plain HTTP only on a trusted local network; use HTTPS, a VPN, or a trusted tunnel when traffic crosses an untrusted network.
 

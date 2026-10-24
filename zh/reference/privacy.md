@@ -174,7 +174,7 @@ Codeg 使用的 WebSocket 库会在 `trace` 级别把**整个序列化后的握�
 默认情况下，桌面应用不向其他机器提供服务。它经过认证的 [CLI 监听器](#command-line-access)只接受本机回环地址上的连接。有两个功能会让 Codeg 可通过网络访问，且二者都由你掌控：
 
 - **[Web 服务](/zh/reference/settings/web-service)**将桌面应用变成一个浏览器可访问的服务器。它绑定到**所有网络接口（`0.0.0.0`）**，因此任何能在该端口路由到你机器的人都能访问登录页 —— 这正是它**由一个访问令牌把关**的原因。把那个令牌当密码对待：保持其强度，并在你于不受信任的网络上用完后停止该服务。
-- **[独立服务器](/zh/getting-started/deployment)**在设计上就是同样的思路，同样由令牌把关。
+- **[独立服务器](/zh/getting-started/deployment)** 默认同样通过访问令牌认证。自 **0.39.0** 起，也可校验[身份感知代理](/zh/getting-started/configuration#sign-in-through-an-identity-aware-proxy)的签名断言。此时由代理策略决定谁能访问工作区，并不会为每个用户创建独立工作区。
 
 [原生移动客户端](/zh/getting-started/installation#mobile-apps)会通过上述两道入口之一连接。明文 HTTP 只应在受信任的局域网中使用；当流量需要跨越不受信任的网络时，请使用 HTTPS、VPN 或可信隧道。
 

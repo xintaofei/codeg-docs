@@ -11,6 +11,8 @@ Codeg 由两个互补部分组成。**桌面应用**在 macOS、Windows 或 Linu
 
 当你希望 Codeg 及其智能体在当前电脑上运行时，请安装桌面应用。若要改在专用机器上无头运行 Codeg，请参见[部署](/zh/getting-started/deployment)。
 
+已有安装准备升级？请先阅读[升级 Codeg](/zh/getting-started/upgrading)：0.40.0 会迁移数据库，退回旧版需要升级前的数据目录副本。
+
 <Download />
 
 ## 移动应用 {#mobile-apps}

@@ -111,6 +111,7 @@ export default defineConfig({
               items: [
                 { text: 'Introduction', link: '/getting-started/' },
                 { text: 'Download & Install', link: '/getting-started/installation' },
+                { text: 'Upgrade Codeg', link: '/getting-started/upgrading' },
                 { text: 'Deployment', link: '/getting-started/deployment' },
                 { text: 'Configuration', link: '/getting-started/configuration' }
               ]
@@ -238,6 +239,7 @@ export default defineConfig({
               items: [
                 { text: '简介', link: '/zh/getting-started/' },
                 { text: '下载与安装', link: '/zh/getting-started/installation' },
+                { text: '升级 Codeg', link: '/zh/getting-started/upgrading' },
                 { text: '部署', link: '/zh/getting-started/deployment' },
                 { text: '配置', link: '/zh/getting-started/configuration' }
               ]

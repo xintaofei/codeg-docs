@@ -5,6 +5,10 @@ description: Codeg 是一个多智能体编程工作区——在一个地方运�
 
 # 简介
 
+::: tip 已发布 0.40.0
+新版将思考、命令、文件改动和子智能体任务汇成执行过程时间线。已有安装请先阅读[升级指南](/zh/getting-started/upgrading)，了解新功能和数据库迁移前的备份步骤。
+:::
+
 **Codeg 是一个多智能体编程工作区**——在一个地方运行、聚合并编排不断壮大的 AI 编程智能体家族。
 
 Codeg 不会将你绑定到单一助手，而是把 Claude Code、Codex CLI、Google Antigravity、OpenCode、Qoder 以及[更多智能体](/zh/guide/supported-agents)汇聚到一个共享工作区中——然后让它们*协同*工作：一个主导智能体可以把子任务交给其他类型的智能体，每个智能体都作为独立会话运行。你负责指挥，它们负责协作。

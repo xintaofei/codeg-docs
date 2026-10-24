@@ -98,7 +98,7 @@ The sidebar has three top-level sections:
 
 - **Folders** — your projects, conversations nested under each.
 - **Chat** — folderless conversations, the ones you started in [Chat mode](/guide/conversations#start-a-session-—-the-composer).
-- **Recent** — one flat list of the conversations you can currently reach, folder-bound and chat alike, in whichever order **Sort by** is set to. Nothing is nested and nothing is grouped; it's the answer to *"what was I just doing?"* without expanding anything. It follows the same view options as the rest of the sidebar — a closed folder's conversations, a completed one while *Show completed* is off, and anything already in **Pinned** stay out of it. It shows **15 rows** at a time with a **Show more** footer that reveals another page per click, while the section's own count badge reports the full total. Since **0.28.2** that footer also folds it back: once you've expanded past the first page, a reset appears on the same row, so a list you opened up to find one thing doesn't stay long for the rest of the session, pushing the sections below it off screen. It's offered only when more than a page is actually showing. Its header carries a new-conversation button, like Chat's, and since **0.32.3** a **⋯** that narrows the list to **All**, **Chat** or **Folders** — only folderless chats, or only conversations that belong to a folder. Since **0.38.0**, **Command line** shows only conversations started by [`codeg-cli`](/guide/command-line), also marked by a terminal icon. The choice is remembered on this device, and while the list is narrowed the button stays in view, so a filtered list never passes for a short one.
+- **Recent** — one flat list of the conversations you can currently reach, folder-bound and chat alike, ordered by **last activity** since **0.39.0**, regardless of **Sort by**. Nothing is nested and nothing is grouped; it's the answer to *"what was I just doing?"* without expanding anything. It follows the same view options as the rest of the sidebar — a closed folder's conversations, a completed one while *Show completed* is off, and anything already in **Pinned** stay out of it. It shows **10 rows** at a time with a **Show more** footer that reveals another page per click, while the section's own count badge reports the full total. Since **0.28.2** that footer also folds it back: once you've expanded past the first page, a reset appears on the same row, so a list you opened up to find one thing doesn't stay long for the rest of the session, pushing the sections below it off screen. It's offered only when more than a page is actually showing. Its header carries a new-conversation button, like Chat's, and since **0.32.3** a **⋯** that narrows the list to **All**, **Chat** or **Folders** — only folderless chats, or only conversations that belong to a folder. Since **0.38.0**, **Command line** shows only conversations started by [`codeg-cli`](/guide/command-line), also marked by a terminal icon. The choice is remembered on this device, and while the list is narrowed the button stays in view, so a filtered list never passes for a short one.
 
 All three can be **reordered** from the view-options menu — one row per section with move-up and move-down controls (or Alt+Arrow on the focused row) — and **Recent can be switched off** entirely if you'd rather not have it.
 
@@ -111,7 +111,7 @@ The last, an **eye**, opens **View options**:
 - **Filter by tags** *(submenu)* — narrows the list to the conversations carrying the tags you pick. Since **0.37.0** it's the menu's first entry, in place of the funnel button that used to lead the strip. → [Tag conversations](#tag-conversations)
 - **Conversation list** *(submenu)* — **Show completed conversations**, **off** by default, so finished work stays out of the way and the list is what's still live; **Show worktree branches**, **on** by default; and **Show Recent group**, **on** by default.
 - **Navigation items** *(submenu)* — see [below](#choose-which-navigation-rows-you-see).
-- **Sort by** — **Created time** (the default) or **Updated time**.
+- **Sort by** — **Created time** (the default) or **Updated time** for folder and Chat lists. **Recent** always uses last activity. Recent and Chat rows show their last activity time; nested sub-sessions keep their creation-time label.
 - **Section order** — the reorder list described above.
 
 The filter and the two inventories sit behind hover-opened submenus so that Sort by and Section order — the two people come back for — aren't buried at the bottom of a long menu. The other two stay inline: a pair of radios and a ranked list read wrong behind another hop, and the order rows need the menu's full width. Flipping a toggle or picking a tag **dismisses neither the submenu nor the menu**, so changing two settings costs one visit.
@@ -218,6 +218,19 @@ The panel along the right edge — the session's details, plan and message navig
 ## Run a saved command
 
 The **status bar** carries a launcher for the commands you run over and over — a dev server, a test watcher. Codeg seeds the list from your project's `package.json` scripts, so it usually has something the first time you look; until then it reads **Add Command**. Pick one from the menu and the ▶ button runs it in a terminal, turning into ■ to stop it — and since **0.35.0** stopping keeps that terminal and what it printed rather than closing it. **Manage Commands…** lets you add, edit, reorder, and delete them, and your selection is remembered per folder.
+
+Since **0.39.0**, the command editor also has two switches:
+
+- **Run on this computer** runs the command on the computer with the **desktop app**, even when the active folder lives on a remote server. It launches without an integrated terminal, so use it for local tools such as opening a remote project in your editor. This switch is unavailable in a browser.
+- **Show in all folders** makes the command available across folders, worktrees and remote connections. It is saved on this computer; leaving it off keeps the command with the current folder.
+
+A command that runs on this computer receives **`CODEG_FOLDER_PATH`**, the active folder's absolute path on its own host, and **`CODEG_REMOTE_HOST`**, the remote server's hostname, empty for a local workspace. For example, with Zed and SSH already configured, a macOS/Linux command can open the remote folder:
+
+```bash
+zed "ssh://user@$CODEG_REMOTE_HOST$CODEG_FOLDER_PATH"
+```
+
+Replace `user` with your SSH username. Windows uses `cmd.exe` by default, where the variables are `%CODEG_REMOTE_HOST%` and `%CODEG_FOLDER_PATH%`. If `SHELL` or `COMSPEC` selects a different shell, use that shell's environment-variable syntax, such as `$env:CODEG_FOLDER_PATH` in PowerShell. Keep substituted values inside double quotes. To save **Run on this computer** on a remote folder's own command, that server must also run **0.39.0 or later**; on an older server, use **Show in all folders** to keep it locally instead.
 
 ## The terminal
 

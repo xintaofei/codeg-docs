@@ -100,7 +100,7 @@ Codeg 与智能体之间只说一种语言：**ACP**。十九个里有十五个�
 
 ### ZCode 经由桥接器驱动官方应用 {#zcode}
 
-**0.36** 新加入的 **ZCode** 同样通过一个社区桥接器驱动——`zcode-acp-server`，固定在 **0.72.0**，上游为 [william0wang/zcode-acp](https://github.com/william0wang/zcode-acp)——它也是第三个带 **ACP 适配器**徽章的智能体。不过它的工作方式与 Claude Code 和 Codex 的适配器正好相反：桥接器本身不带任何智能体。它驱动的是**你已安装并登录的官方 ZCode**，运行在能加载 `node:sqlite` 的 Node.js 22 或更高版本上，因此模型、凭据和登录都留在 ZCode 里，而 Codeg 里的**升级**只更新桥接器。
+**0.36** 新加入的 **ZCode** 同样通过一个社区桥接器驱动——`zcode-acp-server`，固定在 **0.76.2**，上游为 [william0wang/zcode-acp](https://github.com/william0wang/zcode-acp)——它也是第三个带 **ACP 适配器**徽章的智能体。不过它的工作方式与 Claude Code 和 Codex 的适配器正好相反：桥接器本身不带任何智能体。它驱动的是**你已安装并登录的官方 ZCode**，运行在能加载 `node:sqlite` 的 Node.js 22 或更高版本上，因此模型、凭据和登录都留在 ZCode 里，而 Codeg 里的**升级**只更新桥接器。
 
 它的适配器那一行说的正是这些，而且只有在桥接器已安装**并且**找到了 ZCode 时才会通过；它的**了解详情**打开的是桥接器的仓库，而不是本页。如何找到 ZCode、找不到时如何为 Codeg 指明它，以及首次接入暂不支持哪些功能，见[各智能体配置](/zh/guide/agent-setup#zcode)。
 

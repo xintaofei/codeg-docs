@@ -5,6 +5,10 @@ description: Codeg is a multi-agent coding workspace — one place to run, aggre
 
 # Introduction
 
+::: tip 0.40.0 is available
+Follow thoughts, commands, file edits and sub-agent tasks on the new activity timeline. If you already use Codeg, start with the [upgrade guide](/getting-started/upgrading) for the changes and the backup steps before the database migration.
+:::
+
 **Codeg is a multi-agent coding workspace** — one place to run, aggregate, and orchestrate the growing family of AI coding agents.
 
 Rather than tying you to a single assistant, Codeg brings Claude Code, Codex CLI, Google Antigravity, OpenCode, Qoder, and [more](/guide/supported-agents) into a shared workspace — then lets them work *together*: a lead agent can hand subtasks to agents of other types, each running as its own session. You conduct; they collaborate.

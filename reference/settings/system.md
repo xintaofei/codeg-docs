@@ -19,13 +19,17 @@ A new release also announces itself in the workspace: a **New v…** badge appea
 
 What the upgrade button does depends on where you're running — this is the one screen where desktop and server genuinely differ:
 
-- **Desktop app** — **Upgrade to vX** downloads the release and shows a progress bar. On macOS and Linux it then flips to **Restart to update**, which relaunches into the new version. On **Windows** there's no restart step: once the download is done Codeg closes and the installer runs without prompts and reopens it. Since **0.36.0** Codeg first stops its agents with their `codeg-mcp` companions, its terminals and the Web Service, and remembers your open windows; the installer moves aside a file that's still in use, which used to stop an update with *Error opening file for writing* on `codeg-mcp.exe`; and if the installer can't start, Codeg comes back on the version you had.
+- **Desktop app** — **Upgrade to vX** downloads the release and shows a progress bar, then **Restart to update** installs it and relaunches Codeg. Since **0.39.0**, Windows waits for that button too; an update started from **0.38.0** still closes the app and installs as soon as the download finishes. Codeg stops its agents, `codeg-mcp` companions, terminals and Web Service before installation and remembers the open windows. If installation fails, the error is shown and you can retry; 0.39.0 also fixes the Windows *Failed to kill codeg* error when the executable is still in use.
 - **A self-updating server** — a standalone `codeg-server` (or Docker) that supports in-place updates behaves the same way: download, progress, restart. See [Deployment](/getting-started/deployment) for how server updates work.
 - **Anything that can't self-update** — an older remote server falls back to a **View vX release** button that opens the GitHub releases page, so you can update it by hand.
 
 **A package must be signed for the version on offer.** Since **0.36.0**, in the desktop app and the server's online upgrade alike, Codeg installs an update only if its signature names the very version the release announced — so an older signed package can't be passed off as a newer one. A package that fails this check shows as a plain *Failed to install update*.
 
 **0.38.0** also fixes two restart problems: on macOS, relaunch waits for the old instance to exit so the Dock keeps one icon; on Windows, the installer stops bundled helper processes through the Windows API, avoiding the WMI query that could leave an update hanging.
+
+::: warning Back up before 0.40.0
+0.40.0 updates the database, so 0.39.0 cannot start on the same data afterward. **Roll back** restores the program only; a downgrade also needs a pre-upgrade copy of the complete data directory. The same restriction applies from 0.39.0 to 0.38.0. → [Upgrade Codeg](/getting-started/upgrading)
+:::
 
 ::: info Rollback (server only)
 A self-updating server keeps the previous binary, so after an upgrade a **Roll back** button appears — *"Restore the version installed before the last upgrade."* It's there for a regression that only surfaces later, once the automatic trial-window check has already passed. The desktop app updates through the OS installer and doesn't offer this. On **Docker**, an in-place upgrade is only live until the container is recreated — *"to keep it, pull or build an image at the new version and recreate."*

@@ -42,15 +42,25 @@ If the folder isn't under git, the Changes tab says so — choose **Initialize G
 
 ## Commit
 
-The Changes tab leads with a toolbar, so committing what you're looking at doesn't mean opening anything: type a message in the box and press **Enter**.
+The Changes tab leads with a toolbar: type a message in the box and press **Enter** to commit, or **Shift+Enter** for a new line. Since **0.39.0**, the box grows with a longer message.
 
-That **quick commit takes the tracked changes only** — an unignored `dist/` or `node_modules/` can never ride along with a keystroke — and the draft message is dropped when you switch to another folder, so a message written for one repo can't land in the next.
+By default, **quick commit takes tracked changes only**. If you use the message generator below and explicitly include untracked files, Enter commits that selection too; a line under the box shows how many. The draft message is dropped when you switch folders, so a message written for one repository cannot land in the next.
 
 Beside it, one round button opens the menu with everything else: **pull**, **fetch**, **push**, **stash** and **unstash**, plus **Add all to VCS** and **Rollback all** (both routed through the file picker, so neither writes blind), and **Commit code**, which opens the full **Commit** window.
 
 That window is still there for anything more deliberate: tick the files to include (tracked files come pre-selected, untracked ones don't), click any name to preview its diff, write a message, and commit. Its commit button doubles as a menu — **Commit** records the selected files, **Commit and Push** sends them to your remote in the same step.
 
 Codeg stamps each commit with the author identity from your [git account](#git-accounts) for that remote, so your commits are attributed correctly without you setting `user.name` and `user.email` in every project.
+
+### Generate a commit message {#generate-a-commit-message}
+
+Since **0.39.0**, the **✨** button beside the message box lets an agent write the message for you, both in **Changes** and in the full **Commit** window. It reads the changes that will actually be committed and takes any text already in the box as a hint. The generation does not add a conversation to your sidebar.
+
+1. Review the diff. In the full Commit window, select the files to include; in Changes, the default is tracked changes.
+2. Click **✨**. If Changes also contains untracked files, choose which of them to include before generation begins. The generated message and the next quick commit cover that same selection.
+3. Read and edit the result, then commit. While generation runs, the button shows the elapsed time and lets you stop it.
+
+**More Git actions → Commit message settings…** controls the generator. It follows the current conversation's agent by default, or you can choose a fixed agent with its model and options. Add standing instructions such as “Write in Chinese” or “Use Conventional Commits.” Settings can apply to **all folders** or replace them for **one project**, including its worktrees. **Commit automatically** is off by default; turn it on only when you want a successfully generated message to commit the selected files immediately. Before an automatic commit, Codeg compares the selected file paths with those used for generation. If that file set changed, it skips the commit and leaves the message for review. This check does **not** detect content edits within the same files. Use manual commit when another agent or tool may still be editing them.
 
 ## Branch, merge, and rebase
 

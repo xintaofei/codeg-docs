@@ -69,12 +69,14 @@ On an adapter older than 2.0, the two *Workspace access* rows start in Auto revi
 Until **0.25** neither setting reached a Codeg session at all — the adapter re-sent its own policy on every turn, so an explicitly read-only sandbox could be silently widened. Deriving the starting mode is the fix, and it's keyed on **sandbox mode** because that's the axis where guessing wrong *enlarges* access: the derivation never picks a wider sandbox than the one you set. (What it can't do is supply a sandbox the adapter lacks — hence the 1.7 to 1.13 gap above.)
 :::
 
-Two more switches in the same pane are worth knowing about:
+Other options in the same pane:
 
 - **Allow questions in Default mode.** Codex will only call its `request_user_input` tool in *Plan* mode, so in an ordinary turn its question is refused outright and **no question card ever reaches you** — the agent asks, gets told the tool is unavailable, and carries on guessing. Turning this on lets it ask in ordinary turns too. It writes `[features].default_mode_request_user_input` into your `~/.codex/config.toml` — the same key Codex's own `codex features enable` would set, and the flag is still under development upstream. Feature flags resolve when a thread is created, so it **takes effect on your next session**, not the one you have open.
 - **Custom models** can be added in one of two shapes. The default clones a native GPT entry; pick the **OpenAI-compatible** one for a third-party gateway, and Codex sends a plain Responses request — no code-mode tools, no multi-agent, no responses-lite, no custom apply-patch tool — which is all such a gateway implements. It's a preset over ordinary per-field overrides, so you can switch a model that already exists either way.
 - **New official models arrive by themselves.** A customized list — one where you've added models or taken official ones out — used to replace Codex's own table outright, so a model OpenAI shipped later never appeared until you refreshed the list and saved it again. Since **0.32.4** Codeg tries to rebuild it whenever Codex is installed or upgraded: your own models first, then every official one in Codex's own order, minus the ones you removed — those stay removed. If the installed Codex's list can't be read, the list you have stays as it was.
 - **The default model is Codex's own.** A Codex conversation that never had a model picked runs on whatever Codex defaults to — **GPT-6.1 Sol** since **0.32.4**. If the provider you use for Codex doesn't serve it yet, pick a model in the composer or fill in the provider's **Model** field.
+
+Since **0.39.0**, the settings pane no longer offers the obsolete **Enable Skills** or **Enable Fast** switches; choose **Fast** in the composer instead. The **WebSocket** switch appears only for a configured custom provider whose endpoint supports Responses over WebSocket, and is hidden for **Official Subscription** and built-in providers.
 
 ## Gemini
 
@@ -172,6 +174,8 @@ Kimi Code is the other agent with a pane of its own, rebuilt in **0.23**. The re
 
 A self-extensible coding agent, run through `npx`. It quietly drops the MCP servers handed to it, so it can't lead a [delegation](/guide/multi-agent) — another agent can still delegate to it.
 
+Since **0.39.0**, the model picker follows Pi's **`enabledModels`** setting and lists only the models it allows. A project's **`.pi/mcp.json`** is also covered by the project-trust decision below before Pi starts its servers. This is Pi's own configuration; it does not make Pi accept the delegation tools supplied through ACP.
+
 ### Project trust {#pi-project-trust}
 
 Pi loads a repository's own `.pi/` files — settings, skills, prompts, and **`.pi/extensions`, which are JavaScript modules that run at pi startup with your permissions**. Whether it does that for a given folder is pi's own trust decision, and since **0.25** it's yours to make.
@@ -204,6 +208,8 @@ Two requirements arrived with it:
 ## Grok
 
 xAI's coding agent, run through `npx`. Its pane has an **Authentication method** picker — **Official Subscription** (`grok login`), **XAI API key**, or **Custom endpoint** → [Sign in with a subscription](/guide/authentication#sign-in-with-a-subscription) — and, unlike most agents, a **reasoning effort** dropdown of its own, from low up to **Max**, written into Grok's own config.
+
+Since **0.39.0**, a **custom model** can declare its supported **reasoning-effort levels** on its model card, so those choices appear in the composer too. Codeg also detects a native Grok installation under `~/.grok/bin`, including on Windows.
 
 ## Cursor
 
@@ -341,9 +347,11 @@ Z.ai's ZCode, new in **0.36.0**, through a community ACP bridge — [why it's bu
 
 **Signing in, models and credentials** stay in ZCode, and the pane has no configuration card — just the environment editor, with a note saying so. A ZCode **Start Plan** account can't run through the bridge: its requests need a captcha only the ZCode desktop app can solve. GLM Coding Plan accounts aren't affected.
 
-**In a conversation**, the mode, model and thinking settings are whatever the bridge reports. A new session sends nothing until ZCode has confirmed its mode — the one you last picked, if the session offers it, otherwise *build* — and if that doesn't happen within 60 seconds the session fails rather than sending your message. Permission requests use Codeg's ordinary cards. The bridge also writes a disabled sandbox template, `.zcode/acp/sandbox.json`, into each workspace it runs in.
+**In a conversation**, the mode, model and thinking settings are whatever the bridge reports. A new session sends nothing until ZCode has confirmed its mode — the one you last picked, if the session offers it, otherwise *build* — and if that doesn't happen within 60 seconds the session fails rather than sending your message. Permission requests use Codeg's ordinary cards. The bridge writes `.zcode/acp/sandbox.json` only when its own sandbox is enabled globally; Codeg does not enable it by default.
 
-**What the first integration leaves out:** forking from a message, attachments, HTTP and SSE MCP servers — ZCode takes **stdio** servers only, which Codeg keeps in a record of its own and hands over when a session starts — and importing ZCode's own history: Codeg records the conversations you run in it, and nothing else. ZCode has no column in Skill Packs. So far it has been tested on Windows only; macOS and Linux aren't refused, just untested. A ZCode you set up earlier as a [custom agent](/guide/custom-agents) stays a separate agent, with its own history.
+**Images and PDFs** are supported since **0.39.0**, when the bridge advertises the corresponding capability. Paste, drop or upload images; PNG, JPEG, WebP, GIF, BMP and SVG are accepted, up to **10 MiB per image**. A prompt can contain up to **100 content blocks** and **50 MiB** of decoded content in total. Pause a native goal loop before sending binary attachments, because queued goal prompts accept only text. Completed replies also keep their per-turn token usage and time when reopened; older transcripts are not retroactively filled in.
+
+**Current limits:** forking from a message, audio, HTTP and SSE MCP servers — ZCode takes **stdio** servers only, which Codeg keeps in a record of its own and hands over when a session starts — and importing ZCode's own history: Codeg records the conversations you run in it, and nothing else. ZCode has no column in Skill Packs. So far it has been tested on Windows only; macOS and Linux aren't refused, just untested. A ZCode you set up earlier as a [custom agent](/guide/custom-agents) stays a separate agent, with its own history.
 
 ## TRAE CLI
 

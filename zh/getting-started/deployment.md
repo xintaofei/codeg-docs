@@ -176,10 +176,10 @@ CODEG_STATIC_DIR=../out ./target/release/codeg-server
 
 ## 安全访问 {#access-it-securely}
 
-默认情况下，服务器绑定 `0.0.0.0:3080`，因此任何能路由到该主机的设备都可以访问它。这正是远程访问所需要的——但这也意味着**令牌是你唯一的防线**。在公开主机上有几件事要做对：
+默认情况下，服务器绑定 `0.0.0.0:3080`，任何能路由到该主机的设备都可以访问它。配置远程访问时，请同时设置好认证和传输加密：
 
 - **将其置于 HTTPS 之后。** `codeg-server` 使用纯 HTTP 通信，没有内置的 TLS。请在其前面架设一个反向代理——Caddy、nginx 或 Traefik——由它终止 TLS 并转发到 `127.0.0.1:3080`。设置 `CODEG_HOST=127.0.0.1`，使得只有代理（而非整个网络）能够直接访问服务器。
-- **对令牌保密。** 每个 API 和 WebSocket 请求都必须携带它，只有少数几类除外：自带凭证的那几种——一次性下载链接、Office 实时预览的单文档能力凭证，以及 forge 的 webhook 推送（改为通过签名验证）——还有不泄露任何东西的应用自身文件和登录页的语言查询。通过以新的 `CODEG_TOKEN` 重启来轮换它。
+- **对令牌保密。** 默认令牌模式下，每个 API 和 WebSocket 请求都必须携带它，只有少数几类除外：自带凭证的那几种——一次性下载链接、Office 实时预览的单文档能力凭证，以及 forge 的 webhook 推送（改为通过签名验证）——还有不泄露任何东西的应用自身文件和登录页的语言查询。通过以新的 `CODEG_TOKEN` 重启来轮换它。
 - **或者让登录代理为浏览器担保。** 在 Cloudflare Access 之类的身份感知代理之后，`CODEG_AUTH=proxy-jwt` 会凭代理的签名断言放行浏览器，不再需要令牌，用户只需登录一次。令牌对 `codeg-cli` 和脚本依然有效。此时由代理的策略决定谁能进入。→ [通过身份感知代理登录](/zh/getting-started/configuration#sign-in-through-an-identity-aware-proxy)
 - **如果你用 webhook，就要放 forge 进来。** 仓库面板的 [webhook 触发](/zh/guide/repository#set-up-the-webhook)会投递到这台服务器上的 `/api/forge_webhook`，而 forge 只能向它访问得到的地址投递。如果前面挡着一道登录网关——比如 Cloudflare Access——请为这条路径开个例外，否则推送永远到不了 Codeg；每一次推送到达时都会与某个文件夹的密钥比对。→ [Webhook](/zh/reference/privacy#webhooks-for-auto-processing)
 - **桥端口也照此发布。** [端口桥](/zh/guide/browser#in-a-browser-session-the-port-bridge)同样在 `CODEG_HOST` 上绑定 `CODEG_BRIDGE_PORTS`。这些端口只回应从已登录工作台打开过页面的浏览器，但放在 TLS 代理之后时它们同样需要 TLS（工作台用自己的 scheme 访问它们），而 `CODEG_HOST=127.0.0.1` 时它们和主端口一样需要转发。不想运行它就设置 `CODEG_BRIDGE_PORTS=off`。
@@ -217,6 +217,10 @@ CODEG_STATIC_DIR=../out ./target/release/codeg-server
 Codeg 没有为浏览器缓存提供开关；要移除这份副本，请在浏览器里清除该站点的数据。
 
 ## 保持服务器更新 {#keep-your-server-up-to-date}
+
+::: warning 0.40.0 会迁移数据库
+升级前请停止服务器并备份完整数据目录。0.39.0 无法读取 0.40.0 更新后的数据库，**回滚**按钮和监督进程都不会恢复旧的数据结构。恢复旧版程序时也必须恢复升级前的数据副本。→ [升级与恢复步骤](/zh/getting-started/upgrading)
+:::
 
 与桌面应用一样，`codeg-server` 也可从**设置 → 软件更新**自我更新：它会下载适用于其平台的、经过签名的版本，验证签名（自 **0.36.0** 起，签名必须写明的恰好是所提供的那个版本，这样一个较旧的已签名压缩包就没法冒充成较新的版本），替换磁盘上的二进制文件和 Web 资源，然后重启——无需重新部署。上一个版本会被保留，因此同一界面上还提供了**回滚**。此功能仅限 Linux/macOS（Windows 上已禁用）。自 **0.32.1** 起，无法写入自身安装位置的服务器——比如二进制文件或 Web 文件夹不归它所有、磁盘已满——会在你尝试**之前**就在该界面上说明这一点，并改为提供发布页面，供你手动更新。
 

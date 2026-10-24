@@ -40,10 +40,10 @@ export function pickDownloads(release) {
 
 // Known-good snapshot so the page renders real links even when the build (or
 // the browser) can't reach GitHub. Bumped whenever docs are refreshed.
-const V = '0.37.0'
+const V = '0.40.0'
 export const FALLBACK = {
   version: V,
-  date: '2026-10-18',
+  date: '2026-10-24',
   assets: {
     macApple: dl(V, `codeg_${V}_aarch64.dmg`),
     macIntel: dl(V, `codeg_${V}_x64.dmg`),

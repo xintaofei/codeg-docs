@@ -100,7 +100,7 @@ The key is passed as `DEEPSEEK_API_KEY`, and an environment variable outranks th
 
 ### ZCode rides a bridge over the official app {#zcode}
 
-**ZCode**, new in **0.36**, is also driven through a community bridge — `zcode-acp-server`, pinned at **0.72.0**, upstream [william0wang/zcode-acp](https://github.com/william0wang/zcode-acp) — and it's the third agent with the **ACP adapter** badge. It works the other way round from Claude Code's and Codex's adapters, though: the bridge carries no agent of its own. It drives **the official ZCode you've installed and signed in to**, on a Node.js 22 or later that can load `node:sqlite`, so models, credentials and sign-in all stay in ZCode, and **Upgrade** in Codeg updates only the bridge.
+**ZCode**, new in **0.36**, is also driven through a community bridge — `zcode-acp-server`, pinned at **0.76.2**, upstream [william0wang/zcode-acp](https://github.com/william0wang/zcode-acp) — and it's the third agent with the **ACP adapter** badge. It works the other way round from Claude Code's and Codex's adapters, though: the bridge carries no agent of its own. It drives **the official ZCode you've installed and signed in to**, on a Node.js 22 or later that can load `node:sqlite`, so models, credentials and sign-in all stay in ZCode, and **Upgrade** in Codeg updates only the bridge.
 
 Its adapter row says exactly that, and passes only when the bridge is installed **and** ZCode is found; its **Learn more** opens the bridge's repository rather than this page. Finding ZCode, pointing Codeg at it when that fails, and what the first integration leaves out are in [Per-Agent Setup](/guide/agent-setup#zcode).
 

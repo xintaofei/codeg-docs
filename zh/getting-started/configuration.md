@@ -28,7 +28,7 @@ Codeg 在两个地方进行配置。桌面应用和 Web 界面通过 **设置** 
 | -------- | ------- | ----------- |
 | `CODEG_PORT` | `3080` | HTTP 和 WebSocket 监听端口。 |
 | `CODEG_HOST` | `0.0.0.0` | 绑定地址——一个 IP、`localhost` 或带方括号的 IPv6 字面量。`0.0.0.0` 会在每个接口上暴露它。 |
-| `CODEG_TOKEN` | *（随机）* | 每个 API 和 WebSocket 请求都需要的访问令牌。例外的那几类要么自带凭证——一次性下载链接、Office 实时预览的单文档能力凭证、forge [经过签名的 webhook 推送](/zh/reference/privacy#webhooks-for-auto-processing)——要么不泄露任何东西：Web 应用自身的文件，以及登录页的语言查询。若未设置，则会生成一个、保存到数据库，并在启动时打印到 stderr。 |
+| `CODEG_TOKEN` | *（随机）* | API 和 WebSocket 请求的访问令牌。使用 `CODEG_AUTH=proxy-jwt` 时，经过校验的代理断言也可用于认证。例外的那几类要么自带凭证——一次性下载链接、Office 实时预览的单文档能力凭证、forge [经过签名的 webhook 推送](/zh/reference/privacy#webhooks-for-auto-processing)——要么不泄露任何东西：Web 应用自身的文件，以及登录页的语言查询。若未设置，则会生成一个、保存到数据库，并在启动时打印到 stderr。 |
 | `CODEG_AUTH` | `token` | 设为 `proxy-jwt` 时，服务器还会校验身份感知代理的签名断言，放行已由代理登录的浏览器，浏览器因此无需令牌。需要另外设置四个 `CODEG_PROXY_AUTH_*` 变量。→ [通过身份感知代理登录](#sign-in-through-an-identity-aware-proxy) |
 | `CODEG_DATA_DIR` | *（因操作系统而异——见下文）* | 数据库、上传文件、日志和密钥的根目录。 |
 | `CODEG_STATIC_DIR` | `./web` | 要提供服务的捆绑 Web 界面所在目录。 |
@@ -43,7 +43,7 @@ Codeg 在两个地方进行配置。桌面应用和 Web 界面通过 **设置** 
 
 ## 通过身份感知代理登录 {#sign-in-through-an-identity-aware-proxy}
 
-当 `codeg-server` 部署在一个已经负责用户登录的代理之后（例如 [Cloudflare Access](https://developers.cloudflare.com/cloudflare-one/policies/access/)），访问令牌就成了代理登录之上的第二次登录。设置 `CODEG_AUTH=proxy-jwt` 后，服务器还会放行携带代理签名断言（一个 JWT）的请求，浏览器因此无需令牌。在此模式下令牌依然有效，供不经过代理的客户端使用，例如 `codeg-cli --url` 和脚本。
+自 **0.39.0** 起，当 `codeg-server` 部署在一个已经负责用户登录的代理之后（例如 [Cloudflare Access](https://developers.cloudflare.com/cloudflare-one/policies/access/)），访问令牌就成了代理登录之上的第二次登录。设置 `CODEG_AUTH=proxy-jwt` 后，服务器还会放行携带代理签名断言（一个 JWT）的请求，浏览器因此无需令牌。在此模式下令牌依然有效，供不经过代理的客户端使用，例如 `codeg-cli --url` 和脚本。
 
 | 变量 | 取值 |
 | -------- | ----- |
@@ -63,17 +63,19 @@ Codeg 在两个地方进行配置。桌面应用和 Web 界面通过 **设置** 
 
 ### Cloudflare Access {#cloudflare-access}
 
-其中 `<team>` 是你的 Zero Trust 团队名称，`<AUD tag>` 是应用概览页上的 **Application Audience (AUD) Tag**：
+将 `<team>` 替换为你的 Zero Trust 团队名称，`<AUD tag>` 替换为应用概览页上的 **Application Audience (AUD) Tag**，然后在服务器安装目录的 POSIX shell 中运行：
 
 ```bash
-CODEG_AUTH=proxy-jwt
-CODEG_PROXY_AUTH_HEADER=Cf-Access-Jwt-Assertion
-CODEG_PROXY_AUTH_JWKS_URL=https://<team>.cloudflareaccess.com/cdn-cgi/access/certs
-CODEG_PROXY_AUTH_ISSUER=https://<team>.cloudflareaccess.com
-CODEG_PROXY_AUTH_AUDIENCE=<AUD tag>
+export CODEG_HOST=127.0.0.1
+export CODEG_AUTH=proxy-jwt
+export CODEG_PROXY_AUTH_HEADER=Cf-Access-Jwt-Assertion
+export CODEG_PROXY_AUTH_JWKS_URL='https://<team>.cloudflareaccess.com/cdn-cgi/access/certs'
+export CODEG_PROXY_AUTH_ISSUER='https://<team>.cloudflareaccess.com'
+export CODEG_PROXY_AUTH_AUDIENCE='<AUD tag>'
+./codeg-server --supervise
 ```
 
-将服务器绑定到回环地址（`CODEG_HOST=127.0.0.1`），只通过隧道访问它，这样每个浏览器请求都会经过 Access。通过这种方式打开时，Web 应用会跳过令牌提示。Access 会话过期时，应用会显示 **Sign-in expired** 和 **Reload**。重新加载会让 Access 再次运行登录。
+将服务器绑定到回环地址（`CODEG_HOST=127.0.0.1`），只通过隧道访问它，这样每个浏览器请求都会经过 Access。通过这种方式打开时，Web 应用会跳过令牌提示。Access 会话过期时，应用会显示**登录已过期**和**刷新**。重新加载会让 Access 再次运行登录。
 
 ### 谁能进入 {#who-gets-in}
 
@@ -81,7 +83,7 @@ CODEG_PROXY_AUTH_AUDIENCE=<AUD tag>
 
 ### 来自其他源的请求 {#requests-from-other-origins}
 
-断言随代理的会话 Cookie 一起发送，而浏览器也会把这个 Cookie 附加到其他源的页面发出的请求上。因此，凭断言放行的请求必须来自 Codeg 自己的页面。服务器会在两种情况下以 403 拒绝：浏览器把请求标记为来自其他源（`Sec-Fetch-Site`），或者请求的 `Origin` 所指的主机与请求实际发往的主机不同（`Host`，或改写 `Host` 的代理所设置的 `X-Forwarded-Host`）。令牌不受影响，因为其他源的页面无法发送它。
+断言随代理的会话 Cookie 发送，而浏览器也可能将该 Cookie 附加到其他页面发起的请求上。对于通过断言认证的请求，服务器先检查 `Sec-Fetch-Site`：该请求头存在时，只接受 `same-origin` 和 `none`。如果缺少该请求头、但存在 `Origin`，则来源的主机和端口必须与 `Host` 或代理设置的 `X-Forwarded-Host` 匹配；来源无效或不匹配时返回 403。携带有效 Codeg 令牌的请求改走令牌认证，不经过这项断言检查。
 
 Chrome 在 WebSocket 握手中不发送 `Sec-Fetch-Site`，因此对事件套接字起决定作用的是 `Origin`。所以 Codeg 前面的代理必须原样传递浏览器的 `Host`，或将其放入 `X-Forwarded-Host`。Cloudflare Tunnel 正是如此：它保留 `Host`；设置了 `httpHostHeader` 时，则把原值移到 `X-Forwarded-Host`。否则套接字会被拒绝，服务器的警告会写明 `Origin` 及其看到的主机。
 
@@ -92,6 +94,8 @@ Chrome 在 WebSocket 握手中不发送 `Sec-Fetch-Site`，因此对事件套接
 此模式适用于独立服务器 `codeg-server`。桌面应用的 Web 服务仍然只使用令牌。
 
 ## Codeg 将数据存储在何处 {#where-codeg-stores-its-data}
+
+遇到会修改数据库的更新，请先停止 Codeg，再复制整个数据目录。备份与降级步骤见[升级 Codeg](/zh/getting-started/upgrading#before-you-update)。
 
 除非你设置 `CODEG_DATA_DIR`，否则 `codeg-server` 会把数据保存在平台的数据目录中：
 

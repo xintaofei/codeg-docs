@@ -176,10 +176,10 @@ Left unset, `CODEG_TOKEN` is generated randomly and printed to the logs — fine
 
 ## Access it securely
 
-By default the server binds `0.0.0.0:3080`, so it's reachable from any device that can route to the host. That's exactly what you want for remote access — which also means the **token is your only guard**. A few things to get right on a public host:
+By default the server binds `0.0.0.0:3080`, so any device that can route to the host can reach it. For remote access, configure authentication and transport security together:
 
 - **Put it behind HTTPS.** `codeg-server` speaks plain HTTP and has no built-in TLS. Front it with a reverse proxy — Caddy, nginx, or Traefik — that terminates TLS and forwards to `127.0.0.1:3080`. Set `CODEG_HOST=127.0.0.1` so only the proxy, not the whole network, can reach the server directly.
-- **Keep the token secret.** Every API and WebSocket request must carry it, apart from a few that carry proof of their own — single-use download links, an Office live preview's per-document capability, and a forge's webhook deliveries, which are signed instead — and the app's own files and the login page's language lookup, which give nothing away. Rotate it by restarting with a new `CODEG_TOKEN`.
+- **Keep the token secret.** In the default token mode, every API and WebSocket request must carry it, apart from a few that carry proof of their own — single-use download links, an Office live preview's per-document capability, and a forge's webhook deliveries, which are signed instead — and the app's own files and the login page's language lookup, which give nothing away. Rotate it by restarting with a new `CODEG_TOKEN`.
 - **Or let your sign-in proxy vouch for the browser.** Behind an identity-aware proxy such as Cloudflare Access, `CODEG_AUTH=proxy-jwt` admits a browser on the proxy's signed assertion instead of the token, so people sign in once. The token keeps working for `codeg-cli` and scripts. The proxy's policy then decides who gets in. → [Sign in through an identity-aware proxy](/getting-started/configuration#sign-in-through-an-identity-aware-proxy)
 - **Let the forge in, if you use webhooks.** The Repository panel's [webhook trigger](/guide/repository#set-up-the-webhook) is delivered to `/api/forge_webhook` on this server, and a forge can only deliver to an address it can reach. If a sign-in gateway stands in front — Cloudflare Access, say — exempt that path, or the deliveries never get to Codeg; each one is checked against a folder's secret on arrival. → [Webhooks](/reference/privacy#webhooks-for-auto-processing)
 - **Publish the bridge ports the same way.** The [port bridge](/guide/browser#in-a-browser-session-the-port-bridge) binds `CODEG_BRIDGE_PORTS` on `CODEG_HOST` too. Each of those ports only answers a browser that opened the page from a signed-in workbench, but behind a TLS proxy they need TLS as well (the workbench addresses them with its own scheme), and with `CODEG_HOST=127.0.0.1` they need forwarding like the main port. Set `CODEG_BRIDGE_PORTS=off` if you would rather not run it.
@@ -218,11 +218,15 @@ Codeg has no switch for the browser cache; to remove the copy, clear the site's 
 
 ## Keep your server up to date
 
+::: warning 0.40.0 migrates the database
+Stop the server and back up its complete data directory before updating. 0.39.0 cannot read the database after 0.40.0 updates it, and neither **Roll back** nor the supervisor restores the old schema. Returning to the older program also requires restoring pre-upgrade data. → [Upgrade and recovery steps](/getting-started/upgrading)
+:::
+
 Like the desktop app, `codeg-server` updates itself from **Settings → Software Update**: it downloads the signed release for its platform, verifies the signature — which, since **0.36.0**, must name the very version on offer, so an older signed archive can't pass for a newer one — swaps the binaries and web assets on disk, and restarts — no redeploy. The previous version is retained, so the same screen offers a **Roll back**. This is Linux/macOS only (disabled on Windows). A server that can't write to its own installation — a binary or web folder it doesn't own, a full disk — says so on that screen **before** you try, since **0.32.1**, and offers the release page for a manual update instead.
 
 **Updating from 0.37.0 does not install `codeg-cli`.** Extract it from the new release's server archive and put it beside `codeg-server`. Updates started from **0.38.0 onward** update the matching CLI too. Restarting the server ends its active CLI runs, so let important work finish before upgrading.
 
-Run it under its supervisor to make upgrades safe:
+Run it under its supervisor to restart after updates and recover the previous program if a new version fails to boot:
 
 ```bash
 ./codeg-server --supervise

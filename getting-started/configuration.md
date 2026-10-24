@@ -28,7 +28,7 @@ The variables you're most likely to set on a server:
 | -------- | ------- | ----------- |
 | `CODEG_PORT` | `3080` | HTTP and WebSocket listen port. |
 | `CODEG_HOST` | `0.0.0.0` | Bind address — an IP, `localhost`, or a bracketed IPv6 literal. `0.0.0.0` exposes it on every interface. |
-| `CODEG_TOKEN` | *(random)* | Access token required on every API and WebSocket request. The exceptions carry proof of their own — a single-use download link, an Office live preview's per-document capability, a forge's [signed webhook delivery](/reference/privacy#webhooks-for-auto-processing) — or give nothing away: the web app's own files, and the login page's language lookup. If unset, one is generated, saved to the database, and printed to stderr at startup. |
+| `CODEG_TOKEN` | *(random)* | Access token for API and WebSocket requests. With `CODEG_AUTH=proxy-jwt`, a verified proxy assertion also works. The exceptions carry proof of their own — a single-use download link, an Office live preview's per-document capability, a forge's [signed webhook delivery](/reference/privacy#webhooks-for-auto-processing) — or give nothing away: the web app's own files, and the login page's language lookup. If unset, one is generated, saved to the database, and printed to stderr at startup. |
 | `CODEG_AUTH` | `token` | `proxy-jwt` also admits a browser that an identity-aware proxy has signed in, by checking the proxy's signed assertion, so the browser needs no token. Needs four `CODEG_PROXY_AUTH_*` settings. → [Sign in through an identity-aware proxy](#sign-in-through-an-identity-aware-proxy) |
 | `CODEG_DATA_DIR` | *(per-OS — see below)* | Root for the database, uploads, logs, and secrets. |
 | `CODEG_STATIC_DIR` | `./web` | Directory of the bundled web UI to serve. |
@@ -43,7 +43,7 @@ See [Deployment](/getting-started/deployment#access-it-securely) for the network
 
 ## Sign in through an identity-aware proxy {#sign-in-through-an-identity-aware-proxy}
 
-When `codeg-server` sits behind a proxy that already signs people in, such as [Cloudflare Access](https://developers.cloudflare.com/cloudflare-one/policies/access/), the token is a second login on top of the proxy's. With `CODEG_AUTH=proxy-jwt` the server also admits a request that carries the proxy's signed assertion (a JWT), so the browser needs no token. The token keeps working in this mode, for clients that do not pass through the proxy, such as `codeg-cli --url` and scripts.
+Since **0.39.0**, when `codeg-server` sits behind a proxy that already signs people in, such as [Cloudflare Access](https://developers.cloudflare.com/cloudflare-one/policies/access/), the token is a second login on top of the proxy's. With `CODEG_AUTH=proxy-jwt` the server also admits a request that carries the proxy's signed assertion (a JWT), so the browser needs no token. The token keeps working in this mode, for clients that do not pass through the proxy, such as `codeg-cli --url` and scripts.
 
 | Variable | Value |
 | -------- | ----- |
@@ -63,14 +63,16 @@ Keys are fetched at startup and kept for an hour. They are fetched again early w
 
 ### Cloudflare Access {#cloudflare-access}
 
-Here `<team>` is your Zero Trust team name, and `<AUD tag>` is the **Application Audience (AUD) Tag** from the application's overview page:
+Replace `<team>` with your Zero Trust team name and `<AUD tag>` with the **Application Audience (AUD) Tag** from the application's overview page, then run this in a POSIX shell from the server installation directory:
 
 ```bash
-CODEG_AUTH=proxy-jwt
-CODEG_PROXY_AUTH_HEADER=Cf-Access-Jwt-Assertion
-CODEG_PROXY_AUTH_JWKS_URL=https://<team>.cloudflareaccess.com/cdn-cgi/access/certs
-CODEG_PROXY_AUTH_ISSUER=https://<team>.cloudflareaccess.com
-CODEG_PROXY_AUTH_AUDIENCE=<AUD tag>
+export CODEG_HOST=127.0.0.1
+export CODEG_AUTH=proxy-jwt
+export CODEG_PROXY_AUTH_HEADER=Cf-Access-Jwt-Assertion
+export CODEG_PROXY_AUTH_JWKS_URL='https://<team>.cloudflareaccess.com/cdn-cgi/access/certs'
+export CODEG_PROXY_AUTH_ISSUER='https://<team>.cloudflareaccess.com'
+export CODEG_PROXY_AUTH_AUDIENCE='<AUD tag>'
+./codeg-server --supervise
 ```
 
 Bind the server to loopback (`CODEG_HOST=127.0.0.1`) and reach it only through the tunnel, so that every browser request passes Access. Opened that way, the web app skips the token prompt. When the Access session expires, the app shows **Sign-in expired** with **Reload**. Reloading lets Access run its login again.
@@ -81,7 +83,7 @@ Codeg does not pick users in this mode. It admits every request the proxy vouche
 
 ### Requests from other origins {#requests-from-other-origins}
 
-The assertion travels with the proxy's session cookie, and a browser also attaches that cookie to requests that pages on other origins make. A request admitted by an assertion must therefore come from Codeg's own page. The server refuses it with a 403 in two cases: when the browser marks it as sent from another origin (`Sec-Fetch-Site`), or when its `Origin` names a different host from the one the request was sent to (`Host`, or `X-Forwarded-Host` from a proxy that rewrites `Host`). The token is not affected, because a page on another origin cannot send it.
+The assertion travels with the proxy's session cookie, which a browser may also attach to requests initiated by other pages. For a request authenticated by an assertion, the server first checks `Sec-Fetch-Site`: when present, only `same-origin` and `none` are accepted. If that header is absent and `Origin` is present, the origin's host and port must match `Host` or a proxy's `X-Forwarded-Host`; a mismatch or invalid origin gets a 403. A request carrying a valid Codeg token uses token authentication instead and does not go through this assertion check.
 
 Chrome sends no `Sec-Fetch-Site` on a WebSocket handshake, so for the event socket the `Origin` decides. A proxy in front of Codeg must therefore pass the browser's `Host` on, or put it in `X-Forwarded-Host`. Cloudflare Tunnel does: it keeps the `Host`, and when `httpHostHeader` is set it moves the original to `X-Forwarded-Host`. Otherwise the socket is refused, and the server's warning names the `Origin` and the hosts it saw.
 
@@ -92,6 +94,8 @@ Setting the Access application's cookie to `SameSite=Lax` keeps it off requests 
 This mode applies to the standalone `codeg-server`. The desktop app's web service stays token-only.
 
 ## Where Codeg stores its data
+
+Before an update that changes the database, stop Codeg and copy this entire directory. See [Upgrade Codeg](/getting-started/upgrading#before-you-update) for the backup and downgrade steps.
 
 Unless you set `CODEG_DATA_DIR`, `codeg-server` keeps its data in the platform data directory:
 

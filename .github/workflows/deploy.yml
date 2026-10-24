@@ -39,6 +39,10 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Build
         run: pnpm docs:build
+      - name: Check internal anchors
+        run: python3 scripts/check-anchors.py
+      - name: Check translation parity
+        run: python3 scripts/check-parity.py
       - name: Disable Jekyll on the built site
         run: touch .vitepress/dist/.nojekyll
       - name: Upload Pages artifact
