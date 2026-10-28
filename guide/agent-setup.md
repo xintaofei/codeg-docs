@@ -1,6 +1,6 @@
 ---
 title: Per-Agent Setup
-description: Agent by agent, what's particular to each one Codeg drives — how it signs in, the switches on its settings pane, and the quirks worth knowing — from Claude Code and Codex to Kiro, ZCode, TRAE CLI and Command Code.
+description: Agent by agent, what's particular to each one Codeg drives — how it signs in, the switches on its settings pane, and the quirks worth knowing — from Claude Code and Codex to Kiro, ZCode, TRAE CLI, Command Code and MiniMax Code.
 ---
 
 # Per-Agent Setup
@@ -28,11 +28,19 @@ Codeg writes both explicitly rather than leaving them implied, so what the pane 
 
 OpenAI's coding agent, also driven through an adapter, **`codex-acp`** — see [ACP adapters](/guide/supported-agents#acp-adapters). It's the agent that signs in *inside* Codeg: choose **Official Subscription** and **Log in with ChatGPT** shows a code and a link to approve in your browser. → [Sign in with a subscription](/guide/authentication#sign-in-with-a-subscription)
 
+### Model management {#codex-model-management}
+
+The **Models** section gathers the list source, selected models, custom entries and refresh status. Choose **Codex built-in** to use the installed Codex catalog, or **From the provider** for the endpoint's own list. When a saved Model Provider is bound, edit its source in that provider's settings. → [Fetch models from your provider](/guide/authentication#fetch-models-from-your-provider)
+
+Choose which models Codex should expose and use the star to set a default. Custom entries can clone a native GPT model or use an **OpenAI-compatible** template for a gateway that accepts plain Responses requests. That template disables code-mode tools, native multi-agent, responses-lite and the custom apply-patch tool.
+
+Automatic provider refresh keeps the last working list if a request fails. The **In use by Codex** status shows the applied list and **Refresh now** retries it. Apply picker changes and save the settings before reconnecting a session.
+
 ### Sandbox and approvals {#codex-sandbox-and-approvals}
 
 Codex's pane has a **Sandbox & approvals** group — the two questions of how much it can touch and when it stops to ask:
 
-- **Approval policy** — how readily Codex asks permission: **On request** (it decides when to ask), **Untrusted** (only known-safe read-only commands run unattended), **Never** (no prompts at all), or **Granular**, which breaks it down per prompt type — shell escalations, policy rules, skill scripts, permission requests, and MCP prompts — each of which is either shown to you or auto-rejected. Left alone it follows Codex's own default of asking on request.
+- **Approval policy** — **On request**, **Never**, or **Granular**. Granular controls shell escalations, policy-rule prompts, skill scripts, permission requests and MCP prompts separately; a disabled category is auto-rejected. The retired **Untrusted** value must be replaced before Codex can start.
 - **Sandbox mode** — what it can write: **Read-only**, **Workspace write**, or **Full access (no sandbox)**. Workspace write adds **Extra writable folders** (absolute paths, one per line), plus switches for **network access** and whether to exclude **TMPDIR** and **/tmp** — all off by default.
 
 Two things to know: these go into your global `~/.codex/config.toml`, so the `codex` CLI and its IDE sessions pick them up too; and they're **thread defaults** — they govern the turns Codex starts by itself. What an ordinary prompt runs under is the **mode** the session is in, and Codeg derives the mode a session *starts* in from these two settings; after that, the composer's mode picker decides. Restart a session to apply a change. On Windows, workspace write falls back to read-only unless you've enabled Codex's experimental Windows sandbox.
@@ -63,18 +71,14 @@ The mode a session **starts** in comes from your config:
 
 On an adapter older than 2.0, the two *Workspace access* rows start in Auto review instead. Full access is only ever the result of an exact match on both settings — nothing is inferred into it — and a `default_permissions` profile in the file takes Codeg out of the derivation entirely, since Codex resolves through that profile and a derived mode would override it.
 
-::: warning Untrusted has no equivalent here
-**Untrusted** is the one approval policy that can't be honored: none of the adapter's presets is it, so a Codeg session treats it as **on request**, where the model decides when to ask and anything the sandbox already permits stops prompting. The panel says so rather than letting the control look effective. If Untrusted was your containment, tighten **Sandbox mode** instead.
-
-Until **0.25** neither setting reached a Codeg session at all — the adapter re-sent its own policy on every turn, so an explicitly read-only sandbox could be silently widened. Deriving the starting mode is the fix, and it's keyed on **sandbox mode** because that's the axis where guessing wrong *enlarges* access: the derivation never picks a wider sandbox than the one you set. (What it can't do is supply a sandbox the adapter lacks — hence the 1.7 to 1.13 gap above.)
+::: warning Untrusted is retired
+Current Codex no longer accepts `approval_policy = "untrusted"`: it refuses to start in Codeg, its own CLI and IDE sessions. Choose another policy and save. Use **Read-only** sandbox mode when you need a session that cannot edit files.
 :::
 
 Other options in the same pane:
 
 - **Allow questions in Default mode.** Codex will only call its `request_user_input` tool in *Plan* mode, so in an ordinary turn its question is refused outright and **no question card ever reaches you** — the agent asks, gets told the tool is unavailable, and carries on guessing. Turning this on lets it ask in ordinary turns too. It writes `[features].default_mode_request_user_input` into your `~/.codex/config.toml` — the same key Codex's own `codex features enable` would set, and the flag is still under development upstream. Feature flags resolve when a thread is created, so it **takes effect on your next session**, not the one you have open.
-- **Custom models** can be added in one of two shapes. The default clones a native GPT entry; pick the **OpenAI-compatible** one for a third-party gateway, and Codex sends a plain Responses request — no code-mode tools, no multi-agent, no responses-lite, no custom apply-patch tool — which is all such a gateway implements. It's a preset over ordinary per-field overrides, so you can switch a model that already exists either way.
-- **New official models arrive by themselves.** A customized list — one where you've added models or taken official ones out — used to replace Codex's own table outright, so a model OpenAI shipped later never appeared until you refreshed the list and saved it again. Since **0.32.4** Codeg tries to rebuild it whenever Codex is installed or upgraded: your own models first, then every official one in Codex's own order, minus the ones you removed — those stay removed. If the installed Codex's list can't be read, the list you have stays as it was.
-- **The default model is Codex's own.** A Codex conversation that never had a model picked runs on whatever Codex defaults to — **GPT-6.1 Sol** since **0.32.4**. If the provider you use for Codex doesn't serve it yet, pick a model in the composer or fill in the provider's **Model** field.
+- **Default model.** The default set in the model list or provider model field takes precedence. With neither configured and no session model selected, Codex uses its own default; choose a model explicitly if your provider does not serve it.
 
 Since **0.39.0**, the settings pane no longer offers the obsolete **Enable Skills** or **Enable Fast** switches; choose **Fast** in the composer instead. The **WebSocket** switch appears only for a configured custom provider whose endpoint supports Responses over WebSocket, and is hidden for **Official Subscription** and built-in providers.
 
@@ -88,29 +92,41 @@ A personal AI assistant you self-host, run through `npx`. It **refuses MCP serve
 
 ## OpenCode
 
-An open-source coding agent that Codeg downloads as a native binary for your platform. A copy you installed yourself is picked up too — an **OpenCode 2.x** included, since Codeg asks it which launch flags it takes instead of handing it 1.x's.
+Codeg recommends **OpenCode 2.2.0** in **0.41.1** and requires **2.0 or later**. It downloads a native binary for your platform or uses your own installation. Upgrade an existing 1.x copy before opening a conversation; preflight reports it as unsupported.
+
+### Providers and models {#opencode-providers-and-models}
+
+Use **Connect Provider** for providers in OpenCode's catalog, or **Custom providers** for an endpoint you define yourself. API keys go into OpenCode's own credential store. Providers that require OAuth are signed in through `opencode auth login` in a terminal. **Fetch models** lists a custom endpoint's models; select the main and small models from the available choices.
+
+The editor follows OpenCode 2's `providers` configuration and keeps comments, formatting and unrelated fields in `opencode.jsonc` or `opencode.json`. Its native JSON editor is available for fields without a visual control.
 
 ### Permissions without the JSON {#opencode-permissions-without-the-json}
 
-OpenCode decides what runs unattended in the `permission` block of `opencode.json`. A **Permissions** card on its settings page edits that block for you:
+The **Permissions** card edits OpenCode 2's ordered `permissions` array. Each rule has an `action`, a `resource` and an `effect` of `allow`, `ask` or `deny`:
 
-- **Auto-accept every permission** — one switch, one allow-all rule. It also clears the other places a run could still be stopped, since a leftover per-agent or legacy block would quietly override it.
-- **Global default** — the `*` rule: **Allow**, **Ask**, or **Deny** for anything not overridden below.
-- **Per-tool permissions** — one action per tool OpenCode's published schema names: shell commands, file edits, reads, reaching outside the working directory, launching sub-agents, loading skills, search, web fetch, and the rest, each with a one-line description of what it covers.
-- **Fine-grained rules** for the tools that support pattern matching — `*` for any characters, `?` for exactly one, a leading `~` for your home directory.
+- **Auto-accept every permission** replaces the per-tool rules with one allow-all rule and clears agent overrides and legacy tool toggles that could still prompt. Hard denies in policies still apply.
+- **Global default** sets the `*` rule for actions without a more specific override. **Unset** follows OpenCode's own policy.
+- **Per-tool permissions** cover shell commands, edits, reads, paths outside the project, sub-agents, skills, search and web access. OpenCode 2 uses **shell** as the action for commands.
+- **Fine-grained rules** match commands, paths, URLs or other tool targets; `*` matches any characters, `?` one character, and a leading `~` expands to your home directory for paths.
 
-The catch this card exists to handle is **order**. OpenCode flattens the whole block into one list and takes the **last** match, so a `*` written *after* `bash` silently overrides it — your carefully-written rule is in the file and does nothing. Codeg always writes `*` first, and a file that arrived the other way round is **flagged with a Fix order button** rather than being rendered as though it were in force. Where two overlapping patterns have no single right order, it says so and leaves the choice to you.
+The **last matching rule wins**. Codeg writes the global rule first, then each tool's general rule before its patterns. **Fix order** repairs an ordering it can safely normalize; overlapping patterns that need a decision stay in the native editor. Agent-specific overrides are shown because they apply after these rules.
 
-Every key outside the permission block survives the edit untouched, and a file Codeg can't parse **pauses the visual editor** instead of being rewritten.
+Legacy 1.x `permission` and `tools` blocks are read, and the next visual edit converts them to `permissions`. JSONC comments and unrelated settings survive. An unreadable file or unrecognized rule shape pauses visual editing instead of overwriting it.
 
-**Sharing**, on the pane's **Behavior & compaction** card, no longer does anything: OpenCode discontinued session sharing in **1.19.1**, which Codeg has bundled since **0.36.0** — the setting's hint says so. And on macOS 27, where a build needs a valid signature to launch at all, OpenCode's first properly signed build is **1.18.34**; **1.19.3**, pinned since **0.37.0**, is signed for both Apple Silicon and Intel.
+### Plugins and behavior {#opencode-plugins-and-behavior}
+
+Use plugins built for **OpenCode 2**. The plugin manager accepts npm packages and local directories and writes the `plugins` list; OpenCode installs package plugins when the next session starts. Entries from the old `plugin` list are marked **OpenCode 1 list** and move to `plugins` on the next add or remove.
+
+The behavior and compaction controls also use OpenCode 2's settings. Legacy settings that OpenCode ignores are identified in the panel; **Sharing** is no longer effective. **SSE MCP servers are unsupported**: use streamable HTTP if the server offers it, or leave OpenCode out of that server's assignments. → [MCP Servers](/guide/mcp#choose-which-agents-get-a-server)
+
+Conversations show form questions, scripts and background sub-agent progress. Saved history reads OpenCode 2's compaction records, command exit codes, media attachments and delegation links, including parallel delegations.
 
 ## Cline
 
 An autonomous coding-agent CLI, run through `npx`.
 
 ::: warning Cline on macOS 27
-macOS 27 kills Cline **3.0.65 and earlier** at launch, because those builds carry a broken signature — the CLI exits at once, and a session dies within a second of starting. On Apple Silicon, builds from **3.0.66** on pass the signature check, **3.0.73** — the version Codeg pins since **0.37.0** — included; if yours is older, press **Upgrade** in Settings → Agents. The **Intel** build of 3.0.66 through 3.0.73 still fails the strict check, and whether macOS 27 stops it has not been tested.
+macOS 27 kills Cline **3.0.65 and earlier** at launch, because those builds carry a broken signature — the CLI exits at once, and a session dies within a second of starting. On Apple Silicon, builds from **3.0.66** on pass the signature check, **3.0.73** — the version Codeg bundled in **0.37.0** — included; if yours is older, press **Upgrade** in Settings → Agents. The **Intel** build of 3.0.66 through 3.0.73 still fails the strict check, and whether macOS 27 stops it has not been tested.
 :::
 
 Three changes from 0.36 and 0.37 are worth knowing:
@@ -138,6 +154,8 @@ Hermes is a special case — it manages its own stable of model providers, so in
 - **AWS** (Bedrock) — uses your existing AWS credentials from the environment.
 
 For anything the pane doesn't cover, **Open Config Folder** reveals `~/.hermes`, and an Advanced section lets you edit Hermes's `config.yaml` directly.
+
+In the conversation, Hermes now offers models grouped by provider and a mode selector. Reopening a session restores those choices.
 
 ## CodeBuddy
 
@@ -169,6 +187,8 @@ Kimi Code is the other agent with a pane of its own, rebuilt in **0.23**. The re
 ::: warning A leftover environment variable wins
 `kimi acp` reads the `KIMI_MODEL_*` family — `KIMI_MODEL_BASE_URL`, `KIMI_MODEL_API_KEY`, `KIMI_MODEL_NAME` — *before* `config.toml`, so one left in the agent's [Environment Variables](/guide/agents#configure-an-agent) silently overrides everything this pane writes. The pane warns you while any is still set, and saving clears them — so what you can see is what's in force.
 :::
+
+If a Kimi Code conversation is active in another client, Codeg reports that it is in use. Finish or release it there before resuming here; Codeg no longer replaces it with a new empty session.
 
 ## Pi
 
@@ -273,7 +293,7 @@ Since **0.35.2** Qoder can also ask you things with **its own question tool**, o
 Google's agent-first coding tool, downloaded as a native binary. Its ACP server ships as a downloaded tree with no standalone command name, so it's the one agent Codeg can't pick up from a copy on your `PATH`.
 
 ::: info Antigravity runs on Intel Macs since 0.32.2
-Antigravity used to be the roster's one platform hole: Google published it for Apple Silicon, Linux and Windows only, and Codeg refused the install on an Intel Mac. **1.2.1** is its first release with an Intel build, and Codeg moved to it in **0.32.2** — so every agent on the roster now runs anywhere its runtime does. **1.4.1**, pinned since **0.37.0**, still ships one.
+Antigravity used to be the roster's one platform hole: Google published it for Apple Silicon, Linux and Windows only, and Codeg refused the install on an Intel Mac. **1.2.1** is its first release with an Intel build, and Codeg moved to it in **0.32.2** — so every agent on the roster now runs anywhere its runtime does. **1.4.3**, recommended in **0.41.1**, still ships one.
 :::
 
 ### One file decides how it signs in {#antigravity-one-file-decides-how-it-signs-in}
@@ -351,7 +371,9 @@ Z.ai's ZCode, new in **0.36.0**, through a community ACP bridge — [why it's bu
 
 **Images and PDFs** are supported since **0.39.0**, when the bridge advertises the corresponding capability. Paste, drop or upload images; PNG, JPEG, WebP, GIF, BMP and SVG are accepted, up to **10 MiB per image**. A prompt can contain up to **100 content blocks** and **50 MiB** of decoded content in total. Pause a native goal loop before sending binary attachments, because queued goal prompts accept only text. Completed replies also keep their per-turn token usage and time when reopened; older transcripts are not retroactively filled in.
 
-**Current limits:** forking from a message, audio, HTTP and SSE MCP servers — ZCode takes **stdio** servers only, which Codeg keeps in a record of its own and hands over when a session starts — and importing ZCode's own history: Codeg records the conversations you run in it, and nothing else. ZCode has no column in Skill Packs. So far it has been tested on Windows only; macOS and Linux aren't refused, just untested. A ZCode you set up earlier as a [custom agent](/guide/custom-agents) stays a separate agent, with its own history.
+**Skills** you create or enable for ZCode go to `~/.zcode/skills`, which ZCode reads before the shared `~/.agents/skills`, and a folder's to its `.zcode/skills`; ZCode is a column in Skill Packs and a target in **Settings → Skills**. Settings → Skills also lists the folder skills ZCode loads from a folder's `.agents/skills` and, inside a Git repository, from both folders of each parent up to the repository root, and edits each where it lies. `ZCODE_HOME` moves none of them. The bridge's `$` menu leaves out a folder's `.zcode/skills` and its parents' — ZCode still loads them — and reads `$ZCODE_HOME/skills` in place of `~/.zcode/skills`; reconnect after changing skills to refresh it.
+
+**Current limits:** forking from a message, audio, HTTP and SSE MCP servers — ZCode takes **stdio** servers only, which Codeg keeps in a record of its own and hands over when a session starts — and importing ZCode's own history: Codeg records the conversations you run in it, and nothing else. So far it has been tested on Windows only; macOS and Linux aren't refused, just untested. A ZCode you set up earlier as a [custom agent](/guide/custom-agents) stays a separate agent, with its own history.
 
 ## TRAE CLI
 
@@ -379,6 +401,28 @@ Its **Configuration** card:
 Save with **Save Command Code Config**. Model, mode and effort come from Command Code and live on the composer's settings button — and the model list there is **Command Code's own catalog**: models you've added to Command Code yourself can't be picked in Codeg. Its questions arrive as permission cards, with one option per answer.
 
 Its **MCP servers** go to `~/.commandcode/mcp.json` — no SSE — and its skills to `~/.commandcode/skills`. Codeg records its history itself, so sessions from Command Code's own terminal can't be imported yet, and Command Code doesn't advertise forking, so *Fork from here* isn't offered. So far it has been tested on macOS only.
+
+## MiniMax Code {#minimax-code}
+
+New in **0.41.1**, MiniMax's native coding agent runs as **`mcode acp`**. Install it with the [official MiniMax Code installer](https://github.com/MiniMax-AI/minimax-code#quick-start) on the machine running Codeg; a server needs its own installation. Codeg finds `mcode` on its `PATH`, then checks `~/.minimax-code/bin` on macOS/Linux or `%USERPROFILE%\.minimax-code` on Windows. Restart Codeg after installation if its environment has not picked up the command.
+
+For a mainland China subscription, sign in on that same machine:
+
+```sh
+mcode login
+```
+
+For a global account:
+
+```sh
+mcode login --region global
+```
+
+A bring-your-own-key provider already configured in MiniMax Code can be used without a separate MiniMax login. Use MiniMax Code's own provider commands or `/provider` to configure it; Codeg reuses its selected provider and credentials. Then enable MiniMax Code in **Settings → Agents** and select it for a conversation.
+
+Models, running modes and permission choices come from the installed `mcode` over ACP. Image support depends on both the agent's advertised capabilities and the selected model. Codeg forwards assigned MCP servers and its collaboration tools as session overlays, supporting [multi-agent delegation](/guide/multi-agent) without changing MiniMax's native MCP or credential files.
+
+Codeg records conversations started here; it does **not import MiniMax Code's native history**. Skills and CLI upgrades remain managed through MiniMax Code itself, so there is no MiniMax column in Skill Packs or in Codeg's skill editor. Existing custom `mcode` registrations remain separate. Authenticated end-to-end validation so far used a local test provider on macOS; real MiniMax accounts, Windows and Linux were not covered.
 
 ## Next steps
 

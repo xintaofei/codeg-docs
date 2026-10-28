@@ -5,8 +5,8 @@ description: Codeg is a multi-agent coding workspace — one place to run, aggre
 
 # Introduction
 
-::: tip 0.40.0 is available
-Follow thoughts, commands, file edits and sub-agent tasks on the new activity timeline. If you already use Codeg, start with the [upgrade guide](/getting-started/upgrading) for the changes and the backup steps before the database migration.
+::: tip 0.41.1 is available
+Keep tabs and split layouts per folder, preview HTML in replies, use MiniMax Code and OpenCode 2, and deliver reviewed tasks as pull requests. Start with the [upgrade guide](/getting-started/upgrading) for setup, compatibility checks and backup steps.
 :::
 
 **Codeg is a multi-agent coding workspace** — one place to run, aggregate, and orchestrate the growing family of AI coding agents.
@@ -14,7 +14,7 @@ Follow thoughts, commands, file edits and sub-agent tasks on the new activity ti
 Rather than tying you to a single assistant, Codeg brings Claude Code, Codex CLI, Google Antigravity, OpenCode, Qoder, and [more](/guide/supported-agents) into a shared workspace — then lets them work *together*: a lead agent can hand subtasks to agents of other types, each running as its own session. You conduct; they collaborate.
 
 <div class="stat-strip">
-  <div class="stat"><span class="stat__num">19</span><span class="stat__label">coding agents, one workspace</span></div>
+  <div class="stat"><span class="stat__num">20</span><span class="stat__label">coding agents, one workspace</span></div>
   <div class="stat"><span class="stat__num">3</span><span class="stat__label">chat channels to drive them</span></div>
   <div class="stat"><span class="stat__num">3</span><span class="stat__label">ways to host — desktop · server · Docker</span></div>
   <div class="stat"><span class="stat__num">0</span><span class="stat__label">telemetry — local-first by default</span></div>
@@ -65,7 +65,7 @@ Three ideas define the workspace.
 
 Codeg reads your agents' own session stores and pulls them into a single, searchable workspace. Your Claude Code, Codex, Gemini, and OpenCode histories stop living in separate directories and become one timeline you can browse, resume, and search — no matter which tool produced them.
 
-Nineteen agents plug in today, each with its own models, strengths, and session format:
+Twenty agents plug in today, each with its own models, strengths, and session format:
 
 <AgentRoster />
 

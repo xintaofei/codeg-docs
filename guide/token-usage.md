@@ -34,6 +34,8 @@ A few consequences worth knowing:
 - **Cline 3.0.66 and later count output without reasoning.** From that version on, a reasoning model's *output* figure no longer includes its reasoning tokens, so it reads lower than the same work did before.
 - **Codex stopped counting cache writes as fresh input in 0.35.0.** Its *input* column shrinks and its *cache write* column fills, while its totals stay what they were. **CodeBuddy's** totals grew in the same release, because requests that end in a tool call are counted now.
 - **Qoder's sub-agents are counted since 0.35.2.** Before, what they spent wasn't counted at all, so a Qoder session's totals grow once it's recounted.
+- **TRAE CLI includes native sub-agent usage since 0.41.1.** Codeg reads its native usage records to enrich conversations started here, including nested agents; this does not enable importing terminal sessions.
+- **Reported usage survives reopening.** Official Claude-adapter sessions retain per-prompt usage and costs, including custom agents. Recorded turn duration remains available even when an agent supplies no token counts.
 
 ## Narrow the view
 
@@ -45,6 +47,8 @@ One toolbar row sits above the report:
 | **Group by** | **Day**, **Week**, or **Month** — each range preset suggests its natural bucket until you pick one yourself |
 | **Folders · Agents · Models** | Searchable pickers, all-inclusive by default; **Reset filters** clears them together. A folder reads *alias [ name ]*, so an alias leads its real directory name instead of replacing it |
 | **⋯** | **Refresh** (with the time it last ran), **Rebuild all**, and **Share** |
+
+The **Agents** filter includes custom agents and uses their current names, as does **Manage conversations**. You can find and compare their usage alongside built-ins.
 
 **Custom** opens a two-month calendar anchored a month back, so the second pane isn't all future and greyed out. Clicking into a range you've already finished starts a new one rather than dragging whichever end you didn't mean to touch.
 

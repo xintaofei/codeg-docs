@@ -1,17 +1,17 @@
 ---
 title: 支持的智能体
-description: Codeg 通过 ACP 驱动的十九个编程智能体——每一个是什么、它如何来到你的机器上、在那里需要什么，以及它把会话保存在磁盘的什么位置——以及如何注册一个不在名单上的智能体。
+description: Codeg 通过 ACP 驱动的二十个编程智能体——每一个是什么、它如何来到你的机器上、在那里需要什么，以及它把会话保存在磁盘的什么位置——以及如何注册一个不在名单上的智能体。
 ---
 
 # 支持的智能体
 
-Codeg 驱动**十九个编程智能体**，一旦其中一个开始运行，它们的使用感受都是一样的——同一个 composer、同样的 diff、同样的 git 和终端——因为 Codeg 通过 **Agent Client Protocol（ACP）** 与每一个通信。不同之处在底层：智能体由谁构建、它在你的机器上需要什么运行时，以及它把自己的历史保存在哪里。本页就是这张地图。
+Codeg 驱动**二十个编程智能体**，一旦其中一个开始运行，它们的使用感受都是一样的——同一个 composer、同样的 diff、同样的 git 和终端——因为 Codeg 通过 **Agent Client Protocol（ACP）** 与每一个通信。不同之处在底层：智能体由谁构建、它在你的机器上需要什么运行时，以及它把自己的历史保存在哪里。本页就是这张地图。
 
 启用一个智能体、它的预检健康检查，以及开启一个会话，都在[使用智能体](/zh/guide/agents)中介绍；登录和选择模型在[认证与模型](/zh/guide/authentication)中；而每个智能体自己的设置和脾性，见[各智能体配置](/zh/guide/agent-setup)。这里我们只专注于名单本身——以及在页面末尾，[如何为它添加新成员](#beyond-the-built-in-roster)。
 
 ## 名单 {#the-roster}
 
-这些智能体中，有十七个由 Codeg 替你安装、固定版本并更新。另外两个——**Kiro CLI** 和 **TRAE CLI**——它运行的是你用厂商自己的安装程序装好的那一份。你*确实*需要在机器上准备的，是每个智能体运行所依赖的东西：
+其中十七个由 Codeg 管理安装，**Kiro CLI**、**TRAE CLI** 和 **MiniMax Code** 使用你通过厂商安装程序装好的版本。请在运行 Codeg 的机器上准备相应运行环境：
 
 | 智能体 | 是什么 | 运行环境 |
 | ----- | ---------- | ------- |
@@ -34,12 +34,13 @@ Codeg 驱动**十九个编程智能体**，一旦其中一个开始运行，它�
 | **ZCode** | Z.ai 的 ZCode，经由社区 ACP 桥接器接入 | 能加载 `node:sqlite` 的 Node.js **22+**，外加已登录的官方 ZCode |
 | **TRAE CLI** | 字节跳动的 TRAE CLI 2.0，面向 TRAE 企业版旗舰版套餐 | 你自己的 `traecli`，来自 TRAE 的安装程序 |
 | **Command Code** | Command Code 的终端编程智能体 | Node.js **22+** |
+| **MiniMax Code** | MiniMax 原生编程智能体 | 通过 MiniMax 安装程序安装的 `mcode` |
 
 最后一列背后有三条交付路径：
 
-- **Node.js（npm）。** 十九个中有十四个以 npm 包的形式交付，Codeg 用 `npx` 运行它们，因此它们需要安装 Node.js。Codeg 会为每一个固定一个已知可用的版本，并为你升级它。对 **ZCode** 来说，这个包只是桥接器：智能体本身是你自己安装的官方 ZCode，而它运行所用的 Node 还必须能加载 `node:sqlite`——这由预检里专门的一行来检查。每个包都声明了自己的最低 Node 版本，预检会拿你的版本去比对——有几个要求 **Node 22**，DeepSeek Harness 和 Command Code 都在其中；而自 **0.35.0** 起，Codex 的适配器需要 **20.3.0** 或更高版本：在 Node 20.0 到 20.2 上，每条消息都会失败。最低版本可能像这样落在某个主版本的中间，所以自 0.35.0 起，**诊断**也会比对完整的版本号——以前，对一个需要 20.3 的智能体，它会让任何 Node 20 通过。
+- **Node.js（npm）。** 二十个中有十四个以 npm 包的形式交付，Codeg 用 `npx` 运行它们，因此它们需要安装 Node.js。Codeg 会为每一个固定一个已知可用的版本，并为你升级它。对 **ZCode** 来说，这个包只是桥接器：智能体本身是你自己安装的官方 ZCode，而它运行所用的 Node 还必须能加载 `node:sqlite`——这由预检里专门的一行来检查。每个包都声明了自己的最低 Node 版本，预检会拿你的版本去比对——有几个要求 **Node 22**，DeepSeek Harness 和 Command Code 都在其中；而自 **0.35.0** 起，Codex 的适配器需要 **20.3.0** 或更高版本：在 Node 20.0 到 20.2 上，每条消息都会失败。最低版本可能像这样落在某个主版本的中间，所以自 0.35.0 起，**诊断**也会比对完整的版本号——以前，对一个需要 20.3 的智能体，它会让任何 Node 20 通过。
 - **捆绑二进制文件。** **OpenCode**、**Cursor** 和 **Google Antigravity** 是原生二进制文件，Codeg 会为你确切的平台下载它们——无需安装其他任何东西。Cursor 的下载体积更大，因为它自带 Node 运行时和工具，所以它同样不需要你的机器上有 Node.js。
-- **你自己的安装。** **Kiro CLI** 和 **TRAE CLI** 只能通过各自厂商的安装程序获得，所以 Codeg 从不安装它们，也不固定它们的版本：它会先在你的 `PATH` 上、再到 `~/.local/bin` 里查找 `kiro-cli` 或 `traecli`，找到什么就启动什么。它们在设置 → 智能体里的徽章写着**官方安装**；版本行显示你手上的版本，或者显示*本机未找到*并附一个**安装指南**链接；而**升级**运行的是厂商自己的更新程序。
+- **自行安装。** **Kiro CLI**、**TRAE CLI** 和 **MiniMax Code** 通过厂商安装程序安装，Codeg 直接运行 `kiro-cli`、`traecli` 或 `mcode`，不再安装或固定另一份。Kiro 与 TRAE 从 `PATH` 或 `~/.local/bin` 查找，**升级**运行各自的更新器；MiniMax 还会检查安装程序目录，更新仍由官方安装程序完成。→ [MiniMax Code 配置](/zh/guide/agent-setup#minimax-code)
 
 最新的几个还很年轻：到目前为止，ZCode 只在 Windows 上测试过，TRAE CLI 和 Command Code 只在 macOS 上测试过——不过 Codeg 在其他平台上并不会拒绝它们中的任何一个。每个智能体各自的特别之处——从 macOS 27 上的 Cline 到 Intel Mac 上的 Antigravity——见[各智能体配置](/zh/guide/agent-setup)。
 
@@ -51,7 +52,7 @@ Codeg 驱动**十九个编程智能体**，一旦其中一个开始运行，它�
 
 ## ACP 适配器 {#acp-adapters}
 
-Codeg 与智能体之间只说一种语言：**ACP**。十九个里有十五个不需要为此付出什么，因为 Codeg 运行的就是厂商自己的 CLI——Gemini、OpenClaw、OpenCode、Cline、Hermes、CodeBuddy、Kimi Code、Pi、Grok、Cursor、Qoder、Google Antigravity、Kiro CLI、TRAE CLI 和 Command Code 都自带这个协议，所以你手动装过的那一份，Codeg 一般会直接认出来。对 Kiro CLI 和 TRAE CLI 而言，你装的那一份就是唯一的一份。这里有两条脚注：**Hermes** 是那个差一点的例外——自从上游不再发布到 PyPI，托管的那个包就成了一层固定版本的薄壳，它的 `hermes` 命令会 exec 它装下来的那个真正的上游程序，所以 `hermes acp` 仍然是厂商自己的适配器；而 **Antigravity** 则是 Codeg 根本没法从你机器上认出来的那一个——它的 ACP 服务器以一整棵下载下来的目录树的形式交付，没有独立的命令名，因此你的 `PATH` 上没有任何东西可供查找。
+Codeg 与智能体之间只说一种语言：**ACP**。二十个里有十六个不需要为此付出什么，因为 Codeg 运行的就是厂商自己的 CLI——Gemini、OpenClaw、OpenCode、Cline、Hermes、CodeBuddy、Kimi Code、Pi、Grok、Cursor、Qoder、Google Antigravity、Kiro CLI、TRAE CLI、Command Code 和 MiniMax Code 都自带这个协议，所以你手动装过的那一份，Codeg 一般会直接认出来。对 Kiro CLI、TRAE CLI 和 MiniMax Code 而言，你装的那一份就是唯一的一份。这里有两条脚注：**Hermes** 是那个差一点的例外——自从上游不再发布到 PyPI，托管的那个包就成了一层固定版本的薄壳，它的 `hermes` 命令会 exec 它装下来的那个真正的上游程序，所以 `hermes acp` 仍然是厂商自己的适配器；而 **Antigravity** 则是 Codeg 根本没法从你机器上认出来的那一个——它的 ACP 服务器以一整棵下载下来的目录树的形式交付，没有独立的命令名，因此你的 `PATH` 上没有任何东西可供查找。
 
 **Claude Code 和 Codex 是典型的例外。** Anthropic 的 `claude` CLI 和 OpenAI 的 `codex` CLI 并不会说 ACP。所以 Codeg 为这两个条目装的根本不是厂商 CLI，而是一个独立的 **ACP 适配器**：一个由 Agent Client Protocol 官方组织（该项目最初由 Zed 团队发起）维护的 npm 包，它把厂商的智能体包裹起来，翻译成这个协议。
 
@@ -100,7 +101,7 @@ Codeg 与智能体之间只说一种语言：**ACP**。十九个里有十五个�
 
 ### ZCode 经由桥接器驱动官方应用 {#zcode}
 
-**0.36** 新加入的 **ZCode** 同样通过一个社区桥接器驱动——`zcode-acp-server`，固定在 **0.76.2**，上游为 [william0wang/zcode-acp](https://github.com/william0wang/zcode-acp)——它也是第三个带 **ACP 适配器**徽章的智能体。不过它的工作方式与 Claude Code 和 Codex 的适配器正好相反：桥接器本身不带任何智能体。它驱动的是**你已安装并登录的官方 ZCode**，运行在能加载 `node:sqlite` 的 Node.js 22 或更高版本上，因此模型、凭据和登录都留在 ZCode 里，而 Codeg 里的**升级**只更新桥接器。
+**0.36** 新加入的 **ZCode** 同样通过一个社区桥接器驱动——`zcode-acp-server`，固定在 **0.76.3**，上游为 [william0wang/zcode-acp](https://github.com/william0wang/zcode-acp)——它也是第三个带 **ACP 适配器**徽章的智能体。不过它的工作方式与 Claude Code 和 Codex 的适配器正好相反：桥接器本身不带任何智能体。它驱动的是**你已安装并登录的官方 ZCode**，运行在能加载 `node:sqlite` 的 Node.js 22 或更高版本上，因此模型、凭据和登录都留在 ZCode 里，而 Codeg 里的**升级**只更新桥接器。
 
 它的适配器那一行说的正是这些，而且只有在桥接器已安装**并且**找到了 ZCode 时才会通过；它的**了解详情**打开的是桥接器的仓库，而不是本页。如何找到 ZCode、找不到时如何为 Codeg 指明它，以及首次接入暂不支持哪些功能，见[各智能体配置](/zh/guide/agent-setup#zcode)。
 
@@ -116,7 +117,7 @@ Codeg 与智能体之间只说一种语言：**ACP**。十九个里有十五个�
 | **Codex** | `~/.codex/sessions/` | JSONL | `CODEX_HOME` |
 | **Gemini** | `~/.gemini/` | JSON 文件 | `GEMINI_CLI_HOME` |
 | **OpenClaw** | `~/.openclaw/agents/` | JSONL | — |
-| **OpenCode** | `~/.local/share/opencode/opencode.db` | SQLite | `XDG_DATA_HOME` |
+| **OpenCode** | `~/.local/share/opencode/opencode.db` | SQLite | `XDG_DATA_HOME`, `OPENCODE_DB` |
 | **Cline** | `~/.cline/data/` | JSON 文件 | `CLINE_DIR` |
 | **Hermes** | `~/.hermes/state.db` | SQLite | `HERMES_HOME` |
 | **CodeBuddy** | `~/.codebuddy/projects/` | JSONL | `CODEBUDDY_CONFIG_DIR` |
@@ -128,6 +129,8 @@ Codeg 与智能体之间只说一种语言：**ACP**。十九个里有十五个�
 | **Qoder** | `~/.qoder/projects/` | JSONL | `QODER_CONFIG_DIR` |
 | **Google Antigravity** | `~/.gemini/antigravity-acp/conversations/` | SQLite（每个会话一个文件） | `GEMINI_HOME` |
 | **Kiro CLI** | `~/.kiro/sessions/cli/` | JSONL 事件日志，外加每个会话一个 JSON 元数据文件 | `KIRO_HOME` |
+
+**OpenCode 2** 还支持 `OPENCODE_DB`：绝对路径直接指定数据库，相对名称则基于其数据目录解析。`:memory:` 不会留下可导入的磁盘历史。Codeg 读取已保存会话时会使用同一设置。
 
 大多数智能体写入一份 **JSONL 对话记录**——一种纯文本日志，每行一个事件——而 OpenCode 和 Hermes 把一切保存在单个 **SQLite** 数据库中，Cursor 和 Antigravity 把每段对话存为各自的 SQLite 文件，Gemini 和 Cline 使用它们自己的 JSON 文件，Kiro 则把一份事件日志和一个每回合结束后都会重写的元数据文件配成一对。Codeg 会原生读取每一种格式；你从不需要转换任何东西。
 
@@ -141,9 +144,9 @@ Codeg 与智能体之间只说一种语言：**ACP**。十九个里有十五个�
 用上面某个环境变量把智能体指向一个非默认位置，Codeg 也会遵从它，因此重定位后的历史仍能打开，也仍能导入。自 **0.35.2** 起，无论这个变量是在 Codeg 自己的环境里，还是在设置 → 智能体中该智能体的**环境变量**里，都是如此——后者优先，而且在那里把值留空就是取消这个变量，回到该智能体的默认位置。在此之前，只设在智能体上的变量会让它的对话打开后一片空白。设在那里的 `HOME` 则不会被跟随。OpenClaw 是例外：它的存储无法重定位。
 :::
 
-有三个内置智能体在那张表里没有对应的行：**ZCode**、**TRAE CLI** 和 **Command Code**。Codeg 目前还不读取它们自己的存储，所以像对待自定义智能体那样，由它自己记录它们的历史——这意味着里面只有你在 Codeg 里运行的对话，而它们自己终端里的会话暂时还无法导入。
+有四个内置智能体没有列在上表中：**ZCode**、**TRAE CLI**、**Command Code** 和 **MiniMax Code**。Codeg 会自行记录它们的对话历史，暂不能导入各自终端中的会话。TRAE 的原生记录会另行读取，用于补充 Codeg 会话的用量。→ [Token 用量](/zh/guide/token-usage)
 
-[自定义智能体](/zh/guide/custom-agents)没有对应的行，因为它通常不会留下 Codeg 能读取的存储。对于这类智能体，以及上面那三个，Codeg 会自己写下历史——在它[数据目录](/zh/getting-started/configuration#where-codeg-stores-its-data)中的 `acp-transcripts/<registry-id>/` 下，为每个会话保存一份只追加的 JSONL 对话记录——并像读取原生存储一样把它读回来。那三个内置智能体用的是 `codeg-zcode-acp`、`codeg-trae-cli` 和 `codeg-command-code`。由于它属于 Codeg 自己的数据，它跟随 `CODEG_DATA_DIR` 迁移，而不是跟随任何智能体的变量；设置了 `CODEG_HOME` 时，则以它为准。
+[自定义智能体](/zh/guide/custom-agents)与上述四个内置智能体的记录，由 Codeg 以追加式 JSONL 保存在[数据目录](/zh/getting-started/configuration#where-codeg-stores-its-data)的 `acp-transcripts/<registry-id>/` 下。四个内置 ID 分别为 `codeg-zcode-acp`、`codeg-trae-cli`、`codeg-command-code` 和 `codeg-minimax-code`。这些记录跟随 `CODEG_DATA_DIR` 移动，设置了 `CODEG_HOME` 时则优先使用它。
 
 ## 智能体之间有何不同 {#how-agents-differ}
 
@@ -151,7 +154,7 @@ Codeg 与智能体之间只说一种语言：**ACP**。十九个里有十五个�
 
 - **模型和模式来自智能体，而非 Codeg。** composer 的[智能体设置按钮](/zh/guide/conversations#start-a-session-—-the-composer)里的模型、模式（计划优先、接受编辑等）以及其他选项，列出的都是所连接智能体通过 ACP 报告的内容。两个智能体会提供不同的模型和不同的模式——那是智能体在说话，而不是 Codeg 的某项设置。→ [认证与模型](/zh/guide/authentication)
 - **登录方式也不同。** 有些智能体用它们自己的订阅或 OAuth 登录，另一些则接受提供商 API 密钥或自定义端点。每个智能体的详情面板只显示适用于它的选项。→ [认证与模型](/zh/guide/authentication)
-- **OpenClaw 不参与 MCP。** 它是唯一一个不接受 Model Context Protocol 服务器的智能体，因此你添加的 MCP 服务器不会到达 OpenClaw 会话——Codeg 不会向它转发任何一个。大多数其他智能体会正常接收你的 MCP 服务器，只是传输方式上有两条限制：ZCode 只接受 **stdio** 服务器，而 Codex、DeepSeek Harness、Kiro CLI、TRAE CLI 和 Command Code 不接受 **SSE** 服务器。→ [MCP 服务器](/zh/guide/mcp)
+- **OpenClaw 不参与 MCP。** 它是唯一一个不接受 Model Context Protocol 服务器的智能体，因此你添加的 MCP 服务器不会到达 OpenClaw 会话——Codeg 不会向它转发任何一个。大多数其他智能体会正常接收你的 MCP 服务器，只是传输方式上有两条限制：ZCode 只接受 **stdio** 服务器，而 OpenCode 2、Codex、DeepSeek Harness、Kiro CLI、TRAE CLI 和 Command Code 不接受 **SSE** 服务器。→ [MCP 服务器](/zh/guide/mcp)
 - **有三个智能体永远拿不到 Codeg 自己的工具。** 委派、实时反馈、提问卡片、浏览器和电脑操作工具，都是通过 Codeg 的伴随 MCP 服务器、经由 ACP 递给智能体的。**OpenClaw** 拒绝它，**Pi** 丢掉它，而 **Cline** 从不连接以这种方式递给它的 MCP 服务器——所以自 **0.36.0** 起，Codeg 不再把它提供给 Cline，而 Cline 自己设置里的服务器照常工作。→ [多智能体协作](/zh/guide/multi-agent#how-delegation-works)
 
 ## 内置名单之外 {#beyond-the-built-in-roster}

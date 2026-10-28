@@ -85,6 +85,7 @@ Each server's detail pane has an **Enabled apps** row — a checkbox per agent. 
 | **Kiro CLI** | `~/.kiro/settings/mcp.json` (`mcpServers`) |
 | **TRAE CLI** | `~/.trae/traecli.toml` (`[mcp_servers.*]`) |
 | **Command Code** | `~/.commandcode/mcp.json` (`mcpServers`) |
+| **MiniMax Code** | Codeg-owned `mcp/minimax_code.json`, forwarded over ACP without changing native config |
 | **DeepSeek Harness** | `$DSH_HOME/mcp.json` — Codeg's own record, since the agent reads no config file of its own |
 | **ZCode** | `mcp/zcode.json` in Codeg's [data directory](/getting-started/configuration#where-codeg-stores-its-data) — Codeg's own record, for the same reason |
 
@@ -92,11 +93,11 @@ Writing a server into a JSON config **keeps the file's key order**: since **0.32
 
 **Kimi Code 2.2.0** rejects its whole `mcp.json` if any entry still names the retired `kaos` executor, so since **0.35.2** Codeg drops `kaos` from every Kimi entry it saves. An entry Codeg doesn't touch keeps whatever it had — if Kimi stops loading your servers after the upgrade, look for a leftover `kaos` there.
 
-That's **seventeen of the nineteen agents** — every one except **OpenClaw** and **Pi**. OpenClaw doesn't accept MCP servers at all (it's the one agent that opts out), so it's not offered as a target; Pi isn't in the list either. → [How agents differ](/guide/supported-agents#how-agents-differ)
+That's **eighteen of the twenty agents** — every one except **OpenClaw** and **Pi**. OpenClaw doesn't accept MCP servers at all (it's the one agent that opts out), so it's not offered as a target; Pi isn't in the list either. → [How agents differ](/guide/supported-agents#how-agents-differ)
 
-**DeepSeek** and **ZCode** are the odd ones out in *how* a server reaches them. Every other agent reads its own config file at startup, so Codeg writes there and steps back. Their bridges read none — servers reach them only over the protocol, when a session is created or restored — so `$DSH_HOME/mcp.json` and `mcp/zcode.json` are Codeg's records of what to send rather than something the agent consults, and the ACP connection is the delivery path.
+**DeepSeek**, **ZCode** and **MiniMax Code** are the odd ones out in *how* a server reaches them. Every other agent reads its own config file at startup, so Codeg writes there and steps back. The DeepSeek and ZCode bridges read none — servers reach them only over the protocol, when a session is created or restored — while MiniMax Code keeps its native MCP configuration untouched and receives Codeg's `mcp/minimax_code.json` overlay over ACP. These Codeg-owned files are records of what to send rather than files those agents consult, and the ACP connection is the delivery path.
 
-**Not every agent can host every transport.** ZCode takes **stdio** servers only, and Codex, DeepSeek Harness, Kiro CLI, TRAE CLI and Command Code take no **SSE** server. When you save, an agent that can't host the server's transport is simply left out — and anything Codeg wrote for it under that name before is taken out — so the save fails only when *none* of the agents you ticked can host it, rather than later at launch.
+**Not every agent can host every transport.** ZCode takes **stdio** servers only, and OpenCode 2, Codex, DeepSeek Harness, Kiro CLI, TRAE CLI and Command Code take no **SSE** server. When you save, an agent that can't host the server's transport is simply left out — and anything Codeg wrote for it under that name before is taken out — so the save fails only when *none* of the agents you ticked can host it, rather than later at launch.
 
 **An agent's own per-server settings survive.** Some agents keep extra fields on an entry that Codeg's editor doesn't show. Since **0.37.0** a save keeps **Cursor's** — `envFile`, `auth`, `tls` and the like — for every field you didn't change, and reinstalling a server from the marketplace keeps every Cursor field it doesn't set; an SSE server stays SSE instead of turning into HTTP; and those Cursor-only fields no longer spread into the configs Codeg writes for other agents — OpenClaw's and pi's included, for a server they already list — where Cursor's `auth` used to make OpenClaw reject its whole config and pi skip the server. **Kiro CLI's** `disabled`, `autoApprove`, `disabledTools`, `timeout` and `oauth` settings are kept the same way when you save from the editor, so a server you disabled in Kiro stays disabled.
 

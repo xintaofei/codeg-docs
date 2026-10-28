@@ -45,7 +45,7 @@ description: 将你已经运行过的会话——横跨每一个编程智能体�
 
 ## Codeg 匹配什么 {#what-codeg-matches}
 
-一次扫描会查看 **Codeg 支持的每一个智能体**——甚至包括你尚未在 Codeg 中启用的那些。对于每一个，它都会读取该智能体的原生会话存储（Claude Code 的 `~/.claude/projects`、Codex 的 `~/.codex/sessions`、OpenCode 的本地数据库、Kiro CLI 的 `~/.kiro/sessions/cli` 等等），并推断出每个会话是在哪个项目目录中运行的。有三个例外：对于 **ZCode**、**TRAE CLI** 和 **Command Code**，Codeg 目前还不读取智能体自己的存储，因此一次扫描只能找到你在 Codeg 中运行过的对话——在它们自己的终端里运行的会话无法导入。→ [每个智能体把会话保存在何处](/zh/guide/supported-agents#where-each-agent-keeps-its-sessions)
+一次扫描会查看 **Codeg 支持的每一个智能体**——甚至包括你尚未在 Codeg 中启用的那些。对于每一个，它都会读取该智能体的原生会话存储（Claude Code 的 `~/.claude/projects`、Codex 的 `~/.codex/sessions`、OpenCode 的本地数据库、Kiro CLI 的 `~/.kiro/sessions/cli` 等等），并推断出每个会话是在哪个项目目录中运行的。有四个例外：对于 **ZCode**、**TRAE CLI**、**Command Code** 和 **MiniMax Code**，Codeg 目前还不读取智能体自己的存储，因此一次扫描只能找到你在 Codeg 中运行过的对话——在它们自己的终端里运行的会话无法导入。→ [每个智能体把会话保存在何处](/zh/guide/supported-agents#where-each-agent-keeps-its-sessions)
 
 这个路径就是全部规则：**会话会被归入你运行它时所在的目录。** 因此你得到的列表就是每个智能体的历史，按项目分组——而且，即便是你在使用 Codeg 很久之前就配置好的智能体，只要它的文件还在磁盘上，也依然能浮现出它过往的工作。
 
@@ -80,6 +80,8 @@ description: 将你已经运行过的会话——横跨每一个编程智能体�
 ::: tip 你自己起的名字会被保留
 用 `/rename`（或 `claude -n`，或在选择器里按 Ctrl+R）重命名过的 Claude Code 会话，导入时用的就是那个名字，而不是模型自己写的摘要。**CodeBuddy** 同理。如果你重命名过不止一次，最近的那次胜出。
 :::
+
+从 **0.41.1** 起，新导入会跳过已关联到 Codeg 会话的原生 Claude 会话，适用于使用官方 Claude 适配器的内置与自定义智能体，避免创建第二条会话并重复统计用量。
 
 ## 从上次中断处继续 {#pick-up-where-you-left-off}
 

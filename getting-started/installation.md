@@ -11,7 +11,7 @@ Codeg has two complementary parts. The **desktop app** runs agents and projects 
 
 Install the desktop app when you want Codeg and its agents to run on this computer. To run Codeg headlessly on a dedicated machine instead, see [Deployment](/getting-started/deployment).
 
-Updating an existing installation? Read [Upgrade Codeg](/getting-started/upgrading) first: 0.40.0 migrates the database, and returning to an older version requires a pre-upgrade copy of the data directory.
+Updating an existing installation? Read [Upgrade Codeg](/getting-started/upgrading) first: upgrading from 0.40.0 or earlier migrates the database, and returning to an older version requires a pre-upgrade copy of the data directory.
 
 <Download />
 

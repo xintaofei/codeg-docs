@@ -19,7 +19,7 @@ Because each agent authenticates its own way, its detail pane offers only the op
 
 These are mutually exclusive: an agent uses one at a time, and switching the auth mode swaps between them. The next three sections take each in turn.
 
-The four newest agents have no auth mode dropdown at all. **Kiro CLI**, **TRAE CLI** and **Command Code** sign in with their own login command, run once in a terminal — TRAE CLI's and Command Code's panes show it, with a copy button — and take an optional key or token for a machine where no browser can open; **ZCode** signs in entirely inside the official ZCode app. See below.
+Several agents use their native sign-in rather than Codeg's auth-mode picker: **Kiro CLI**, **TRAE CLI**, **Command Code**, **ZCode** and **MiniMax Code**. Their setup instructions are below.
 
 ## Sign in with a subscription
 
@@ -29,6 +29,7 @@ The simplest path is to use the agent's own subscription — the plan you'd use 
 - **Gemini** — choose **Google Login** and complete Google's sign-in by running `gemini` in a terminal first.
 - **Kimi Code**, **CodeBuddy** — run the agent's own login in a terminal (`kimi login`, `codebuddy`) and Codeg picks it up. Kimi Code has a pane of its own for the API-key route. → [Kimi Code](/guide/agent-setup#kimi-code-provider-model-and-reasoning)
 - **Kiro CLI**, **TRAE CLI**, **Command Code** — run the agent's own login once in a terminal: `kiro-cli login`, `traecli login` (your enterprise SSO) or `command-code login`; TRAE CLI's and Command Code's panes show the command with a copy button. For a server or a container, each takes a credential instead: Kiro's **API key** (`KIRO_API_KEY`), TRAE CLI's **Personal access token**, which Codeg signs in with whenever a session starts, and Command Code's **API key** (`COMMAND_CODE_API_KEY`), which outranks the login. → [Per-Agent Setup](/guide/agent-setup#kiro-cli)
+- **MiniMax Code** — run `mcode login`, or `mcode login --region global` for a global account, on the backend machine. Existing bring-your-own-key providers need no separate MiniMax login. Configure endpoints and keys in MiniMax Code itself. → [MiniMax Code](/guide/agent-setup#minimax-code)
 - **ZCode** — sign in to the official ZCode itself; the bridge Codeg runs reuses that login, and Codeg copies nothing. A ZCode **Start Plan** account can't run through the bridge, since its requests need a captcha only the ZCode desktop app can solve; GLM Coding Plan accounts work. → [ZCode](/guide/agent-setup#zcode)
 - **Grok** and **Cursor** each have an **Authentication method** picker of their own:
   - **Grok** — **Official Subscription** (SuperGrok or X Premium+ via `grok login`; nothing stored), **XAI API key** (a key from the xAI console, for headless runs), or **Custom endpoint** (a custom model with its own base URL and key, which becomes Grok's default).
@@ -46,7 +47,7 @@ Prefer to pay per API call, or route through an OpenAI/Anthropic/Gemini-compatib
 - **API Key** — your key, masked with a show/hide toggle.
 - **Model** — the model id to request, where the agent expects one.
 
-Codeg hands these to the agent when it launches. Most agents accept this route, and the exact fields shown follow whatever that agent understands. Kiro CLI, ZCode, TRAE CLI and Command Code don't offer it: each talks to its own service (TRAE CLI's pane can point it at your organization's own TRAE deployment instead).
+Codeg hands these to the agent when it launches. Most agents accept this route, and the exact fields shown follow whatever that agent understands. Kiro CLI, ZCode, TRAE CLI, Command Code and MiniMax Code don't offer it: the first four talk to their own service (TRAE CLI's pane can point it at your organization's own TRAE deployment instead), while MiniMax Code keeps provider setup in its own CLI.
 
 ## Save and reuse a Model Provider
 
@@ -61,6 +62,16 @@ Once bound, the agent's API fields show read-only, filled from the provider — 
 ::: tip Custom Endpoint vs. Model Provider
 They configure the same thing — a base URL, a key, and a model — but differ in reach. **Custom Endpoint** is typed inline on one agent; a **Model Provider** is a named record you set up once and reuse. If you only ever use one endpoint for one agent, Custom Endpoint is simpler; if you juggle several, save them as providers. (An agent's type is fixed once a provider is created.)
 :::
+
+## Fetch models from your provider {#fetch-models-from-your-provider}
+
+Since **0.41.1**, supported model fields offer **Fetch models** after you enter an API URL and key. Choose from the returned list, search it, refresh it, or retry a failed request. This is available in Claude Code and Gemini endpoint/provider settings, OpenCode's provider editor, and supported model lists such as Cline, Pi and Grok. Model IDs can still be entered manually where the field allows it.
+
+For **Claude Code**, **Extra models in /model** adds entries to the picker for sessions Codeg starts. Organization-managed model lists and Claude's `availableModels` still take precedence.
+
+For **Codex**, use **Model list source** in its model section: **Codex built-in** or **From the provider**. The provider route supports a native Codex catalog or an OpenAI-style model list, with an optional **List URL**. Check the displayed destination host before fetching: the provider key is sent there. Choose the models to expose, apply the selection, then save the settings.
+
+A native catalog picks up new models on refresh, except models you explicitly removed; if the provider later omits a model, the native catalog drops it. An OpenAI-style list is an allowlist: new IDs wait for you to select them in **Choose models**, while a selected ID stays available when a later response omits it, using its last-seen details. Background refresh retains the last working list on failure and shows the error alongside **Refresh now**. → [Codex model management](/guide/agent-setup#codex-model-management)
 
 ## Choose a model
 

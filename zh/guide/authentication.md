@@ -19,7 +19,7 @@ Codeg 不附带自己的任何模型。每个智能体都带来自己的凭据�
 
 这些是互斥的：一个智能体一次只使用一种，切换认证模式会在它们之间切换。接下来的三节将逐一讲解。
 
-最新的四个智能体完全没有认证模式下拉菜单。**Kiro CLI**、**TRAE CLI** 和 **Command Code** 用它们自己的登录命令登录，在终端里运行一次即可——TRAE CLI 和 Command Code 的面板会给出这条命令，并带一个复制按钮——并为打不开浏览器的机器提供一个可选的密钥或令牌；**ZCode** 则完全在官方 ZCode 应用里登录。见下文。
+**Kiro CLI**、**TRAE CLI**、**Command Code**、**ZCode** 和 **MiniMax Code** 使用各自的原生登录，不提供 Codeg 的认证模式下拉菜单。配置方法见下文。
 
 ## 用订阅登录 {#sign-in-with-a-subscription}
 
@@ -29,6 +29,7 @@ Codeg 不附带自己的任何模型。每个智能体都带来自己的凭据�
 - **Gemini**——选择 **Google 登录（OAuth）**，并先在终端中运行 `gemini` 来完成 Google 的登录。
 - **Kimi Code**、**CodeBuddy**——在终端中运行智能体自己的登录命令（`kimi login`、`codebuddy`），Codeg 会自动识别它。Kimi Code 走 API 密钥这条路时另有一个自己的面板。→ [Kimi Code](/zh/guide/agent-setup#kimi-code-provider-model-and-reasoning)
 - **Kiro CLI**、**TRAE CLI**、**Command Code**——在终端里运行一次智能体自己的登录命令：`kiro-cli login`、`traecli login`（用你的企业 SSO）或 `command-code login`；TRAE CLI 和 Command Code 的面板会给出这条命令，并带一个复制按钮。在服务器或容器上，它们各自改用一份凭据：Kiro 的 **API Key**（`KIRO_API_KEY`）、TRAE CLI 的**个人访问令牌**（Codeg 会在每次启动会话时用它登录），以及 Command Code 的 **API 密钥**（`COMMAND_CODE_API_KEY`，它优先于那次登录）。→ [各智能体配置](/zh/guide/agent-setup#kiro-cli)
+- **MiniMax Code**——在后端机器上运行 `mcode login`，全球账户使用 `mcode login --region global`。已配置的自带密钥供应商无需另行登录 MiniMax，端点与密钥通过 MiniMax Code 自身管理。→ [MiniMax Code](/zh/guide/agent-setup#minimax-code)
 - **ZCode**——在官方 ZCode 里登录即可；Codeg 运行的桥接器会复用那次登录，Codeg 不复制任何东西。ZCode 的 **Start Plan** 账户无法通过桥接器运行，因为它的请求需要验证码，而只有 ZCode 桌面应用能完成；GLM Coding Plan 账户可以正常使用。→ [ZCode](/zh/guide/agent-setup#zcode)
 - **Grok** 和 **Cursor** 各自拥有一个**认证方式**选择器：
   - **Grok**——**官网订阅**（通过 `grok login` 使用 SuperGrok 或 X Premium+；不存储任何东西）、**XAI API 密钥**（来自 xAI 控制台的密钥，用于无人值守运行），或**自定义接口**（一个带有自己的基础 URL 和密钥的自定义模型，它会成为 Grok 的默认模型）。
@@ -46,7 +47,7 @@ Codeg 不附带自己的任何模型。每个智能体都带来自己的凭据�
 - **API Key**——你的密钥，带有一个显示/隐藏切换。
 - **Model**——要请求的模型 id（在智能体需要时填写）。
 
-Codeg 会在智能体启动时把这些交给它。大多数智能体都接受这条路径，实际显示的字段取决于该智能体所能理解的内容。Kiro CLI、ZCode、TRAE CLI 和 Command Code 不提供这条路径：它们各自只与自己的服务通信（TRAE CLI 的面板可以改为把它指向你所在组织自己部署的 TRAE）。
+Codeg 会在智能体启动时把这些交给它。大多数智能体都接受这条路径，实际显示的字段取决于该智能体所能理解的内容。Kiro CLI、ZCode、TRAE CLI、Command Code 和 MiniMax Code 不提供这条路径：前四者各自只与自己的服务通信（TRAE CLI 的面板可以改为把它指向你所在组织自己部署的 TRAE），MiniMax Code 则通过自己的 CLI 配置供应商。
 
 ## 保存并复用模型提供商 {#save-and-reuse-a-model-provider}
 
@@ -61,6 +62,16 @@ Codeg 会在智能体启动时把这些交给它。大多数智能体都接受�
 ::: tip 自定义端点与模型提供商的区别
 它们配置的是同一样东西——一个基础 URL、一个密钥和一个模型——但作用范围不同。**自定义接口**是在单个智能体上内联输入的；而**模型提供商**是一条你设置一次并复用的具名记录。如果你只为一个智能体使用一个端点，自定义端点更简单；如果你要同时应付好几个，就把它们保存为提供商。（提供商一经创建，它的智能体类型就固定了。）
 :::
+
+## 获取供应商模型 {#fetch-models-from-your-provider}
+
+从 **0.41.1** 起，支持的模型字段在填入 API 地址与密钥后会提供**获取模型**。你可以从返回列表中选择、搜索、刷新，或在失败后重试。Claude Code 与 Gemini 的端点及提供商设置、OpenCode 的提供商编辑器，以及 Cline、Pi、Grok 等受支持的模型列表都可以使用；允许手动输入的字段仍可直接填写模型 ID。
+
+**Claude Code** 的 **/model 中的额外模型**会为 Codeg 启动的会话添加选择项。组织托管的模型列表与 Claude 的 `availableModels` 仍然优先。
+
+**Codex** 的模型区域提供**模型列表来源**：**Codex 内置**或**来自供应商**。供应商来源支持原生 Codex 目录和 OpenAI 格式的模型列表，并可填写单独的**列表 URL**。获取前请确认界面显示的目标主机，供应商密钥会发送到那里。选好要显示的模型、应用选择，再保存设置。
+
+原生目录会在刷新时纳入新模型，但你明确移除的除外；如果供应商之后不再返回某个模型，原生目录会将它移除。OpenAI 格式列表是一个允许列表：新 ID 需要在**选择模型**里勾选，而你选过的 ID 即使后续响应中没有出现，也会凭上次看到的信息继续保留。自动刷新失败时会保留上次可用的列表，并在**立即刷新**旁显示错误。→ [Codex 模型管理](/zh/guide/agent-setup#codex-model-management)
 
 ## 选择一个模型 {#choose-a-model}
 

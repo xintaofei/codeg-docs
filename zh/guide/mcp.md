@@ -85,6 +85,7 @@ DevTools 服务器驱动的是**另一个** Chrome，Codeg 管不到。你会拿
 | **Kiro CLI** | `~/.kiro/settings/mcp.json`（`mcpServers`） |
 | **TRAE CLI** | `~/.trae/traecli.toml`（`[mcp_servers.*]`） |
 | **Command Code** | `~/.commandcode/mcp.json`（`mcpServers`） |
+| **MiniMax Code** | Codeg 自有的 `mcp/minimax_code.json`，通过 ACP 传入，不修改原生配置 |
 | **DeepSeek Harness** | `$DSH_HOME/mcp.json`——Codeg 自己的记录，因为该智能体不读取任何属于自己的配置文件 |
 | **ZCode** | Codeg [数据目录](/zh/getting-started/configuration#where-codeg-stores-its-data)中的 `mcp/zcode.json`——Codeg 自己的记录，原因相同 |
 
@@ -92,11 +93,11 @@ DevTools 服务器驱动的是**另一个** Chrome，Codeg 管不到。你会拿
 
 只要有任何一个条目仍然指定了已退役的 `kaos` 执行器，**Kimi Code 2.2.0** 就会拒绝它的整个 `mcp.json`，所以自 **0.35.2** 起，Codeg 会从它保存的每个 Kimi 条目中去掉 `kaos`。Codeg 没有动过的条目则保持原样——如果升级之后 Kimi 不再加载你的服务器，请到那里找找有没有残留的 `kaos`。
 
-这就是**十九个智能体中的十七个**——除 **OpenClaw** 和 **Pi** 之外的每一个。OpenClaw 根本不接受 MCP 服务器（它是唯一选择不参与的智能体），因此不会作为目标提供；Pi 也不在列表中。→ [智能体之间有何不同](/zh/guide/supported-agents#how-agents-differ)
+这就是**二十个智能体中的十八个**——除 **OpenClaw** 和 **Pi** 之外的每一个。OpenClaw 根本不接受 MCP 服务器（它是唯一选择不参与的智能体），因此不会作为目标提供；Pi 也不在列表中。→ [智能体之间有何不同](/zh/guide/supported-agents#how-agents-differ)
 
-**DeepSeek** 和 **ZCode** 在服务器*如何*到达它们这件事上是例外。其他每一个智能体都会在启动时读取自己的配置文件，因此 Codeg 写进去就可以撒手不管。而它们的桥接不读取任何配置文件——服务器只在创建或恢复会话时通过协议到达它们——所以 `$DSH_HOME/mcp.json` 和 `mcp/zcode.json` 是 Codeg 关于「要发送什么」的记录，而不是智能体会去查阅的东西，真正的投送路径是 ACP 连接。
+**DeepSeek**、**ZCode** 和 **MiniMax Code** 在服务器*如何*到达它们这件事上是例外。其他每一个智能体都会在启动时读取自己的配置文件，因此 Codeg 写进去就可以撒手不管。DeepSeek 与 ZCode 的桥接不读取任何配置文件——服务器只在创建或恢复会话时通过协议到达它们；MiniMax Code 则保留自己的原生 MCP 配置不变，通过 ACP 接收 Codeg 的 `mcp/minimax_code.json` 覆盖项。这些由 Codeg 管理的文件是「要发送什么」的记录，而不是这些智能体会查阅的文件，真正的投送路径是 ACP 连接。
 
-**并非每个智能体都能承载每一种传输方式。** ZCode 只接受 **stdio** 服务器，而 Codex、DeepSeek Harness、Kiro CLI、TRAE CLI 和 Command Code 都不接受 **SSE** 服务器。保存时，无法承载该服务器传输方式的智能体会被直接略过——Codeg 之前以这个名字为它写入的任何内容也会被移除——因此只有当你勾选的智能体*没有一个*能承载它时，保存才会失败，而不是等到启动时才失败。
+**并非每个智能体都能承载每一种传输方式。** ZCode 只接受 **stdio** 服务器，而 OpenCode 2、Codex、DeepSeek Harness、Kiro CLI、TRAE CLI 和 Command Code 都不接受 **SSE** 服务器。保存时，无法承载该服务器传输方式的智能体会被直接略过——Codeg 之前以这个名字为它写入的任何内容也会被移除——因此只有当你勾选的智能体*没有一个*能承载它时，保存才会失败，而不是等到启动时才失败。
 
 **智能体自己的按服务器设置会被保留。** 有些智能体会在条目上保存一些 Codeg 编辑器不显示的额外字段。自 **0.37.0** 起，保存时会保留 **Cursor** 的这类字段——`envFile`、`auth`、`tls` 等——凡是你没有改动的字段都原样保留，而从市场重新安装某个服务器时，也会保留所有它没有设置的 Cursor 字段；SSE 服务器会保持为 SSE，不再变成 HTTP；这些 Cursor 独有的字段也不会再扩散到 Codeg 为其他智能体写入的配置里——对于 OpenClaw 和 pi 已经列着的服务器，它们的配置也算在内——以前 Cursor 的 `auth` 会因此让 OpenClaw 拒绝它的整个配置，让 pi 跳过这个服务器。**Kiro CLI** 的 `disabled`、`autoApprove`、`disabledTools`、`timeout` 和 `oauth` 设置，在你从编辑器保存时也会以同样的方式保留，因此你在 Kiro 中禁用的服务器会保持禁用。
 

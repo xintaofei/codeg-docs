@@ -5,8 +5,8 @@ description: Codeg 是一个多智能体编程工作区——在一个地方运�
 
 # 简介
 
-::: tip 已发布 0.40.0
-新版将思考、命令、文件改动和子智能体任务汇成执行过程时间线。已有安装请先阅读[升级指南](/zh/getting-started/upgrading)，了解新功能和数据库迁移前的备份步骤。
+::: tip 已发布 0.41.1
+按文件夹保留标签页和分屏布局、在回复中预览 HTML、使用 MiniMax Code 与 OpenCode 2，并将待验收任务交付为 PR。请先阅读[升级指南](/zh/getting-started/upgrading)，了解使用入口、兼容性检查和备份步骤。
 :::
 
 **Codeg 是一个多智能体编程工作区**——在一个地方运行、聚合并编排不断壮大的 AI 编程智能体家族。
@@ -14,7 +14,7 @@ description: Codeg 是一个多智能体编程工作区——在一个地方运�
 Codeg 不会将你绑定到单一助手，而是把 Claude Code、Codex CLI、Google Antigravity、OpenCode、Qoder 以及[更多智能体](/zh/guide/supported-agents)汇聚到一个共享工作区中——然后让它们*协同*工作：一个主导智能体可以把子任务交给其他类型的智能体，每个智能体都作为独立会话运行。你负责指挥，它们负责协作。
 
 <div class="stat-strip">
-  <div class="stat"><span class="stat__num">19</span><span class="stat__label">个编程智能体，一个工作区</span></div>
+  <div class="stat"><span class="stat__num">20</span><span class="stat__label">个编程智能体，一个工作区</span></div>
   <div class="stat"><span class="stat__num">3</span><span class="stat__label">个聊天频道来驱动它们</span></div>
   <div class="stat"><span class="stat__num">3</span><span class="stat__label">种托管方式——桌面 · 服务器 · Docker</span></div>
   <div class="stat"><span class="stat__num">0</span><span class="stat__label">遥测——默认本地优先</span></div>
@@ -65,7 +65,7 @@ Codeg 押注于一点：面对日益碎片化的智能体格局，答案不是�
 
 Codeg 读取你的智能体自己的会话存储，并将它们汇入一个统一、可搜索的工作区。你的 Claude Code、Codex、Gemini 和 OpenCode 历史记录不再散落在各自独立的目录中，而是汇成一条可供你浏览、恢复和搜索的时间线——无论它们出自哪个工具。
 
-如今已有十九个智能体接入，各有自己的模型、强项和会话格式：
+如今已有二十个智能体接入，各有自己的模型、强项和会话格式：
 
 <AgentRoster />
 

@@ -37,7 +37,7 @@ description: 让你正在使用的智能体把自成一体的子任务委派给�
 
 **交接不会阻塞。** 委派会立刻返回一个任务句柄，而不是把主导智能体挂起直到工作智能体完成，因此主导智能体可以接连发出多次交接、完成属于自己的那份工作，然后才去收集结果。正是这一点让真正的并行成为可能，而不是一个只是看起来并发的队列——它也是[下文多数协作模式](#collaboration-patterns)背后的机制。
 
-**谁能主导，谁能干活。** 委派能力以一个额外工具的形式到达智能体，通过 Codeg 内置的 MCP 服务器经由 ACP 交付——因此，只有当一个智能体通过该协议接受 MCP 工具时，它才能主导。有十六个可以，并能*发起*委派：Claude Code、Codex、Gemini、OpenCode、Hermes、CodeBuddy、Kimi Code、Grok、Cursor、DeepSeek Harness、Qoder、Google Antigravity、Kiro CLI、ZCode、TRAE CLI 和 Command Code。**OpenClaw**、**Pi** 和 **Cline** 不行——OpenClaw 干脆拒绝 MCP 服务器，Pi 悄悄忽略它们，而 Cline 从不连接通过 ACP 交给它的那些服务器，所以自 **0.36.0** 起 Codeg 不再向它提供这个工具，应用里也不会有任何提示。全部十九个仍然可以*被*委派，这让这三个成为完全合格的工作智能体。无论你正在与哪个有能力的智能体对话，它就是主导智能体；无需另外设置什么"编排器"。
+**谁能主导，谁能干活。** 委派工具通过 Codeg 的配套 MCP 服务器经 ACP 交给智能体。十七个内置智能体可以发起委派：Claude Code、Codex、Gemini、OpenCode、Hermes、CodeBuddy、Kimi Code、Grok、Cursor、DeepSeek Harness、Qoder、Google Antigravity、Kiro CLI、ZCode、TRAE CLI、Command Code 和 MiniMax Code。**OpenClaw**、**Pi** 和 **Cline** 不行：OpenClaw 拒绝 MCP，Pi 忽略经 ACP 交付的服务器，Cline 则不会连接它们，因此 Codeg 已不再向 Cline 提供配套服务器。全部二十个都可以**接受**委派。你正在使用的、有委派能力的智能体就是主导智能体，无需单独配置编排器。
 
 有一种情况会让一个本来有能力的智能体失去这项能力：按智能体的 **[让智能体自己处理文件和命令](/zh/guide/agents#let-the-agent-handle-its-own-files-and-commands)** 开关会刻意收走委托工具，因为委派会把同一份工作又绕回 Codeg、绕出该智能体自己的沙箱。*启用委托*下方的面板会**点名这条规则当前对哪些智能体成立**，因此一次没发生的交接有明确的原因，而不是读起来像悄无声息地失败了。
 

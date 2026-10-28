@@ -1,6 +1,6 @@
 ---
 title: Appearance
-description: The Appearance settings screen — theme mode and accent color, custom theme tokens and CSS, window zoom, per-surface fonts, a workspace background image or GIF, the welcome-screen shortcut cards, chat animations and the chat column's width, and the desktop pet manager.
+description: Customize Codeg’s themes, fonts, background, chat animations, HTML previews, conversation width and desktop pets.
 ---
 
 # Appearance
@@ -124,6 +124,12 @@ One switch — **Show on the new conversation page**. It controls whether the **
 One switch — **Enable chat animations**, **on** by default and new in **0.35.0**. Turn it off and the conversation stops moving: expanding and collapsing, tool-call and working-status animations, a reply folding away, and smooth scrolling all happen at once — the jumps from **Message navigation** and back to a reply's prompt included, and the charts in [reply cards](/guide/skills#cards-tables-and-charts-in-replies) too. Spinners keep turning, since a frozen spinner reads as a hang.
 
 It covers the **conversation area only**; the sidebar, drawers and the rest of the app animate as before. It's applied before the first paint, so a reload with it off doesn't animate even once.
+
+## Chat HTML rendering {#chat-html-rendering}
+
+**Enable rich HTML rendering**, **off** by default, lets AI replies display self-contained HTML/CSS cards and diagrams alongside Markdown, including during streaming. Each block offers **Preview** and **Code** views; long previews can be expanded with **Show all**.
+
+The preview supports static HTML and CSS. Model scripts and external resources are blocked, so ask for self-contained markup and inline styles. For interactive cards, forms and charts, use [UI Render](/guide/skills#cards-tables-and-charts-in-replies). This preference saves immediately on the current device. → [HTML previews in replies](/guide/conversations#html-previews-in-replies)
 
 ## Chat width
 

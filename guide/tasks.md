@@ -78,7 +78,7 @@ That's not only the new-task box. **Every to-do input is the full composer** —
 
 Three other doors lead here:
 
-- **From a message.** Reading a reply and spotting a follow-up? Beside the copy button on any message sits **Create task from message** — it drops that text into a new task, pre-filled with the project folder, and switches you to To-dos.
+- **From a message.** Beside the copy button on a message, **Create task from message** opens the editor over the current conversation, with the message and project filled in. Save there without leaving what you were reading; the confirmation offers **View** to open the new task.
 - **From an automation, or from the agent itself.** An automation can file a task instead of starting a session, and an agent in a conversation can queue one too, if you've allowed it. → [Automations](/guide/automations#choose-what-a-fire-does)
 - **From a GitHub, GitLab or Gitea item.** The [Repository panel](/guide/repository) lists your issues and pull requests and hands one straight to an agent, choosing how it should be handled — fix it, plan it first, review it and fix what it finds, or only review it. Since **0.35.2** it can also create them **by itself**, scanning on a schedule or on a webhook for the items that match your rules; those tasks' timelines open with *Created by auto-processing*. Either way the task that comes out is an ordinary one on this board. → [Repository Panel](/guide/repository#let-it-pick-items-up-by-itself)
 
@@ -183,7 +183,7 @@ Four ways out:
 
 Or put the decision off: **Handle later** moves it to *Done* as it is, until you're ready — see [above](#set-it-aside-for-later).
 
-A task that came from the [Repository panel](/guide/repository) gets a fifth: **Open pull request**, or **Push to the pull request** if that's where it came from. Instead of landing the work in your own checkout, it pushes the branch to the forge — and for a task that came from a pull request it **replaces** Merge, since that work belongs on the pull request's branch rather than in your base. A push back that would carry **nothing** is refused, and points you at *Complete* instead — the honest ending for a task whose answer was that nothing needed changing. → [Take the result back](/guide/repository#take-the-result-back)
+A reviewed task can also **Open pull request**, including one you created yourself without an issue. A task opened from a pull request instead offers **Push to the pull request**, replacing local Merge. → [Deliver as a pull request](#deliver-as-a-pull-request)
 
 ### Say what kind of follow-up you mean
 
@@ -199,6 +199,19 @@ A task that came from the [Repository panel](/guide/repository) gets a fifth: **
 The distinction earns its keep on **Ask**: an agent told its work was *returned* starts editing files, which is the last thing you want when you only asked what a function does. **Double-check** is the one you can send **empty** — "look it over" needs no elaboration, and making that one click is most of its value.
 
 Either way the work continues in the same worktree and comes back to review. Codeg resumes the original session where it can, so the agent keeps its context; where the agent can't be resumed, a fresh session picks up in that same worktree with the task and your feedback replayed into it, and the timeline records the fallback.
+
+## Deliver as a pull request {#deliver-as-a-pull-request}
+
+Since **0.41.1**, a task in **To review** can deliver its branch to **GitHub**, **GitLab** or **Gitea/Forgejo**, whether or not it started from an issue. GitLab calls this a **merge request**.
+
+1. Open the task details and choose **Open pull request**. For a task without forge provenance, Codeg resolves the repository from the project's **`origin`**. Configure a matching account in [Settings → Version Control](/reference/settings/version-control) first; an unsupported origin cannot receive a request.
+2. Check the repository and base branch, enter the title, and optionally select **Open as a draft**. Issue-linked tasks include the closing reference automatically; ordinary tasks need no issue.
+3. Choose whether to **Mark the task as done after delivering**, **on by default**. Turn it off to leave the task in review and keep its worktree for another round.
+4. Push the branch and open the request. The request link stays in the task details. After a follow-up, **Update pull request** pushes the new commits to the **same request**.
+
+For a task created from an existing pull request, **Push to the pull request** updates its head branch, including a fork when you have permission. A push with no new work is refused and points to **Complete** instead. Delivery uses git and forge APIs directly; it does not launch a merge agent.
+
+**Delete the worktree after delivering** is available only when marking the task done. It starts from the folder's cleanup default. A cleanup failure leaves a retry action and does not undo a successful push. For issue-linked delivery, see the [matching and writeback rules](/guide/repository#take-the-result-back).
 
 ## Merge it
 

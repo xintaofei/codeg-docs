@@ -1,10 +1,10 @@
 <!--
   AgentRoster — the roster of coding agents Codeg aggregates.
 
-  The 19 brand marks are ported verbatim from the codeg app's source of truth,
+  The 20 agent marks are ported verbatim from the codeg app's source of truth,
   src/components/agent-icon.tsx. Two conventions carry over:
     • Color marks (Claude Code, Codex, Gemini, OpenClaw, Kimi, Pi, DeepSeek,
-      Kiro CLI, ZCode, TRAE CLI, Command Code) keep their baked palettes / gradients — identical in light and dark. useId() gradient
+      Kiro CLI, ZCode, TRAE CLI, Command Code, MiniMax Code) keep their baked palettes / gradients — identical in light and dark. useId() gradient
       ids are replaced with static, page-unique ids (grad-*).
     • Mono marks (OpenCode, Cline, Hermes, CodeBuddy, Grok, Cursor, Qoder,
       Google Antigravity) use fill="currentColor" so they inherit the roster's
@@ -262,6 +262,17 @@
         </svg>
       </span>
       <span class="agent-chip__name">Command Code</span>
+    </div>
+
+    <!-- MiniMax Code: the app's compact typographic mark -->
+    <div class="agent-chip">
+      <span class="agent-chip__icon">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <rect width="24" height="24" rx="6" fill="#F23F5D" />
+          <path d="M5 17V7h3l4 6 4-6h3v10h-3v-5l-4 6-4-6v5H5Z" fill="#FFFFFF" />
+        </svg>
+      </span>
+      <span class="agent-chip__name">MiniMax Code</span>
     </div>
   </div>
 </template>

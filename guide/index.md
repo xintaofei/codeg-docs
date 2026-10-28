@@ -27,7 +27,7 @@ The surface every Codeg session runs on — learn these first.
 
 ## Agents
 
-Codeg is agent-agnostic — one consistent interface over nineteen coding CLIs, and any other that speaks ACP.
+Codeg is agent-agnostic — one consistent interface over twenty coding CLIs, and any other that speaks ACP.
 
 - [**Working with Agents**](/guide/agents) — enable an agent, run its preflight check, and start a session.
 - [**Supported Agents**](/guide/supported-agents) — the full roster, how each one gets onto your machine, and where each keeps its sessions on disk.

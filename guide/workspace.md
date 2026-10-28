@@ -111,6 +111,7 @@ The last, an **eye**, opens **View options**:
 - **Filter by tags** *(submenu)* — narrows the list to the conversations carrying the tags you pick. Since **0.37.0** it's the menu's first entry, in place of the funnel button that used to lead the strip. → [Tag conversations](#tag-conversations)
 - **Conversation list** *(submenu)* — **Show completed conversations**, **off** by default, so finished work stays out of the way and the list is what's still live; **Show worktree branches**, **on** by default; and **Show Recent group**, **on** by default.
 - **Navigation items** *(submenu)* — see [below](#choose-which-navigation-rows-you-see).
+- **Tabs follow folder** — keep each folder's conversation tabs, file tabs and split layout together; **off** by default. → [Tabs follow folder](#tabs-follow-folder)
 - **Sort by** — **Created time** (the default) or **Updated time** for folder and Chat lists. **Recent** always uses last activity. Recent and Chat rows show their last activity time; nested sub-sessions keep their creation-time label.
 - **Section order** — the reorder list described above.
 
@@ -251,6 +252,14 @@ The center area is **tabbed**, so several sessions stay open at once:
 - **Maximize the conversation.** With files open beside it, the **Maximize** button at the right end of the conversation tab strip gives the conversation the whole center — since **0.35.0** — and **Restore** brings the files back just as you left them. Opening or switching to a file brings them back too. Split into groups, only the top-right group's strip carries the button, and a phone has none.
 - **Unsent drafts survive a restart.** A conversation you started but never sent comes back where it was — with whatever you'd typed in the composer still in it. Each draft keeps its own text, so two of them side by side no longer overwrite each other.
 
+### Tabs follow folder {#tabs-follow-folder}
+
+Since **0.41.1**, **View options → Tabs follow folder** in the sidebar gives each folder its own set of conversation and file tabs, active selection and split layout. Turn it on, then click a folder to switch to that project's work. Folderless chats use a separate shared set.
+
+Switching folders preserves unsent drafts, unsaved file edits and running conversations. Return to the folder to pick up its tabs and splits. A file opened in several folders shares the same editing buffer, so its unsaved changes stay consistent. A folder with no open tabs starts empty; switching to it doesn't create a conversation automatically.
+
+Turn the option off to see tabs across folders again. The setting is remembered on this device, separately for local and remote workspaces.
+
 ### Split the conversation view into groups
 
 One tab strip isn't always enough. **Right-click any conversation tab** and you can split the conversation area into **tab groups** — the same idea as an editor's split panes, with no fixed limit on how many:
@@ -268,7 +277,7 @@ Once you're split, the same right-click menu manages the layout:
 
 You can also just **drag a tab across** — onto another group's strip, or anywhere in its pane — and a floating chip follows the cursor while a drop indicator shows where it will land. **Drag the divider** between two groups to change how the space is shared. Splits mix freely: split right, then split one of those halves downward, and you get a grid.
 
-Your layout is remembered **per workspace**, drafts included — reopen Codeg and the split comes back, with the same conversations in the same groups.
+Your layout is remembered **per workspace**, drafts included — reopen Codeg and the split comes back, with the same conversations in the same groups. With **Tabs follow folder** on, each folder keeps its own split layout.
 
 Two small rules keep this predictable. A **draft stays in the group that spawned it** (it has nothing on the server to move yet), so its move items and cross-group drag are withheld — reordering it inside its own group still works. And **moving a tab between groups doesn't interrupt it**: the session keeps its connection and keeps streaming while it changes home.
 

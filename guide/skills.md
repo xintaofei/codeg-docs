@@ -25,9 +25,11 @@ Open **Settings → Skill Packs**. It's a tabbed hub — **Experts**, **Science*
 | **Office Tools** | Document skills that create and edit `.docx`, `.xlsx`, and `.pptx`, powered by the bundled **officecli** tool. → [Office Documents](/guide/office) |
 | **UI** | One skill, **UI Render**, that teaches an agent to answer with interactive cards, tables and charts in Codeg's chat. → [below](#cards-tables-and-charts-in-replies) | Ready out of the box |
 
+**Experts ships Superpowers v7.0.1 in 0.41.1.** Alongside planning, execution and review workflows, **Diagnosing Superpowers** investigates repeated work, plan drift and unusual costs using transcript evidence. Enable it like any other skill. Exporting a diagnostic bundle or filing an issue requires your request and approval.
+
 ### The skill-and-agent matrix
 
-Each tab shows a grid: skills down the side (grouped by category), your agents across the top — every agent that actually reads skills from somewhere Codeg can write to. That's every built-in except ZCode, which keeps no skill folder Codeg could fill; Kiro CLI, TRAE CLI and Command Code, new to the grid in 0.36 and 0.37, each take `<id>/SKILL.md` folders only. Tick a cell to enable that skill for that agent, untick to remove it. Everything is batchable:
+Each tab shows a grid: skills down the side, grouped by category, and agents across the top. Every built-in except **MiniMax Code** has a column; MiniMax skills stay managed through its own CLI. **ZCode** now links into `~/.zcode/skills` and, like Kiro CLI, TRAE CLI and Command Code, accepts `<id>/SKILL.md` folders only. Tick a cell to enable that skill for an agent, untick to remove it. Everything is batchable:
 
 - A skill's **⋯** menu enables or disables it across **every agent** at once.
 - An agent's column header does the reverse — **every skill** for one agent.
@@ -84,6 +86,8 @@ The skill itself is Codeg's: its `SKILL.md` is rewritten from the copy Codeg shi
 ::: info Coming from 0.35.0
 **0.35.0** shipped this behind a single switch, *Generative UI (json-render)*, and the skill was called **json-render**. **0.35.1** replaced the switch with the per-agent matrix and renamed the skill: if you'd had the switch on, the agents that already had json-render get ui-render in its place when you upgrade; if it was off, Codeg's json-render links are cleared away. A json-render skill of your own is left alone either way.
 :::
+
+For static HTML/CSS cards and diagrams, you can also enable [Chat HTML rendering](/reference/settings/appearance#chat-html-rendering). It previews self-contained HTML in replies; scripts and external resources are blocked. UI Render remains available for the interactive components described above.
 
 ## Write your own skill
 

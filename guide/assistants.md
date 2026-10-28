@@ -68,7 +68,7 @@ The **Assistants** tab lists them in order, each with its avatar, its descriptio
 
 - **An assistant is a preset, not a colleague.** It keeps no memory between tasks: each delegation starts cold, from the task the lead writes and the standing instructions. Write the instructions as rules for any task, and keep what's particular to one task in the message.
 - **The instructions reach the agent's provider.** They're part of the prompt the sub-agent sends its model, and the agent's own history on disk keeps them, even though Codeg doesn't show them in the session.
-- **Who can use one.** Any agent that can [lead a delegation](/guide/multi-agent#how-delegation-works) — sixteen of the nineteen built-ins — can hand work to an assistant. The assistant's own agent can be any agent you can delegate to.
+- **Who can use one.** Any agent that can [lead a delegation](/guide/multi-agent#how-delegation-works) — seventeen of the twenty built-ins — can hand work to an assistant. The assistant's own agent can be any agent you can delegate to.
 
 ## Next steps
 

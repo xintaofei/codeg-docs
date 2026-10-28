@@ -172,7 +172,7 @@ What's different is what *accepting* can mean. Alongside the usual **Merge** and
 
 Delivery runs deterministically end to end, unlike a local merge — a push and a couple of REST calls have nothing to decide, while a merge may have to resolve conflicts and therefore needs an agent.
 
-Both dialogs offer **Delete the worktree** on the way out, the same checkbox merge and complete have, starting from [the folder's own default](/guide/tasks#task-settings). Until **0.28.2** delivery was the one acceptance that couldn't take its checkout with it. The cleanup **rides on the delivery rather than gating it**: it runs once the task has settled, and a removal that fails leaves a retry on the card instead of turning a pull request that was already pushed into a reported failure.
+Both dialogs offer **Mark the task as done after delivering**, on by default. Turn it off to keep the task in review and retain its worktree; after another round, delivery updates the same request. **Delete the worktree** is available only when marking it done, starting from [the folder's cleanup default](/guide/tasks#task-settings). Cleanup runs after delivery; a removal failure leaves a retry without turning a successful push into a failure.
 
 ::: warning How a pull request is matched
 Before opening anything, delivery looks for a pull request that matches on **all four** of head commit, head ref, base ref, and head repository. One commit can legitimately have several pull requests open against different bases, so a commit hash alone would settle the task against the wrong one. Four outcomes:
@@ -186,6 +186,8 @@ If nothing matches at all, delivery opens a **new** pull request — the ordinar
 :::
 
 The branch is pushed as **the account that triggered the task** — not "whichever account is default right now" — so marking a different account default later can't quietly change which identity does the pushing. (Commit *authorship* is a separate thing, set by the git config the agent committed under.)
+
+Tasks created without a forge issue can now deliver too. Their first delivery resolves the repository and account from the project's `origin` and records that destination for later updates. → [Deliver any reviewed task](/guide/tasks#deliver-as-a-pull-request)
 
 ### The comment that goes back
 

@@ -218,9 +218,11 @@ Codeg has no switch for the browser cache; to remove the copy, clear the site's 
 
 ## Keep your server up to date
 
-::: warning 0.40.0 migrates the database
-Stop the server and back up its complete data directory before updating. 0.39.0 cannot read the database after 0.40.0 updates it, and neither **Roll back** nor the supervisor restores the old schema. Returning to the older program also requires restoring pre-upgrade data. → [Upgrade and recovery steps](/getting-started/upgrading)
+::: warning Back up before upgrading from 0.40.0 or earlier
+Stop the server and back up its complete data directory before updating to 0.41.1. Its task-delivery migration prevents 0.40.0 and earlier from starting on the updated data. Neither **Roll back** nor the supervisor restores the old schema; a downgrade also requires restoring pre-upgrade data. → [Upgrade and recovery steps](/getting-started/upgrading)
 :::
+
+**macOS server permissions:** the 0.41.1 signing setup preserves Full Disk Access and other privacy grants across future updates. Updating from an older build requires granting them once more.
 
 Like the desktop app, `codeg-server` updates itself from **Settings → Software Update**: it downloads the signed release for its platform, verifies the signature — which, since **0.36.0**, must name the very version on offer, so an older signed archive can't pass for a newer one — swaps the binaries and web assets on disk, and restarts — no redeploy. The previous version is retained, so the same screen offers a **Roll back**. This is Linux/macOS only (disabled on Windows). A server that can't write to its own installation — a binary or web folder it doesn't own, a full disk — says so on that screen **before** you try, since **0.32.1**, and offers the release page for a manual update instead.
 

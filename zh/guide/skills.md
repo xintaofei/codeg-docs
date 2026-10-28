@@ -25,9 +25,11 @@ description: 为你的智能体赋予可复用的专业知识——从共享存�
 | **办公工具** | 用于创建和编辑 `.docx`、`.xlsx` 和 `.pptx` 的文档技能，由内置的 **officecli** 工具驱动。 → [Office 文档](/zh/guide/office) |
 | **界面** | 只有一个技能——**界面渲染**，它教智能体在 Codeg 的聊天里用可交互的卡片、表格和图表作答。 → [见下文](#cards-tables-and-charts-in-replies) | 开箱即用 |
 
+**0.41.1 的 Experts 内置 Superpowers v7.0.1。** 除计划、执行与评审流程外，**Superpowers 会话诊断**可依据对话记录分析重复工作、计划偏离和异常开销，启用方式与其他技能相同。导出诊断材料或提交问题需要你的请求与确认。
+
 ### 技能与智能体矩阵 {#the-skill-and-agent-matrix}
 
-每个标签页都显示一个网格：技能在侧边（按类别分组），你的智能体在顶部横排——凡是确实会从 Codeg 能写入的位置读取技能的智能体都在其中。除 ZCode 之外，每一个内置智能体都在这里——ZCode 没有可供 Codeg 填充的技能文件夹；Kiro CLI、TRAE CLI 和 Command Code 是在 0.36 和 0.37 中新加入网格的，它们都只接受 `<id>/SKILL.md` 形式的文件夹。勾选一个单元格即可为该智能体启用该技能，取消勾选则将其移除。一切都可批量操作：
+每个标签页都显示一个网格：技能在侧边按类别分组，智能体在顶部横排。除 **MiniMax Code** 外，每个内置智能体都有一列；MiniMax 技能仍通过它自己的 CLI 管理。**ZCode** 现在将链接放入 `~/.zcode/skills`，与 Kiro CLI、TRAE CLI、Command Code 一样，只接受 `<id>/SKILL.md` 文件夹。勾选单元格以启用技能，取消勾选则移除。所有操作都可以批量完成：
 
 - 一个技能的 **⋯** 菜单可以一次性在**每个智能体**上启用或禁用它。
 - 一个智能体的列标题则相反——一次性处理某个智能体的**每个技能**。
@@ -84,6 +86,8 @@ Experts（以及任何内置技能）都烘焙进了 Codeg，并会在你升级�
 ::: info 从 0.35.0 升级而来
 **0.35.0** 把这项功能放在一个总开关后面——*启用 json-render 生成式界面*——当时这个技能叫 **json-render**。**0.35.1** 用按智能体的矩阵取代了这个开关，并给技能改了名：如果你当时打开了开关，那么已经装有 json-render 的智能体会在你升级时换上 ui-render；如果开关是关着的，Codeg 的 json-render 链接会被清理掉。无论哪种情况，你自己的 json-render 技能都不会被动。
 :::
+
+静态 HTML/CSS 卡片和图表也可开启[聊天 HTML 渲染](/zh/reference/settings/appearance#chat-html-rendering)，直接预览回复中的自包含 HTML，脚本与外部资源会被阻止。上文的交互组件仍可使用 UI Render。
 
 ## 编写你自己的技能 {#write-your-own-skill}
 

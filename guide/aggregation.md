@@ -45,7 +45,7 @@ An import marks what it brings in as **Review** rather than *Completed* — they
 
 ## What Codeg matches
 
-A sweep looks at **every agent Codeg supports** — even the ones you haven't enabled in Codeg. For each, it reads that agent's native session store (Claude Code's `~/.claude/projects`, Codex's `~/.codex/sessions`, OpenCode's local database, Kiro CLI's `~/.kiro/sessions/cli`, and so on) and works out which project directory each session ran in. Three are the exception: for **ZCode**, **TRAE CLI** and **Command Code**, Codeg doesn't read the agent's own store yet, so a sweep finds only the conversations you ran in Codeg — sessions from their own terminals can't be imported. → [Where each agent keeps its sessions](/guide/supported-agents#where-each-agent-keeps-its-sessions)
+A sweep looks at **every agent Codeg supports** — even the ones you haven't enabled in Codeg. For each, it reads that agent's native session store (Claude Code's `~/.claude/projects`, Codex's `~/.codex/sessions`, OpenCode's local database, Kiro CLI's `~/.kiro/sessions/cli`, and so on) and works out which project directory each session ran in. Four are the exception: for **ZCode**, **TRAE CLI**, **Command Code** and **MiniMax Code**, Codeg doesn't read the agent's own store yet, so a sweep finds only the conversations you ran in Codeg — sessions from their own terminals can't be imported. → [Where each agent keeps its sessions](/guide/supported-agents#where-each-agent-keeps-its-sessions)
 
 That path is the whole rule: **a session is filed under the directory you ran it in.** So the list you get is every agent's history, grouped by project — and an agent you set up long before Codeg still surfaces its past work, as long as its files are on disk.
 
@@ -80,6 +80,8 @@ Because of that split, **re-importing is always safe.** Run it again after a wor
 ::: tip A session you named yourself keeps its name
 Rename a Claude Code session with `/rename` (or `claude -n`, or Ctrl+R in its picker) and that's the name it imports under — not the summary the model wrote for itself. **CodeBuddy** works the same way. If you renamed more than once, the most recent one wins.
 :::
+
+Since **0.41.1**, new imports skip a native Claude session already linked to a Codeg conversation using the official Claude adapter, including custom agents. This avoids creating a second conversation and counting its usage again.
 
 ## Pick up where you left off
 

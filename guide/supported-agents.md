@@ -1,17 +1,17 @@
 ---
 title: Supported Agents
-description: The nineteen coding agents Codeg drives over ACP — what each one is, how it gets onto your machine and what it needs there, and where it keeps its sessions on disk — plus how to register one that isn't on the list.
+description: The twenty coding agents Codeg drives over ACP — what each one is, how it gets onto your machine and what it needs there, and where it keeps its sessions on disk — plus how to register one that isn't on the list.
 ---
 
 # Supported Agents
 
-Codeg drives **nineteen coding agents**, and once one is running they all feel the same — same composer, same diffs, same git and terminal — because Codeg talks to each over the **Agent Client Protocol (ACP)**. What differs is underneath: who builds the agent, what runtime it needs on your machine, and where it keeps its own history. This page is the map.
+Codeg drives **twenty coding agents**, and once one is running they all feel the same — same composer, same diffs, same git and terminal — because Codeg talks to each over the **Agent Client Protocol (ACP)**. What differs is underneath: who builds the agent, what runtime it needs on your machine, and where it keeps its own history. This page is the map.
 
 Enabling an agent, its preflight health check, and starting a session are covered in [Working with Agents](/guide/agents); signing in and choosing a model are in [Authentication & Models](/guide/authentication); and each agent's own settings and quirks are in [Per-Agent Setup](/guide/agent-setup). Here we stick to the roster itself — and, at the end, [how to add to it](#beyond-the-built-in-roster).
 
 ## The roster
 
-Codeg installs, pins and updates seventeen of these for you. The other two, **Kiro CLI** and **TRAE CLI**, it runs from the copy you installed with the vendor's own installer. What you *do* need on your machine is what each agent runs on:
+Codeg manages seventeen of these installations for you. **Kiro CLI**, **TRAE CLI** and **MiniMax Code** use the copy you installed with the vendor's own installer. What you need on the machine running Codeg depends on the agent:
 
 | Agent | What it is | Runs on |
 | ----- | ---------- | ------- |
@@ -34,12 +34,13 @@ Codeg installs, pins and updates seventeen of these for you. The other two, **Ki
 | **ZCode** | Z.ai's ZCode, through a community ACP bridge | Node.js **22+** with `node:sqlite`, plus the official ZCode, signed in |
 | **TRAE CLI** | ByteDance's TRAE CLI 2.0, for TRAE Enterprise's flagship plan | Your own `traecli`, from TRAE's installer |
 | **Command Code** | Command Code's terminal coding agent | Node.js **22+** |
+| **MiniMax Code** | MiniMax's native coding agent | Your own `mcode`, from MiniMax's installer |
 
 Three delivery routes sit behind that last column:
 
-- **Node.js (npm).** Fourteen of the nineteen ship as npm packages that Codeg runs with `npx`, so they need Node.js installed. Codeg pins a known-good version of each and upgrades it for you. For **ZCode** the package is only the bridge: the agent is the official ZCode you install yourself, and the Node it runs on must also load `node:sqlite`, which a preflight row of its own checks. Each package declares its own minimum Node version, and preflight checks yours against it — several want **Node 22**, DeepSeek Harness and Command Code among them, and since **0.35.0** Codex's adapter needs **20.3.0** or later: on Node 20.0 through 20.2 every message fails. A floor can sit inside a major version like that, so **Diagnose** compares the full version too since 0.35.0, where it used to pass any Node 20 for an agent that needs 20.3.
+- **Node.js (npm).** Fourteen of the twenty ship as npm packages that Codeg runs with `npx`, so they need Node.js installed. Codeg pins a known-good version of each and upgrades it for you. For **ZCode** the package is only the bridge: the agent is the official ZCode you install yourself, and the Node it runs on must also load `node:sqlite`, which a preflight row of its own checks. Each package declares its own minimum Node version, and preflight checks yours against it — several want **Node 22**, DeepSeek Harness and Command Code among them, and since **0.35.0** Codex's adapter needs **20.3.0** or later: on Node 20.0 through 20.2 every message fails. A floor can sit inside a major version like that, so **Diagnose** compares the full version too since 0.35.0, where it used to pass any Node 20 for an agent that needs 20.3.
 - **Bundled binary.** **OpenCode**, **Cursor** and **Google Antigravity** are native binaries Codeg downloads for your exact platform — nothing else to install. Cursor's download is larger because it carries its own Node runtime and tools, so it doesn't need Node.js on your machine either.
-- **Your own install.** **Kiro CLI** and **TRAE CLI** come only from their vendors' installers, so Codeg never installs or pins them: it looks for `kiro-cli` or `traecli` on your `PATH`, then in `~/.local/bin`, and launches what it finds. Their Settings → Agents badge reads **official installer**; the version row shows the version you have, or *Not found on this machine* with an **Install guide** link, and **Upgrade** runs the vendor's own updater.
+- **Your own install.** **Kiro CLI**, **TRAE CLI** and **MiniMax Code** are installed through their vendors. Codeg launches `kiro-cli`, `traecli` or `mcode` without installing or pinning a second copy. Kiro and TRAE are found on `PATH` or in `~/.local/bin`, and **Upgrade** runs their own updater. MiniMax also checks its installer directory and leaves updates to the official installer. → [MiniMax Code setup](/guide/agent-setup#minimax-code)
 
 The newest are young: so far ZCode has been tested on Windows only, and TRAE CLI and Command Code on macOS only — Codeg doesn't refuse any of them elsewhere. What's particular to each agent, from Cline on macOS 27 to Antigravity on Intel Macs, is in [Per-Agent Setup](/guide/agent-setup).
 
@@ -51,7 +52,7 @@ The order above is the **default Agent List order** in Settings → Agents. It's
 
 ## ACP adapters {#acp-adapters}
 
-Codeg speaks exactly one language to an agent: **ACP**. For fifteen of the nineteen that costs nothing, because what Codeg runs is the vendor's own CLI — Gemini, OpenClaw, OpenCode, Cline, Hermes, CodeBuddy, Kimi Code, Pi, Grok, Cursor, Qoder, Google Antigravity, Kiro CLI, TRAE CLI and Command Code all ship the protocol themselves, which is why a copy you installed by hand is generally picked up straight away. For Kiro CLI and TRAE CLI, the copy you installed is the only one. Two footnotes to that: **Hermes** is the near-miss — since upstream stopped publishing to PyPI, the managed package is a thin pinned wrapper whose `hermes` command execs the real upstream binary it installed, so `hermes acp` is still the vendor's own adapter. And **Antigravity** is the one Codeg can't pick up from your machine at all: its ACP server ships as a downloaded tree with no standalone command name, so there's nothing on your `PATH` to find.
+Codeg speaks exactly one language to an agent: **ACP**. For sixteen of the twenty that costs nothing, because what Codeg runs is the vendor's own CLI — Gemini, OpenClaw, OpenCode, Cline, Hermes, CodeBuddy, Kimi Code, Pi, Grok, Cursor, Qoder, Google Antigravity, Kiro CLI, TRAE CLI, Command Code and MiniMax Code all ship the protocol themselves, which is why a copy you installed by hand is generally picked up straight away. For Kiro CLI, TRAE CLI and MiniMax Code, the copy you installed is the only one. Two footnotes to that: **Hermes** is the near-miss — since upstream stopped publishing to PyPI, the managed package is a thin pinned wrapper whose `hermes` command execs the real upstream binary it installed, so `hermes acp` is still the vendor's own adapter. And **Antigravity** is the one Codeg can't pick up from your machine at all: its ACP server ships as a downloaded tree with no standalone command name, so there's nothing on your `PATH` to find.
 
 **Claude Code and Codex are the classic exceptions.** Anthropic's `claude` CLI and OpenAI's `codex` CLI don't speak ACP. So what Codeg installs for those two entries isn't the vendor CLI at all — it's a separate **ACP adapter**: an npm package, maintained by the Agent Client Protocol organization (the project the Zed team originally started), that wraps the vendor's agent and translates it into the protocol.
 
@@ -100,7 +101,7 @@ The key is passed as `DEEPSEEK_API_KEY`, and an environment variable outranks th
 
 ### ZCode rides a bridge over the official app {#zcode}
 
-**ZCode**, new in **0.36**, is also driven through a community bridge — `zcode-acp-server`, pinned at **0.76.2**, upstream [william0wang/zcode-acp](https://github.com/william0wang/zcode-acp) — and it's the third agent with the **ACP adapter** badge. It works the other way round from Claude Code's and Codex's adapters, though: the bridge carries no agent of its own. It drives **the official ZCode you've installed and signed in to**, on a Node.js 22 or later that can load `node:sqlite`, so models, credentials and sign-in all stay in ZCode, and **Upgrade** in Codeg updates only the bridge.
+**ZCode**, new in **0.36**, is also driven through a community bridge — `zcode-acp-server`, pinned at **0.76.3**, upstream [william0wang/zcode-acp](https://github.com/william0wang/zcode-acp) — and it's the third agent with the **ACP adapter** badge. It works the other way round from Claude Code's and Codex's adapters, though: the bridge carries no agent of its own. It drives **the official ZCode you've installed and signed in to**, on a Node.js 22 or later that can load `node:sqlite`, so models, credentials and sign-in all stay in ZCode, and **Upgrade** in Codeg updates only the bridge.
 
 Its adapter row says exactly that, and passes only when the bridge is installed **and** ZCode is found; its **Learn more** opens the bridge's repository rather than this page. Finding ZCode, pointing Codeg at it when that fails, and what the first integration leaves out are in [Per-Agent Setup](/guide/agent-setup#zcode).
 
@@ -116,7 +117,7 @@ Here's where "each agent's native store" actually lives:
 | **Codex** | `~/.codex/sessions/` | JSONL | `CODEX_HOME` |
 | **Gemini** | `~/.gemini/` | JSON files | `GEMINI_CLI_HOME` |
 | **OpenClaw** | `~/.openclaw/agents/` | JSONL | — |
-| **OpenCode** | `~/.local/share/opencode/opencode.db` | SQLite | `XDG_DATA_HOME` |
+| **OpenCode** | `~/.local/share/opencode/opencode.db` | SQLite | `XDG_DATA_HOME`, `OPENCODE_DB` |
 | **Cline** | `~/.cline/data/` | JSON files | `CLINE_DIR` |
 | **Hermes** | `~/.hermes/state.db` | SQLite | `HERMES_HOME` |
 | **CodeBuddy** | `~/.codebuddy/projects/` | JSONL | `CODEBUDDY_CONFIG_DIR` |
@@ -128,6 +129,8 @@ Here's where "each agent's native store" actually lives:
 | **Qoder** | `~/.qoder/projects/` | JSONL | `QODER_CONFIG_DIR` |
 | **Google Antigravity** | `~/.gemini/antigravity-acp/conversations/` | SQLite (one file per session) | `GEMINI_HOME` |
 | **Kiro CLI** | `~/.kiro/sessions/cli/` | JSONL event log plus a JSON metadata file per session | `KIRO_HOME` |
+
+**OpenCode 2** also honors `OPENCODE_DB`: an absolute path selects that database, and a relative name is resolved under its data directory. `:memory:` has no on-disk history to import. Codeg follows the same setting when opening saved sessions.
 
 Most agents write a **JSONL transcript** — a plain-text log, one event per line — while OpenCode and Hermes keep everything in a single **SQLite** database, Cursor and Antigravity store each conversation as its own SQLite file, Gemini and Cline use their own JSON files, and Kiro pairs an event log with a metadata file it rewrites after every turn. Codeg reads each format natively; you never convert anything.
 
@@ -141,9 +144,9 @@ DeepSeek is the one that's compressed: its `session.jsonl.zstd` isn't a single Z
 Point an agent at a non-default location with one of the environment variables above and Codeg honors it too, so a relocated history still opens and imports. Since **0.35.2** that's true whether the variable is in Codeg's own environment or in the agent's **Environment Variables** under Settings → Agents — where it wins, and where an empty value unsets it, back to the agent's default. Before, a variable set only on the agent left its conversations opening empty. A `HOME` set there isn't followed. OpenClaw is the exception: its store isn't relocatable.
 :::
 
-Three built-ins have no row in that table: **ZCode**, **TRAE CLI** and **Command Code**. Codeg doesn't read their own stores yet, so it records their history itself, the way it does a custom agent's — which means only the conversations you run in Codeg are there, and sessions from their own terminals can't be imported yet.
+Four built-ins have no row in that table: **ZCode**, **TRAE CLI**, **Command Code** and **MiniMax Code**. Codeg records their conversation history itself; sessions from their own terminals cannot be imported. TRAE's native records are read separately to enrich usage for its Codeg conversations. → [Token Usage](/guide/token-usage)
 
-A [custom agent](/guide/custom-agents) has no row because it usually keeps no store Codeg could read. For those, and for the three above, Codeg writes the history itself — an append-only JSONL transcript per session under `acp-transcripts/<registry-id>/` in its [data directory](/getting-started/configuration#where-codeg-stores-its-data) — and reads it back exactly as it reads a native store. The three built-ins use `codeg-zcode-acp`, `codeg-trae-cli` and `codeg-command-code`. Being Codeg's own data, it moves with `CODEG_DATA_DIR` rather than with any agent's variable, and `CODEG_HOME`, when set, takes precedence.
+For a [custom agent](/guide/custom-agents) and those four built-ins, Codeg writes an append-only JSONL transcript under `acp-transcripts/<registry-id>/` in its [data directory](/getting-started/configuration#where-codeg-stores-its-data). The built-in IDs are `codeg-zcode-acp`, `codeg-trae-cli`, `codeg-command-code` and `codeg-minimax-code`. These records move with `CODEG_DATA_DIR`; `CODEG_HOME`, when set, takes precedence.
 
 ## How agents differ
 
@@ -151,7 +154,7 @@ The surface is identical, but a few things vary by agent — worth knowing so no
 
 - **Models and modes come from the agent, not Codeg.** The model, the mode (plan-first, accept-edits, and the like) and the other options on the composer's [settings button](/guide/conversations#start-a-session-—-the-composer) list whatever the connected agent reports over ACP. Two agents will offer different models and different modes — that's the agent talking, not a Codeg setting. → [Authentication & Models](/guide/authentication)
 - **Sign-in differs too.** Some agents log in with their own subscription or OAuth, others take a provider API key or a custom endpoint. Each agent's detail pane shows only the options that apply to it. → [Authentication & Models](/guide/authentication)
-- **OpenClaw opts out of MCP.** It's the one agent that doesn't accept Model Context Protocol servers, so an MCP server you've added won't reach an OpenClaw session — Codeg forwards none to it. Most other agents receive your MCP servers normally, with two limits on the transport: ZCode takes **stdio** servers only, and Codex, DeepSeek Harness, Kiro CLI, TRAE CLI and Command Code take no **SSE** server. → [MCP Servers](/guide/mcp)
+- **OpenClaw opts out of MCP.** It's the one agent that doesn't accept Model Context Protocol servers, so an MCP server you've added won't reach an OpenClaw session — Codeg forwards none to it. Most other agents receive your MCP servers normally, with two limits on the transport: ZCode takes **stdio** servers only, and OpenCode 2, Codex, DeepSeek Harness, Kiro CLI, TRAE CLI and Command Code take no **SSE** server. → [MCP Servers](/guide/mcp)
 - **Three never get Codeg's own tools.** Delegation, live feedback, the question card, the browser and computer-use tools all reach an agent through Codeg's companion MCP server, handed over ACP. **OpenClaw** refuses it, **Pi** drops it, and **Cline** never connects MCP servers handed to it that way — so since **0.36.0** Codeg stops offering it to Cline, while the servers in Cline's own settings keep working. → [Multi-Agent Collaboration](/guide/multi-agent#how-delegation-works)
 
 ## Beyond the built-in roster
