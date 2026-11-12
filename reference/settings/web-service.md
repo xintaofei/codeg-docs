@@ -17,6 +17,15 @@ The TCP port the service listens on — **3080** by default. Pick any free port;
 
 The port is **locked while the service is running** — stop it first to change it.
 
+## Listen on
+
+Since **0.43.0**, the network interface the service listens on, under the port:
+
+- **All interfaces (0.0.0.0)** — the default. *Devices on your local network can reach the service with the access token.*
+- **This computer only (127.0.0.1)** — only this machine can open it. Choose it when something else on this computer does the exposing, such as a reverse proxy or Tailscale Serve, so the service itself never faces the network.
+
+It's locked while the service runs, like the port, and saves as you change it. Every start uses the saved choice — this screen's **Start**, the status bar's, and auto-start. A standalone `codeg-server` doesn't read it; it binds whatever [`CODEG_HOST`](/getting-started/configuration) says.
+
 ## Access token
 
 The password for the door. Anyone opening the address is asked for this token **the first time** they connect from a device; without it they don't get in. The field gives you three controls:
@@ -33,13 +42,19 @@ A toggle — **Start the Web service when Codeg launches**. Turn it on and you w
 
 ## Starting and stopping
 
-The **Status** row shows a green dot and *Running* or a grey dot and *Stopped*, with a single button that flips between **Start** and **Stop** (it reads *Processing…* mid-operation). Config you've edited — port, token — applies on the next **Start**, which is why those fields lock once it's up.
+The **Status** row shows a green dot and *Running* or a grey dot and *Stopped*, with a single button that flips between **Start** and **Stop** (it reads *Processing…* mid-operation). Config you've edited — port, listen address, token — applies on the next **Start**, which is why those fields lock once it's up.
 
 If a start fails, the reason is shown inline — most often the port is already taken (*Port N is already in use*), the port needs higher privileges, or the address isn't available on this machine. Change the port or free it and try again.
 
+### From the status bar
+
+Since **0.43.0** you don't have to open Settings to start or stop it. A tower icon in the [status bar](/guide/workspace#the-layout) shows the service's state — **green while listening**, grey when stopped — and its tooltip gives the address. Click it for a popover with the state, the addresses it's reachable at (each with **Copy address**), **Start web service** or **Stop web service**, and **Open Web service settings**.
+
+The icon is in the desktop app's local windows only, not in a browser session or a remote-workspace window. A start from there uses your saved port, listen address and token. If that address is **All interfaces**, it first asks **Open Codeg to your network?**, because every device on the network can then reach Codeg, its terminals and agents included, given the token. Starting on **This computer only**, and stopping, don't ask. Starting or stopping in one place updates the other, and every open window.
+
 ## The access address
 
-Once the service is **running**, an **Access Address** section appears with the URL to open. The service binds to **all network interfaces** (`0.0.0.0`), so it's reachable at *every* local address of the machine at once — loopback for the same computer, a LAN IP for other devices. When there's more than one, a dropdown lets you choose which to show; that choice is **display-only** and remembered — it changes which address the buttons act on, never what the service actually listens on. Three round buttons sit beside it:
+Once the service is **running**, an **Access Address** section appears with the URL to open. On the default **All interfaces**, the service is reachable at *every* local address of the machine at once — loopback for the same computer, a LAN IP for other devices. On **This computer only** the list has one entry, `http://127.0.0.1:<port>`. When there's more than one, a dropdown lets you choose which to show; that choice is **display-only** and remembered — it changes which address the buttons act on, never what the service actually listens on. Three round buttons sit beside it:
 
 - **Copy** — copy the address.
 - **QR Code** — pop up a QR you *"scan with your phone to open Codeg in a browser"* — the fastest way onto a mobile device.
@@ -52,10 +67,10 @@ If the service is stopped but Codeg notices the configured port is already **hel
 ## Good to know
 
 - **It's your desktop app, shared.** The browser client isn't a cut-down version — it's the same Codeg, driven remotely. This differs from a [headless server deployment](/getting-started/deployment), where a dedicated `codeg-server` binary (or Docker) *is* the whole install with no desktop at all. Same browser experience, two different origins — pick this screen when you already run the desktop app and just want to reach it from another device.
-- **Reachable means reachable.** Binding to `0.0.0.0` means anyone who can route to your machine on that port can hit the login — which is exactly why the token matters. On an untrusted network, keep the token strong and stop the service when you're done.
-- **Everything auto-saves.** Port, token, and auto-start persist as you change them; there's no save button. Edits to port and token take effect the next time you Start.
+- **Reachable means reachable.** On **All interfaces**, anyone who can route to your machine on that port can hit the login — which is exactly why the token matters. On an untrusted network, keep the token strong, stop the service when you're done, or switch it to **This computer only** and put something you trust in front of it.
+- **Everything auto-saves.** Port, listen address, token, and auto-start persist as you change them; there's no save button. Edits to the first three take effect the next time you Start. None of them travel with [configuration sync](/reference/settings/system#configuration-sync).
 - **The service is bound to this machine.** Other devices reach it over the network, but the workspace, files, and agents all still run here — the browser is just a window onto them.
-- **It's also where webhooks land.** While it runs, the service is the address a forge delivers the [Repository panel's webhooks](/guide/repository#set-up-the-webhook) to — a route that takes no access token and checks each delivery's signature instead. Stop the service and the desktop app stops receiving them; a scheduled scan doesn't need it. → [Privacy & Security](/reference/privacy#webhooks-for-auto-processing)
+- **It's also where webhooks land.** While it runs, the service is the address a forge delivers the [Repository panel's webhooks](/guide/repository#set-up-the-webhook) to — a route that takes no access token and checks each delivery's signature instead. Stop the service and the desktop app stops receiving them; a scheduled scan doesn't need it. On **This computer only**, a forge can reach it only through whatever proxy you've put in front of it. → [Privacy & Security](/reference/privacy#webhooks-for-auto-processing)
 - **A browser can keep a copy of the app.** Reached over HTTPS or on `localhost`, the web version caches its own files so it reopens without downloading Codeg again. → [Deployment](/getting-started/deployment#install-it-as-an-app)
 
 ## Related

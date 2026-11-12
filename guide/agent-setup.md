@@ -5,7 +5,7 @@ description: Agent by agent, what's particular to each one Codeg drives — how 
 
 # Per-Agent Setup
 
-Every agent gets the same general controls in **Settings → Agents** — the enable switch, preflight, environment variables, and the raw config editor where it has one — and those are covered in [Working with Agents](/guide/agents). Beyond them, each agent's detail pane carries what is particular to that agent: how it signs in, the switches its CLI understands, and the quirks worth knowing before you rely on it. This page goes through them one agent at a time, in the order of the Agent List.
+Every agent gets the same general controls in **Settings → Agents** — the enable switch, preflight, environment variables, [system instructions](/guide/agents#system-instructions) where the agent has a global instructions file, and the raw config editor where it has one — and those are covered in [Working with Agents](/guide/agents). Beyond them, each agent's detail pane carries what is particular to that agent: how it signs in, the switches its CLI understands, and the quirks worth knowing before you rely on it. This page goes through them one agent at a time, in the order of the Agent List.
 
 The roster itself — who builds each agent, what it runs on, where it keeps its sessions — is [Supported Agents](/guide/supported-agents), and the sign-in routes they share are in [Authentication & Models](/guide/authentication).
 
@@ -14,6 +14,12 @@ The roster itself — who builds each agent, what it runs on, where it keeps its
 Anthropic's coding agent. What Codeg installs for it is the **`claude-agent-acp`** adapter rather than the `claude` CLI — [ACP adapters](/guide/supported-agents#acp-adapters) explains the difference — and the adapter reads the same `~/.claude` directory, so the login you already have carries over. The pane signs it in with **Official Subscription**, a **Custom Endpoint**, or a saved [Model Provider](/guide/authentication#save-and-reuse-a-model-provider).
 
 Two things Claude Code's adapter does show up in Codeg since **0.37.0**: it [suggests your next prompt](/guide/conversations#let-claude-code-suggest-the-next-prompt) — for one more request after most turns — and [Remote Control](/guide/conversations#continue-on-your-phone-—-remote-control) lets you carry a session to your phone. Custom subagents you've defined for Claude Code appear as an **Agent** option on the composer's settings button.
+
+**New sessions start in Auto.** Since **0.42.1** (Claude Code 2.1.318), a session with no `permissions.defaultMode` of yours starts in Claude Code's **Auto** mode instead of **Manual** — unless the model can't run Auto, in which case it starts in Manual. In Auto, writes inside the working directory go ahead without asking, and the commands Claude Code reviews are judged by its own classifier rather than by a [permission card](/guide/conversations#activity-timeline). Codeg doesn't override it: a mode you've picked in the composer is remembered for Claude Code and wins, then your `permissions.defaultMode`, then Auto. Behind an **API gateway** that can't answer the classifier's requests, Auto refuses those commands outright — you see a warning, never a card — so switch such a setup to **Manual**. Claude Code's `disableAutoMode` setting removes Auto from the list.
+
+**Show Claude's thinking summaries.** Since **0.41.3**, a switch under Claude Code's **Environment Variables** shows a summary of Claude's reasoning, where Claude Code otherwise shows only the notes it writes between tool calls. It costs no extra tokens and needs claude-agent-acp 0.99.0 or later. It's off by default and works by adding `CLAUDE_CODE_THINKING_DISPLAY=summarized` to the variables, so it's saved with **Save environment variables** and reaches sessions you open or reopen afterwards.
+
+**Fable 5.2.** Since **0.42.2** (Claude Code 2.1.321), *Fable* means Fable 5.2. Through an API gateway, a Fable 5.1 pick you'd saved moves to the Fable row rather than falling back to the default model. With a claude.ai login that still lists Fable 5.1, the pick stays on 5.1. → [Authentication & Models](/guide/authentication)
 
 ### Attribution and telemetry {#claude-code-attribution-and-telemetry}
 
@@ -35,6 +41,10 @@ The **Models** section gathers the list source, selected models, custom entries 
 Choose which models Codex should expose and use the star to set a default. Custom entries can clone a native GPT model or use an **OpenAI-compatible** template for a gateway that accepts plain Responses requests. That template disables code-mode tools, native multi-agent, responses-lite and the custom apply-patch tool.
 
 Automatic provider refresh keeps the last working list if a request fails. The **In use by Codex** status shows the applied list and **Refresh now** retries it. Apply picker changes and save the settings before reconnecting a session.
+
+Since **0.41.3**, Codex's built-in catalog includes **GPT-6.1 Terra**; the default stays GPT-6.1 Sol. Codex's built-in **Vertex AI** provider (`gcp`) is left alone: binding a provider or flipping the **WebSocket** switch never writes into a `[model_providers.gcp]` table, which Codex accepts only a few keys in.
+
+**A conversation stays on its provider.** Codex binds each conversation to the model provider it started on. Switching between **Official Subscription** and a custom endpoint changes that provider, so since **0.42.2** reopening a conversation started on the other one shows a notice instead of quietly starting an empty session: switch back to that provider and reload, or start a new conversation.
 
 ### Sandbox and approvals {#codex-sandbox-and-approvals}
 
@@ -69,6 +79,8 @@ The mode a session **starts** in comes from your config:
 | `danger-full-access`, any other approval | Workspace access — the sandbox is tightened rather than the approvals dropped |
 | no `sandbox_mode` | The adapter's default, Auto review |
 
+Since **0.42.2** (codex-acp 2.6.0), permission profiles you've defined yourself as `[permissions.<id>]` tables are offered too, listed under **Permission Profiles** after the four presets, and an active custom `default_permissions` profile is the mode a session opens in.
+
 On an adapter older than 2.0, the two *Workspace access* rows start in Auto review instead. Full access is only ever the result of an exact match on both settings — nothing is inferred into it — and a `default_permissions` profile in the file takes Codeg out of the derivation entirely, since Codex resolves through that profile and a derived mode would override it.
 
 ::: warning Untrusted is retired
@@ -77,7 +89,7 @@ Current Codex no longer accepts `approval_policy = "untrusted"`: it refuses to s
 
 Other options in the same pane:
 
-- **Allow questions in Default mode.** Codex will only call its `request_user_input` tool in *Plan* mode, so in an ordinary turn its question is refused outright and **no question card ever reaches you** — the agent asks, gets told the tool is unavailable, and carries on guessing. Turning this on lets it ask in ordinary turns too. It writes `[features].default_mode_request_user_input` into your `~/.codex/config.toml` — the same key Codex's own `codex features enable` would set, and the flag is still under development upstream. Feature flags resolve when a thread is created, so it **takes effect on your next session**, not the one you have open.
+- **Allow questions in Default mode.** Codex will only call its `request_user_input` tool in *Plan* mode, so in an ordinary turn its question is refused outright and **no question card ever reaches you** — the agent asks, gets told the tool is unavailable, and carries on guessing. Turning this on lets it ask in ordinary turns too. It writes `[features].default_mode_request_user_input` into your `~/.codex/config.toml` — the same key Codex's own `codex features enable` would set, and the flag is still under development upstream. Feature flags resolve when a thread is created, so it **takes effect on your next session**, not the one you have open. The switch governs that blocking tool. Since **0.42.2** (Codex 0.166), GPT-6 models can also ask **without stopping**, in any mode: the question shows on the usual card while Codex keeps working, your answer is steered into the turn, and a question still open when the turn ends is closed.
 - **Default model.** The default set in the model list or provider model field takes precedence. With neither configured and no session model selected, Codex uses its own default; choose a model explicitly if your provider does not serve it.
 
 Since **0.39.0**, the settings pane no longer offers the obsolete **Enable Skills** or **Enable Fast** switches; choose **Fast** in the composer instead. The **WebSocket** switch appears only for a configured custom provider whose endpoint supports Responses over WebSocket, and is hidden for **Official Subscription** and built-in providers.
@@ -92,11 +104,11 @@ A personal AI assistant you self-host, run through `npx`. It **refuses MCP serve
 
 ## OpenCode
 
-Codeg recommends **OpenCode 2.2.0** in **0.41.1** and requires **2.0 or later**. It downloads a native binary for your platform or uses your own installation. Upgrade an existing 1.x copy before opening a conversation; preflight reports it as unsupported.
+Codeg recommends **OpenCode 2.2.7** since **0.42.3** and requires **2.0 or later**. It downloads a native binary for your platform or uses your own installation. Upgrade an existing 1.x copy before opening a conversation; preflight reports it as unsupported.
 
 ### Providers and models {#opencode-providers-and-models}
 
-Use **Connect Provider** for providers in OpenCode's catalog, or **Custom providers** for an endpoint you define yourself. API keys go into OpenCode's own credential store. Providers that require OAuth are signed in through `opencode auth login` in a terminal. **Fetch models** lists a custom endpoint's models; select the main and small models from the available choices.
+Use **Connect Provider** for providers in OpenCode's catalog, or **Custom providers** for an endpoint you define yourself. API keys go into OpenCode's own credential store. Providers that require OAuth are signed in through `opencode auth login` in a terminal. **Fetch models** lists a custom endpoint's models; select the main and small models from the available choices. Since **0.42.0** those two lists leave out providers you haven't enabled and models OpenCode 2 marks `disabled`; the composer's model picker still lists everything OpenCode reports.
 
 The editor follows OpenCode 2's `providers` configuration and keeps comments, formatting and unrelated fields in `opencode.jsonc` or `opencode.json`. Its native JSON editor is available for fields without a visual control.
 
@@ -117,9 +129,15 @@ Legacy 1.x `permission` and `tools` blocks are read, and the next visual edit co
 
 Use plugins built for **OpenCode 2**. The plugin manager accepts npm packages and local directories and writes the `plugins` list; OpenCode installs package plugins when the next session starts. Entries from the old `plugin` list are marked **OpenCode 1 list** and move to `plugins` on the next add or remove.
 
-The behavior and compaction controls also use OpenCode 2's settings. Legacy settings that OpenCode ignores are identified in the panel; **Sharing** is no longer effective. **SSE MCP servers are unsupported**: use streamable HTTP if the server offers it, or leave OpenCode out of that server's assignments. → [MCP Servers](/guide/mcp#choose-which-agents-get-a-server)
+The behavior and compaction controls also use OpenCode 2's settings. Since **0.41.4**, **Reserved tokens** — the room kept free before automatic compaction, `compaction.buffer` — takes a share of the context window, from `1%` to `99%` (such as `20%`), as well as a token count; left empty, OpenCode keeps 15% of the window free, at least 16,000 tokens. Legacy settings that OpenCode ignores are identified in the panel; **Sharing** is no longer effective. **SSE MCP servers are unsupported**: use streamable HTTP if the server offers it, or leave OpenCode out of that server's assignments. → [MCP Servers](/guide/mcp#choose-which-agents-get-a-server)
 
-Conversations show form questions, scripts and background sub-agent progress. Saved history reads OpenCode 2's compaction records, command exit codes, media attachments and delegation links, including parallel delegations.
+Conversations show form questions, scripts and background sub-agent progress. Saved history reads OpenCode 2's compaction records, command exit codes, media attachments and delegation links, including parallel delegations; since **0.42.3** a command that timed out or was terminated no longer reads as successful.
+
+**Skills are back in the `/` menu** since **0.42.0**. OpenCode 2 doesn't announce its skills, so Codeg finds them where OpenCode loads them from — `.claude/skills`, `.agents/skills`, and the `skill` or `skills` folder of OpenCode's config directory and of each `.opencode` folder — in your home folder and in the session's folder and every folder above it. Skills set by a `skills` path in OpenCode's config, or registered by a plugin, aren't listed.
+
+::: warning What OpenCode doesn't report yet
+`/goal`, `/init` and `/review` answer at once and then run with **no progress shown**. Stop doesn't halt a `/goal` — send `/goal pause` or `/goal clear` — and if one of their steps needs an approval, the session stops responding. Results of background commands and image generation appear only after you reopen the conversation.
+:::
 
 ## Cline
 
@@ -155,13 +173,18 @@ Hermes is a special case — it manages its own stable of model providers, so in
 
 For anything the pane doesn't cover, **Open Config Folder** reveals `~/.hermes`, and an Advanced section lets you edit Hermes's `config.yaml` directly.
 
-In the conversation, Hermes now offers models grouped by provider and a mode selector. Reopening a session restores those choices.
+In the conversation, Hermes now offers models grouped by provider and a mode selector, and since **0.42.0** a **reasoning effort** setting beside them — for a self-updated Hermes from the official installer too. Reopening a session restores those choices. Since **0.42.1** (Hermes 0.23) a model picked during a turn applies from the next message. With Codeg's own provider config, Hermes 0.23 names its models differently, so a model you'd saved under the old name isn't reapplied — the session starts on the configured model; pick it again.
+
+::: warning Hermes 0.23: two known problems
+- **Its own MCP servers drop out.** In a session that also receives servers from Codeg — any session with [codeg-mcp](/guide/multi-agent) attached — the servers in Hermes' own `config.yaml` can't connect — including those you assign to Hermes in [Settings → MCP](/guide/mcp), which are written there.
+- **One conversation can take others down.** Hermes conversations share one background service, started by the first of them. On Linux, Windows and some macOS setups, disconnecting that first conversation stops the service and interrupts turns running in the other Hermes conversations; a prompt sent a few seconds later works again.
+:::
 
 ## CodeBuddy
 
 Tencent Cloud's coding assistant, run through `npx`. Sign in by running `codebuddy` once in a terminal, and Codeg picks that login up.
 
-A conversation started in CodeBuddy's own terminal on **2.168.2** runs every step through a single REPL tool, so in Codeg it shows one **REPL** card per step; conversations you start in Codeg aren't affected. Since **0.36.0** a reopened conversation shows a slash command the way you typed it, not the prompt it expanded to.
+A conversation started in CodeBuddy's own terminal on **2.168.2** runs every step through a single REPL tool, so in Codeg it shows one **REPL** card per step; conversations you start in Codeg aren't affected. Since **0.36.0** a reopened conversation shows a slash command the way you typed it, not the prompt it expanded to. Since **0.41.2**, stopping CodeBuddy no longer loses the next queued message: Codeg holds it briefly, because CodeBuddy ignores a prompt that arrives right after a stop.
 
 ## Kimi Code
 
@@ -188,13 +211,15 @@ Kimi Code is the other agent with a pane of its own, rebuilt in **0.23**. The re
 `kimi acp` reads the `KIMI_MODEL_*` family — `KIMI_MODEL_BASE_URL`, `KIMI_MODEL_API_KEY`, `KIMI_MODEL_NAME` — *before* `config.toml`, so one left in the agent's [Environment Variables](/guide/agents#configure-an-agent) silently overrides everything this pane writes. The pane warns you while any is still set, and saving clears them — so what you can see is what's in force.
 :::
 
+**Plans, files and MCP sign-ins.** Since **0.41.2** Kimi Code's plan mode no longer ends the turn at its first tool call, and since **0.43.0** (Kimi Code 2.6.0) approving, dismissing or asking for changes to a plan no longer reads as a failed tool. Since **0.41.4** it can read text files up to 16 MiB through Codeg, where most other agents get 2 MiB per read. An MCP server waiting for you to authorize it shows its reconnection status, and since **0.43.0** the link to open in your browser. And since **0.42.1**, saving its MCP servers keeps Kimi's own `environment_id` and `deferred` fields.
+
 If a Kimi Code conversation is active in another client, Codeg reports that it is in use. Finish or release it there before resuming here; Codeg no longer replaces it with a new empty session.
 
 ## Pi
 
 A self-extensible coding agent, run through `npx`. It quietly drops the MCP servers handed to it, so it can't lead a [delegation](/guide/multi-agent) — another agent can still delegate to it.
 
-Since **0.39.0**, the model picker follows Pi's **`enabledModels`** setting and lists only the models it allows. A project's **`.pi/mcp.json`** is also covered by the project-trust decision below before Pi starts its servers. This is Pi's own configuration; it does not make Pi accept the delegation tools supplied through ACP.
+Since **0.39.0**, the model picker follows Pi's **`enabledModels`** setting and lists only the models it allows. A project's **`.pi/mcp.json`** is also covered by the project-trust decision below before Pi starts its servers. This is Pi's own configuration; it does not make Pi accept the delegation tools supplied through ACP. Since **0.42.0** a Pi conversation you reopen shows its history where it could come back empty, and since **0.43.0** a Pi selection question offers only its listed choices, with no **Other**.
 
 ### Project trust {#pi-project-trust}
 
@@ -229,7 +254,7 @@ Two requirements arrived with it:
 
 xAI's coding agent, run through `npx`. Its pane has an **Authentication method** picker — **Official Subscription** (`grok login`), **XAI API key**, or **Custom endpoint** → [Sign in with a subscription](/guide/authentication#sign-in-with-a-subscription) — and, unlike most agents, a **reasoning effort** dropdown of its own, from low up to **Max**, written into Grok's own config.
 
-Since **0.39.0**, a **custom model** can declare its supported **reasoning-effort levels** on its model card, so those choices appear in the composer too. Codeg also detects a native Grok installation under `~/.grok/bin`, including on Windows.
+Since **0.39.0**, a **custom model** can declare its supported **reasoning-effort levels** on its model card, so those choices appear in the composer too. Codeg also detects a native Grok installation under `~/.grok/bin`, including on Windows. Since **0.42.1**, **Upgrade** really switches Grok to the new version — before, the old build kept running — and after **Uninstall** Grok no longer reads as installed; a copy that Codeg's own npm install left in `~/.grok/bin` isn't taken for a native one. Since **0.42.2** Grok's background sub-agents keep showing their progress after the turn that started them has ended.
 
 ## Cursor
 
@@ -257,7 +282,7 @@ On **Linux**, Cursor also simply works again as of **0.31.2**: the compatibility
 
 ## DeepSeek Harness
 
-DeepSeek's own coding harness, which Codeg drives through the community `deepseek-acp` bridge rather than DeepSeek's automation-only transport — [why](/guide/supported-agents#deepseek-harness). It needs Node.js **22** or later.
+DeepSeek's own coding harness, which Codeg drives through the community `deepseek-acp` bridge rather than DeepSeek's automation-only transport — [why](/guide/supported-agents#deepseek-harness). It needs Node.js **22** or later. Since **0.42.0**, history from DeepSeek Harness 0.2.x shows tool output, failures and cache-write usage, conversations migrated from earlier versions included, and since **0.43.0** its questions show their full text and each option's description.
 
 ### Endpoint and key {#deepseek-harness-endpoint-and-key}
 
@@ -286,6 +311,8 @@ Everything else Qoder reads lives in **one file**, `$QODER_CONFIG_DIR/settings.j
 
 Model and reasoning effort aren't here. Qoder reports them over ACP, so the composer's own selectors own them, per session — and since **0.35.2** a conversation's details show the model you switched to last, not the one it started on. → [Authentication & Models](/guide/authentication)
 
+Since **0.42.1** Codeg starts Qoder with its MCP **lazy loading** turned off — Qoder 1.1.84 turned it on by default, which hid MCP tools behind generic ones — so MCP tool cards, Codeg's own tools and history keep working. On **Windows**, since **0.42.2** Codeg starts the real Qoder program behind its `qoder.cmd` launcher, which broke Qoder's startup, and **Diagnose** shows which program that is. Since **0.41.3**, stopping Qoder while it waits for an approval also closes that tool call. One gap remains: when a background sub-agent finishes after Qoder has already answered, the reply it writes then appears only after you reopen the conversation.
+
 Since **0.35.2** Qoder can also ask you things with **its own question tool**, on the same question card the other agents use, where before it had to fall back to Codeg's. The answers you pick stay on the card afterwards — multi-select ones included — as they now do for Claude Code's own question tool too, instead of reading *No selection*.
 
 ## Google Antigravity
@@ -293,7 +320,7 @@ Since **0.35.2** Qoder can also ask you things with **its own question tool**, o
 Google's agent-first coding tool, downloaded as a native binary. Its ACP server ships as a downloaded tree with no standalone command name, so it's the one agent Codeg can't pick up from a copy on your `PATH`.
 
 ::: info Antigravity runs on Intel Macs since 0.32.2
-Antigravity used to be the roster's one platform hole: Google published it for Apple Silicon, Linux and Windows only, and Codeg refused the install on an Intel Mac. **1.2.1** is its first release with an Intel build, and Codeg moved to it in **0.32.2** — so every agent on the roster now runs anywhere its runtime does. **1.4.3**, recommended in **0.41.1**, still ships one.
+Antigravity used to be the roster's one platform hole: Google published it for Apple Silicon, Linux and Windows only, and Codeg refused the install on an Intel Mac. **1.2.1** is its first release with an Intel build, and Codeg moved to it in **0.32.2** — so every agent on the roster now runs anywhere its runtime does. **1.4.5**, recommended since **0.41.4**, still ships one.
 :::
 
 ### One file decides how it signs in {#antigravity-one-file-decides-how-it-signs-in}
@@ -311,9 +338,11 @@ Four methods, each asking for what it actually needs:
 
 Save with a method's requirements unmet and the pane refuses, naming what's missing, rather than letting a session fail later for a reason you'd have to guess at.
 
-Two behaviours worth knowing:
+A few behaviours worth knowing:
 
 - **Credentials outside the method you picked are cleared at launch.** A `GEMINI_API_KEY` left in your shell can't quietly take over a session you configured for Google sign-in.
+- **Large files read whole.** Since **0.41.3** (Antigravity 1.4.4), its reads through Codeg can return files up to 16 MiB, where most other agents get 2 MiB per read.
+- **Its questions take only their listed choices.** Since **0.43.0** Antigravity's own question cards offer no **Other**, since a typed answer used to be treated as a cancellation.
 - **If Codeg can't write that settings file** — you've made it read-only, say — it tells you so plainly instead of pretending the save took. Your choice is stored on Codeg's side, but Antigravity keeps authenticating the way the file says, so set `auth.type` yourself or move the file aside and save again.
 
 Model and session mode come over ACP, so they live in the composer rather than here. Since **0.34.0**, Antigravity **1.3.0** also reports how full its context window is, so the ring beside the composer follows an Antigravity session live. And since **0.35.2**, with **1.4.0**, the model picker lists **one model per family**, with the variant chosen in a separate **Thinking Level** option. A model you'd picked before the update carries over, and a switch takes effect from your next message.
@@ -361,13 +390,13 @@ A `KIRO_HOME` in Kiro's own Environment Variables moves where Codeg reads its hi
 
 ## ZCode
 
-Z.ai's ZCode, new in **0.36.0**, through a community ACP bridge — [why it's built that way](/guide/supported-agents#zcode). It needs two things Codeg doesn't install: the **official ZCode**, installed and signed in, and **Node.js 22** or later with `node:sqlite`. From **Settings → Agents** Codeg installs only the bridge, `zcode-acp-server`, and its **Upgrade** updates only the bridge.
+Z.ai's ZCode, new in **0.36.0**, through a community ACP bridge — [why it's built that way](/guide/supported-agents#zcode). It needs two things Codeg doesn't install: the **official ZCode**, installed and signed in or given a Coding Plan key (below), and **Node.js 22** or later with `node:sqlite`. From **Settings → Agents** Codeg installs only the bridge, `zcode-acp-server`, and its **Upgrade** updates only the bridge.
 
 **Finding ZCode.** Codeg looks for the desktop app's own entry first — `%LOCALAPPDATA%\Programs\ZCode\resources\glm\zcode.cjs` on Windows, inside `ZCode.app` on macOS, under `/opt/ZCode` or `/usr/share/zcode` on Linux — then for `zcode` on your `PATH`. For Node it tries each one it can find, your `PATH` and then the usual version managers, and takes the first that's 22 or later and loads `node:sqlite`, so an older Node at the front of your `PATH` doesn't hide a newer one. When detection fails, set **`ZCODE_BIN`** (ZCode's `zcode.cjs` entry) or **`ZCODE_NODE`** in ZCode's **Environment Variables** — an absolute path or a command name on your `PATH`; a relative path is refused, and a value you set is used as given rather than swapped for a guess. The **Official ZCode runtime** row in preflight shows what was found.
 
-**Signing in, models and credentials** stay in ZCode, and the pane has no configuration card — just the environment editor, with a note saying so. A ZCode **Start Plan** account can't run through the bridge: its requests need a captcha only the ZCode desktop app can solve. GLM Coding Plan accounts aren't affected.
+**Signing in, models and credentials** stay in ZCode, and the pane has no configuration card — just the environment editor, with a note saying so. Since **0.41.2** (bridge 0.78.0) a **GLM Coding Plan API key** works too: add it in the ZCode desktop app's model provider settings (**Use API key**), or run the bridge's `setup` command in a terminal (`zcode-acp setup --provider zai`, or `--provider bigmodel`) to give the bridge a key of its own, kept in `~/.zcode/v2/acp-accounts.json` — run it with the same `ZCODE_HOME` as ZCode's environment in Codeg, and reconnect afterwards. Since **0.43.0** (bridge 0.84.2) the bridge reads the encrypted credentials ZCode **3.18** and later store, using the key the desktop app keeps in your system's credential store; with an older bridge, every turn on such an install failed. Bridges before 0.83.3 (Codeg 0.42.3) always declined **Start Plan** models, whose requests need a captcha only the desktop app can solve; 0.83.3 offers them through the desktop app's sign-in, which hasn't been verified end to end.
 
-**In a conversation**, the mode, model and thinking settings are whatever the bridge reports. A new session sends nothing until ZCode has confirmed its mode — the one you last picked, if the session offers it, otherwise *build* — and if that doesn't happen within 60 seconds the session fails rather than sending your message. Permission requests use Codeg's ordinary cards. The bridge writes `.zcode/acp/sandbox.json` only when its own sandbox is enabled globally; Codeg does not enable it by default.
+**In a conversation**, the mode, model and thinking settings are whatever the bridge reports. A new session sends nothing until ZCode has confirmed its mode — the one you last picked, if the session offers it, otherwise *build* — and if that doesn't happen within 60 seconds the session fails rather than sending your message. Permission requests use Codeg's ordinary cards. A request that fails on the network or the gateway is retried up to five times; if it still fails, the turn ends saying so and you can resend in the same conversation (0.41.3). Since **0.41.4**, `/rename` renames the conversation in Codeg too — unless you've renamed it yourself — and since **0.42.3** older conversations get their saved titles back when reopened. The bridge writes `.zcode/acp/sandbox.json` only when its own sandbox is enabled globally; Codeg does not enable it by default.
 
 **Images and PDFs** are supported since **0.39.0**, when the bridge advertises the corresponding capability. Paste, drop or upload images; PNG, JPEG, WebP, GIF, BMP and SVG are accepted, up to **10 MiB per image**. A prompt can contain up to **100 content blocks** and **50 MiB** of decoded content in total. Pause a native goal loop before sending binary attachments, because queued goal prompts accept only text. Completed replies also keep their per-turn token usage and time when reopened; older transcripts are not retroactively filled in.
 
@@ -420,7 +449,7 @@ mcode login --region global
 
 A bring-your-own-key provider already configured in MiniMax Code can be used without a separate MiniMax login. Use MiniMax Code's own provider commands or `/provider` to configure it; Codeg reuses its selected provider and credentials. Then enable MiniMax Code in **Settings → Agents** and select it for a conversation.
 
-Models, running modes and permission choices come from the installed `mcode` over ACP. Image support depends on both the agent's advertised capabilities and the selected model. Codeg forwards assigned MCP servers and its collaboration tools as session overlays, supporting [multi-agent delegation](/guide/multi-agent) without changing MiniMax's native MCP or credential files.
+Models, running modes and permission choices come from the installed `mcode` over ACP. Since **0.42.2** its questions to you appear as interactive question cards, with each option's description, instead of raw JSON. Image support depends on both the agent's advertised capabilities and the selected model. Codeg forwards assigned MCP servers and its collaboration tools as session overlays, supporting [multi-agent delegation](/guide/multi-agent) without changing MiniMax's native MCP or credential files.
 
 Codeg records conversations started here; it does **not import MiniMax Code's native history**. Skills and CLI upgrades remain managed through MiniMax Code itself, so there is no MiniMax column in Skill Packs or in Codeg's skill editor. Existing custom `mcode` registrations remain separate. Authenticated end-to-end validation so far used a local test provider on macOS; real MiniMax accounts, Windows and Linux were not covered.
 

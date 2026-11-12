@@ -110,10 +110,11 @@ You aren't the only one who can save an automation. An agent in a conversation c
 
 Both are **off by default**, under **Settings → Collaboration → In-conversation tools**. They're the two switches there that *write* app state rather than only reading it, so they're deliberately opt-in — and unlike the read-only tools, they're re-checked at the moment they're called, meaning switching one off stops a session that's already running from using it. → [Settings → Collaboration](/reference/settings/collaboration#in-conversation-tools)
 
-Two details worth knowing:
+Three details worth knowing:
 
 - **The project is resolved, not guessed.** An explicit folder path wins; otherwise it's the conversation's folder, otherwise its working directory — and a **worktree normalizes back to the repository it was cut from**, so a to-do never lands on a temporary checkout's board. Anything it can't resolve comes back as a refusal the agent can act on rather than an opaque error.
 - **Cron is held to five fields** at the tool boundary. A six-field expression would have been stored happily and then fired two days off, so it's rejected instead.
+- **A queued to-do can carry files** (since **0.43.0**). The agent passes up to **10** paths with it — the screenshot, mockup or log that belongs to the briefing. Images (PNG, JPEG, GIF or WebP, recognised by their content rather than their name) are **copied into the task**, up to 20 MB each and 40 MB together, so they survive the original being deleted. Any other file is linked by its path and must still be there when the task runs. One missing or oversized attachment means **nothing is created**, and the agent is told which one to fix. An agent that manages its own file access (`CODEG_ACP_HOST_TOOLS=agent`) is the exception: Codeg doesn't read its files at all, so it links every attachment by path, images included, without checking that they exist or how large they are. The tool's card in the transcript lists what was attached under **Attachments**.
 
 Whatever the agent saves is an ordinary automation — it shows up in this view, and you edit, disable or delete it exactly like one you wrote yourself.
 

@@ -1,13 +1,13 @@
 ---
 title: Repository Panel
-description: Hand a GitHub, GitLab or Gitea issue or pull request straight to an agent, or let the panel pick matching ones up on a schedule or a webhook — each works in its own worktree, you review the result on the board, and the outcome goes back to the thread it came from.
+description: Hand a GitHub, GitLab, Gitea or CNB issue or pull request straight to an agent, or let the panel pick matching ones up on a schedule or a webhook — each works in its own worktree, you review the result on the board, and the outcome goes back to the thread it came from.
 ---
 
 # Repository Panel
 
-Most agent work starts with someone reading an issue and retyping it into a prompt. The **Repository panel** removes that step: it lists a folder's **GitHub, GitLab or Gitea** issues and pull requests inside Codeg, and hands the one you pick to an agent as a [to-do task](/guide/tasks) — its own worktree, its own session, and the same review gate before anything lands.
+Most agent work starts with someone reading an issue and retyping it into a prompt. The **Repository panel** removes that step: it lists a folder's **GitHub, GitLab, Gitea or CNB** issues and pull requests inside Codeg, and hands the one you pick to an agent as a [to-do task](/guide/tasks) — its own worktree, its own session, and the same review gate before anything lands.
 
-It shipped in **0.27.0** behind a **Beta** mark, which came off in **0.30.0** once the panel could do the whole loop: read a change through tabs, comment on it, open and close issues, and merge — without a browser. **Gitea** joined in **0.30.4**, and with it **Forgejo**: Forgejo is a fork of Gitea serving the same `/api/v1`, so the client that talks to one talks to the other and there's no separate setting for it.
+It shipped in **0.27.0** behind a **Beta** mark, which came off in **0.30.0** once the panel could do the whole loop: read a change through tabs, comment on it, open and close issues, and merge — without a browser. **Gitea** joined in **0.30.4**, and with it **Forgejo**: Forgejo is a fork of Gitea serving the same `/api/v1`, so the client that talks to one talks to the other and there's no separate setting for it. **CNB** ([cnb.cool](https://cnb.cool)) followed in **0.42.0**.
 
 Since **0.35.2** the panel can also do the handing over itself. [Auto-processing](#let-it-pick-items-up-by-itself) scans the repository on a schedule, or the moment the forge sends a webhook, and turns the items that match your rules into tasks — the same tasks **Start** would have made, through the same gates.
 
@@ -19,7 +19,7 @@ The panel is a *front door* to To-dos, not a parallel system. Everything it crea
 
 **Repository panel** sits in the left sidebar beneath To-dos, and in the status bar's [quick actions](/guide/workspace#the-layout) under *Navigation*. Like Automations and To-dos it takes over the main area; the **Back to Conversations** button at the start of its title returns you to your conversations.
 
-Since **0.37.0** the side panel also has **Issues** and **Pull requests** tabs — **Merge requests** on GitLab — showing this list for the project you're in: search, the state filter, **Assigned to me**, labels, **New issue**, and the same detail panel with **Start**. Switching folders, page sizes and the panel settings stay here. → [The Side Panel](/guide/side-panel#the-project-s-automations-to-dos-issues-and-pull-requests)
+Since **0.37.0** the side panel also has **Issues** and **Pull requests** tabs — **Merge requests** on GitLab and CNB — showing this list for the project you're in: search, the state filter, **Assigned to me**, labels, **New issue**, the [CI marks](#ci-at-a-glance), [handling several issues together](#handle-several-issues-as-one-task), and the same detail panel with **Start**. Switching folders, page sizes and the panel settings stay here. → [The Side Panel](/guide/side-panel#the-project-s-automations-to-dos-issues-and-pull-requests)
 
 Two buttons join the window's top-right cluster while it's open: **Refresh**, which reloads the whole list rather than narrowing it, and **Panel settings**. Refresh greys out until a repository is actually loaded; settings never does, since there's always a global row to change.
 
@@ -27,7 +27,7 @@ Two buttons join the window's top-right cluster while it's open: **Refresh**, wh
 
 The panel reads through the same credentials git does, under [**Settings → Version Control**](/reference/settings/version-control). Pick a project folder and Codeg looks at its `origin` remote:
 
-- **A host that is none of the three** — say a Gitee or Bitbucket remote. The panel says **only GitHub, GitLab and Gitea are supported** and names the host, rather than falling back to GitHub and reporting whatever the wrong API answered, which used to come out as "no GitHub account for gitee.com" or a raw API failure. **Add an account** is still offered, because that's the other way in for a self-hosted instance.
+- **A host that is none of the four** — say a Gitee or Bitbucket remote. The panel says **only GitHub, GitLab, Gitea and CNB are supported** and names the host, rather than falling back to GitHub and reporting whatever the wrong API answered, which used to come out as "no GitHub account for gitee.com" or a raw API failure. **Add an account** is still offered, because that's the other way in for a self-hosted instance.
 - **A remote, but no account for that host** — the empty state names the provider and the host and offers **Add an account**, which takes you straight to the settings screen.
 
 Reaching that verdict costs a probe rather than a guess. A host Codeg doesn't recognise by name is **asked what it is**, cheapest question first:
@@ -35,45 +35,53 @@ Reaching that verdict costs a probe rather than a guess. A host Codeg doesn't re
 1. **Gitea**, at `GET {origin}/api/v1/version`. It goes first because it's the only question here needing no credential *and* answering in its body — every Gitea serves that endpoint publicly and replies with a version object. A blanket gateway returning 200 to everything doesn't produce that shape, so ruling one out costs nothing extra. Neither GitHub Enterprise (`/api/v3`) nor GitLab (`/api/v4`) mounts `/api/v1` at all.
 2. **GitLab**, at `GET {origin}/api/v4/version` — which GitLab answers 200 with a token and 401 without, while GitHub Enterprise 404s. Neither answer decides anything on its own, because an authenticating gateway in front of a GitHub Enterprise can produce either one for every request. So a JSON 200 or 401 is only a *candidate*, and Codeg confirms it against a path nothing routes: real GitLab 404s there, a blanket gateway answers the same as before, and Codeg declines to conclude rather than breaking a setup that works.
 
+**CNB is never asked.** `cnb.cool` is recognised by name, like `github.com` and `gitlab.com`, and a self-hosted CNB by an account you've added under **CNB accounts**, or by a `cnb` label in its hostname, such as `cnb.example.com`.
+
 What gets remembered is a **conclusive** answer, for the rest of the session. A host that's unreachable, or whose server returns a transient error, leaves the question open and is asked again next time — so a Gitea that happened to be restarting doesn't get written off until Codeg has actually heard from it. (A transient answer from the Gitea probe doesn't stop the GitLab one: if that resolves conclusively, that verdict stands.)
 
 Which forge you're talking to is **derived from the remote on Codeg's side**, never claimed by the client — because that choice is what picks the credentials. A GitLab token is never spent on a GitHub call, and a GitHub Enterprise host on its own domain resolves by its URL rather than by its name.
 
-GitLab has its own accounts panel since **0.27.0** and Gitea since **0.30.4**; a GitLab token needs the **api** scope, a Gitea one **write:repository**, **write:issue** and **read:user**. → [Version Control](/reference/settings/version-control#gitea-accounts)
+GitLab has its own accounts panel since **0.27.0**, Gitea since **0.30.4** and CNB since **0.42.0**; a GitLab token needs the **api** scope, a Gitea one **write:repository**, **write:issue** and **read:user**, and a CNB one **account-profile:r**, **repo-issue:rw**, **repo-pr:rw**, **repo-notes:rw** and **repo-code:rw**. → [Version Control](/reference/settings/version-control#cnb-accounts)
 
 ## Find the item
 
 The list is a triage surface, not a browser bookmark. Across the top:
 
-- **Issues** and **Pull requests** — or **Merge requests**, because a GitLab user doesn't have pull requests and being told they do reads like the wrong tool answered. Each tab shows a count for the state you're filtered to, and which one you were on is **remembered across sessions**, next to the page size and for the same reason: it says which list you work in.
-- **Search** over title and description.
+- **Issues** and **Pull requests** — or **Merge requests** on GitLab and CNB, because a GitLab user doesn't have pull requests and being told they do reads like the wrong tool answered. Each tab shows a count for the state you're filtered to where the forge reports one — CNB doesn't — and which one you were on is **remembered across sessions**, next to the page size and for the same reason: it says which list you work in.
+- **Search** over title and description. CNB offers no search on its merge requests, so that tab has no search box there.
 - **State** — Open, Closed, or All. A pull request row additionally shows **Merged** and **Draft** where they apply.
 - **Assigned to me** — one toggle, the fastest filter in the panel.
 - **Labels** — a searchable multi-select over the repository's own labels. It **stays open as you pick**, because two labels shouldn't cost two trips, and it's hidden entirely on a repository that has none. Only the first 100 labels are listed, and it says so when that bites.
-- **Sort** — Newest, Oldest, Recently updated, Least recently updated.
+- **Sort** — Newest, Oldest, Recently updated, Least recently updated on GitHub and GitLab; CNB offers the first three, and Gitea and Forgejo have no sort control.
 
 Paging sits at the bottom with a **per page** selector (10 / 20 / 30 / 50, default 20). Two limits are worth knowing because the panel is honest about both rather than quietly returning less:
 
 - **A search that timed out** says the page may be missing matches.
 - **Only the first *n* matches can be paged through.** Past that the forge's own API stops answering, and the panel tells you to narrow the filters rather than showing you a page that isn't there.
 
-Click a row and its **details open in a side panel** — the description, every label, and the same **Start** action — so reading an issue doesn't cost you your filters, your page, and your scroll position. (The panel shows what the list already fetched, and a body is capped at 16,000 characters on the way in, so a genuinely enormous issue is worth opening in the browser.) **Open in browser** is there when you want the real thread.
+Click a row and its **details open in a side panel** — the description, every label, and the same **Start** action — so reading an issue doesn't cost you your filters, your page, and your scroll position. (The panel shows what the list already fetched — on CNB, whose issue list carries no descriptions, an issue's body is fetched when you open it — and a body is capped at 16,000 characters on the way in, so a genuinely enormous issue is worth opening in the browser.) **Open in browser** is there when you want the real thread.
 
 Since **0.28.2** the panel also carries the **discussion**, not just the description — because on most issues the description is the opening bid and the comments are where it was actually settled. Each one renders through the same Markdown renderer as the body, with its author, a relative timestamp, an **edited** mark where the forge really recorded an edit, and a permalink out to it. **Load more** pages through the rest.
 
 The thread is fetched **when you open the panel**, not with the list: folding it into the list would spend a request per row to draw a page whose reader opens at most one of them. On GitLab, the housekeeping events — *changed the milestone*, *assigned to* — are filtered out, so what you read is the conversation and matches the comment count on the row. A thread with hundreds of comments opens quickly because only what's on screen is drawn, the rest arriving as you scroll.
 
-A row whose item already has a task shows that instead of **Start** — a status chip that takes you to the board, plus a small **re-trigger** link where starting another run makes sense. The chip reads **Deferred** for a task you've set aside with [Handle later](/guide/tasks#set-it-aside-for-later).
+A row whose item already has a task shows that instead of **Start** — a status chip that takes you to the board, plus a small **re-trigger** link where starting another run makes sense. The chip reads **Deferred** for a task you've set aside with [Handle later](/guide/tasks#set-it-aside-for-later), and for a task that [handles several issues](#handle-several-issues-as-one-task) its tooltip names the others. A pull request that's already merged offers no **Start**.
+
+### CI at a glance
+
+Since **0.43.0** a pull or merge request row ends with what its CI says: a mark, and how many checks passed out of how many — `9/10`, say, when one was skipped. A red **✗** means something failed, an amber dot that checks are still running, a green **✓** that they passed. When GitHub is holding workflows for approval, the count gives way to an amber **Approval needed** — unless a check has failed, which takes precedence. The tooltip spells out the counts; click the mark to open the change on its **Checks** tab. A repository without CI shows nothing, as before.
+
+How much there is depends on the forge. **GitHub** and **Gitea/Forgejo** give the counts, apart from an older GitHub Enterprise that can't report them, where the mark comes alone. **GitLab** gives its pipeline's state only, so the mark comes without a fraction, and **CNB** gives nothing. On GitHub the marks need a token that can read checks; a row the token can't read stays unmarked.
 
 ### A change opens as three tabs
 
 An issue is one scroll, because a one-tab bar says nothing. A **pull or merge request** is three, with the branch pair kept in the header where it stays readable from all of them:
 
 - **Conversation** — the description and the thread, same as an issue.
-- **Checks** — CI, with the **worst state as a glyph on the tab** so a red build is visible without opening it. Three answers are kept apart rather than blurred: green, *nothing configured*, and *this account can't look* — and on GitHub a fourth, half-readable, because check runs and commit statuses sit behind two different permissions.
-- **Files changed** — the file list, each row opening onto its own diff, with the **count on the tab** where the forge gives an exact one (GitLab reports a truncated `1000+` on very large changes, and a count that isn't a number isn't shown).
+- **Checks** — CI, with the **worst state as a glyph on the tab** so a red build is visible without opening it. Three answers are kept apart rather than blurred: green, *nothing configured*, and *this account can't look* — and on GitHub a fourth, half-readable, because check runs and commit statuses sit behind two different permissions. CNB has no CI the panel can read, so its tab always says the account can't read the checks. On GitHub, a pull request from a fork can also be [waiting for approval](#approve-workflows-from-a-fork).
+- **Files changed** — the file list, each row opening onto its own diff, with the **count on the tab** where the forge gives an exact one (GitLab reports a truncated `1000+` on very large changes, a count that isn't a number isn't shown, and CNB reports none).
 
-Opening a file's diff **costs no extra request**: both forges already ship the hunks with the file page and Codeg was throwing them away. A row with nothing to open isn't clickable. On GitHub it says which of two reasons applies — binary content, or a diff withheld for being too large while its lines were still counted. On GitLab an empty diff is reported as binary either way, so read that as *no diff available* rather than as a statement about the file.
+Opening a file's diff **costs no extra request**: the hunks arrive with the file page — on Gitea and Forgejo, from the whole diff Codeg fetches alongside it — and Codeg was throwing them away. A row with nothing to open isn't clickable. On GitHub it says which of two reasons applies — binary content, or a diff withheld for being too large while its lines were still counted. On GitLab an empty diff is reported as binary either way, so read that as *no diff available* rather than as a statement about the file.
 
 ### Act on it without leaving
 
@@ -85,11 +93,17 @@ Reading was the whole story until **0.29.0**. The panel now writes as well:
 
 Both writes **take the forge's answer as the truth rather than assuming their own worked**. A posted comment comes back carrying the id the thread de-duplicates on, the author your token actually resolved to, and its permalink. A state change comes back as the row the forge now serves — which is how a pull request somebody merged in the browser a minute ago lands as **merged** instead of the *closed* you asked for.
 
+### Approve workflows from a fork
+
+GitHub doesn't run Actions workflows for a pull request from a fork until someone with write access approves them. Since **0.43.0** the panel can do that. When it finds workflows held for an **open** pull request from a fork, the **Checks** tab opens with an amber strip naming them, its badge turns to an amber shield, and the merge box adds *Workflows are awaiting approval*.
+
+**Approve workflows to run** asks you to confirm first, naming the commit, because approving runs that pull request's code on the repository's CI — review the changes before you do. The approval is refused if new commits arrived since you looked, if the pull request is no longer open, or if the held runs can't be tied to this pull request alone — which is what happens when GitHub doesn't say which pull request a run belongs to and another open one comes from the same branch. The button is withheld, with the reason, when the account can't push to the repository. The token also needs the **repo** scope or the **Actions (write)** permission; without it, GitHub refuses the approval when you submit it. **Open on GitHub** is beside it either way. Approval is GitHub-only.
+
 ### Merge it from here
 
-An open change can be merged without a browser. The merge box sits between the discussion and the composer and shows what you need to decide: **whether the branches conflict**, and **what CI says** — that last only when there's an actual verdict to report, so a repository with no checks configured, or one this account can't read, simply shows nothing there rather than a reassuring green.
+An open change can be merged without a browser. The merge box sits between the discussion and the composer and shows what you need to decide: **whether the branches conflict**, whether GitHub is [holding workflows for approval](#approve-workflows-from-a-fork), and **what CI says** — that last only when there's an actual verdict to report, so a repository with no checks configured, or one this account can't read, simply shows nothing there rather than a reassuring green.
 
-The button is a split button, and its menu is **the repository's own settings** — merge commit, squash, rebase, each offered only where that repository allows it. A repo that has squash-only turned on shows you squash only, rather than an option that would fail on submit. If those settings can't be read, Codeg falls back to offering a plain merge, which the forge may still refuse.
+The button is a split button, and its menu is **the repository's own settings** — merge commit, squash, rebase, each offered only where that repository allows it. A repo that has squash-only turned on shows you squash only, rather than an option that would fail on submit. If those settings can't be read, Codeg falls back to offering a plain merge, which the forge may still refuse — and a plain merge is all CNB offers. Since CNB's merge can't be pinned to a commit, Codeg checks just before merging that nobody has pushed since, and refuses if someone has.
 
 ::: tip This is not the same as merging a task
 The **Merge** you press on a [to-do](/guide/tasks#merge-it) lands an agent's branch in *your* checkout, and may need an agent to resolve conflicts. This one merges a pull request **on the forge**, the way the web UI would. Different button, different place, different meaning — a task sourced from a pull request still can't be merged locally at all. → [The rules that do not bend](#the-rules-that-do-not-bend)
@@ -130,11 +144,21 @@ Verification was a separate *Investigate only* scenario until **0.28.2**, and it
 The rest of the dialog:
 
 - **An optional extra instruction** for this item specifically.
-- **Comment the outcome back on this item** — see [below](#the-comment-that-goes-back).
+- **Comment the outcome back on this item** — the starting state; you can still change it when you accept the task. See [below](#the-comment-that-goes-back).
 - **A preview** of the issue content the task will carry, so you can see what you're about to send.
 - **A duplicate guard.** If an active task already handles this item, the footer becomes **View the existing task** / **Create anyway** rather than silently minting a second one. Restarting a task whose item is already live warns the same way.
 
 Create it and you get an ordinary to-do, in that folder, which starts under the folder's own concurrency limit like any other.
+
+### Handle several issues as one task
+
+Some issues are the same problem reported three ways, or three small fixes that belong in one change. Since **0.42.1** the **Issues** tab lets you tick several and hand them to one agent together, in one worktree, delivered as one pull or merge request.
+
+Hover an issue's state icon and it becomes a tick box. Ticks survive paging, filtering, searching and re-sorting, so you can collect issues from anywhere in the list; **Shift**-click ticks a range on the same page, and **Esc** clears them while a tick box or the selection bar has focus. An issue whose task is still under way can't be ticked. A bar at the foot of the list counts the selection — and how many of them aren't in the list you're looking at — with **Clear** and **Handle *n* together**, which needs at least two.
+
+The dialog lists the issues, each with a button to drop it, and offers the two issue scenarios, **Fix / implement** and **Plan first**, plus the write-back switch and an extra instruction. The agent is told the issues *look* related but to check that, to judge each report on its own, to work only on those that hold up, and to open its reply with a one-line verdict per issue. Each issue reaches it in a fenced block of its own, with its own 12,000-character budget. If active tasks already handle some of the issues, the dialog names them and offers **View the existing task**, **Remove these issues** or **Create anyway**.
+
+The task's title lists the issue numbers — `#3 #5 #9 · ` and the lowest-numbered issue's title — and the board card links them. Searching the board for `#5` finds it, auto-processing counts every issue as having had a task, and each issue's row shows the task's chip. It's an ordinary issue task: you merge it, complete it or deliver it yourself.
 
 ### When the report doesn't hold {#when-it-turns-out-not-to-be-real}
 
@@ -167,7 +191,7 @@ The task runs, lands in **To review**, and you read it like any other — result
 
 What's different is what *accepting* can mean. Alongside the usual **Merge** and **Complete**, a task with forge provenance offers a delivery action:
 
-- **Open pull request** — pushes the task's branch to the repository and opens a pull request against the base. The body carries a **`Closes #N`** line pointing back at the issue, and you can open it **as a draft**. You pick the title.
+- **Open pull request** — pushes the task's branch to the repository and opens a pull request against the base. The body carries a **`Closes #N`** line pointing back at the issue, and you can open it **as a draft** (on CNB, which has no drafts, as a title starting with `WIP:`). You pick the title. For a task handling [several issues](#handle-several-issues-as-one-task), **Closes when merged** lists them all, ticked: untick one the work doesn't resolve and it's only referenced. That choice is fixed by the first delivery; after that, change it in the pull request's description on the forge.
 - **Push to the pull request** — for a task that came *from* a pull request. It pushes the commits onto that same head branch, forks included. **Nothing new is opened**; the review that's already there receives the work. When that push fails, **git's own reason** is what you get: until **0.30.4** every failure came back as *"pushing to a fork needs its author to allow edits from maintainers"*, which sent people looking at repository permissions when git had actually said the branch was out of date.
 
 Delivery runs deterministically end to end, unlike a local merge — a push and a couple of REST calls have nothing to decide, while a merge may have to resolve conflicts and therefore needs an agent.
@@ -191,15 +215,22 @@ Tasks created without a forge issue can now deliver too. Their first delivery re
 
 ### The comment that goes back
 
-Leave **Comment the outcome back** on and Codeg posts a single comment on the item when the task settles. It says which task, what happened, and the diff counters:
+Leave **Comment the outcome back** on and Codeg posts a comment on the item once the task is finished — merged, completed, or delivered with the task marked as done. A delivery that keeps the task in review posts nothing yet.
 
-- **Merged locally** into a branch, with the short commit — worded that way deliberately, because it landed in *your* checkout and was never pushed. To everyone else reading the thread the branch is untouched and that hash resolves to nothing.
-- **Delivered**, with the pull request's URL.
-- **Completed** without landing anything. Until **0.32.3** this one said *accepted*, which on a pull request read as approving it; now it says what happened — on a pull or merge request, *it made no changes, so nothing was pushed*, or *its work was not pushed* when the worktree was already gone; on an issue, *it made no changes*, or *its work was not merged*.
+Since **0.43.0** the comment can say what the agent found and did, in the agent's own words, **after you've read them**. While the switch is on, each run is asked to draft a reply for the thread: written in the item's language for the people reading it, opening with whether the report held up, then the cause with file and line references, the change or the proposal, and how it was checked — without claiming anything was merged or released, and without absolute paths, machine details, credentials or @-mentions. A task [handling several issues](#handle-several-issues-as-one-task) drafts one reply per issue, and each issue gets its own comment. The draft shows in the task's detail drawer under **Reply for the thread**, and a new run replaces it.
 
-**No agent-written text ever reaches that thread** — not the result summary, not the commit message, not the verdict note. The comment is built from the task id, the outcome and the counters, and there is no parameter that could carry anything else. Other people read that thread; what an agent wrote about its own work isn't theirs to receive.
+You see it again where it counts: the **Merge**, **Complete** and delivery dialogs show the draft in an editable box per item, under **Comment in the item's thread when the task finishes** — **Comment in each issue's thread when the task finishes** on a task handling several issues. Edit it, clear it, or untick the box to post nothing; tick it on a task started without it and the comment goes out without a draft. If the task ran again while the dialog was open, accepting is refused, so the reply you read is the one that goes out.
 
-If the comment fails to post, the timeline records that too rather than dropping it.
+What's posted, top to bottom:
+
+- **The reply**, if there is one.
+- **A line Codeg writes about the outcome**: *merged locally* into a branch, with the short commit — worded that way deliberately, because it landed in *your* checkout and was never pushed; *delivered* in a pull request, with its URL; *pushed* to the pull or merge request the task came from; or, on a completed task, that no changes were made or the work wasn't merged or pushed. A completed task's line is left out when there's a reply, which already says what happened.
+- For a task handling several issues, *This issue was handled together with* the others.
+- **A footer** — `🤖 Generated with Codeg`, linked to the Codeg repository — while **Sign comments with Codeg** is on in the panel settings, as it is by default.
+
+Codeg cleans the agent's draft before you see it: paths inside the task's worktree or project folder become repository-relative and your home folder becomes `~` — other absolute paths are left as they are — token-shaped strings and passwords in URLs are masked, @-mentions are made inert, and each reply is capped at 8,000 characters. That's pattern matching, not a guarantee, so read the reply before you accept — it goes out under your account, and what you type there is posted as you wrote it. The task's result summary, commit messages and verdict note still never reach the thread; the reply is the only free text that does. Until **0.43.0** the comment carried no agent text at all: the task id, the outcome and the diff counters.
+
+If the comment fails to post, the timeline records that too rather than dropping it. Posting runs in the background after the task settles and isn't retried, so a comment Codeg was still posting when it quit can be lost.
 
 ## Panel settings
 
@@ -209,6 +240,7 @@ Since **0.35.2** the form has two tabs. **General** holds what the dialog has al
 
 - **Default for issues** and **Default for pull / merge requests** — which scenario the Start dialog opens on. It only sets the starting position; the request that follows always names its scenario outright.
 - **Comment the outcome back by default** — the starting state of that switch, still yours to change per item.
+- **Sign comments with Codeg** — on by default since **0.43.0**: ends each [comment Codeg posts back](#the-comment-that-goes-back) with a `🤖 Generated with Codeg` footer. Comments you write in the panel and pull request descriptions don't get it. It's read when the comment is posted.
 - **Standing instructions** — per scenario, plus an **Every scenario** slot that's appended to all of them. *"Reply in English. Run the project's tests before you finish."*
 
 Standing instructions land **after** the scenario's built-in wording and **before** your per-item note, so there's no need to restate the built-ins. They ride with the task's **opening order only** — text you want on every turn belongs in the task settings' [per-stage prompts](/guide/tasks#add-your-own-instructions-per-stage) instead. Each one caps at 4,000 characters, and going over is **refused with an error rather than silently trimmed**: text you typed shouldn't disappear without being told.
@@ -255,7 +287,7 @@ Patterns ignore case, and `*` matches anything: `area/*` is every label starting
 ### What happens to what it creates
 
 - **Start right away** — on by default. Each new task is queued at once, and the folder's concurrency limit decides when it runs, exactly as if you'd pressed **Start** on its card. Off, it waits in **To do** — unless the folder's [task settings](/guide/tasks#task-settings) have **Process automatically** on, in which case the board claims it as soon as there's room anyway.
-- **Comment the outcome back** — off by default, and separate from the General tab's default, which is on. When a task finishes it posts the same short status comment the Start dialog's switch would — [built from the outcome and the counters only](#the-comment-that-goes-back).
+- **Comment the outcome back** — off by default, and separate from the General tab's default, which is on. When a task finishes it posts the same comment the Start dialog's switch would — [the agent's drafted reply, reviewed when you accept the task, and how the work was delivered](#the-comment-that-goes-back).
 
 The account that reads the item, and later pushes its branch, is the host's **default account at the moment the scan creates the task** — and from then on it's pinned to the task, as it is for one you start yourself. Nothing about merging changes: a task from a repository item still [never merges unattended](#the-rules-that-do-not-bend).
 
@@ -282,6 +314,8 @@ Switch on **Scan on webhook events** and the tab gives you the two values to pas
 
 In the repository's webhook settings, enter that URL with the content type **`application/json`** and the secret, and choose the **issue** and **pull request** events — on GitLab, **Issues events** and **Merge request events**, with the secret as the **Secret token**. Pushes, comments and every other event are acknowledged and ignored.
 
+**CNB isn't supported here**: Codeg doesn't recognise its deliveries, so on a CNB repository scan on a schedule.
+
 **The forge has to be able to reach that address.** A LAN address works for a self-hosted forge on the same network; it doesn't for github.com. When the forge can't reach Codeg, scan on a schedule instead.
 
 Every delivery has to prove it knows the secret — an HMAC signature from GitHub, Gitea and Forgejo, the secret token itself from GitLab — and one that doesn't is refused before anything else happens. Each answer is a single line in the forge's own delivery log, which is where to look when a webhook isn't working: *pong* for GitHub's test ping, *scanning …* for an accepted delivery, *ignored* with the reason for an event or a repository that doesn't apply. → [Privacy & Security](/reference/privacy#webhooks-for-auto-processing)
@@ -294,15 +328,15 @@ Every delivery has to prove it knows the secret — an HMAC signature from GitHu
 
 ## Good to know
 
-- **Nothing is mirrored.** The panel reads the forge's REST API directly each time — there's no local copy of your issues, and Refresh is a button. The only reads that happen without you are the scans you switch on under [auto-processing](#let-it-pick-items-up-by-itself).
+- **Nothing is mirrored.** The panel reads the forge's API directly each time — REST, plus a GraphQL query on GitHub and GitLab for the [CI marks](#ci-at-a-glance); there's no local copy of your issues, and Refresh is a button. The only reads that happen without you are the scans you switch on under [auto-processing](#let-it-pick-items-up-by-itself).
 - **It's per folder.** The panel acts on the project folder you've picked, and refuses an item whose repository doesn't match that folder's remote, naming both.
 - **The row can be hidden.** If you don't use it, switch **Repository panel** off under the sidebar's [navigation items](/guide/workspace#choose-which-navigation-rows-you-see) — quick actions still reaches it.
-- **Self-hosted works.** GitHub Enterprise, self-managed GitLab, and a Gitea or Forgejo instance all resolve by their server URL, including on a non-default port or plain `http://`, and links back to the item are built from that same origin. Asking the instance what it is, rather than guessing from its hostname, arrived for **GitLab in 0.30.0** — which is what used to fail as a bare `410` — and the **Gitea and Forgejo** question was added in **0.30.4**.
+- **Self-hosted works.** GitHub Enterprise, self-managed GitLab, a Gitea or Forgejo instance, and a self-hosted CNB with its API under `/api` all resolve by their server URL, including on a non-default port or plain `http://`, and links back to the item are built from that same origin. Asking the instance what it is, rather than guessing from its hostname, arrived for **GitLab in 0.30.0** — which is what used to fail as a bare `410` — and the **Gitea and Forgejo** question was added in **0.30.4**.
 - **A host you configured is always attempted, whatever it's called.** A provider-less account is ambiguous by construction — the plain-git credential dialog writes the same bytes a legacy GitHub Enterprise account does — so Codeg tries rather than refusing a panel that would have worked.
 
 ## Next steps
 
 - [**To-dos**](/guide/tasks) — the board every item lands on, and everything about how a task runs, reviews and merges.
-- [**Version Control**](/reference/settings/version-control) — the GitHub, GitLab and Gitea accounts this panel reads through.
+- [**Version Control**](/reference/settings/version-control) — the GitHub, GitLab, Gitea and CNB accounts this panel reads through.
 - [**Privacy & Security**](/reference/privacy#text-from-strangers-in-a-prompt) — what happens to text written by someone you've never met.
 - [**Git & Worktrees**](/guide/git) — the worktree each task gets, and how to clean up after one.

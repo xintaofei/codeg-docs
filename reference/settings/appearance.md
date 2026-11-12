@@ -94,11 +94,11 @@ The editor and terminal these style are the ones in [the workspace](/guide/works
 
 ## Workspace background
 
-Put a picture behind the whole workspace. Turn on **Enable background image** and pick an image (**PNG, JPEG, WebP, or GIF**, up to **16 MB**); the sidebar, panels, and tab bars turn translucent and **frosted** so the image shows through, while a mask keeps text readable. One image is shared by light and dark mode.
+Put a picture behind the whole workspace. Turn on **Enable background image** and pick an image (**PNG, JPEG, WebP, or GIF**, up to **64 MB** and **100 megapixels** since 0.41.3); the sidebar, panels, and tab bars turn translucent and **frosted** so the image shows through, while a mask keeps text readable. One image is shared by light and dark mode.
 
 **GIF joined the list in 0.28**, and an animated one **plays** — through the blur and the frosted panels, not just as a still first frame.
 
-**Or don't bring one.** Since **0.30.4** a **Wallpaper market** button opens the public [Wallhaven](https://wallhaven.cc) gallery inside Settings — **SFW only**, filtered to **All**, **General**, **Anime** or **People**, with a search box and paging. Click a wallpaper and Codeg downloads and applies it in one step; the one you're using is marked **In use**. A picture too big to be a background — over **16 MB**, or over **40 megapixels** — is greyed as **Unavailable** with the reason on it, read straight from the gallery listing so you learn it before spending the download. Wallhaven doesn't always publish both numbers, and a card missing them stays clickable; there the limits are enforced when the download runs.
+**Or don't bring one.** Since **0.30.4** a **Wallpaper market** button opens the public [Wallhaven](https://wallhaven.cc) gallery inside Settings — **SFW only**, filtered to **All**, **General**, **Anime** or **People**, with a search box and paging. Click a wallpaper and Codeg downloads and applies it in one step; the one you're using is marked **In use**. A picture too big to be a background — over **64 MB**, or over **100 megapixels** — is greyed as **Unavailable** with the reason on it, read straight from the gallery listing so you learn it before spending the download. Wallhaven doesn't always publish both numbers, and a card missing them stays clickable; there the limits are enforced when the download runs.
 
 The controls, top to bottom:
 

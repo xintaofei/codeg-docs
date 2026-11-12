@@ -1,13 +1,13 @@
 ---
 title: 版本控制
-description: 版本控制设置界面 —— 为 Codeg 指定正确的 Git 可执行文件，并存储 GitHub、GitLab、Gitea 或自托管的凭据，让克隆、拉取、推送和仓库面板直接可用。
+description: 版本控制设置界面 —— 为 Codeg 指定正确的 Git 可执行文件，并存储 GitHub、GitLab、Gitea、CNB 或自托管的凭据，让克隆、拉取、推送和仓库面板直接可用。
 ---
 
 # 版本控制
 
-**设置 → 版本控制** 做两件事：为 Codeg 指定它应当运行的 **Git 可执行文件**，以及保存那些**账户** —— GitHub、GitLab、Gitea，以及任何其他 Git 服务器 —— 它们的凭据让克隆、拉取和推送无需密码提示即可完成。应用把它描述为：*“配置 Git 可执行文件并管理 GitHub 账户。”*
+**设置 → 版本控制** 做两件事：为 Codeg 指定它应当运行的 **Git 可执行文件**，以及保存那些**账户** —— GitHub、GitLab、Gitea、CNB，以及任何其他 Git 服务器 —— 它们的凭据让克隆、拉取和推送无需密码提示即可完成。应用把它描述为：*“配置 Git 可执行文件并管理 GitHub 账号。”*
 
-从 **0.27** 起，这些账户还多了一份工作：[**仓库面板**](/zh/guide/repository)通过它们读取你的 issue 和 pull request，并以触发该任务的那个账户推送交付的分支。这里有一个 GitHub、GitLab 或 Gitea 账户，那个面板才能用起来。
+从 **0.27** 起，这些账户还多了一份工作：[**仓库面板**](/zh/guide/repository)通过它们读取你的 issue 和 pull request，并以触发该任务的那个账户推送交付的分支。这里有一个 GitHub、GitLab、Gitea 或 CNB 账户，那个面板才能用起来。
 
 你在这里添加的每个账户都**本地存储在你的机器上**；令牌或密码存入你操作系统的系统密钥环，绝不进入应用的数据库或网络。当 Codeg 代表你运行一条 git 命令时，它会按服务器查找匹配的账户，并为你提供凭据 —— 具体机制见下方的[凭据的使用方式](#how-credentials-get-used)。
 
@@ -24,9 +24,9 @@ description: 版本控制设置界面 —— 为 Codeg 指定正确的 Git 可�
 
 ## GitHub 账户 {#github-accounts}
 
-用于 **GitHub** 的凭据 —— github.com 或某个 GitHub Enterprise 服务器。每个账户由一个 **服务器 URL**（默认为 `https://github.com`）加上一个 **个人访问令牌（Personal Access Token）** 组成。**添加账户** 会打开一个带有两项便利功能的对话框：
+用于 **GitHub** 的凭据 —— github.com 或某个 GitHub Enterprise 服务器。每个账户由一个 **服务器地址**（默认为 `https://github.com`）加上一个 **个人访问令牌（Personal Access Token）** 组成。**添加账号** 会打开一个带有两项便利功能的对话框：
 
-- **生成令牌** 会直接在你的浏览器中打开服务器的*新建令牌*页面（`…/settings/tokens/new`），并预填名称 `codeg` 以及 Codeg 需要的权限范围 —— `repo`、`read:org`、`workflow`、`gist`、`read:user`、`user:email`。在那里创建它，然后复制回来。
+- **生成令牌** 会直接在你的浏览器中打开服务器的*新建令牌*页面（`…/settings/tokens/new`），并预填名称 `codeg` 以及 Codeg 需要的权限范围 —— `repo`、`read:org`、`workflow`、`gist`、`read:user`、`user:email`。在那里创建它，然后复制回来。这些权限范围同样足以[批准](/zh/guide/repository#approve-workflows-from-a-fork)来自 fork 的 pull request 上被扣住的工作流；细粒度令牌则需要 **Actions (write)** 才能做这件事，并需要 **Checks (read)** 才能显示列表上的 [CI 标记](/zh/guide/repository#ci-at-a-glance)。
 - **验证并添加** 不只是存储令牌 —— 它会**先调用 GitHub API 来验证它**，成功后填入你的用户名、头像和令牌的实际权限范围。无效或过期的令牌会当场被拒绝，根本不会被保存。
 
 每个已保存的账户都会显示它的用户名、服务器和被授予的权限范围，并带有四个操作：
@@ -40,7 +40,7 @@ description: 版本控制设置界面 —— 为 Codeg 指定正确的 Git 可�
 
 ## GitLab 账户 {#gitlab-accounts}
 
-**0.27** 新增，与 GitHub 面板一一对应：一个账户由一个 **服务器 URL**（`https://gitlab.com`，或你自己的实例）加上一个 **个人访问令牌** 组成，存储之前会先对 GitLab API 做验证，成功后填入用户名和头像。
+**0.27** 新增，与 GitHub 面板一一对应：一个账户由一个 **服务器地址**（`https://gitlab.com`，或你自己的实例）加上一个 **个人访问令牌** 组成，存储之前会先对 GitLab API 做验证，成功后填入用户名和头像。
 
 令牌需要 **`api`** 权限范围。请在 **GitLab → 偏好设置 → 访问令牌** 下创建；面板里也内联写着这一点。其余一切都和 GitHub 面板完全一样：测试、更新令牌、设为默认和移除。
 
@@ -48,22 +48,30 @@ description: 版本控制设置界面 —— 为 Codeg 指定正确的 Git 可�
 
 ## Gitea 账户 {#gitea-accounts}
 
-在 **0.30.4** 中加入，做法与前两者相同：一个 **服务器 URL** 和一个 **个人访问令牌**，在存下之前先拿实例自己的「我是谁」端点校验一遍。它同时也服务 **Forgejo** —— Forgejo 是 Gitea 的一个分支，回应同一套 `/api/v1`，因此没有单独的面板，也没有什么需要你在两者之间选择。URL 字段默认填 `https://gitea.com`，但它就是等着被改的：一台 Gitea 是某人自己的实例的概率，远高于是那个公共实例。
+在 **0.30.4** 中加入，做法与前两者相同：一个 **服务器地址** 和一个 **个人访问令牌**，在存下之前先拿实例自己的「我是谁」端点校验一遍。它同时也服务 **Forgejo** —— Forgejo 是 Gitea 的一个分支，回应同一套 `/api/v1`，因此没有单独的面板，也没有什么需要你在两者之间选择。URL 字段默认填 `https://gitea.com`，但它就是等着被改的：一台 Gitea 是某人自己的实例的概率，远高于是那个公共实例。
 
 令牌需要三个权限范围 —— **`write:repository`**、**`write:issue`** 和 **`read:user`** —— 在 **Gitea → 设置 → 应用** 下创建。**生成令牌**链接会打开那个页面，但与 GitHub 和 GitLab 不同，打开时一个都没勾上：Gitea 的令牌表单不接受从查询参数传入的权限范围，所以面板里那句就地提示才是告诉你该勾哪几个的东西。测试、更新令牌、设为默认和移除，行为都与另外两个一致。
 
+## CNB 账户 {#cnb-accounts}
+
+在 **0.42.0** 中加入，用于 [CNB](https://cnb.cool) —— `cnb.cool` 或自建实例。一个 **服务器地址**（默认为 `https://cnb.cool`）和一个**访问令牌**，在 **CNB → 个人设置 → 访问令牌** 下创建，需要五个权限范围：**`account-profile:r`**、**`repo-issue:rw`**、**`repo-pr:rw`**、**`repo-notes:rw`** 和 **`repo-code:rw`**。**生成令牌** 会打开那个页面，和 Gitea 一样一个都没勾上。令牌在存下之前会先对 CNB 校验一遍；缺少 `account-profile:r` 时，CNB 不会告诉你这个令牌属于谁，账户也就加不进来。由于 CNB 不报告令牌的权限范围，账户上不会列出任何权限范围。
+
+CNB 的 git 服务器用固定的用户名 **`cnb`** 加上作为密码的令牌来登录，所以只要使用 CNB 账户，Codeg 在克隆、拉取、推送和交付时发送的就是这个用户名，不管你的 CNB 用户名是什么。测试、更新令牌、设为默认和移除，行为都与其他面板一致。
+
 ## Git 账户 {#git-accounts}
 
-同样的思路，适用于**上面三个面板覆盖不到的一切** —— Bitbucket、普通的自托管服务器。面板自己的说明是：*“管理非 GitHub Git 服务器（GitLab、Bitbucket、自托管等）的凭据。”*
+同样的思路，适用于**上面四个面板覆盖不到的一切** —— Bitbucket、普通的自托管服务器。面板自己的说明是：*“管理没有独立分区的 Git 服务器凭据（Bitbucket、自建服务等）。”*
 
-添加对话框要求填写三个字段 —— **服务器 URL**（例如 `https://git.example.com`）、**用户名**（或电子邮件）和 **密码 / 令牌**。与那三个 forge 面板不同，这里没有可供验证的 API，因此凭据按原样存储；这里的 **测试** 只是确认系统密钥环中存在某个凭据，而不是对着服务器去检验它。其他一切 —— **设为默认**、移除 —— 工作方式相同。
+添加对话框要求填写三个字段 —— **服务器地址**（例如 `https://git.example.com`）、**用户名**（或电子邮件）和 **密码 / 令牌**。与那四个 forge 面板不同，这里没有可供验证的 API，因此凭据按原样存储；这里的 **测试** 只是确认系统密钥环中存在某个凭据，而不是对着服务器去检验它。其他一切 —— **设为默认**、移除 —— 工作方式相同。
 
 ::: info 该用哪个面板，以及为什么现在这件事有了分别
-这四个面板其实是同一份存储，只是在显示上分了组。对于纯粹的 git 流量 —— 克隆、拉取、推送 —— 这种划分毫无影响：匹配是按主机名做的，所以放在哪个面板里的凭据都能服务它的主机。GitHub、GitLab 和 Gitea 面板多出来的是一个**已声明的提供商**，而这正是告诉 Codeg *对这台主机该说哪一种 API* 的东西。
+这五个面板其实是同一份存储，只是在显示上分了组。对于纯粹的 git 流量 —— 克隆、拉取、推送 —— 这种划分毫无影响：匹配是按主机名做的，所以放在哪个面板里的凭据都能服务它的主机。GitHub、GitLab、Gitea 和 CNB 面板多出来的是一个**已声明的提供商**，而这正是告诉 Codeg *对这台主机该说哪一种 API* 的东西。
 
-一个账户落在哪个面板，取决于**你是从哪个对话框添加它的**，而不是它的 URL —— 这也是唯一能把自托管的 GitLab 和 GitHub Enterprise 分辨开来的办法。一个什么都没声明的账户仍然对这三家 forge 都适用，而 Codeg 会按顺序走三层回退：先[直接去问那台实例](/zh/guide/repository#before-you-start-an-account)它是什么；问不出来就读主机名，把 `gitlab`、`github`、`gitea` 或 `forgejo` 作为**完整标签**出现的名字视作对应的 forge，而 `mygitlabhost.com` 刻意不算，因为那是某人的域名，不是一句声明；再问不出来就退回 GitHub，这也正是在这一整套机制出现之前，一台连不上的主机原本的下场。
+一个账户落在哪个面板，取决于**你是从哪个对话框添加它的**，而不是它的 URL —— 这也是唯一能把自托管的 GitLab 和 GitHub Enterprise 分辨开来的办法。一个什么都没声明的账户仍然对这些 forge 都适用，而 Codeg 会按顺序走三层回退：先[直接去问那台实例](/zh/guide/repository#before-you-start-an-account)它是不是 Gitea 或 GitLab；问不出来就读主机名，把 `gitlab`、`github`、`gitea`、`forgejo` 或 `cnb` 作为**完整标签**出现的名字视作对应的 forge，而 `mygitlabhost.com` 刻意不算，因为那是某人的域名，不是一句声明；再问不出来就退回 GitHub，这也正是在这一整套机制出现之前，一台连不上的主机原本的下场。
 
 所以，这个声明真正派上用场的是那些**含糊的**主机。它省掉那次探测，而且在探测得不出结论时 —— 比如一台藏在鉴权网关后面的实例 —— 它是唯一的答案。从正确的对话框添加，就把这次猜测彻底去掉了。
+
+CNB 从来不会被问：自建的 CNB 只能通过 CNB 账户或主机名里的 `cnb` 标签来识别。
 
 在提供商字段出现之前存下的账户，仍沿用它们当初归档的规则：`github.com` 归入 *GitHub 账户*，其余归入普通 git 凭据。
 :::
@@ -72,7 +80,7 @@ description: 版本控制设置界面 —— 为 Codeg 指定正确的 Git 可�
 
 你很少直接调用这些账户 —— 它们是通过 git 本身来工作的。Codeg 注册为 git 的**凭据助手（credential helper）**，并通过 `GIT_ASKPASS` 提供凭据，因此当它运行的某个 git 操作需要某台主机的登录信息时，Codeg 会代为应答，而不是让 git 停下来提示你。
 
-匹配是**按主机名**进行的。对于 `github.com` 上的远程仓库，Codeg 会查找服务器为 `github.com` 的账户；对于 `gitlab.example.com`，则查找服务器为 `gitlab.example.com` 的账户。匹配器的工作方式带来两点结论：
+匹配是**按主机名**进行的。对于 `github.com` 上的远程仓库，Codeg 会查找服务器为 `github.com` 的账户；对于 `gitlab.example.com`，则查找服务器为 `gitlab.example.com` 的账户。匹配器的工作方式带来两点结论（另外，CNB 账户总是以 `cnb` 身份登录）：
 
 - **它绝不会使用不相关的账户。** 如果没有账户匹配远程仓库的主机，Codeg 什么都不提供，让 git 回退到它自己的配置 —— 一台服务器的令牌绝不会被提供给另一台。
 - **默认账户只在*同一主机内*打破平局。** 当多个账户共享同一个服务器时（比如两个 github.com 登录），被标记为 **默认** 的那个才是被使用的。跨不同主机时，每个远程仓库都使用它自己匹配的账户，无论哪个是默认。
@@ -90,7 +98,7 @@ description: 版本控制设置界面 —— 为 Codeg 指定正确的 Git 可�
 
 ## 相关 {#related}
 
-- [仓库面板](/zh/guide/repository) —— 这些 GitHub、GitLab 和 Gitea 账户所解锁的 issue 与 pull request 工作台。
+- [仓库面板](/zh/guide/repository) —— 这些 GitHub、GitLab、Gitea 和 CNB 账户所解锁的 issue 与 pull request 工作台。
 - [Git 与 Worktree](/zh/guide/git) —— 这些凭据在幕后默默支撑的应用内 git 工作流：差异比较、提交、分支和并行 worktree。
 - [模型提供商](/zh/guide/authentication) —— *另一个*凭据界面，用于智能体的模型访问而非 Git 服务器。
 - [系统](/zh/reference/settings/system) —— 网络代理，git 流量和其他一切都经由它。

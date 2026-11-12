@@ -59,7 +59,7 @@ Codeg 与具体智能体无关——用一致的界面驾驭二十个编码 CLI�
 - [**聊天频道**](/zh/guide/chat-channels)——连接 Telegram、Lark (Feishu) 和 iLink (Weixin)，即可创建任务、批准权限并获取实时更新——全部在你的聊天应用中完成。
 - [**自动化**](/zh/guide/automations)——将完整配置好的 composer 保存为可复用的自动化，并以无头方式按 cron 计划或按需运行。
 - [**待办任务**](/zh/guide/tasks)——把要做的事写下来，让智能体一件件做完，每个任务都在自己的 git worktree 中进行，在你验收之前不会合并任何东西。
-- [**仓库面板**](/zh/guide/repository)——把一条 GitHub、GitLab 或 Gitea 的 issue 或 pull request 直接交给智能体，或者让面板按计划、或在收到 webhook 时自己把它们接过去，再把结果作为 pull request 或一条评论送回去。
+- [**仓库面板**](/zh/guide/repository)——把一条 GitHub、GitLab、Gitea 或 CNB 的 issue 或 pull request 直接交给智能体，或者让面板按计划、或在收到 webhook 时（CNB 除外）自己把它们接过去，再把结果作为 pull request 或一条评论送回去。
 
 ## 领域工作流 {#domain-workflows}
 

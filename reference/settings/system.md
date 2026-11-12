@@ -27,8 +27,8 @@ What the upgrade button does depends on where you're running — this is the one
 
 **0.38.0** also fixes two restart problems: on macOS, relaunch waits for the old instance to exit so the Dock keeps one icon; on Windows, the installer stops bundled helper processes through the Windows API, avoiding the WMI query that could leave an update hanging.
 
-::: warning Back up before upgrading from 0.40.0 or earlier
-0.41.1 adds a task-delivery database migration, and 0.40.0 and earlier cannot start on the updated data. **Roll back** restores only the program; downgrading also needs a pre-upgrade copy of the complete data directory. Earlier 0.40.0 and 0.39.0 migrations likewise require the corresponding pre-upgrade data when downgrading. → [Upgrade Codeg](/getting-started/upgrading)
+::: warning Back up before upgrading from 0.42.3 or earlier
+0.43.0 adds a to-do database migration, and 0.42.3 and earlier cannot start on the updated data; 0.42.1 and 0.41.1 added migrations of their own. **Roll back** restores only the program; downgrading also needs a pre-upgrade copy of the complete data directory. → [Upgrade Codeg](/getting-started/upgrading)
 :::
 
 ::: info Rollback (server only)
@@ -68,7 +68,7 @@ The address takes an `http`, `https`, or `socks5` URL — the placeholder is `ht
 **Bypass proxy for** lists what should connect directly instead — new in **0.32.2**. Separate entries with commas and no spaces: `example.com` matches that domain, `.example.com` every subdomain of it, and IP addresses work too. The local addresses — `localhost`, `127.0.0.1`, `::1` — always connect directly and needn't be listed. The field saves when you leave it, and while the proxy is on the list takes effect as the `NO_PROXY` environment variable, for Codeg and for every agent it launches. A `*` anywhere in it means *bypass everything*, and Codeg then passes `*` on by itself, because Python and curl honour `*` only as the whole value.
 
 ::: warning `*` doesn't fully bypass Antigravity 1.3.0 and later
-**Antigravity 1.3.0** and later — **1.4.3** is recommended in **0.41.1** — add the local addresses to `NO_PROXY` themselves whenever a proxy is set. That turns a lone `*` into `*,localhost,127.0.0.1,::1` — a list, in which Python skips the `*`. So with a proxy configured and a `*` in this list, or in a `NO_PROXY` you export yourself, some of Antigravity's own requests — the ones its Python service makes — go **through the proxy** again. To keep them direct, list the hosts they need instead of `*`.
+**Antigravity 1.3.0** and later — **1.4.5** is recommended since **0.41.4** — add the local addresses to `NO_PROXY` themselves whenever a proxy is set. That turns a lone `*` into `*,localhost,127.0.0.1,::1` — a list, in which Python skips the `*`. So with a proxy configured and a `*` in this list, or in a `NO_PROXY` you export yourself, some of Antigravity's own requests — the ones its Python service makes — go **through the proxy** again. To keep them direct, list the hosts they need instead of `*`.
 :::
 
 That local exception also applies to a proxy you set from **outside** Codeg, and it's what lets **OpenCode** and **Antigravity** work behind a proxy on another machine: both talk to a local service of their own, and until **0.32.2** those connections were sent to the proxy too, failing with *OpenCode service failure* or *Failed to connect to WebSocket*.
@@ -98,7 +98,7 @@ Your settings, carried between machines — through a file, or through your own 
 | Quick messages and task templates | Login credentials and tokens |
 | App preferences — language, light or dark, zoom, close-button behaviour, log level, the delegation settings and agent defaults, most in-conversation tool switches, chat-channel defaults | |
 
-What *doesn't* travel among the preferences is as deliberate: the theme colour, fonts, chat width and the rest of Appearance live in each browser or window, the [browser-use and computer-use switches](/reference/settings/collaboration#in-conversation-tools) stay with the machine they act on, and nothing tied to an account or to this machine — git and forge tokens, chat-channel credentials, the Web Service token, the proxy, the Repository panel's settings and webhook secrets — ever leaves.
+What *doesn't* travel among the preferences is as deliberate: the theme colour, fonts, chat width and the rest of Appearance live in each browser or window, the [browser-use and computer-use switches](/reference/settings/collaboration#in-conversation-tools) stay with the machine they act on, and nothing tied to an account or to this machine — git and forge tokens, chat-channel credentials, the Web Service's port, listen address, token and auto-start, the proxy, the Repository panel's settings and webhook secrets — ever leaves.
 
 **Configuration file.** **Export to file** writes one JSON file — `codeg-config-<time>.codegcfg.json` — to carry to another machine; **Import from file** shows what's in one, entry counts per kind, and asks before applying it. The file is **never encrypted**, whatever the WebDAV switch below says, and it holds your API keys — treat it like a password.
 

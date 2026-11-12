@@ -120,7 +120,7 @@ Codeg 不估算 token 数。它读的是**每个智能体自己写下来的用�
 - **一个任务就是一次会话的花费。** 每一条跑起来的[待办](/zh/guide/tasks)都是一次完整的智能体会话，有自己的会话记录，所以同时跑四条，在这里就是四次会话的量。
 - **上下文占用是另一个数字。** 输入框旁边那个圆环追踪的是*当前这次对话*此刻用掉了多少上下文窗口；本页说的是所有工作的累计花费。→ [对话](/zh/guide/conversations#start-a-session-—-the-composer)
 - **单个对话的总量在它的会话详情对话框里**——从对话头部的 **⋮** 菜单打开它。从 **0.37.0** 起，右侧面板的会话详情标签页不再显示这些数字。→ [右侧面板](/zh/guide/side-panel#session-details)
-- **Claude Code 对提示词的猜测不在这里。** 适配器为 0.92.0 或更高版本时，Claude Code 会在大多数回合之后多发一次请求，用来[建议你的下一条提示词](/zh/guide/conversations#let-claude-code-suggest-the-next-prompt)。它计入你在服务商那里的用量，但从不进入本页所读取的对话记录。
+- **Claude Code 对提示词的猜测不在这里。** 适配器为 0.92.0 或更高版本时，Claude Code 会在大多数回合之后多发一次请求，用来[建议你的下一条提示词](/zh/guide/conversations#let-claude-code-suggest-the-next-prompt)。它计入你在服务商那里的用量，但从不进入本页所读取的对话记录。自 **0.41.3** 起，Codex 也会在完成的回合之后多发一次模型调用来猜测——自动化、聊天频道、`codeg-cli` 和单次运行中不会；自 **0.42.2**（codex-acp 2.6.0）起，计划模式下也不会。
 
 ## 后续步骤 {#next-steps}
 

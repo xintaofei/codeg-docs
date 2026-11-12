@@ -120,7 +120,7 @@ The stored rows carry the version of the accounting that produced them. When a r
 - **A task costs a session.** Every [to-do](/guide/tasks) that runs is a full agent session with its own transcript, so four running at once show up here as four sessions' worth.
 - **Context usage is a different number.** The ring beside the composer tracks how full *this conversation's* context window is right now; this page is cumulative spend across everything. → [Conversations](/guide/conversations#start-a-session-—-the-composer)
 - **One conversation's totals are in its Session Details dialog** — open it from the conversation header's **⋮** menu. Since **0.37.0** the side panel's Session Details tab no longer shows them. → [The Side Panel](/guide/side-panel#session-details)
-- **Claude Code's prompt guesses aren't here.** With its adapter at 0.92.0 or later, Claude Code makes one more request after most turns to [suggest your next prompt](/guide/conversations#let-claude-code-suggest-the-next-prompt). It counts in your usage with the provider, but it never reaches the transcript this page reads.
+- **Claude Code's prompt guesses aren't here.** With its adapter at 0.92.0 or later, Claude Code makes one more request after most turns to [suggest your next prompt](/guide/conversations#let-claude-code-suggest-the-next-prompt). It counts in your usage with the provider, but it never reaches the transcript this page reads. Since **0.41.3** Codex also makes one more model call to guess, after a completed turn — not in automations, chat channels, `codeg-cli` or one-shot runs, and since **0.42.2** (codex-acp 2.6.0) not in plan mode.
 
 ## Next steps
 

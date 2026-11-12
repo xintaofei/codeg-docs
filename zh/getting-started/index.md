@@ -5,8 +5,8 @@ description: Codeg 是一个多智能体编程工作区——在一个地方运�
 
 # 简介
 
-::: tip 已发布 0.41.1
-按文件夹保留标签页和分屏布局、在回复中预览 HTML、使用 MiniMax Code 与 OpenCode 2，并将待验收任务交付为 PR。请先阅读[升级指南](/zh/getting-started/upgrading)，了解使用入口、兼容性检查和备份步骤。
+::: tip 已发布 0.43.0
+在文件夹之间移动对话、在 composer 里跟进后台工作、在 pull request 上查看 CI 状态，并在智能体的回复发回 issue 之前先审阅它。请先阅读[升级指南](/zh/getting-started/upgrading)，了解自 0.41.1 以来的变化、兼容性检查和备份步骤。
 :::
 
 **Codeg 是一个多智能体编程工作区**——在一个地方运行、聚合并编排不断壮大的 AI 编程智能体家族。
@@ -96,7 +96,7 @@ Codeg 把智能体视为你可以*运行*的东西，而不仅仅是与之聊天
 - **[命令行](/zh/guide/command-line)**——通过 `codeg-cli` 从脚本或 CI 运行智能体和助手，支持并行运行、结构化结果，并能在 Codeg 中继续对话。
 - **[自动化](/zh/guide/automations)**——保存一套完整配置的设置，以无头方式按 cron 计划或按需运行。
 - **[待办任务](/zh/guide/tasks)**——把要做的事写下来，让智能体一件件做完，每个任务都在一份独立的代码副本中进行，且在你验收之前都不会合并。
-- **[仓库面板](/zh/guide/repository)**——把一个项目的 GitHub、GitLab 或 Gitea issue 与 pull request 列出来，把其中一条交给智能体——或者让面板自己把符合条件的接过去——再把结果作为 pull request 送回去。
+- **[仓库面板](/zh/guide/repository)**——把一个项目的 GitHub、GitLab、Gitea 或 CNB issue 与 pull request 列出来，把其中一条交给智能体——或者让面板自己把符合条件的接过去——再把结果作为 pull request 送回去。
 - **[电脑操作](/zh/guide/computer-use)** *（预览）*——把一个桌面窗口、整个应用或整个屏幕共享给你的智能体，让它们看得见、能上手操作，一键就能让它们停下。
 - **[聊天频道](/zh/guide/chat-channels)**——从 Telegram、Lark（飞书）或 iLink（微信）驱动会话：创建任务、批准权限，并实时获得回复，无需打开浏览器。
 - **[随处使用](/zh/getting-started/installation)**——在桌面应用、独立服务器或 Docker 中运行智能体，再通过原生 iOS、Android 客户端或任意浏览器保持连接。

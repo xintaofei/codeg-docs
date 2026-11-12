@@ -91,7 +91,9 @@ Each server's detail pane has an **Enabled apps** row — a checkbox per agent. 
 
 Writing a server into a JSON config **keeps the file's key order**: since **0.32.0** the rest of it stays in the order you wrote it, instead of being re-sorted alphabetically on every save.
 
-**Kimi Code 2.2.0** rejects its whole `mcp.json` if any entry still names the retired `kaos` executor, so since **0.35.2** Codeg drops `kaos` from every Kimi entry it saves. An entry Codeg doesn't touch keeps whatever it had — if Kimi stops loading your servers after the upgrade, look for a leftover `kaos` there.
+**Kimi Code** retired the `kaos` executor, so since **0.35.2** Codeg drops `kaos` from every Kimi entry it saves. From Kimi Code 2.2.0 to 2.4.1 one leftover `kaos` entry made Kimi reject its whole `mcp.json`; since 2.5.0 only that server fails, so if one of your servers stops loading after an upgrade, look for a leftover `kaos` in it. Since **0.42.1** Codeg's saves keep Kimi's own `environment_id` and `deferred` fields.
+
+**Hermes 0.23** can't connect the servers in its own `config.yaml` — which is where the servers you assign to Hermes here are written — in a session that also receives servers from Codeg, which every session with codeg-mcp attached does. → [Hermes](/guide/agent-setup#hermes)
 
 That's **eighteen of the twenty agents** — every one except **OpenClaw** and **Pi**. OpenClaw doesn't accept MCP servers at all (it's the one agent that opts out), so it's not offered as a target; Pi isn't in the list either. → [How agents differ](/guide/supported-agents#how-agents-differ)
 

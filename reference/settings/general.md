@@ -25,7 +25,7 @@ Picking a named option saves immediately; a custom path waits for the Save butto
 
 Under the dropdown, **Currently using: …** names the program your choice actually resolves to — and since **0.31.2** it answers for *the selection*, not for the host's fallback. Before that it printed the same path (`C:\WINDOWS\system32\cmd.exe` on a typical Windows box) whichever row you picked, which reads exactly like a setting that does nothing. Now *Windows PowerShell* reads back as `…\v1.0\powershell.exe`, a shell the host can't find is echoed **verbatim** rather than quietly replaced by one you didn't choose, and the *not installed* badge on the row comes from the same probe — so the two can't disagree.
 
-The terminal this shell feeds is the one in [the workspace](/guide/workspace). Since **0.25** it isn't only that terminal: when an **agent** asks Codeg to run a whole command line, that runs through this shell too. Left on *System default* nothing changes from before.
+The terminal this shell feeds is the one in [the workspace](/guide/workspace). Since **0.25** it isn't only that terminal: when an **agent** asks Codeg to run a whole command line, that runs through this shell too. Left on *System default* nothing changes from before. Since **0.42.0** a PowerShell terminal tab — and a saved command you [run on this computer](/guide/workspace#run-a-saved-command) — loads your PowerShell profile, so `fnm`, conda, aliases and `PATH` changes made there work; an agent's command line still runs without it.
 
 What it can't reach is an agent that carries a shell of its own: **Codex** and **Claude Code** run commands inside their own process and never ask Codeg to spawn one, so this picker has no say in what they use.
 

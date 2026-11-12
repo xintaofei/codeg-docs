@@ -32,7 +32,7 @@ For example, with the Compose service and project mount from the [deployment gui
 
 ```bash
 docker compose exec codeg codeg-cli -w /projects/app -a claude_code \
-  --permissions reads -p "Review the latest commit"
+  --mode default --permissions reads -p "Review the latest commit"
 ```
 
 ::: details Set up PATH manually on macOS or Windows
@@ -182,6 +182,8 @@ Model, effort, mode, and `-c` values are checked against the agent's advertised 
 | **`wait`** | Leave for you to answer in Codeg. | Leave for you. |
 
 The agent's own **mode** still determines whether it asks at all. If no suitable one-time approval exists, Codeg refuses rather than picking a lasting one; if it cannot refuse once either, the run ends with code 5. A Grok plan approval is accepted under `allow`, left waiting under `wait`, and abandoned otherwise. Delegated sub-agents follow the same policy.
+
+Since **0.42.1**, **Claude Code** starts in **Auto** unless `--mode` or its own `permissions.defaultMode` names another mode, Auto is disabled, or the model can't run it. In Auto, Claude Code's own check decides most actions itself — it makes file edits in the working directory and runs the commands it judges safe, and refuses the risky ones — and those never reach `--permissions`. Behind an API gateway that can't answer that check, every command it would review is refused. `--mode default` (Manual) has Claude Code ask before making changes, as it did before 0.42.1 — which is what you want for a review that shouldn't edit the checkout.
 
 With **`wait`**, the conversation link is printed on stderr. Open it in Codeg, or add `--open` for the local desktop app, and answer there or through a connected [chat channel](/guide/chat-channels). A timeout still cancels the run, and the JSON result lists unanswered requests in `pending`.
 
@@ -334,11 +336,11 @@ For a CI runner, **`--standalone`** starts a sibling or PATH `codeg-server` for 
 
 ```bash
 set -euo pipefail
-curl -fsSL https://raw.githubusercontent.com/spacering-net/codeg/main/install.sh | bash -s -- --version v0.38.0
+curl -fsSL https://raw.githubusercontent.com/spacering-net/codeg/main/install.sh | bash -s -- --version v0.43.0
 # Set ANTHROPIC_API_KEY through the CI system's secret environment.
 codeg-cli --standalone agents install claude_code
 git show HEAD | codeg-cli --standalone -a claude_code -w "$PWD" \
-  --timeout 30m -p "Review this commit for bugs" -o review.md
+  --mode default --timeout 30m -p "Review this commit for bugs" -o review.md
 ```
 
 The server's agents inherit the command's environment, including credentials. Each command starts fresh: npm-installed agents persist, but settings, assistants, and downloaded binaries do not. Add **`--data-dir DIR`** to each command to retain them between commands, using a directory dedicated to CI. A standalone server refuses a directory held by a current Codeg; older versions do not participate in that check, so keep it separate from their data too.
@@ -369,10 +371,10 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           set -euo pipefail
-          curl -fsSL https://raw.githubusercontent.com/spacering-net/codeg/main/install.sh | bash -s -- --version v0.38.0
+          curl -fsSL https://raw.githubusercontent.com/spacering-net/codeg/main/install.sh | bash -s -- --version v0.43.0
           codeg-cli --standalone agents install claude_code
           git show HEAD | codeg-cli --standalone -a claude_code -w "$GITHUB_WORKSPACE" \
-            --permissions reads --timeout 30m -p "Review this commit for bugs" -o review.md
+            --mode default --permissions reads --timeout 30m -p "Review this commit for bugs" -o review.md
       - uses: actions/upload-artifact@v4
         if: always()
         with:

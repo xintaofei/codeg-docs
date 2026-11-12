@@ -1,13 +1,13 @@
 ---
 title: Version Control
-description: The Version Control settings screen — point Codeg at the right Git executable and store GitHub, GitLab, Gitea, or self-hosted credentials so clone, fetch, push, and the Repository panel just work.
+description: The Version Control settings screen — point Codeg at the right Git executable and store GitHub, GitLab, Gitea, CNB, or self-hosted credentials so clone, fetch, push, and the Repository panel just work.
 ---
 
 # Version Control
 
-**Settings → Version Control** does two jobs: it points Codeg at the **Git executable** it should run, and it holds the **accounts** — GitHub, GitLab, Gitea, plus any other Git server — whose credentials let clone, fetch, and push go through without a password prompt. The app describes it as *"Configure Git executable and manage GitHub accounts."*
+**Settings → Version Control** does two jobs: it points Codeg at the **Git executable** it should run, and it holds the **accounts** — GitHub, GitLab, Gitea, CNB, plus any other Git server — whose credentials let clone, fetch, and push go through without a password prompt. The app describes it as *"Configure Git executable and manage GitHub accounts."*
 
-Since **0.27** these accounts do a second job: the [**Repository panel**](/guide/repository) reads your issues and pull requests through them, and pushes a delivered branch as the account that triggered the task. A GitHub, GitLab or Gitea account here is what makes that panel work at all.
+Since **0.27** these accounts do a second job: the [**Repository panel**](/guide/repository) reads your issues and pull requests through them, and pushes a delivered branch as the account that triggered the task. A GitHub, GitLab, Gitea or CNB account here is what makes that panel work at all.
 
 Each account you add here is stored **locally on your machine**; the token or password goes into your OS keyring, never into the app's database or the network. When Codeg runs a git command on your behalf, it looks up the matching account by server and supplies the credential for you — the mechanics are in [How credentials get used](#how-credentials-get-used) below.
 
@@ -26,7 +26,7 @@ You'll want this only in the uncommon case where the right git isn't the one fir
 
 Credentials for **GitHub** — github.com or a GitHub Enterprise server. Each account is a **Server URL** (defaults to `https://github.com`) plus a **Personal Access Token**. **Add Account** opens a dialog with two conveniences:
 
-- **Generate token** opens your browser straight to the server's *new token* page (`…/settings/tokens/new`), pre-filled with the name `codeg` and the scopes Codeg wants — `repo`, `read:org`, `workflow`, `gist`, `read:user`, `user:email`. Create it there, copy it back.
+- **Generate token** opens your browser straight to the server's *new token* page (`…/settings/tokens/new`), pre-filled with the name `codeg` and the scopes Codeg wants — `repo`, `read:org`, `workflow`, `gist`, `read:user`, `user:email`. Create it there, copy it back. Those scopes also cover [approving workflows](/guide/repository#approve-workflows-from-a-fork) held on a pull request from a fork; a fine-grained token needs **Actions (write)** for that, and **Checks (read)** for the [CI marks](/guide/repository#ci-at-a-glance) on the list.
 - **Validate & Add** doesn't just store the token — it **calls the GitHub API to verify it first**, and on success fills in your username, avatar, and the token's actual scopes. A bad or expired token is rejected on the spot, before it's ever saved.
 
 Each saved account shows its username, server, and granted scopes, with four actions:
@@ -52,18 +52,26 @@ Added in **0.30.4**, and built the same way: a **Server URL** and a **Personal A
 
 The token needs three scopes — **`write:repository`**, **`write:issue`** and **`read:user`** — created under **Gitea → Settings → Applications**. The **Generate token** link opens that page but, unlike GitHub's and GitLab's, arrives with nothing ticked: Gitea's token form takes no scopes in the query, so the panel's inline hint is what tells you which boxes to check. Test, Update token, Set Default and remove all behave as they do on the other two.
 
+## CNB accounts
+
+Added in **0.42.0**, for [CNB](https://cnb.cool) — `cnb.cool` or a self-hosted instance. A **Server URL**, defaulting to `https://cnb.cool`, and an **access token**, created under **CNB → Personal settings → Access tokens** with five scopes: **`account-profile:r`**, **`repo-issue:rw`**, **`repo-pr:rw`**, **`repo-notes:rw`** and **`repo-code:rw`**. **Generate token** opens that page with nothing ticked, as on Gitea. The token is checked against CNB before it's stored; without `account-profile:r` CNB won't say whose token it is, and the account can't be added. Since CNB doesn't report a token's scopes, none are listed on the account.
+
+CNB's git server signs in with the fixed username **`cnb`** and the token as the password, so that's what Codeg sends for clone, fetch, push and delivery with a CNB account, whatever your CNB username is. Test, Update token, Set Default and remove work as on the other panels.
+
 ## Git accounts
 
-The same idea for **everything the three panels above don't cover** — Bitbucket, a plain self-hosted server. The panel's own line: *"Manage credentials for non-GitHub Git servers (GitLab, Bitbucket, self-hosted, etc.)."*
+The same idea for **everything the four panels above don't cover** — Bitbucket, a plain self-hosted server. The panel's own line: *"Manage credentials for Git servers with no section of their own (Bitbucket, self-hosted, etc.)."*
 
-The add dialog asks for three fields — **Server URL** (e.g. `https://git.example.com`), **Username** (or email), and **Password / Token**. Unlike the three forge panels there's no API to validate against, so the credential is stored as-is; **Test** here simply confirms a credential is present in the keyring rather than checking it against the server. Everything else — **Set Default**, remove — works the same.
+The add dialog asks for three fields — **Server URL** (e.g. `https://git.example.com`), **Username** (or email), and **Password / Token**. Unlike the four forge panels there's no API to validate against, so the credential is stored as-is; **Test** here simply confirms a credential is present in the keyring rather than checking it against the server. Everything else — **Set Default**, remove — works the same.
 
 ::: info Which panel to use, and why it matters now
-All four panels are one store, split for display. For pure git traffic — clone, fetch, push — the split makes no difference: the match is by hostname, so a credential in any of them serves its host. What the GitHub, GitLab and Gitea panels add is a **declared provider**, which is what tells Codeg *which API to speak* to that host.
+All five panels are one store, split for display. For pure git traffic — clone, fetch, push — the split makes no difference: the match is by hostname, so a credential in any of them serves its host. What the GitHub, GitLab, Gitea and CNB panels add is a **declared provider**, which is what tells Codeg *which API to speak* to that host.
 
-Which panel an account lands in is decided by **the dialog you added it through**, not by its URL — which is the only way to tell a self-hosted GitLab from a GitHub Enterprise by looking at it. An account that declares nothing still serves any of the three, and Codeg works down three fallbacks in order: it [asks the instance](/guide/repository#before-you-start-an-account) what it is; failing that it reads the hostname, where a **whole label** `gitlab`, `github`, `gitea` or `forgejo` names a forge and `mygitlabhost.com` deliberately doesn't, being somebody's domain rather than a claim; and failing *that* it falls back to GitHub, which is what a host that can't be reached did before any of this existed.
+Which panel an account lands in is decided by **the dialog you added it through**, not by its URL — which is the only way to tell a self-hosted GitLab from a GitHub Enterprise by looking at it. An account that declares nothing still serves any of the forges, and Codeg works down three fallbacks in order: it [asks the instance](/guide/repository#before-you-start-an-account) whether it's Gitea or GitLab; failing that it reads the hostname, where a **whole label** `gitlab`, `github`, `gitea`, `forgejo` or `cnb` names a forge and `mygitlabhost.com` deliberately doesn't, being somebody's domain rather than a claim; and failing *that* it falls back to GitHub, which is what a host that can't be reached did before any of this existed.
 
 So the declaration earns its keep on the **ambiguous** hosts. It saves the probe, and it's the only answer where the probe can't reach a verdict — an instance behind an authenticating gateway, say. Adding through the right dialog removes the guess entirely.
+
+CNB is never asked: a self-hosted CNB is recognised only through a CNB account or a `cnb` hostname label.
 
 Accounts stored before the provider field existed keep the rule they were filed under: `github.com` under *GitHub accounts*, everything else among the plain git credentials.
 :::
@@ -72,7 +80,7 @@ Accounts stored before the provider field existed keep the rule they were filed 
 
 You rarely invoke these accounts directly — they work through git itself. Codeg registers as git's **credential helper** and supplies credentials via `GIT_ASKPASS`, so when a git operation it runs needs a login for some host, Codeg answers instead of git stopping to prompt you.
 
-The match is **by hostname**. For a remote on `github.com`, Codeg looks for an account whose server is `github.com`; for `gitlab.example.com`, one whose server is `gitlab.example.com`. Two things follow from how the matcher works:
+The match is **by hostname**. For a remote on `github.com`, Codeg looks for an account whose server is `github.com`; for `gitlab.example.com`, one whose server is `gitlab.example.com`. Two things follow from how the matcher works (and a CNB account always signs in as `cnb`):
 
 - **It never uses an unrelated account.** If no account matches the remote's host, Codeg supplies nothing and lets git fall back to its own configuration — a token for one server is never offered to another.
 - **Default breaks a tie *within* a host.** When several accounts share the same server (say two github.com logins), the one marked **Default** is the one used. Across different hosts, each remote uses its own matching account regardless of which is default.
@@ -90,7 +98,7 @@ This is why the [Git & Worktrees](/guide/git) workflow — cloning a repo, pushi
 
 ## Related
 
-- [Repository Panel](/guide/repository) — the issues-and-pull-requests workbench these GitHub, GitLab and Gitea accounts unlock.
+- [Repository Panel](/guide/repository) — the issues-and-pull-requests workbench these GitHub, GitLab, Gitea and CNB accounts unlock.
 - [Git & Worktrees](/guide/git) — the in-app git workflow these credentials quietly power: diffs, commits, branches, and parallel worktrees.
 - [Model Providers](/guide/authentication) — the *other* credential screen, for agent model access rather than Git servers.
 - [System](/reference/settings/system) — the network proxy that git traffic, like everything else, goes through.

@@ -65,10 +65,43 @@ Codeg 开箱即支持**二十个智能体**，通过三种方式交付：
 
 - **可视化设置。** 面板将常见选项以普通表单控件的形式呈现——登录、模型选择、自定义端点、推理强度，以及每个智能体自己的各种开关——因此你很少需要手动编辑任何东西。登录和选择模型在[认证与模型](/zh/guide/authentication)中介绍，每个智能体的面板里有些什么，则见[各智能体配置](/zh/guide/agent-setup)。
 - **环境变量。** 在智能体启动时传递给它的 `KEY=value` 键值对。
+- **系统级提示词。** 智能体的全局指令文件，可直接在这里编辑——见[下文](#system-instructions)。
 - **配置管理。** 如果智能体有自己的原生配置文件（它的*原生 JSON 配置*），可以直接从 Codeg 编辑它，用于处理可视化控件触及不到的设置。
 - **拖动可重新排序。** 智能体列表的顺序同时也是一种偏好设置——当没有指定其他智能体时，第一个已启用的智能体就是 Codeg 会选用的那个（详见下文）。
 
 在会话打开期间更改某项设置，该会话会继续以它旧的配置运行——Codeg 不会在任务中途打断你。取而代之的是，一个横条会出现在**对话顶部**，提示它仍在使用先前的配置；点击**重连以应用**，会话就会带着新设置重新加载，同时**保留其完整历史**。无需关闭再重新打开任何东西。
+
+### 系统级提示词 {#system-instructions}
+
+自 **0.42.0** 起，如果一个智能体有**全局指令文件**，它的面板会在环境变量下方的**系统级提示词**卡片里显示这个文件：文件路径和一个复制按钮，以及在编辑器中打开的文件内容。用 Markdown 写下你希望每个会话都遵循的偏好和工作规则——角色、约定、要避免的事——然后点击**保存系统级提示词**。**放弃更改**会回到上次加载或保存时的内容。这个文件是智能体自己的，所以它的 CLI 和 IDE 会话读取的也是同一份指令。
+
+| 智能体 | 文件 |
+| --- | --- |
+| Claude Code | `~/.claude/CLAUDE.md` |
+| Codex | `~/.codex/AGENTS.override.md`（有内容时），否则为 `~/.codex/AGENTS.md` |
+| Gemini CLI | `~/.gemini/GEMINI.md` |
+| Google Antigravity | `~/.gemini/AGENTS.md` |
+| OpenCode | `~/.config/opencode/AGENTS.md` |
+| Cline | `~/.agents/AGENTS.md` |
+| CodeBuddy | `~/.codebuddy/CODEBUDDY.md`（如果存在的是 `CODEBUDDY.mdc`，则为它） |
+| Kimi Code | `~/.kimi-code/AGENTS.md` |
+| Pi | `~/.pi/agent` 中 `AGENTS.override.md`、`AGENTS.md`、`AGENTS.MD`、`CLAUDE.md` 或 `CLAUDE.MD` 里第一个存在的文件（新建时为 `AGENTS.override.md`） |
+| Grok | `~/.grok/AGENTS.md` |
+| DeepSeek Harness | `~/.dsh/AGENTS.md` |
+| Qoder | `~/.qoder/AGENTS.md` |
+| Kiro CLI | `~/.kiro/steering/AGENTS.md` |
+| TRAE CLI | `~/.trae/AGENTS.override.md`（有内容时），否则为 `~/.trae/AGENTS.md` |
+| Command Code | `~/.commandcode/AGENTS.md` |
+| ZCode | `~/.zcode/AGENTS.md` |
+
+Hermes、Cursor、MiniMax Code、OpenClaw 和自定义智能体没有这张卡片。如果智能体允许用环境变量挪动它的主目录——`CLAUDE_CONFIG_DIR`、`CODEX_HOME`、`OPENCODE_CONFIG_DIR` 之类——卡片会跟随 Codeg 自身启动时带着的那个变量；只在智能体自己的**环境变量**里设置它，并不会让卡片跟着移动。使用服务器或远程工作区时，这个文件位于 Codeg 后端所在的那台机器上。
+
+关于保存，有几处细节：
+
+- **它保存到你看到的那个文件。** 清空 Codex 的 override 文件，保存的是一个空的 override，而不会改用 `AGENTS.md`。
+- **缺失的文件只有在你写入内容时才会创建。** 在 macOS 和 Linux 上，新建的文件只有你自己可读；已有文件保留原有权限，符号链接仍然是链接。
+- **Codeg 无法按文本读取的文件绝不会被覆盖**——保存会被拒绝。
+- **之后新开或重新打开的会话**会用上这次更改；正在运行的会话则保持它启动时的内容。
 
 ::: tip 当智能体不接受某项设置时
 composer 里提供的一部分选项其实是一次*请求*，而不是命令——智能体会回复它实际采纳了哪些。挑一个某个智能体不接受的模型或模式，以前看起来就像这项设置莫名其妙地弹了回去。现在 Codeg 会说明它实际采纳的是什么，并**保留你的偏好供下次使用**：一次拒绝往往只针对*这一个*会话，而不是这个选择本身——一次在对话中途被拒绝的模型切换，换到新会话里常常就成功了。
@@ -101,9 +134,9 @@ composer 里提供的一部分选项其实是一次*请求*，而不是命令—
 
 ## 连接状态 {#connection-status}
 
-在你工作时，composer 下方的**连接心形**会显示智能体的状态——已连接、连接中、连接异常或未连接——并在它的弹出面板里把*响应中…* 与静止的*已连接*区分开。点击它可以查看详情，以及一个**重新连接**——它会尝试恢复原会话。如果智能体无法加载会话，或者加载失败，Codeg 会改为在同一个对话上开启一个新的智能体会话：对话记录还在，但智能体已不再拥有之前的上下文。→ [当连接看起来不对劲时](/zh/guide/conversations#when-the-connection-looks-wrong)
+在你工作时，composer 下方的**连接心形**会显示智能体的状态——已连接、连接中、连接异常或未连接——并在它的弹出面板里把*响应中…* 与静止的*已连接*区分开。点击它可以查看详情，以及一个**重新连接**——它会尝试恢复原会话。如果智能体无法加载会话，或者加载失败，Codeg 通常会改为在同一个对话上开启一个新的智能体会话：对话记录还在，但智能体已不再拥有之前的上下文。少数已知原因——会话正在另一个客户端中打开、Codex 上换了模型供应商——会改为显示一条横幅，对话则保持原样。→ [当连接看起来不对劲时](/zh/guide/conversations#when-the-connection-looks-wrong)
 
-你没有在看的会话可能会在闲置几分钟后断开连接以释放资源——后台工作仍在运行时不会，开启了[远程控制](/zh/guide/conversations#continue-on-your-phone-—-remote-control)的 Claude Code 会话也不会——但你正在活跃使用的标签页会保持连接，而当你回到某个会话时，Codeg 会**自动重新连接**。
+你没有在看的会话可能会在闲置几分钟后断开连接以释放资源——后台工作或被委派的子智能体仍在运行时不会，开启了[远程控制](/zh/guide/conversations#continue-on-your-phone-—-remote-control)的 Claude Code 会话也不会。自 **0.42.1** 起，关闭对话的标签页、切换窗格或刷新网页时也是如此：这些工作会继续进行。**重新连接**会停止这些工作，弹出面板会先提醒你。你正在活跃使用的标签页会保持连接，而当你回到某个会话时，Codeg 会**自动重新连接**。
 
 ## 后续步骤 {#next-steps}
 

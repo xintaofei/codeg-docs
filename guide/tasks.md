@@ -79,8 +79,8 @@ That's not only the new-task box. **Every to-do input is the full composer** —
 Three other doors lead here:
 
 - **From a message.** Beside the copy button on a message, **Create task from message** opens the editor over the current conversation, with the message and project filled in. Save there without leaving what you were reading; the confirmation offers **View** to open the new task.
-- **From an automation, or from the agent itself.** An automation can file a task instead of starting a session, and an agent in a conversation can queue one too, if you've allowed it. → [Automations](/guide/automations#choose-what-a-fire-does)
-- **From a GitHub, GitLab or Gitea item.** The [Repository panel](/guide/repository) lists your issues and pull requests and hands one straight to an agent, choosing how it should be handled — fix it, plan it first, review it and fix what it finds, or only review it. Since **0.35.2** it can also create them **by itself**, scanning on a schedule or on a webhook for the items that match your rules; those tasks' timelines open with *Created by auto-processing*. Either way the task that comes out is an ordinary one on this board. → [Repository Panel](/guide/repository#let-it-pick-items-up-by-itself)
+- **From an automation, or from the agent itself.** An automation can file a task instead of starting a session, and an agent in a conversation can queue one too, if you've allowed it — since **0.43.0** with screenshots and other files attached. → [Automations](/guide/automations#choose-what-a-fire-does)
+- **From a GitHub, GitLab, Gitea or CNB item.** The [Repository panel](/guide/repository) lists your issues and pull requests and hands one straight to an agent, choosing how it should be handled — fix it, plan it first, review it and fix what it finds, or only review it. Since **0.35.2** it can also create them **by itself**, scanning on a schedule or on a webhook for the items that match your rules; those tasks' timelines open with *Created by auto-processing*. Either way the task that comes out is an ordinary one on this board. → [Repository Panel](/guide/repository#let-it-pick-items-up-by-itself)
 
 ## Set it running
 
@@ -123,7 +123,7 @@ From there it's a real agent session, and it produces a real conversation you ca
 While it works, the agent has two extra tools that exist only inside a task run:
 
 - **`task_progress`** — a one-line milestone (*"tests passing, starting cleanup"*) that lands on the card and the timeline in real time.
-- **`task_complete`** — the verdict, called once at the end: **success**, **needs_review** (it works, but look at this), or **blocked** (couldn't finish, and why). Success and needs-review send the task to review; blocked marks it failed.
+- **`task_complete`** — the verdict, called once at the end: **success**, **needs_review** (it works, but look at this), or **blocked** (couldn't finish, and why). Success and needs-review send the task to review; blocked marks it failed. Since **0.43.0**, on a task from an issue or pull request that comments its outcome back, it also carries the agent's [draft reply for the thread](/guide/repository#the-comment-that-goes-back).
 
 Both show up in the task's conversation as cards. Since **0.37.0** expanding one shows the whole message or summary, formatted, with a line saying whether it was **Recorded on the work task** — where Claude Code and Codex used to show a bare `{"recorded":true}`.
 
@@ -135,12 +135,14 @@ Both show up in the task's conversation as cards. Since **0.37.0** expanding one
 
 A task lands in **Needs you** for four different reasons, and the status on the card tells you which:
 
-- **Awaiting input** — the agent is blocked on a permission request, a multiple-choice question, or a plan approval. Nothing progresses until you answer. A task whose agent [delegated](/guide/multi-agent) part of the work says this too when it's the **sub-agent** that got stuck, rather than sitting at *running* while nothing happens.
+- **Awaiting input** — the agent is blocked on a permission request, a multiple-choice question, or a plan approval. Nothing progresses until you answer, and once every open request is answered the task goes back to *running* by itself. A task whose agent [delegated](/guide/multi-agent) part of the work says this too when it's the **sub-agent** that got stuck, rather than sitting at *running* while nothing happens.
 - **To review** — it finished. See [below](#review-the-result).
 - **Merging** — the merge is in flight. This is the one state you can't cancel. A task waiting for the slot reads **queued to merge** instead — see [below](#a-second-merge-waits-in-line).
 - **Failed** — the run errored, was interrupted by a restart, or the agent reported **blocked**. Since **0.35.2** that includes a turn that **ended on an agent error** and left nothing else behind — an upstream `400` after a cut-off tool call, say, which still closes the turn as if it had finished: with no reply, no change and no verdict, the task fails and the card shows **the agent's own message**, its last 4,000 characters. It used to slide quietly into *To review*, or, for a turn that stopped some other way, say only that the agent stopped. A turn that wrote a reply, changed files or reported a verdict goes to review as before. **Retry** picks up in the same worktree, told that the previous attempt was interrupted and to carry on; you can add a **note** for that next run.
 
-**View session** is how you unblock the first one. It opens a read-only live view of the task's agent session — and while it's read-only for *prompting*, it does render the permission dialog and the question card, so this is where you answer. The viewer streams live for a running task and shows the stored transcript for a settled one, split into the phases the task went through: **Task run**, **Retry run**, **Follow-up**, and **Merge**. It opens **nested inside the task drawer** that launched it, so backing out of the transcript returns you to the task rather than to nothing. Since **0.30.3** a file the transcript mentions opens **beside it** rather than in the workspace column the board is covering — a file badge, a Markdown link or **view diff** brings up a read-only viewer next to the messages, with **Open in workspace** one click away. → [the same panel on the canvas](/guide/canvas#a-card-is-a-real-conversation)
+**Respond** is how you unblock the first one. Since **0.42.0** it's the filled button on a waiting task's card and list row, where **Cancel** used to be — cancelling is still there, as the smaller **Cancel task** beside it. In the drawer the next-step panel turns amber, says what the agent is waiting for, and offers the same two buttons.
+
+**Respond** opens a read-only live view of the task's agent session — and while it's read-only for *prompting*, it does render the permission dialog and the question card, so this is where you answer. The same viewer is **View session** on a running or settled task, and in the drawer's footer. The viewer streams live for a running task and shows the stored transcript for a settled one, split into the phases the task went through: **Task run**, **Retry run**, **Follow-up**, and **Merge**. It opens **nested inside the task drawer** that launched it, so backing out of the transcript returns you to the task rather than to nothing. Since **0.30.3** a file the transcript mentions opens **beside it** rather than in the workspace column the board is covering — a file badge, a Markdown link or **view diff** brings up a read-only viewer next to the messages, with **Open in workspace** one click away. → [the same panel on the canvas](/guide/canvas#a-card-is-a-real-conversation)
 
 ### Set it aside for later
 
@@ -169,8 +171,9 @@ Open a reviewed task and the detail drawer lays out everything you need to judge
 - **Result** — the summary the agent wrote when it called `task_complete`, rendered as Markdown, so its headings, lists and code read as intended. A long one folds behind **show more**. Since **0.38.0**, local Markdown images render here too, resolved against the task's working folder.
 - **Changed files** — every file against the task's recorded base, with `+`/`−` counts. Click one for its diff, or **View full diff** for the lot.
 - **The counters measure what *this task* did.** Since **0.28.2** they're anchored to the point an acceptance would deliver from — the pull request's head for a task triggered from one, the recorded base otherwise, moved forward to the live merge base when the branch has pulled base changes in. So a task triggered from a pull request no longer counts the pull request's own changes as its work, and a branch that merged the base in doesn't count the base's. (The list keeps the wider merge-base view, and says so inline when it's showing you the pull request's changes too.) Files the agent created but never staged count as well: `git diff` reads from the index, so brand-new files used to read as *no work at all* — the measure now runs against a throwaway copy of the index, which picks them up while leaving ignored artifacts and your real index alone.
+- **Reply for the thread** — on a task from an issue or pull request, since **0.43.0**: the reply the agent drafted for the item's thread, posted when you accept the task, and editable in the dialog you accept it with. It says so when commenting is off for this task. → [The comment that goes back](/guide/repository#the-comment-that-goes-back)
 - **Progress** — the task's timeline: created, status changes, the launch config actually used, init-command output, agent milestones and verdict, preflight, merge attempts, and your own actions.
-- **Details** — branch, merge commit once there is one, change totals, scheduled start, and the created / started / finished timestamps. Total tokens sit in the header.
+- **Details** — since **0.42.1** opening with **Source**, which links the issue or pull request a task came from (every issue, for one [handling several](/guide/repository#handle-several-issues-as-one-task)); then branch, merge commit once there is one, change totals, scheduled start, and the created / started / finished timestamps. Total tokens sit in the header.
 
 If the folder has a **preflight command**, it runs in the worktree the moment the task reaches review — your acceptance test, as a red or green light on the card. A failure keeps the tail of its output right there, so you can see what broke without opening a terminal.
 
@@ -202,16 +205,16 @@ Either way the work continues in the same worktree and comes back to review. Cod
 
 ## Deliver as a pull request {#deliver-as-a-pull-request}
 
-Since **0.41.1**, a task in **To review** can deliver its branch to **GitHub**, **GitLab** or **Gitea/Forgejo**, whether or not it started from an issue. GitLab calls this a **merge request**.
+Since **0.41.1**, a task in **To review** can deliver its branch to **GitHub**, **GitLab** or **Gitea/Forgejo** — and since **0.42.0** **CNB** — whether or not it started from an issue. GitLab and CNB call this a **merge request**.
 
 1. Open the task details and choose **Open pull request**. For a task without forge provenance, Codeg resolves the repository from the project's **`origin`**. Configure a matching account in [Settings → Version Control](/reference/settings/version-control) first; an unsupported origin cannot receive a request.
-2. Check the repository and base branch, enter the title, and optionally select **Open as a draft**. Issue-linked tasks include the closing reference automatically; ordinary tasks need no issue.
+2. Check the repository and base branch, enter the title, and optionally select **Open as a draft**. Issue-linked tasks include the closing reference automatically; ordinary tasks need no issue. A task handling [several issues](/guide/repository#handle-several-issues-as-one-task) lists them under **Closes when merged**: untick any the work doesn't resolve, and it's referenced instead. That list is fixed once the first delivery starts.
 3. Choose whether to **Mark the task as done after delivering**, **on by default**. Turn it off to leave the task in review and keep its worktree for another round.
 4. Push the branch and open the request. The request link stays in the task details. After a follow-up, **Update pull request** pushes the new commits to the **same request**.
 
 For a task created from an existing pull request, **Push to the pull request** updates its head branch, including a fork when you have permission. A push with no new work is refused and points to **Complete** instead. Delivery uses git and forge APIs directly; it does not launch a merge agent.
 
-**Delete the worktree after delivering** is available only when marking the task done. It starts from the folder's cleanup default. A cleanup failure leaves a retry action and does not undo a successful push. For issue-linked delivery, see the [matching and writeback rules](/guide/repository#take-the-result-back).
+**Delete the worktree after delivering** is available only when marking the task done. It starts from the folder's cleanup default. A cleanup failure leaves a retry action and does not undo a successful push. For issue-linked delivery, see the [matching and writeback rules](/guide/repository#take-the-result-back). On a task from an issue or pull request, the **Merge task**, **Complete** and delivery dialogs also show the [comment that goes back](/guide/repository#the-comment-that-goes-back) — the agent's draft, editable, or off — and a delivery that keeps the task in review posts no comment yet.
 
 ## Merge it
 
@@ -309,7 +312,7 @@ The split earns its keep because what belongs in one stage is nothing like what 
 
 ## Keep the board tidy
 
-- **Search** with the **Search tasks** box in the toolbar — since **0.35.2**, on the board and the list alike. It filters as you type, ignores case, and wants **every word** you type to match somewhere: the title, the branches, the folder, the agent, and either the description or, for a task from the [Repository panel](/guide/repository), its repository, item number, item title and URL. **`#12`** is exact — the task numbered 12, or the one made from issue or pull request 12 — while a bare `12` also finds #112. Columns with nothing left say **No matches**, the list offers **Clear search**, Escape clears it too, and the box starts empty each time you open To-dos.
+- **Search** with the **Search tasks** box in the toolbar — since **0.35.2**, on the board and the list alike. It filters as you type, ignores case, and wants **every word** you type to match somewhere: the title, the branches, the folder, the agent, and either the description or, for a task from the [Repository panel](/guide/repository), its repository, item number, item title and URL. **`#12`** is exact — the task numbered 12, or one made from issue or pull request 12, including a task that handles it together with other issues — while a bare `12` also finds #112. Columns with nothing left say **No matches**, the list offers **Clear search**, Escape clears it too, and the box starts empty each time you open To-dos.
 - **Filter by folder** with the dropdown, by status in list view, and by visibility with the **Filter** menu: **Show canceled** (on by default) and **Show archived** (off). The filter button badges itself when you've moved away from those defaults.
 - **The folder picker searches.** It's the same list the new-conversation composer uses — a search box, and one row per folder reading *alias [ name ]* over its full path. Typing matches the alias, the real directory name **and** the path, so two folders you've aliased alike are still tellable apart, and a folder you know only by its on-disk name is still findable. The task editor's target folder and the settings scope picker use it too.
 - **Archive** takes a task off the board without deleting it, once it's reached an end — done, failed, or canceled; **Archive all** clears everything the Done column is currently showing, apart from deferred tasks, which wait for you to deal with them. An archived card offers exactly one action — **Unarchive**.
@@ -332,7 +335,7 @@ The split earns its keep because what belongs in one stage is nothing like what 
 
 ## Next steps
 
-- [**Repository Panel**](/guide/repository) — turn a GitHub, GitLab or Gitea issue or pull request into one of these tasks, by hand or by rule, and send the result back.
+- [**Repository Panel**](/guide/repository) — turn a GitHub, GitLab, Gitea or CNB issue or pull request into one of these tasks, by hand or by rule, and send the result back.
 - [**Git & Worktrees**](/guide/git#work-in-parallel-with-worktrees) — the worktree machinery a task is built on, and how to manage the ones it leaves.
 - [**Automations**](/guide/automations#choose-what-a-fire-does) — fire on a schedule and file a to-do instead of a session.
 - [**Working with Agents**](/guide/agents) — the agents, modes, and options a task replays.

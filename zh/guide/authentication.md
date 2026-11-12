@@ -30,7 +30,7 @@ Codeg 不附带自己的任何模型。每个智能体都带来自己的凭据�
 - **Kimi Code**、**CodeBuddy**——在终端中运行智能体自己的登录命令（`kimi login`、`codebuddy`），Codeg 会自动识别它。Kimi Code 走 API 密钥这条路时另有一个自己的面板。→ [Kimi Code](/zh/guide/agent-setup#kimi-code-provider-model-and-reasoning)
 - **Kiro CLI**、**TRAE CLI**、**Command Code**——在终端里运行一次智能体自己的登录命令：`kiro-cli login`、`traecli login`（用你的企业 SSO）或 `command-code login`；TRAE CLI 和 Command Code 的面板会给出这条命令，并带一个复制按钮。在服务器或容器上，它们各自改用一份凭据：Kiro 的 **API Key**（`KIRO_API_KEY`）、TRAE CLI 的**个人访问令牌**（Codeg 会在每次启动会话时用它登录），以及 Command Code 的 **API 密钥**（`COMMAND_CODE_API_KEY`，它优先于那次登录）。→ [各智能体配置](/zh/guide/agent-setup#kiro-cli)
 - **MiniMax Code**——在后端机器上运行 `mcode login`，全球账户使用 `mcode login --region global`。已配置的自带密钥供应商无需另行登录 MiniMax，端点与密钥通过 MiniMax Code 自身管理。→ [MiniMax Code](/zh/guide/agent-setup#minimax-code)
-- **ZCode**——在官方 ZCode 里登录即可；Codeg 运行的桥接器会复用那次登录，Codeg 不复制任何东西。ZCode 的 **Start Plan** 账户无法通过桥接器运行，因为它的请求需要验证码，而只有 ZCode 桌面应用能完成；GLM Coding Plan 账户可以正常使用。→ [ZCode](/zh/guide/agent-setup#zcode)
+- **ZCode**——在官方 ZCode 里登录即可；Codeg 运行的桥接器会复用那次登录，Codeg 不复制任何东西。GLM Coding Plan 账户可以正常使用；自 **0.41.2** 起，Coding Plan **API 密钥**也可以，它保存在桌面应用里，或通过桥接器的 `setup` 命令交给桥接器。**Start Plan** 模型需要只有桌面应用才能完成的验证码，所以 Codeg **0.42.3** 之前的桥接器会拒绝它们。→ [ZCode](/zh/guide/agent-setup#zcode)
 - **Grok** 和 **Cursor** 各自拥有一个**认证方式**选择器：
   - **Grok**——**官网订阅**（通过 `grok login` 使用 SuperGrok 或 X Premium+；不存储任何东西）、**XAI API 密钥**（来自 xAI 控制台的密钥，用于无人值守运行），或**自定义接口**（一个带有自己的基础 URL 和密钥的自定义模型，它会成为 Grok 的默认模型）。
   - **Cursor**——**官网订阅**，此时 Codeg 会向你展示需要运行的 `cursor-agent login` 命令（会打开一个浏览器窗口），你刷新后它会显示**已登录**；或者使用来自 Cursor 控制台的 **Cursor API 密钥**，用于无人值守和服务器机器。请注意该密钥是一个 *Cursor 账户*密钥——`cursor-agent` 只与 Cursor 自己的后端通信，因此它并非通往第三方端点的途径。Codeg 会把两者都写入与该 CLI 共享的 `~/.cursor/cli-config.json`。自 **0.31.2** 起，Codeg 还会检查存着的登录是否仍然可用，而不是轻信 CLI 的一面之词。→ [Cursor](/zh/guide/agent-setup#cursor)
@@ -81,7 +81,8 @@ Codeg 会在智能体启动时把这些交给它。大多数智能体都接受�
 - **没有按文件夹设置的模型默认值**——模型是在会话层面选择的。（文件夹默认值设定的是*智能体*，而非模型。）
 - **重新打开的 Claude Code 历史，会在模型具备 1M 窗口时按 1M 计算。** 自 **0.35.0** 起，对于原生具备 1M 窗口的模型——Opus 4.7 及之后、Sonnet 5 及之后、Haiku 5.5、Fable 和 Mythos——你重新打开的 Claude Code 对话，其上下文圆环会以 **1M** 而不是 200K 为基准来计算。窗口大小并不会被存下来，所以旧对话会在下一次被读取时用上它。同一个版本还把 **Claude Haiku 5.5** 设为推荐的 Haiku 模型，在 Claude Code 的面板上和模型供应商的对话框里都是如此。
 - **保存在 *(1M context)* 条目上的 Claude Code 对话依然能用。** 自 Claude Code **2.1.285** 起，通过自定义 API 地址接入的网关只会列出普通模型——它们默认就使用 1M 窗口——而有些账户更早就已经没有单独的 *Opus (1M context)* 条目了。设在这类条目上的对话会改用与它对应的普通模型继续，而不是退回默认模型。如果你的网关上限是 200K，Claude Code 自己的建议是 `/autocompact 200k`。
-- **保存下来的 Fable 选择在 Claude Code 2.1.287 下依然有效。** 这个版本随适配器 **0.86.0** 自 Codeg **0.34.0** 起内置，它把 Fable 条目从 `claude-fable-5-1` 改成了 `fable`，于是 Codeg 保存的 Fable 选择对不上任何条目，每次连接都会退回默认模型。现在 Codeg 会把这个选择转到唯一一个指向同一模型的条目上——按它的名称 *Fable 5.1*、按它描述的开头，或者按 **Fable 默认模型**槽位（模型供应商里叫**默认 Fable 模型**）钉住的 id 来认——前提是还有条目指向这个版本；*(1M context)* 的 Fable 选择也按同样方式转过去。如果没有条目指向它，或者有不止一个，就什么都不转，会话使用 Claude Code 的默认模型。保存下来的选择本身不会被改写——重新选一次 Fable，就会存下新的 id。
+- **保存下来的 Fable 选择在 Claude Code 2.1.287 下依然有效。** 这个版本随适配器 **0.86.0** 自 Codeg **0.34.0** 起内置，它把 Fable 条目从 `claude-fable-5-1` 改成了 `fable`，于是 Codeg 保存的 Fable 选择对不上任何条目，每次连接都会退回默认模型。现在 Codeg 会把这个选择转到唯一一个指向同一模型的条目上——按它的名称 *Fable 5.1*、按它描述的开头，或者按 **Fable 默认模型**槽位（模型供应商里叫**默认 Fable 模型**）钉住的 id 来认——前提是还有条目指向这个版本；*(1M context)* 的 Fable 选择也按同样方式转过去。如果没有条目指向它，或者有不止一个，就不会以这种方式转过去——较新的 Fable 见下一条——再不行，会话就使用 Claude Code 的默认模型。保存下来的选择本身不会被改写——重新选一次 Fable，就会存下新的 id。
+- **Fable 5.1 变成 Fable 5.2。** 自 **0.42.2**（Claude Code 2.1.321）起，Fable 条目就是 Fable 5.2。通过 API 网关时，已经没有条目指向 5.1，保存下来的 Fable 5.1 选择会转到这个条目上，而不是退回默认模型——但只会转到唯一一个指向更新版本的 Fable 条目，也绝不会转到你在 **Fable 默认模型**槽位里钉住的模型。如果你用 claude.ai 登录、而它仍列出 Fable 5.1，所选的就会留在 5.1。
 - **模型一律按其所属智能体的叫法显示。** 自 **0.31.0** 起，Codeg 会记录智能体模型选择器公布的 id/名称对应关系，因此回复页脚、会话详情和侧边栏悬浮胶囊显示的是 `Qwen3.8-Flash`，而不是会话记录里那个形如 `qfmodel` 的账号内部 id。
 
 **推理强度**在 composer 里按会话设置——只有少数几个智能体的面板补上了 composer 表达不了的东西：
@@ -97,7 +98,7 @@ Codeg 会在智能体启动时把这些交给它。大多数智能体都接受�
 
 Codeg 把智能体凭据保存在智能体自己保存的地方——不会有任何内容上传到 Codeg：
 
-- **智能体自己的原生配置。** 由智能体的 CLI 处理的订阅登录或密钥会留在该智能体的文件中——`~/.codex/auth.json`、`~/.hermes/.env`、`~/.grok/auth.json`、Kiro 的 `~/.kiro`、TRAE CLI 的 `~/.trae`、Command Code 的 `~/.commandcode/auth.json` 等等——正是智能体自己的工具存放它的地方。ZCode 的登录状态则留在 ZCode 应用内部。
+- **智能体自己的原生配置。** 由智能体的 CLI 处理的订阅登录或密钥会留在该智能体的文件中——`~/.codex/auth.json`、`~/.hermes/.env`、`~/.grok/auth.json`、Kiro 的 `~/.kiro`、TRAE CLI 的 `~/.trae`、Command Code 的 `~/.commandcode/auth.json` 等等——正是智能体自己的工具存放它的地方。ZCode 的登录状态则留在 ZCode 应用内部，交给其桥接器 `setup` 命令的密钥则保存在 `~/.zcode/v2/acp-accounts.json` 中。
 - **Codeg 的本地数据库。** 你输入到 Codeg UI 中的密钥——自定义端点密钥、已保存的模型提供商，以及 Kiro CLI、TRAE CLI 或 Command Code 面板上的密钥或令牌——由 Codeg 存储在本地，并在智能体启动时作为环境变量注入。与智能体自己的配置文件一样，它们在静态时并未加密，而遮蔽显示只是表面功夫——因此请把对你机器的访问权限视为安全边界。
 
 这与 **git 账户**令牌是分开的，后者*确实*保存在你的系统密钥环中。→ [git 账户](/zh/guide/git#git-accounts)

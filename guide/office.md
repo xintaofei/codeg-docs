@@ -66,9 +66,11 @@ Since **0.35.2** a file tab's preview **stays live while you look elsewhere**. S
 
 A large document, or a busy machine, can take a while before its first preview appears, because OfficeCLI renders the whole file before it answers. Codeg now waits up to **two minutes** for that, where it used to give up after eight seconds — and quitting Codeg while a preview is still starting no longer locks that file out of previews for the next five minutes.
 
-You usually don't have to open it at all. **Auto-open preview** — the switch at the top of **Settings → Skill Packs → Office Tools**, **on by default** — opens the live preview by itself the first time an agent creates or edits a Word, Excel or PowerPoint file, so the document appears as it's written rather than after you go looking for it.
+You usually don't have to open it at all. **Auto-open preview** — the switch at the top of **Settings → Skill Packs → Office Tools**, **on by default** — opens the live preview by itself when an agent's tools create or edit a Word, Excel or PowerPoint file, so the document appears as it's written rather than after you go looking for it.
 
-It opens a document **once**. A preview you close stays closed: since **0.31.2** a tab you opened by hand counts as having seen the file, so closing it doesn't hand the next edit a reason to reopen it — and a document that's been **deleted** isn't reopened either, which used to happen when the agent's own cleanup was the last thing the watcher reported.
+Since **0.42.1** it follows what the agent's own tool calls point at. A document qualifies when a tool call **in the current turn** names it — a script, a command, an edit — and the file was written after that turn started. A file the agent merely read, a template it only pointed at, or a document no tool call named doesn't open, so changes from a sync client, a branch switch or another program stay closed. It's attribution by name and time, not by who wrote the file: a named document that something else modifies during the turn can still open. The file also has to sit in the folder you're looking at; hidden paths and Office's `~$` lock files are skipped. When Codeg can't tell for sure which file a command wrote, it leaves the preview closed rather than guess.
+
+It opens a document **once** per window. A preview you close stays closed, across later turns and folder switches, and a tab you opened by hand counts as having seen the file, so closing it doesn't hand the next edit a reason to reopen it.
 
 ## Good to know
 

@@ -91,7 +91,9 @@ DevTools 服务器驱动的是**另一个** Chrome，Codeg 管不到。你会拿
 
 把服务器写入 JSON 配置时**会保留文件原有的键顺序**：自 **0.32.0** 起，文件的其余部分会保持你写下的顺序，而不是每次保存都被按字母顺序重新排列。
 
-只要有任何一个条目仍然指定了已退役的 `kaos` 执行器，**Kimi Code 2.2.0** 就会拒绝它的整个 `mcp.json`，所以自 **0.35.2** 起，Codeg 会从它保存的每个 Kimi 条目中去掉 `kaos`。Codeg 没有动过的条目则保持原样——如果升级之后 Kimi 不再加载你的服务器，请到那里找找有没有残留的 `kaos`。
+**Kimi Code** 已经退役了 `kaos` 执行器，所以自 **0.35.2** 起，Codeg 会从它保存的每个 Kimi 条目中去掉 `kaos`。从 Kimi Code 2.2.0 到 2.4.1，只要残留一个 `kaos` 条目，Kimi 就会拒绝它的整个 `mcp.json`；自 2.5.0 起只有那一个服务器会失败，所以如果升级之后你的某个服务器不再加载，请在它里面找找有没有残留的 `kaos`。自 **0.42.1** 起，Codeg 保存时会保留 Kimi 自己的 `environment_id` 和 `deferred` 字段。
+
+**Hermes 0.23** 在一个同时接收 Codeg 下发服务器的会话里——每个挂接了 codeg-mcp 的会话都是如此——无法连接它自己 `config.yaml` 中的服务器，而你在这里分配给 Hermes 的服务器正是写在那里的。→ [Hermes](/zh/guide/agent-setup#hermes)
 
 这就是**二十个智能体中的十八个**——除 **OpenClaw** 和 **Pi** 之外的每一个。OpenClaw 根本不接受 MCP 服务器（它是唯一选择不参与的智能体），因此不会作为目标提供；Pi 也不在列表中。→ [智能体之间有何不同](/zh/guide/supported-agents#how-agents-differ)
 

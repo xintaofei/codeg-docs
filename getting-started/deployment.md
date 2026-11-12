@@ -218,8 +218,8 @@ Codeg has no switch for the browser cache; to remove the copy, clear the site's 
 
 ## Keep your server up to date
 
-::: warning Back up before upgrading from 0.40.0 or earlier
-Stop the server and back up its complete data directory before updating to 0.41.1. Its task-delivery migration prevents 0.40.0 and earlier from starting on the updated data. Neither **Roll back** nor the supervisor restores the old schema; a downgrade also requires restoring pre-upgrade data. → [Upgrade and recovery steps](/getting-started/upgrading)
+::: warning Back up before upgrading from 0.42.3 or earlier
+Stop the server and back up its complete data directory before updating to 0.43.0. Its to-do migration prevents 0.42.3 and earlier from starting on the updated data, as 0.42.1's did for 0.42.0 and earlier. Neither **Roll back** nor the supervisor restores the old schema; a downgrade also requires restoring pre-upgrade data. → [Upgrade and recovery steps](/getting-started/upgrading)
 :::
 
 **macOS server permissions:** the 0.41.1 signing setup preserves Full Disk Access and other privacy grants across future updates. Updating from an older build requires granting them once more.

@@ -32,7 +32,7 @@ codeg-cli --assistant code-reviewer "Review the latest commit" --permissions rea
 
 ```bash
 docker compose exec codeg codeg-cli -w /projects/app -a claude_code \
-  --permissions reads -p "Review the latest commit"
+  --mode default --permissions reads -p "Review the latest commit"
 ```
 
 ::: details 在 macOS 或 Windows 上手动设置 PATH
@@ -182,6 +182,8 @@ codeg-cli [GLOBAL OPTIONS] [run] [RUN OPTIONS] [PROMPT]
 | **`wait`** | 留给你在 Codeg 中回答。 | 留给你回答。 |
 
 智能体自己的**模式**仍然决定它是否发起请求。如果没有合适的一次性允许选项，Codeg 会拒绝，而不会选择长期允许；如果连一次性拒绝也做不到，运行就以退出码 5 结束。Grok 的计划审批在 `allow` 下通过，在 `wait` 下等待，否则放弃。委派的子智能体也遵循同一策略。
+
+自 **0.42.1** 起，**Claude Code** 会以 **Auto** 模式起步，除非 `--mode` 或它自己的 `permissions.defaultMode` 指定了别的模式、Auto 被禁用，或者模型无法运行 Auto。在 Auto 下，大多数操作由 Claude Code 自己的检查来决定——它会在工作目录内修改文件、运行它判定为安全的命令、拒绝有风险的命令——这些都不会经过 `--permissions`。在无法响应这项检查的 API 网关后面，它要审查的每条命令都会被拒绝。`--mode default`（Manual）会让 Claude Code 在做出改动之前先询问，就像 0.42.1 之前那样——这正是不应改动检出代码的审查所需要的。
 
 使用 **`wait`** 时，对话链接会打印到 stderr。在 Codeg 中打开它，或为本机桌面应用加上 `--open`，然后在那里或通过已连接的[聊天频道](/zh/guide/chat-channels)作答。超时仍会取消运行，JSON 结果会在 `pending` 中列出未回答的请求。
 
@@ -334,11 +336,11 @@ codeg-cli automations run 3 --wait 30m --json
 
 ```bash
 set -euo pipefail
-curl -fsSL https://raw.githubusercontent.com/spacering-net/codeg/main/install.sh | bash -s -- --version v0.38.0
+curl -fsSL https://raw.githubusercontent.com/spacering-net/codeg/main/install.sh | bash -s -- --version v0.43.0
 # Set ANTHROPIC_API_KEY through the CI system's secret environment.
 codeg-cli --standalone agents install claude_code
 git show HEAD | codeg-cli --standalone -a claude_code -w "$PWD" \
-  --timeout 30m -p "Review this commit for bugs" -o review.md
+  --mode default --timeout 30m -p "Review this commit for bugs" -o review.md
 ```
 
 服务器中的智能体会继承当前命令的环境变量，包括凭据。每条命令都从全新状态开始：通过 npm 安装的智能体会保留，但设置、助手和下载的二进制文件不会。在每条命令上加上 **`--data-dir DIR`**，使用 CI 专用目录即可在命令间保留它们。独立服务器会拒绝已被当前版本 Codeg 占用的目录；旧版不参与该检查，因此也要避开其数据目录。
@@ -369,10 +371,10 @@ jobs:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           set -euo pipefail
-          curl -fsSL https://raw.githubusercontent.com/spacering-net/codeg/main/install.sh | bash -s -- --version v0.38.0
+          curl -fsSL https://raw.githubusercontent.com/spacering-net/codeg/main/install.sh | bash -s -- --version v0.43.0
           codeg-cli --standalone agents install claude_code
           git show HEAD | codeg-cli --standalone -a claude_code -w "$GITHUB_WORKSPACE" \
-            --permissions reads --timeout 30m -p "Review this commit for bugs" -o review.md
+            --mode default --permissions reads --timeout 30m -p "Review this commit for bugs" -o review.md
       - uses: actions/upload-artifact@v4
         if: always()
         with:

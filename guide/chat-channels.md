@@ -105,13 +105,15 @@ The **Events** tab controls what Codeg pushes back to your chat. Five events, ea
 
 **User Message** is off out of the box on purpose: it's the one event that copies your prompt text out to the channel (and to any webhooks), so you opt into that deliberately.
 
+Below the toggles, **Top-level sessions only** (off by default, since **0.42.0**) quiets the work agents hand to each other. With it on, a sub-session started by [delegation](/guide/multi-agent) no longer sends **Turn Complete** or **Agent Error** — the agent that delegated reports the outcome when it finishes. A sub-session's **Permission Request** and **Agent Question** still come through, because something is waiting for you. The switch applies to channels and webhooks alike, and an event Codeg can't trace to a conversation is still delivered.
+
 The payoff is the **Permission Request** loop. When a task you launched from chat wants to run a command or write a file, Codeg posts the request into that same chat and waits — reply **`/approve`** (or **`/approve always`**) to let it through, or **`/deny`** to refuse. That's the whole point of the feature: an agent can pause for a human decision and you can give it from your phone, wherever you are. Questions work the same way, surfaced for you to answer.
 
 Updates about a task you started **from a chat** stream back to **that** chat — its replies, tool calls, and the prompts above. Sessions you started **in the app** show up in your connected channels as notifications too (rate-limited so a chatty run doesn't flood you), which is how you keep half an eye on desktop work from your pocket.
 
 ### Send events to your own tools
 
-Under the same tab, **Webhooks** relay the *same* enabled events to any URL you add as an HTTP `POST` with a JSON body — for wiring Codeg into a dashboard, a Slack relay, or your own automation. The event toggles above gate webhooks too (though webhooks aren't rate-limited). The payload is small and stable:
+Under the same tab, **Webhooks** relay the *same* enabled events to any URL you add as an HTTP `POST` with a JSON body — for wiring Codeg into a dashboard, a Slack relay, or your own automation. The event toggles above gate webhooks too (though webhooks aren't rate-limited). The payload is a flat JSON object:
 
 ```json
 {
@@ -121,9 +123,19 @@ Under the same tab, **Webhooks** relay the *same* enabled events to any URL you 
   "body": "An agent is waiting for approval.",
   "fields": [{ "label": "Operation", "value": "Bash: npm test" }],
   "connection_id": "conn-abc",
-  "source": "codeg"
+  "source": "codeg",
+  "conversation_id": 42,
+  "conversation_title": "Fix the flaky upload test",
+  "agent_type": "codex",
+  "agent_name": "Codex",
+  "assistant_name": null,
+  "session_kind": "sub_session",
+  "parent_conversation_id": 41,
+  "parent_conversation_title": "Release prep"
 }
 ```
+
+The conversation fields arrived in **0.42.0**, so a receiver can tell which conversation and agent an event came from. `session_kind` is `session` or `sub_session`; for a sub-session, the two `parent_` fields name the conversation that delegated it, and `assistant_name` names the [assistant](/guide/assistants) it runs as, if any. The other new fields can be `null` when the event isn't tied to a conversation yet.
 
 Unlike the chat bots, a webhook points *outward* — Codeg calls your URL — so if you run behind a firewall, that URL has to be reachable from the machine Codeg runs on.
 

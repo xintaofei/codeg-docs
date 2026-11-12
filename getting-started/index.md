@@ -5,8 +5,8 @@ description: Codeg is a multi-agent coding workspace — one place to run, aggre
 
 # Introduction
 
-::: tip 0.41.1 is available
-Keep tabs and split layouts per folder, preview HTML in replies, use MiniMax Code and OpenCode 2, and deliver reviewed tasks as pull requests. Start with the [upgrade guide](/getting-started/upgrading) for setup, compatibility checks and backup steps.
+::: tip 0.43.0 is available
+Move conversations between folders, follow background work from the composer, see CI status on pull requests, and review the agent's reply before it goes back to an issue. Start with the [upgrade guide](/getting-started/upgrading) for what changed since 0.41.1, compatibility checks and backup steps.
 :::
 
 **Codeg is a multi-agent coding workspace** — one place to run, aggregate, and orchestrate the growing family of AI coding agents.
@@ -96,7 +96,7 @@ Codeg treats agents as something you *run*, not just chat with:
 - **[Command Line](/guide/command-line)** — run agents and assistants from scripts or CI with `codeg-cli`, with parallel runs, structured results, and a conversation you can continue in Codeg.
 - **[Automations](/guide/automations)** — save a fully-configured setup and run it headlessly, on a cron schedule or on demand.
 - **[To-dos](/guide/tasks)** — write down what needs doing and let agents work through the list, each in its own copy of the code, each waiting for your review before it merges.
-- **[Repository panel](/guide/repository)** — list a project's GitHub, GitLab or Gitea issues and pull requests, hand one to an agent — or let the panel pick matching ones up by itself — and send the result back as a pull request.
+- **[Repository panel](/guide/repository)** — list a project's GitHub, GitLab, Gitea or CNB issues and pull requests, hand one to an agent — or let the panel pick matching ones up by itself — and send the result back as a pull request.
 - **[Computer Use](/guide/computer-use)** *(preview)* — share a desktop window, a whole app or the screen with your agents, and let them see it and work in it, with one click to stop them.
 - **[Chat Channels](/guide/chat-channels)** — drive sessions from Telegram, Lark (Feishu), or iLink (Weixin): create tasks, approve permissions, and get real-time replies without opening a browser.
 - **[Anywhere you need it](/getting-started/installation)** — run agents in the desktop app, on a standalone server, or in Docker, then stay connected through the native iOS and Android clients or any browser.

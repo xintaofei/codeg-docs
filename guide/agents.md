@@ -65,10 +65,43 @@ Most agents work the moment they're installed, but each one's detail pane has pl
 
 - **Visual settings.** The pane surfaces the common options as ordinary form controls — sign-in, model selection, custom endpoints, reasoning effort, and each agent's own switches — so you rarely need to hand-edit anything. Signing in and choosing models are covered in [Authentication & Models](/guide/authentication), and what each agent's pane holds in [Per-Agent Setup](/guide/agent-setup).
 - **Environment Variables.** `KEY=value` pairs passed to the agent when it launches.
+- **System Instructions.** The agent's global instructions file, editable in place — see [below](#system-instructions).
 - **Config Management.** Where the agent has one, edit its own native config file (its *Native JSON Config*) directly from Codeg, for the settings the visual controls don't reach.
 - **Drag to reorder.** The order of the Agent List doubles as a preference — the first enabled agent is the one Codeg reaches for when nothing else is specified (more on that below).
 
 Change a setting while a session is open and that session keeps running on its old configuration — Codeg won't interrupt you mid-task. Instead, a bar appears at the **top of the conversation** noting it's still on the previous config; click **Reconnect to apply** and the session reloads with the new settings while **keeping its full history**. No need to close and reopen anything.
+
+### System instructions
+
+Since **0.42.0**, the pane of an agent that keeps a **global instructions file** shows it under Environment Variables, in a **System Instructions** card: the file's path with a copy button, and its contents in an editor. Write the preferences and working rules you want in every session — role, conventions, what to avoid — in Markdown, and **Save System Instructions**. **Discard changes** goes back to the contents last loaded or saved. The file is the agent's own, so its CLI and IDE sessions read the same instructions.
+
+| Agent | File |
+| --- | --- |
+| Claude Code | `~/.claude/CLAUDE.md` |
+| Codex | `~/.codex/AGENTS.override.md` if it has content, else `~/.codex/AGENTS.md` |
+| Gemini CLI | `~/.gemini/GEMINI.md` |
+| Google Antigravity | `~/.gemini/AGENTS.md` |
+| OpenCode | `~/.config/opencode/AGENTS.md` |
+| Cline | `~/.agents/AGENTS.md` |
+| CodeBuddy | `~/.codebuddy/CODEBUDDY.md` (or `CODEBUDDY.mdc`, if that's the one that exists) |
+| Kimi Code | `~/.kimi-code/AGENTS.md` |
+| Pi | the first of `AGENTS.override.md`, `AGENTS.md`, `AGENTS.MD`, `CLAUDE.md` or `CLAUDE.MD` that exists in `~/.pi/agent` (a new one is `AGENTS.override.md`) |
+| Grok | `~/.grok/AGENTS.md` |
+| DeepSeek Harness | `~/.dsh/AGENTS.md` |
+| Qoder | `~/.qoder/AGENTS.md` |
+| Kiro CLI | `~/.kiro/steering/AGENTS.md` |
+| TRAE CLI | `~/.trae/AGENTS.override.md` if it has content, else `~/.trae/AGENTS.md` |
+| Command Code | `~/.commandcode/AGENTS.md` |
+| ZCode | `~/.zcode/AGENTS.md` |
+
+Hermes, Cursor, MiniMax Code, OpenClaw and custom agents have no card. Where an agent lets an environment variable move its home — `CLAUDE_CONFIG_DIR`, `CODEX_HOME`, `OPENCODE_CONFIG_DIR` and the like — the card follows the variable as Codeg itself was started with it; setting it only in the agent's own **Environment Variables** doesn't move the card. With a server or a remote workspace, the file is on the machine Codeg's backend runs on.
+
+A few details about saving:
+
+- **It saves to the file you were shown.** Clearing Codex's override file saves an empty override rather than switching to `AGENTS.md`.
+- **A missing file is created only when you write something.** On macOS and Linux it's created readable by you alone; an existing file keeps its permissions, and a symlinked one stays a link.
+- **A file Codeg can't read as text is never overwritten** — the save is refused instead.
+- **Sessions you open or reopen afterwards** pick the change up; one that's running keeps what it started with.
 
 ::: tip When the agent turns a setting down
 Some of what the composer offers is a *request*, not a command — the agent answers with the options it actually adopted. Pick a model or a mode an agent won't take and it used to look like the setting springing back for no reason. Now Codeg says what was adopted instead, naming it, and **keeps your preference for next time**: a refusal is often about *this* session rather than the choice itself, and a model switch an agent declines mid-conversation frequently succeeds in a fresh one.
@@ -101,9 +134,9 @@ The first time you use an agent in a session, you'll see **Connecting…** while
 
 ## Connection status
 
-While you work, the **connection heart** below the composer shows the agent's state — connected, connecting, error, or disconnected — with *Responding…* told apart from a resting *Connected* in its popover. Click it for the details and a **Reconnect** that tries to resume the session. Where the agent can't load one, or the load fails, Codeg starts a new agent session on the same conversation instead: the transcript stays, but the agent no longer has the earlier context. → [When the connection looks wrong](/guide/conversations#when-the-connection-looks-wrong)
+While you work, the **connection heart** below the composer shows the agent's state — connected, connecting, error, or disconnected — with *Responding…* told apart from a resting *Connected* in its popover. Click it for the details and a **Reconnect** that tries to resume the session. Where the agent can't load one, or the load fails, Codeg usually starts a new agent session on the same conversation instead: the transcript stays, but the agent no longer has the earlier context. A few known causes — the session open in another client, a different model provider on Codex — get a banner instead, and the conversation is left as it was. → [When the connection looks wrong](/guide/conversations#when-the-connection-looks-wrong)
 
-Sessions you're not looking at may disconnect after a few idle minutes to free up resources — not while background work is still running, and not a Claude Code session with [Remote Control](/guide/conversations#continue-on-your-phone-—-remote-control) on — but the tab you're actively in stays connected, and Codeg **reconnects automatically** when you come back to a session.
+Sessions you're not looking at may disconnect after a few idle minutes to free up resources — not while background work or a delegated sub-agent is still running, and not a Claude Code session with [Remote Control](/guide/conversations#continue-on-your-phone-—-remote-control) on. Since **0.42.1** the same holds when you close a conversation's tab, switch panes or refresh the web page: that work keeps going. **Reconnect** stops it, and its popover warns you first. The tab you're actively in stays connected, and Codeg **reconnects automatically** when you come back to a session.
 
 ## Next steps
 

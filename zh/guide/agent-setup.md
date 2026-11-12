@@ -5,7 +5,7 @@ description: 逐个介绍 Codeg 驱动的每个智能体有哪些独特之处—
 
 # 各智能体配置
 
-每个智能体在**设置 → 智能体**里都有同一套通用控件——启用开关、预检、环境变量，以及智能体有原始配置时的原始配置编辑器——这些在[使用智能体](/zh/guide/agents)里介绍。除此之外，每个智能体的详情面板还带着只属于它的东西：它怎么登录、它的 CLI 认得哪些开关，以及在依赖它之前值得知道的脾性。本页按智能体列表的顺序，一个一个地讲。
+每个智能体在**设置 → 智能体**里都有同一套通用控件——启用开关、预检、环境变量、智能体有全局指令文件时的[系统级提示词](/zh/guide/agents#system-instructions)，以及智能体有原始配置时的原始配置编辑器——这些在[使用智能体](/zh/guide/agents)里介绍。除此之外，每个智能体的详情面板还带着只属于它的东西：它怎么登录、它的 CLI 认得哪些开关，以及在依赖它之前值得知道的脾性。本页按智能体列表的顺序，一个一个地讲。
 
 名单本身——每个智能体由谁出品、跑在什么之上、把会话存在哪里——见[支持的智能体](/zh/guide/supported-agents)；它们共用的登录方式见[认证与模型](/zh/guide/authentication)。
 
@@ -14,6 +14,12 @@ description: 逐个介绍 Codeg 驱动的每个智能体有哪些独特之处—
 Anthropic 的编程智能体。Codeg 为它安装的是 **`claude-agent-acp`** 适配器，而不是 `claude` CLI——两者的区别见 [ACP 适配器](/zh/guide/supported-agents#acp-adapters)——而这个适配器读取的是同一个 `~/.claude` 目录，所以你已有的登录会直接沿用。面板里可以用**官网订阅**、**自定义接口**或已保存的[模型提供商](/zh/guide/authentication#save-and-reuse-a-model-provider)让它登录。
 
 自 **0.37.0** 起，Claude Code 适配器的两项能力在 Codeg 里也用得上了：它会[建议你的下一条提示词](/zh/guide/conversations#let-claude-code-suggest-the-next-prompt)——代价是大多数回合之后多发一次请求——而[远程控制](/zh/guide/conversations#continue-on-your-phone-—-remote-control)让你把会话带到手机上继续。你为 Claude Code 定义的自定义子智能体，会作为一个 **Agent** 选项出现在 composer 的智能体设置按钮里。
+
+**新会话以 Auto 起步。** 自 **0.42.1**（Claude Code 2.1.318）起，你没有设置 `permissions.defaultMode` 的会话会以 Claude Code 的 **Auto** 模式起步，而不再是 **Manual**——除非该模型无法运行 Auto，这时它会以 Manual 起步。在 Auto 下，工作目录内的写入无需询问直接进行，Claude Code 要审查的命令由它自己的分类器判定，而不是弹出[权限卡片](/zh/guide/conversations#activity-timeline)。Codeg 不会覆盖它：你在 composer 里选过的模式会为 Claude Code 记住并优先生效，其次是你的 `permissions.defaultMode`，最后才是 Auto。在无法响应分类器请求的 **API 网关**后面，Auto 会直接拒绝这些命令——你只会看到一条警告，不会有卡片——所以这类配置请切换到 **Manual**。Claude Code 的 `disableAutoMode` 设置会把 Auto 从列表中移除。
+
+**显示 Claude 的思考摘要。** 自 **0.41.3** 起，Claude Code 的**环境变量**下有一个开关，可以显示 Claude 推理过程的摘要；否则 Claude Code 只显示它在工具调用之间写下的说明。它不额外消耗 token，需要 claude-agent-acp 0.99.0 或更高版本。它默认关闭，原理是向变量中添加 `CLAUDE_CODE_THINKING_DISPLAY=summarized`，因此要通过**保存环境变量**保存，并作用于之后新开或重新打开的会话。
+
+**Fable 5.2。** 自 **0.42.2**（Claude Code 2.1.321）起，*Fable* 指的是 Fable 5.2。通过 API 网关时，你保存过的 Fable 5.1 选择会移到 Fable 那一行，而不是退回默认模型。如果你用 claude.ai 登录、而它仍列出 Fable 5.1，所选的就会留在 5.1。→ [认证与模型](/zh/guide/authentication)
 
 ### 归属标识与遥测 {#claude-code-attribution-and-telemetry}
 
@@ -35,6 +41,10 @@ OpenAI 的编程智能体，同样经由一个适配器 **`codex-acp`** 驱动�
 勾选要让 Codex 提供的模型，并用星标设置默认项。自定义条目可以克隆原生 GPT 模型，也可选择 **OpenAI 兼容**模板，连接只接受普通 Responses 请求的网关。该模板会关闭 code-mode 工具、原生多智能体、responses-lite 和自定义 apply-patch 工具。
 
 供应商列表自动刷新失败时，会保留上次可用的列表。**Codex 正在使用**状态会显示已应用的列表，**立即刷新**可重试。请先应用模型选择并保存设置，再重新连接会话。
+
+自 **0.41.3** 起，Codex 的内置目录包含 **GPT-6.1 Terra**；默认仍是 GPT-6.1 Sol。Codex 内置的 **Vertex AI** 供应商（`gcp`）保持原样：绑定供应商或切换 **WebSocket** 开关都不会写入 `[model_providers.gcp]` 表——Codex 在这张表里只接受少数几个键。
+
+**对话固定在它的供应商上。** Codex 会把每个对话绑定到它开始时所用的模型供应商。在**官网订阅**和自定义接口之间切换会改变这个供应商，因此自 **0.42.2** 起，重新打开一个在另一个供应商上开始的对话时，会显示一条提示，而不是悄悄开启一个空会话：切回那个供应商并重新加载，或者开始一个新对话。
 
 ### 沙箱与审批 {#codex-sandbox-and-approvals}
 
@@ -69,6 +79,8 @@ composer 提供的是 Codex 自己的四个预设，在任何语言下都沿用�
 | `danger-full-access`，审批策略为其他任意值 | Workspace access——收紧的是沙箱，而不是去掉审批 |
 | 没有 `sandbox_mode` | 适配器的默认值，即 Auto review |
 
+自 **0.42.2**（codex-acp 2.6.0）起，你自己以 `[permissions.<id>]` 表定义的权限配置档也会提供出来，列在四个预设之后的 **Permission Profiles** 下；当前生效的自定义 `default_permissions` 配置档就是会话打开时所处的模式。
+
 在早于 2.0 的适配器上，这两行 *Workspace access* 改为起始于 Auto review。Full access 只会出自两项设置都精确匹配的情况——不会有任何推断把会话带进它——而文件里一旦有 `default_permissions` 配置档，Codeg 就完全不参与推导，因为 Codex 会通过那个配置档解析，推导出的模式反而会把它覆盖掉。
 
 ::: warning Untrusted 已退役
@@ -77,10 +89,10 @@ composer 提供的是 Codex 自己的四个预设，在任何语言下都沿用�
 
 同一面板中还有这些选项：
 
-- **默认模式下允许提问。** Codex 只在 *Plan* 模式下才允许调用它的 `request_user_input` 工具，所以在普通的一轮里，它的提问会被直接拒绝，**你根本不会收到任何提问卡片**——智能体问了、被告知工具不可用，然后继续靠猜。打开这个开关，它在普通轮次里也能向你发问。它会把 `[features].default_mode_request_user_input` 写进你的 `~/.codex/config.toml` —— 与 Codex 自己的 `codex features enable` 所设置的是同一个键，而这个标志在上游仍处于开发中。功能标志在线程创建时解析，因此它**在你下一个会话中才生效**，而不是当前已打开的这个。
+- **默认模式下允许提问。** Codex 只在 *Plan* 模式下才允许调用它的 `request_user_input` 工具，所以在普通的一轮里，它的提问会被直接拒绝，**你根本不会收到任何提问卡片**——智能体问了、被告知工具不可用，然后继续靠猜。打开这个开关，它在普通轮次里也能向你发问。它会把 `[features].default_mode_request_user_input` 写进你的 `~/.codex/config.toml` —— 与 Codex 自己的 `codex features enable` 所设置的是同一个键，而这个标志在上游仍处于开发中。功能标志在线程创建时解析，因此它**在你下一个会话中才生效**，而不是当前已打开的这个。这个开关管的是那个会阻塞的工具。自 **0.42.2**（Codex 0.166）起，GPT-6 模型还可以在任何模式下**不停下来**提问：问题照常显示在卡片上，Codex 则继续工作，你的回答会被引导进当前回合，而回合结束时仍未回答的问题会被关闭。
 - **默认模型。** 优先使用你在模型列表中设置的默认项，或提供商的模型字段。未配置默认项、会话也从未选过模型时，才会使用 Codex 自己的默认模型；如果供应商不支持它，请显式选择该供应商提供的模型。
 
-从 **0.39.0** 起，设置页不再提供已失效的**启用技能**和**启用快速模式**开关；**快速模式**请在 composer 中选择。**WebSocket** 开关仅在可配置的自定义供应商上显示，且需要端点支持 Responses over WebSocket；**官方订阅**和内置供应商不显示此开关。
+从 **0.39.0** 起，设置页不再提供已失效的**启用技能**和**启用快速模式**开关；**快速模式**请在 composer 中选择。**WebSocket** 开关仅在可配置的自定义供应商上显示，且需要端点支持 Responses over WebSocket；**官网订阅**和内置供应商不显示此开关。
 
 ## Gemini {#gemini}
 
@@ -92,11 +104,11 @@ Google 官方的 Gemini CLI，通过 `npx` 运行。选择 **Google 登录（OAu
 
 ## OpenCode {#opencode}
 
-**0.41.1** 中 Codeg 推荐 **OpenCode 2.2.0**，并要求 **2.0 及以上版本**。Codeg 会下载适用于当前平台的原生二进制文件，也可使用你已有的安装。打开会话前请升级已有的 1.x 版本，预检会将它标记为不受支持。
+自 **0.42.3** 起 Codeg 推荐 **OpenCode 2.2.7**，并要求 **2.0 及以上版本**。Codeg 会下载适用于当前平台的原生二进制文件，也可使用你已有的安装。打开会话前请升级已有的 1.x 版本，预检会将它标记为不受支持。
 
 ### 提供商与模型 {#opencode-providers-and-models}
 
-OpenCode 目录中的提供商使用**连接提供商**；自建端点使用**自定义提供商**。API 密钥保存在 OpenCode 自己的凭证库中。需要 OAuth 的提供商请在终端运行 `opencode auth login` 登录。**获取模型**会列出自定义端点的模型，你可以从可用选项中选择主模型和小模型。
+OpenCode 目录中的提供商使用**连接提供商**；自建端点使用**自定义提供商**。API 密钥保存在 OpenCode 自己的凭证库中。需要 OAuth 的提供商请在终端运行 `opencode auth login` 登录。**获取模型**会列出自定义端点的模型，你可以从可用选项中选择主模型和小模型。自 **0.42.0** 起，这两个列表不再包含你未启用的提供商，以及 OpenCode 2 标记为 `disabled` 的模型；composer 的模型选择器仍会列出 OpenCode 报告的全部模型。
 
 编辑器采用 OpenCode 2 的 `providers` 配置，会保留 `opencode.jsonc` 或 `opencode.json` 中的注释、格式和其他字段。没有可视化控件的字段仍可通过原生 JSON 编辑器修改。
 
@@ -117,9 +129,15 @@ OpenCode 目录中的提供商使用**连接提供商**；自建端点使用**�
 
 请使用兼容 **OpenCode 2** 的插件。插件管理器接受 npm 包和本地目录，写入 `plugins` 列表；OpenCode 会在下次启动会话时安装包插件。旧 `plugin` 列表中的条目会标记为 **OpenCode 1 列表**，下次添加或移除插件时移入 `plugins`。
 
-行为与压缩控件也已使用 OpenCode 2 的设置。面板会指出 OpenCode 已忽略的旧设置，**会话分享**已不再生效。**不支持 SSE MCP 服务器**：如果服务器提供 streamable HTTP，请改用该方式，否则不要为它分配 OpenCode。→ [MCP 服务器](/zh/guide/mcp#choose-which-agents-get-a-server)
+行为与压缩控件也已使用 OpenCode 2 的设置。自 **0.41.4** 起，**预留 token** 字段（自动压缩前留出的空间，即 `compaction.buffer`）除了 token 数之外，还可以填上下文窗口的百分比，从 `1%` 到 `99%`（例如 `20%`）；留空时，OpenCode 会保留窗口的 15% 空闲，且至少 16,000 个 token。面板会指出 OpenCode 已忽略的旧设置，**会话分享**已不再生效。**不支持 SSE MCP 服务器**：如果服务器提供 streamable HTTP，请改用该方式，否则不要为它分配 OpenCode。→ [MCP 服务器](/zh/guide/mcp#choose-which-agents-get-a-server)
 
-会话支持表单提问、脚本执行和后台子智能体进度。历史记录可读取 OpenCode 2 的压缩记录、命令退出码、媒体附件和委派链接，同时委派多个任务也能正确关联。
+会话支持表单提问、脚本执行和后台子智能体进度。历史记录可读取 OpenCode 2 的压缩记录、命令退出码、媒体附件和委派链接，同时委派多个任务也能正确关联；自 **0.42.3** 起，超时或被终止的命令不再显示为成功。
+
+自 **0.42.0** 起，**技能重新回到了 `/` 菜单**。OpenCode 2 不会通告它的技能，所以 Codeg 会到 OpenCode 加载技能的位置去找——`.claude/skills`、`.agents/skills`，以及 OpenCode 配置目录和每个 `.opencode` 文件夹里的 `skill` 或 `skills` 文件夹——范围包括你的主目录、会话所在文件夹及其上方的每一级文件夹。通过 OpenCode 配置中的 `skills` 路径设置的技能，或由插件注册的技能，不会列出。
+
+::: warning OpenCode 暂未报告的内容
+`/goal`、`/init` 和 `/review` 会立即应答，随后在**不显示任何进度**的情况下运行。停止无法中止 `/goal`——请发送 `/goal pause` 或 `/goal clear`——而如果它们的某一步需要审批，会话就会停止响应。后台命令和图像生成的结果，只有在你重新打开对话后才会显示。
+:::
 
 ## Cline {#cline}
 
@@ -155,13 +173,18 @@ Hermes 是一个特例——它管理着自己旗下的一批模型提供商，�
 
 对于面板未涵盖的任何内容，**打开配置文件夹**会显示 `~/.hermes`，而一个高级部分让你直接编辑 Hermes 的 `config.yaml`。
 
-在对话中，Hermes 现在支持按供应商分组选择模型，并提供模式选择器。重新打开会话时会恢复这些选择。
+在对话中，Hermes 现在支持按供应商分组选择模型，并提供模式选择器；自 **0.42.0** 起，旁边还多了一个**推理强度**设置——通过官方安装程序自行更新的 Hermes 也有。重新打开会话时会恢复这些选择。自 **0.42.1**（Hermes 0.23）起，在回合进行中选择的模型从下一条消息开始生效。使用 Codeg 自己的提供商配置时，Hermes 0.23 对模型的命名方式不同，所以你按旧名称保存的模型不会被重新应用——会话会以配置的模型起步；请再选一次。
+
+::: warning Hermes 0.23：两个已知问题
+- **它自己的 MCP 服务器会掉线。** 在一个同时接收 Codeg 下发服务器的会话里——也就是任何挂接了 [codeg-mcp](/zh/guide/multi-agent) 的会话——Hermes 自己 `config.yaml` 里的服务器无法连接，其中也包括你在[设置 → MCP](/zh/guide/mcp) 里分配给 Hermes 的那些，因为它们正是写在那里的。
+- **一个对话可能拖垮其他对话。** Hermes 的各个对话共用一个后台服务，由其中第一个对话启动。在 Linux、Windows 和部分 macOS 环境中，断开这第一个对话会停止该服务，并中断其他 Hermes 对话里正在运行的回合；几秒钟后再发送提示词即可恢复。
+:::
 
 ## CodeBuddy {#codebuddy}
 
 腾讯云的 AI 编程助手，通过 `npx` 运行。在终端里运行一次 `codebuddy` 完成登录，Codeg 就会自动识别那次登录。
 
-在 CodeBuddy 自己的终端里、用 **2.168.2** 开启的对话，会把每一步都交给同一个 REPL 工具执行，所以它在 Codeg 里每一步都显示为一张 **REPL** 卡片；在 Codeg 里开启的对话不受影响。自 **0.36.0** 起，重新打开的对话会按你输入时的样子显示斜杠命令，而不是它展开后的提示词。
+在 CodeBuddy 自己的终端里、用 **2.168.2** 开启的对话，会把每一步都交给同一个 REPL 工具执行，所以它在 Codeg 里每一步都显示为一张 **REPL** 卡片；在 Codeg 里开启的对话不受影响。自 **0.36.0** 起，重新打开的对话会按你输入时的样子显示斜杠命令，而不是它展开后的提示词。自 **0.41.2** 起，停止 CodeBuddy 不会再丢掉下一条排队的消息：Codeg 会先短暂地暂缓发送它，因为 CodeBuddy 会忽略停止后紧接着到达的提示词。
 
 ## Kimi Code {#kimi-code}
 
@@ -188,13 +211,15 @@ Kimi Code 是另一个拥有专属面板的智能体，该面板在 **0.23** 中
 `kimi acp` 读取 `KIMI_MODEL_*` 这一族变量——`KIMI_MODEL_BASE_URL`、`KIMI_MODEL_API_KEY`、`KIMI_MODEL_NAME`——而且是*先于* `config.toml` 读取的，因此智能体[环境变量](/zh/guide/agents#configure-an-agent)中残留的一个，就会悄悄覆盖掉这个面板写入的一切。只要还有任何一个存在，面板就会提醒你，而保存操作会清除它们——于是你看到的就是真正生效的。
 :::
 
+**计划、文件与 MCP 登录。** 自 **0.41.2** 起，Kimi Code 的计划模式不会再在第一次工具调用时就结束回合；自 **0.43.0**（Kimi Code 2.6.0）起，批准、驳回计划或要求修改计划，也不会再显示为工具调用失败。自 **0.41.4** 起，它通过 Codeg 可以读取最大 16 MiB 的文本文件，而大多数其他智能体每次读取的上限是 2 MiB。等待你授权的 MCP 服务器会显示它的重连状态，并且自 **0.43.0** 起还会显示需要在浏览器中打开的链接。另外，自 **0.42.1** 起，保存它的 MCP 服务器时会保留 Kimi 自己的 `environment_id` 和 `deferred` 字段。
+
 Kimi Code 会话正在被其他客户端使用时，Codeg 会提示会话被占用。请先在另一客户端结束或释放会话，再在这里继续；Codeg 不会再将它替换为新的空会话。
 
 ## Pi {#pi}
 
 一个可自我扩展的编程智能体，通过 `npx` 运行。它会悄悄丢掉递给它的 MCP 服务器，所以它无法发起[委派](/zh/guide/multi-agent)——别的智能体仍然可以把任务委派给它。
 
-从 **0.39.0** 起，模型选择器遵循 Pi 的 **`enabledModels`** 设置，只列出允许使用的模型。项目里的 **`.pi/mcp.json`** 也纳入下方的项目信任判断，通过后 Pi 才会启动其中的服务器。这是 Pi 自己的配置，并不意味着 Pi 开始接受经由 ACP 提供的委派工具。
+从 **0.39.0** 起，模型选择器遵循 Pi 的 **`enabledModels`** 设置，只列出允许使用的模型。项目里的 **`.pi/mcp.json`** 也纳入下方的项目信任判断，通过后 Pi 才会启动其中的服务器。这是 Pi 自己的配置，并不意味着 Pi 开始接受经由 ACP 提供的委派工具。自 **0.42.0** 起，重新打开的 Pi 对话会显示它的历史记录，而以前这里可能是空的；自 **0.43.0** 起，Pi 的选择题只提供它列出的选项，不再有**其他**。
 
 ### 项目信任 {#pi-project-trust}
 
@@ -229,7 +254,7 @@ pi 页面上的**推理**卡片就是你做这个声明的地方：一个开关�
 
 xAI 的编程智能体，通过 `npx` 运行。它的面板有一个**认证方式**选择器——**官网订阅**（`grok login`）、**XAI API 密钥**或**自定义接口** → [用订阅登录](/zh/guide/authentication#sign-in-with-a-subscription)——而且和大多数智能体不同，它在面板里还保留着自己的一个**推理级别**下拉框，从低一直到**最高**，写入 Grok 自己的配置。
 
-从 **0.39.0** 起，可在**自定义模型**卡片中声明它支持的**推理强度**，composer 会提供对应选择。Codeg 也能识别官方安装器放在 `~/.grok/bin` 中的 Grok，Windows 上同样有效。
+从 **0.39.0** 起，可在**自定义模型**卡片中声明它支持的**推理强度**，composer 会提供对应选择。Codeg 也能识别官方安装器放在 `~/.grok/bin` 中的 Grok，Windows 上同样有效。自 **0.42.1** 起，**升级**会真正把 Grok 切换到新版本——以前旧的构建会继续运行——而**卸载**之后 Grok 不会再显示为已安装；Codeg 自己通过 npm 安装时留在 `~/.grok/bin` 的副本，也不会被当成原生安装。自 **0.42.2** 起，Grok 的后台子智能体在启动它们的回合结束后，仍会继续显示进度。
 
 ## Cursor {#cursor}
 
@@ -257,7 +282,7 @@ Cursor 的**权限开关**如今显示的是会话实际运行的模式，这在
 
 ## DeepSeek Harness {#deepseek-harness}
 
-DeepSeek 自己的编程 harness。Codeg 通过社区的 `deepseek-acp` 桥接器驱动它，而不是 DeepSeek 那个只面向自动化的传输层——[原因见此](/zh/guide/supported-agents#deepseek-harness)。它需要 Node.js **22** 或更高版本。
+DeepSeek 自己的编程 harness。Codeg 通过社区的 `deepseek-acp` 桥接器驱动它，而不是 DeepSeek 那个只面向自动化的传输层——[原因见此](/zh/guide/supported-agents#deepseek-harness)。它需要 Node.js **22** 或更高版本。自 **0.42.0** 起，来自 DeepSeek Harness 0.2.x 的历史记录会显示工具输出、失败和缓存写入用量，从早期版本迁移过来的对话也包括在内；自 **0.43.0** 起，它的提问会显示完整文本以及每个选项的说明。
 
 ### 端点与密钥 {#deepseek-harness-endpoint-and-key}
 
@@ -286,6 +311,8 @@ Qoder 读取的其他一切都在**同一个文件**里，`$QODER_CONFIG_DIR/set
 
 模型和思考强度不在这里。Qoder 通过 ACP 上报它们，所以由 composer 自己的选择器按会话掌管——而且自 **0.35.2** 起，对话详情显示的是你最后切换到的那个模型，而不是对话开始时用的那个。→ [认证与模型](/zh/guide/authentication)
 
+自 **0.42.1** 起，Codeg 启动 Qoder 时会关闭它的 MCP **延迟加载**——Qoder 1.1.84 默认开启了它，把 MCP 工具藏在了通用工具后面——因此 MCP 工具卡片、Codeg 自己的工具和历史记录都能照常工作。在 **Windows** 上，自 **0.42.2** 起，Codeg 会越过 `qoder.cmd` 启动器直接启动它背后真正的 Qoder 程序——那个启动器曾导致 Qoder 无法启动——而**诊断**会显示具体是哪个程序。自 **0.41.3** 起，在 Qoder 等待审批时停止它，也会一并关闭那次工具调用。还有一处缺口：当后台子智能体在 Qoder 已经作答之后才完成时，它那时写下的回复只有在你重新打开对话后才会显示。
+
 自 **0.35.2** 起，Qoder 还能用**它自己的提问工具**向你发问，用的是其他智能体也在用的同一张提问卡片，而在此之前它只能退而使用 Codeg 的。你选中的答案事后会留在卡片上——多选的也一样——现在 Claude Code 自己的提问工具也是如此，不会再显示*未选择*。
 
 ## Google Antigravity {#google-antigravity}
@@ -293,7 +320,7 @@ Qoder 读取的其他一切都在**同一个文件**里，`$QODER_CONFIG_DIR/set
 Google 的智能体优先编程工具，以原生二进制文件的形式下载。它的 ACP 服务器以一整棵下载下来的目录树交付，没有独立的命令名，所以它是唯一一个 Codeg 无法从你 `PATH` 上的副本里识别出来的智能体。
 
 ::: info 自 0.32.2 起，Antigravity 可以在 Intel Mac 上运行
-Antigravity 曾是名单上唯一的平台缺口：Google 只为 Apple Silicon、Linux 和 Windows 发布它，Codeg 在 Intel Mac 上会拒绝安装。**1.2.1** 是它第一个带 Intel 构建的版本，Codeg 在 **0.32.2** 中换到了这个版本——所以现在名单上的每一个智能体，只要运行时能跑，它就能跑。**0.41.1** 推荐的 **1.4.3** 依然提供 Intel 构建。
+Antigravity 曾是名单上唯一的平台缺口：Google 只为 Apple Silicon、Linux 和 Windows 发布它，Codeg 在 Intel Mac 上会拒绝安装。**1.2.1** 是它第一个带 Intel 构建的版本，Codeg 在 **0.32.2** 中换到了这个版本——所以现在名单上的每一个智能体，只要运行时能跑，它就能跑。自 **0.41.4** 起推荐的 **1.4.5** 依然提供 Intel 构建。
 :::
 
 ### 由一个文件决定它如何登录 {#antigravity-one-file-decides-how-it-signs-in}
@@ -311,9 +338,11 @@ Antigravity 的 ACP 服务器只从一个地方读取它的认证意图——`$G
 
 如果某种方式所需的条件没填齐就保存，面板会点名缺了什么并拒绝保存，而不是放任会话在之后以一个你只能靠猜的理由失败。
 
-有两点行为值得知道：
+有几点行为值得知道：
 
 - **你所选方式之外的凭据会在启动时被清除。** 留在你 shell 里的 `GEMINI_API_KEY`，无法悄悄接管一个你按 Google 登录配置好的会话。
+- **大文件整份读取。** 自 **0.41.3**（Antigravity 1.4.4）起，它通过 Codeg 读取文件时最大可以读到 16 MiB，而大多数其他智能体每次读取的上限是 2 MiB。
+- **它的提问只接受列出的选项。** 自 **0.43.0** 起，Antigravity 自己的提问卡片不再提供**其他**，因为以前手动输入的回答会被当成取消。
 - **如果 Codeg 写不了那个设置文件**——比如你把它设成了只读——它会明说，而不是假装保存成功了。你的选择在 Codeg 这一侧存下了，但 Antigravity 仍会按那个文件所写的方式认证，所以要么你自己去设 `auth.type`，要么把文件挪开再保存一次。
 
 模型和会话模式通过 ACP 传来，因此它们在 composer 里而不在这里。自 **0.34.0** 起，Antigravity **1.3.0** 还会汇报它的上下文窗口用了多少，所以 composer 旁边的那个圆环会实时跟着 Antigravity 会话走。而自 **0.35.2** 起，随着 **1.4.0**，模型选择器**每个族系只列一个模型**，具体变体改在单独的 **Thinking Level** 选项里选。更新前你选过的模型会被沿用，而切换会从你的下一条消息开始生效。
@@ -361,13 +390,13 @@ Amazon 的 Kiro 智能体，**0.36.0** 新增。Codeg 不负责安装它：你�
 
 ## ZCode {#zcode}
 
-Z.ai 的 ZCode，**0.36.0** 新增，通过一个社区 ACP 桥接器接入——[为什么这样设计](/zh/guide/supported-agents#zcode)。它需要两样 Codeg 不负责安装的东西：已安装并登录的**官方 ZCode**，以及能加载 `node:sqlite` 的 **Node.js 22** 或更高版本。在**设置 → 智能体**里，Codeg 只安装桥接器 `zcode-acp-server`，它的**升级**也只更新桥接器。
+Z.ai 的 ZCode，**0.36.0** 新增，通过一个社区 ACP 桥接器接入——[为什么这样设计](/zh/guide/supported-agents#zcode)。它需要两样 Codeg 不负责安装的东西：已安装并登录（或配置了 Coding Plan 密钥，见下文）的**官方 ZCode**，以及能加载 `node:sqlite` 的 **Node.js 22** 或更高版本。在**设置 → 智能体**里，Codeg 只安装桥接器 `zcode-acp-server`，它的**升级**也只更新桥接器。
 
 **查找 ZCode。** Codeg 先找桌面应用自己的入口——Windows 上是 `%LOCALAPPDATA%\Programs\ZCode\resources\glm\zcode.cjs`，macOS 上在 `ZCode.app` 内部，Linux 上在 `/opt/ZCode` 或 `/usr/share/zcode` 下——然后再找你 `PATH` 上的 `zcode`。至于 Node，它会逐个尝试能找到的每一个，先是你的 `PATH`，再是常见的版本管理器，并采用第一个版本在 22 或以上、且能加载 `node:sqlite` 的，所以排在你 `PATH` 前面的旧版 Node 不会挡住更新的那个。自动检测失败时，在 ZCode 的**环境变量**里设置 **`ZCODE_BIN`**（ZCode 的 `zcode.cjs` 入口）或 **`ZCODE_NODE`**——取值为绝对路径或你 `PATH` 上的命令名；相对路径会被拒绝，而你设的值会原样使用，不会被换成猜测的结果。预检里的 **Official ZCode runtime** 一行会显示找到了什么。
 
-**登录、模型和凭据**都留在 ZCode 里，面板上也没有配置卡片——只有环境变量编辑器，外加一段说明这一点的提示。ZCode 的 **Start Plan** 账户无法通过桥接器运行：它的请求需要验证码，而只有 ZCode 桌面应用能完成。GLM Coding Plan 账户不受影响。
+**登录、模型和凭据**都留在 ZCode 里，面板上也没有配置卡片——只有环境变量编辑器，外加一段说明这一点的提示。自 **0.41.2**（桥接器 0.78.0）起，**GLM Coding Plan API 密钥**也能用了：在 ZCode 桌面应用的模型提供商设置里添加它（**Use API key**），或者在终端里运行桥接器的 `setup` 命令（`zcode-acp setup --provider zai`，或 `--provider bigmodel`），给桥接器一个它自己的密钥，保存在 `~/.zcode/v2/acp-accounts.json` 中——运行时请使用与 Codeg 中 ZCode 环境相同的 `ZCODE_HOME`，之后重新连接。自 **0.43.0**（桥接器 0.84.2）起，桥接器能读取 ZCode **3.18** 及以后版本存储的加密凭据，所用的密钥由桌面应用保存在系统的凭据存储中；在这类安装上，旧版桥接器的每个回合都会失败。0.83.3（Codeg 0.42.3）之前的桥接器总是拒绝 **Start Plan** 模型，因为它们的请求需要只有桌面应用才能完成的验证码；0.83.3 则通过桌面应用的登录提供这些模型，但这一点尚未经过端到端验证。
 
-**在对话里**，模式、模型和思考设置都以桥接器报告的为准。新会话在 ZCode 确认它的模式之前不会发送任何内容——确认的是你上次选的模式（如果这个会话提供它），否则是 *build*——如果 60 秒内没有确认，会话会直接失败，而不是把你的消息发出去。权限请求使用 Codeg 的普通卡片。只有在桥接器自己的全局设置中启用沙箱时，它才会写入 `.zcode/acp/sandbox.json`；Codeg 默认不会启用它。
+**在对话里**，模式、模型和思考设置都以桥接器报告的为准。新会话在 ZCode 确认它的模式之前不会发送任何内容——确认的是你上次选的模式（如果这个会话提供它），否则是 *build*——如果 60 秒内没有确认，会话会直接失败，而不是把你的消息发出去。权限请求使用 Codeg 的普通卡片。在网络或网关上失败的请求最多会重试五次；如果仍然失败，回合会结束并说明原因，你可以在同一个对话里重新发送（0.41.3）。自 **0.41.4** 起，`/rename` 也会在 Codeg 里重命名对话——除非你自己已经改过名——而自 **0.42.3** 起，较早的对话在重新打开时会找回它们保存的标题。只有在桥接器自己的全局设置中启用沙箱时，它才会写入 `.zcode/acp/sandbox.json`；Codeg 默认不会启用它。
 
 从 **0.39.0** 起，桥接器声明对应能力时，支持**图片和 PDF**。图片可粘贴、拖放或上传，接受 PNG、JPEG、WebP、GIF、BMP 和 SVG，每张上限 **10 MiB**。单条提示最多 **100 个内容块**，解码后总计 **50 MiB**。发送二进制附件前请暂停原生目标循环，其排队提示只接受文本。已完成回复的单轮用量和耗时也会在重开会话后保留，旧记录不会补填这些数据。
 
@@ -420,7 +449,7 @@ mcode login --region global
 
 已经在 MiniMax Code 中配置的自带密钥供应商无需另行登录 MiniMax。请通过 MiniMax Code 自己的 provider 命令或 `/provider` 配置，Codeg 会沿用当前选中的供应商和凭据。之后在**设置 → 智能体**启用 MiniMax Code，并为对话选择它。
 
-模型、运行模式和权限选项由已安装的 `mcode` 通过 ACP 报告。图片支持取决于智能体声明的能力与所选模型。Codeg 会以会话覆盖项传入分配的 MCP 服务器和协作工具，支持[多智能体委派](/zh/guide/multi-agent)，并保留 MiniMax 原有的 MCP 与凭据文件。
+模型、运行模式和权限选项由已安装的 `mcode` 通过 ACP 报告。自 **0.42.2** 起，它向你提出的问题会显示为可交互的提问卡片，并带有每个选项的说明，而不再是原始 JSON。图片支持取决于智能体声明的能力与所选模型。Codeg 会以会话覆盖项传入分配的 MCP 服务器和协作工具，支持[多智能体委派](/zh/guide/multi-agent)，并保留 MiniMax 原有的 MCP 与凭据文件。
 
 Codeg 会记录在这里启动的对话，**不导入 MiniMax Code 原生历史**。技能与 CLI 升级仍通过 MiniMax Code 自身管理，因此 Codeg 的技能包矩阵和技能编辑器暂不提供 MiniMax 一列。已有的自定义 `mcode` 注册项仍然独立保留。目前经过认证流程的端到端验证使用 macOS 上的本地测试供应商，未覆盖真实 MiniMax 账户、Windows 和 Linux。
 

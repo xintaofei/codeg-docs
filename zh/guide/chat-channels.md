@@ -97,13 +97,15 @@ description: 将 Telegram、Lark (Feishu) 或 WeChat 连接到 Codeg，从手机
 
 | 事件 | 触发时机 | 默认 |
 | ----- | ---------- | ------- |
-| **回合完成** | 智能体完成一个回合时 | 开 |
-| **智能体错误** | 智能体遇到错误时 | 开 |
+| **对话完成** | 智能体完成一个回合时 | 开 |
+| **代理错误** | 智能体遇到错误时 | 开 |
 | **权限请求** | 智能体需要批准才能行动并正在等待时 | 开 |
 | **智能体提问** | 智能体向你提问时 | 开 |
 | **用户消息** | 你发送一条提示词时——**其中包含提示词文本** | 关 |
 
 **用户消息**默认关闭是有意为之：它是唯一会将你的提示词文本复制到频道（以及任何 webhook）的事件，因此需要你主动选择启用。
+
+开关下方的**仅顶层会话**（默认关闭，自 **0.42.0** 起）会让智能体之间互相交接的工作安静下来。打开后，由[委派](/zh/guide/multi-agent)启动的子会话不再发送**对话完成**或**代理错误**——由发起委派的智能体在完成时报告结果。子会话的**权限请求**和**智能体提问**照常推送，因为有东西在等你处理。这个开关对频道和 webhook 同样生效，而 Codeg 无法追溯到某个对话的事件仍会照常投递。
 
 其价值体现在**权限请求**循环上。当你从聊天中启动的任务想要运行命令或写入文件时，Codeg 会把请求发到同一个聊天中并等待——回复 **`/approve`**（或 **`/approve always`**）予以放行，或回复 **`/deny`** 予以拒绝。这正是该功能的全部意义所在：智能体可以暂停下来等待人类决策，而你可以在任何地方从手机上做出决定。提问也以同样的方式运作，会呈现出来供你回答。
 
@@ -111,7 +113,7 @@ description: 将 Telegram、Lark (Feishu) 或 WeChat 连接到 Codeg，从手机
 
 ### 将事件发送到你自己的工具 {#send-events-to-your-own-tools}
 
-在同一标签页下，**Webhook** 会将*相同的*已启用事件，以带 JSON 主体的 HTTP `POST` 形式，转发到你添加的任意 URL——用于将 Codeg 接入仪表板、Slack 中继或你自己的自动化。上面的事件开关同样控制 webhook（不过 webhook 不受速率限制）。负载小而稳定：
+在同一标签页下，**Webhook** 会将*相同的*已启用事件，以带 JSON 主体的 HTTP `POST` 形式，转发到你添加的任意 URL——用于将 Codeg 接入仪表板、Slack 中继或你自己的自动化。上面的事件开关同样控制 webhook（不过 webhook 不受速率限制）。负载是一个扁平的 JSON 对象：
 
 ```json
 {
@@ -121,9 +123,19 @@ description: 将 Telegram、Lark (Feishu) 或 WeChat 连接到 Codeg，从手机
   "body": "An agent is waiting for approval.",
   "fields": [{ "label": "Operation", "value": "Bash: npm test" }],
   "connection_id": "conn-abc",
-  "source": "codeg"
+  "source": "codeg",
+  "conversation_id": 42,
+  "conversation_title": "Fix the flaky upload test",
+  "agent_type": "codex",
+  "agent_name": "Codex",
+  "assistant_name": null,
+  "session_kind": "sub_session",
+  "parent_conversation_id": 41,
+  "parent_conversation_title": "Release prep"
 }
 ```
+
+这些对话字段是在 **0.42.0** 加入的，接收方因此能分辨某个事件来自哪个对话、哪个智能体。`session_kind` 为 `session` 或 `sub_session`；对于子会话，两个 `parent_` 字段指明委派它的那个对话，`assistant_name` 则指明它所扮演的[助手](/zh/guide/assistants)（如果有的话）。事件尚未关联到对话时，其他新字段可能为 `null`。
 
 与聊天机器人不同，webhook 指向*外部*——由 Codeg 调用你的 URL——因此如果你在防火墙后运行，那个 URL 必须能从 Codeg 运行所在的机器上访问到。
 
